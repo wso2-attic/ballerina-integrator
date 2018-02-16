@@ -10,7 +10,6 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 ![RESTful Service](images/restful_service.png "RESTful Service")
 
-
 - **Create Order** : To place a new order you can use the HTTP POST message that contains the order details, which is sent to the URL (http://xyz.retail.com/order).The response from the service contains an HTTP 201 Created message with the location header pointing to the newly created resource (http://xyz.retail.com/order/123456). 
 - **Retrieve Order** : You can retrieve the order details by sending an HTTP GET request to the appropriate URL which includes the order ID. (e.g. http://xyz.retail.com/order/<orderId>)
 - **Update Order** : You can update an existing order by sending a HTTP PUT request with the content for the updated order. 
