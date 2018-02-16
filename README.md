@@ -16,7 +16,6 @@ The following figure illustrates all the required functionalities of the OrderMg
 - **Update Order** : You can update an existing order by sending a HTTP PUT request with the content for the updated order. 
 - **Delete Order** : An existing order can be deleted by sending a HTTP DELETE request to the specific URL (e.g. http://xyz.retail.com/order/<orderId>). 
 
-
 ## <a name="pre-req"></a> Prerequisites
  
 - JDK 1.8 or later
