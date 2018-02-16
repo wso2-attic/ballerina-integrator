@@ -305,7 +305,6 @@ You can deploy the RESTful service that you developed above, in your local envir
 ballerina run restful_service.balx 
 ```
 
-
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 (Work in progress) 
 
