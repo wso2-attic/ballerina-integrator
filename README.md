@@ -67,56 +67,49 @@ First you have to replace `localhost`, `3306`, `username`, `password`, `5` with 
 
 ### <a name="Implementation"></a> Implementation
 
-1. Let's get started with implementing the database utility functions. Before accessing the database from ballerina, we need to have the SQL client connector. We also need a function to create databases from the code itself. 
-File `database-utilities.bal` in the dbUtil package includes the implementations for the above-mentioned functions, which is attached below. Inline comments are used to explain the important code segments.
+Let's get started with the implementation of the function `transferMoney` in `account-manager.bal` file. This function explains how we can use transactions in Ballerina. This function comprises of two different operations, withdrawal and deposit. In order to ensure that the transferring operation happens as a whole, we need to carry out the transfer money operation as a database transaction. This will ensure the 'ACID' properties and hence if any of the withdrawal or deposit fails the transaction will be aborted and all the operations carried out in the same transaction will be rolled out. The transaction is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. 
 
-##### database-utilities.bal
+The below code segment shows the implementation of function `transferMoney`. Inline comments are used to explain the code line by line. 
+
+##### transferMoney function
 ```ballerina
-package BankingApplication.dbUtil;
-
-import ballerina.data.sql;
-import ballerina.config;
-
-// Function to get SQL database client connector
-public function getDatabaseClientConnector () (sql:ClientConnector sqlConnector) {
-    // DB configurations - Get configuration details from the ballerina.config file
-    string dbHost = config:getGlobalValue("DATABASE_HOST");
-    string dbUsername = config:getGlobalValue("DATABASE_USERNAME");
-    string dbPassword = config:getGlobalValue("DATABASE_PASSWORD");
-    var dbPort, conversionError1 = <int>config:getGlobalValue("DATABASE_PORT");
-    // If string to int conversion fails, throw the error
-    if (conversionError1 != null) {
-        throw conversionError1;
+// Function to transfer money from one account to another
+public function transferMoney (int fromAccId, int toAccId, int amount) (boolean isSuccessful) {
+    // Transaction block - Ensures the 'ACID' properties
+    // Withdraw and deposit should happen as a transaction when transfer money from one account to another
+    transaction with retries(0) {
+        log:printInfo("Initiating transaction");
+        log:printInfo("Transferring money from account ID " + fromAccId + " to account ID " + toAccId);
+        // Withdraw money from transferor's account
+        error withdrawError = withdrawMoney(fromAccId, amount);
+        if (withdrawError != null) {
+            log:printError("Error while withdrawing the money: " + withdrawError.msg);
+            // Abort transaction if withdrawal fails
+            abort;
+        }
+        // Deposit money to transferee's account
+        error depositError = depositMoney(toAccId, amount);
+        if (depositError != null) {
+            log:printError("Error while depositing the money: " + depositError.msg);
+            // Abort transaction if deposit fails
+            abort;
+        }
+        // If transaction successful
+        isSuccessful = true;
+        log:printInfo("Transaction committed");
+        log:printInfo("Successfully transferred $" + amount + " from account ID " + fromAccId + " to account ID " +
+                      toAccId);
+    } failed {
+        // Executed when a transaction fails
+        log:printError("Error while transferring money from account ID " + fromAccId + " to account ID " + toAccId);
+        log:printError("Transaction failed");
     }
-    var dbMaxPoolSize, conversionError2 = <int>config:getGlobalValue("DATABASE_MAX_POOL_SIZE");
-    // If string to int conversion fails, throw the error
-    if (conversionError2 != null) {
-        throw conversionError2;
-    }
-
-    // Construct connection URL
-    string connectionUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "?useSSL=true";
-    // Create SQL connector
-    sqlConnector = create sql:ClientConnector(sql:DB.GENERIC, "", 0, "", dbUsername, dbPassword,
-                                              {url:connectionUrl, maximumPoolSize:dbMaxPoolSize});
-    // Return the SQL client connector
+    // Return a boolean, which will be true if transaction is successful; false otherwise
     return;
 }
-
-// Function to create a database
-public function createDatabase (sql:ClientConnector sqlConnector, string dbName) (int updateStatus) {
-    endpoint<sql:ClientConnector> databaseEP {
-        sqlConnector;
-    }
-    // Execute the create database SQL query
-    updateStatus = databaseEP.update("CREATE DATABASE IF NOT EXISTS " + dbName, null);
-    // Return the update status
-    return;
-}
-
 ```
 
-2. Next, we will create the `account-manager.bal`, which includes the account management related logic. It includes a private method to initialize the database and public functions to create an account, verify an account, check account balance, withdraw money from an account, deposit money to an account, and transfer money from one account to another. The function that handles the transfer money logic includes a transaction block to ensure that the transfer is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. If one of these operations fail, the transaction will be aborted and all actions carried out before the failure will also be rolled back. 
+Let's now look at the implementation of the `account-manager.bal`, which includes the account management related logic. It consists of a private method to initialize the database and public functions to create an account, verify an account, check account balance, withdraw money from an account, deposit money to an account, and transfer money from one account to another. 
 Skeleton of the `account-manager.bal` is given below.
 
 ##### account-manager.bal
@@ -192,47 +185,9 @@ function initializeDB () (boolean isInitialized) {
 
 ```
 
-The below code segment shows the implementation of function `transferMoney`. This explains how we can use transactions in Ballerina. Inline comments are used to explain the code line by line. 
-
-```ballerina
-// Function to transfer money from one account to another
-public function transferMoney (int fromAccId, int toAccId, int amount) (boolean isSuccessful) {
-    // Transaction block - Ensures the 'ACID' properties
-    // Withdraw and deposit should happen as a transaction when transfer money from one account to another
-    transaction with retries(0) {
-        log:printInfo("Initiating transaction");
-        log:printInfo("Transferring money from account ID " + fromAccId + " to account ID " + toAccId);
-        // Withdraw money from transferor's account
-        error withdrawError = withdrawMoney(fromAccId, amount);
-        if (withdrawError != null) {
-            log:printError("Error while withdrawing the money: " + withdrawError.msg);
-            // Abort transaction if withdrawal fails
-            abort;
-        }
-        // Deposit money to transferee's account
-        error depositError = depositMoney(toAccId, amount);
-        if (depositError != null) {
-            log:printError("Error while depositing the money: " + depositError.msg);
-            // Abort transaction if deposit fails
-            abort;
-        }
-        // If transaction successful
-        isSuccessful = true;
-        log:printInfo("Transaction committed");
-        log:printInfo("Successfully transferred $" + amount + " from account ID " + fromAccId + " to account ID " +
-                      toAccId);
-    } failed {
-        // Executed when a transaction fails
-        log:printError("Error while transferring money from account ID " + fromAccId + " to account ID " + toAccId);
-        log:printError("Transaction failed");
-    }
-    // Return a boolean, which will be true if transaction is successful; false otherwise
-    return;
-}
-```
 Please refer `https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account-manager.bal` file to see the complete implementation of `account-manager.bal`.
 
-3. Finally, we will create the `application.bal`, which includes the main function. This file has three possible scenarios to check the transfer money operation of our banking application to clearly explain the database transaction management using Ballerina. Code is attached below, which also includes inline comments for further understanding.
+Let's next focus on the implementation of `application.bal` file, which includes the main function. This file has three possible scenarios to check the transfer money operation of our banking application to clearly explain the database transaction management using Ballerina. Code is attached below, which also includes inline comments for further understanding.
 
 ##### application.bal
 
@@ -298,6 +253,38 @@ function main (string[] args) {
 }
 
 ```
+
+Finally, let's focus on the implementation of `database-utilities.bal`, which consists database utility functions. Before accessing the database from ballerina, we need to have the SQL client connector. We also need a function to create databases if we decide to do it from the code itself. 
+File `database-utilities.bal` in the dbUtil package includes the implementations for the above-mentioned functions. Skeleton of this file is attached below. Inline comments are used to explain the important code segments.
+
+##### database-utilities.bal
+```ballerina
+package BankingApplication.dbUtil;
+
+import ballerina.data.sql;
+import ballerina.config;
+
+// Function to get SQL database client connector
+public function getDatabaseClientConnector () (sql:ClientConnector sqlConnector) {
+    // Get database configuration details from the ballerina.config file
+    // Implementation
+    
+    // Return the SQL client connector
+    return;
+}
+
+// Function to create a database
+public function createDatabase (sql:ClientConnector sqlConnector, string dbName) (int updateStatus) {
+    // Implementation
+    
+    // Return the update status
+    return;
+}
+
+```
+
+Please refer `https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database-utilities.bal` file to see the complete implementation of `database-utilities.bal`.
+
 
 ## <a name="testing"></a> Testing 
 
