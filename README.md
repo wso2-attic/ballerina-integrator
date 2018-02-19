@@ -16,7 +16,7 @@ Transferring money from one account to another account includes both operations,
 
 For example, when transferring money if the transaction fails during deposit operation, then the withdrawal operation that carried out prior to deposit operation also needs to be rolled back. If not we will end up in a state where transferor loses money. Therefore, in order to ensure the atomicity (all or nothing property), we need to perform the money transfer operation as a transaction. 
 
-This example explains three different scenarios where one user tries to transfer money from his/her account to another user's account. The first scenario shows a successful transaction whereas the other to scenarios fail due to unique reasons. You can observe how transactions using Ballerina ensure the 'ACID' properties through this example.
+This example explains three different scenarios where one user tries to transfer money from his/her account to another user's account. The first scenario shows a successful transaction whereas the other two scenarios fail due to unique reasons. You can observe how transactions using Ballerina ensure the 'ACID' properties through this example.
 
 ## <a name="pre-req"></a> Prerequisites
  
@@ -53,7 +53,7 @@ managing-database-transactions
 
 ```
 ##### Add database configurations to the `ballerina.conf` file
-The purpose of  `ballerina.conf` file is to provide any external configurations that are needed for ballerina programs. Since we need to interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
+The purpose of  `ballerina.conf` file is to provide any external configurations that are required by ballerina programs. Since we need to interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
 This configuration file will have the following fields,
 ```
 DATABASE_HOST = localhost
