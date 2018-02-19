@@ -185,7 +185,7 @@ function initializeDB () (boolean isInitialized) {
 
 ```
 
-Please refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account-manager.bal file to see the complete implementation of `account-manager.bal`.
+Refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account-manager.bal file to see the complete implementation of `account-manager.bal`.
 
 Let's next focus on the implementation of `application.bal` file, which includes the main function. This file has three possible scenarios to check the transfer money operation of our banking application to clearly explain the database transaction management using Ballerina. Code is attached below, which also includes inline comments for further understanding.
 
@@ -283,7 +283,7 @@ public function createDatabase (sql:ClientConnector sqlConnector, string dbName)
 
 ```
 
-Please refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database-utilities.bal file to see the complete implementation of `database-utilities.bal`.
+Refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database-utilities.bal file to see the complete implementation of `database-utilities.bal`.
 
 
 ## <a name="testing"></a> Testing 
