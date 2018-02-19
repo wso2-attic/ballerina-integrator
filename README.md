@@ -53,7 +53,7 @@ managing-database-transactions
 
 ```
 ##### Add database configurations to the `ballerina.conf` file
-The purpose of  `ballerina.conf` file is to provide any external configurations that are required by ballerina programs. Since we need to interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
+The purpose of  `ballerina.conf` file is to provide any external configurations that are required by ballerina programs. Since we need to interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.conf` file.
 This configuration file will have the following fields,
 ```
 DATABASE_HOST = localhost
@@ -67,7 +67,7 @@ First you have to replace `localhost`, `3306`, `username`, `password`, `5` with 
 
 ### <a name="Implementation"></a> Implementation
 
-Let's get started with the implementation of the function `transferMoney` in `account-manager.bal` file. This function explains how we can use transactions in Ballerina. This function comprises of two different operations, withdrawal and deposit. In order to ensure that the transferring operation happens as a whole, we need to carry out the transfer money operation as a database transaction. This will ensure the 'ACID' properties and hence if any of the withdrawal or deposit fails the transaction will be aborted and all the operations carried out in the same transaction will be rolled out. The transaction is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. 
+Let's get started with the implementation of the function `transferMoney` in `account-manager.bal` file. This function explains how we can use transactions in Ballerina. This function comprises of two different operations, withdrawal and deposit. In order to ensure that the transferring operation happens as a whole, we need to carry out the transfer money operation as a database transaction. This will ensure the 'ACID' properties and hence if any of the withdrawal or deposit fails, the transaction will be aborted and all the operations carried out in the same transaction will be rolled out. The transaction is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. 
 
 The below code segment shows the implementation of function `transferMoney`. Inline comments are used to explain the code line by line. 
 
@@ -185,7 +185,7 @@ function initializeDB () (boolean isInitialized) {
 
 ```
 
-Please refer `https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account-manager.bal` file to see the complete implementation of `account-manager.bal`.
+Please refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account-manager.bal file to see the complete implementation of `account-manager.bal`.
 
 Let's next focus on the implementation of `application.bal` file, which includes the main function. This file has three possible scenarios to check the transfer money operation of our banking application to clearly explain the database transaction management using Ballerina. Code is attached below, which also includes inline comments for further understanding.
 
@@ -283,7 +283,7 @@ public function createDatabase (sql:ClientConnector sqlConnector, string dbName)
 
 ```
 
-Please refer `https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database-utilities.bal` file to see the complete implementation of `database-utilities.bal`.
+Please refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database-utilities.bal file to see the complete implementation of `database-utilities.bal`.
 
 
 ## <a name="testing"></a> Testing 
