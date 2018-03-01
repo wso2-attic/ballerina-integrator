@@ -21,18 +21,13 @@ This example explains three different scenarios where one user tries to transfer
 ## <a name="pre-req"></a> Prerequisites
  
 - JDK 1.8 or later
-- Ballerina Distribution (Install Instructions:  https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
-- MySQL JDBC driver (Download https://dev.mysql.com/downloads/connector/j/)
+- [Ballerina Distribution](https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
+- [MySQL JDBC driver](https://dev.mysql.com/downloads/connector/j/)
   * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
 - A Text Editor or an IDE 
 
 Optional Requirements
-- Docker (Follow instructions in https://docs.docker.com/engine/installation/)
-- Ballerina IDE plugins. ( IntelliJ IDEA, VSCode, Atom)
-- Testerina (Refer: https://github.com/ballerinalang/testerina)
-- Container-support (Refer: https://github.com/ballerinalang/container-support)
-- Docerina (Refer: https://github.com/ballerinalang/docerina)
- 
+- Ballerina IDE plugins ( IntelliJ IDEA, VSCode, Atom)
 
 ## <a name="develop-app"></a> Developing the Application
 ### <a name="before-begin"></a> Before You Begin
@@ -417,4 +412,4 @@ To run the unit tests, go to the sample root directory and run the following com
 $ ballerina test BankingApplication/
 ```
 
-To check the implementations of these test files, please go to `https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/` and refer the respective folders of `database-utilities.bal` and `account-manager.bal` files.
+To check the implementations of these test files, please go to https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/ and refer the respective folders of `database-utilities.bal` and `account-manager.bal` files.
