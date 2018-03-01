@@ -10,23 +10,19 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 ![RESTful Service](images/restful_service.png "RESTful Service")
 
-- **Create Order** : To place a new order you can use the HTTP POST message that contains the order details, which is sent to the URL (http://xyz.retail.com/order).The response from the service contains an HTTP 201 Created message with the location header pointing to the newly created resource (http://xyz.retail.com/order/123456). 
-- **Retrieve Order** : You can retrieve the order details by sending an HTTP GET request to the appropriate URL which includes the order ID. (e.g. http://xyz.retail.com/order/<orderId>)
+- **Create Order** : To place a new order you can use the HTTP POST message that contains the order details, which is sent to the URL `http://xyz.retail.com/order`.The response from the service contains an HTTP 201 Created message with the location header pointing to the newly created resource `http://xyz.retail.com/order/123456`. 
+- **Retrieve Order** : You can retrieve the order details by sending an HTTP GET request to the appropriate URL which includes the order ID.`http://xyz.retail.com/order/<orderId>` 
 - **Update Order** : You can update an existing order by sending a HTTP PUT request with the content for the updated order. 
-- **Delete Order** : An existing order can be deleted by sending a HTTP DELETE request to the specific URL (e.g. http://xyz.retail.com/order/<orderId>). 
+- **Delete Order** : An existing order can be deleted by sending a HTTP DELETE request to the specific URL`http://xyz.retail.com/order/<orderId>`. 
 
 ## <a name="pre-req"></a> Prerequisites
  
 - JDK 1.8 or later
-- Ballerina Distribution (Install Instructions:  https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
-- A Text Editor or an IDE 
+- [Ballerina Distribution](https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
+- A Text Editor or an IDE. 
 
 Optional Requirements
-- Docker (Follow instructions in https://docs.docker.com/engine/installation/)
 - Ballerina IDE plugins. ( Intellij IDEA, VSCode, Atom)
-- Testerina (Refer: https://github.com/ballerinalang/testerina)
-- Container-support (Refer: https://github.com/ballerinalang/container-support)
-- Docerina (Refer: https://github.com/ballerinalang/docerina)
 
 ## <a name="developing-service"></a> Developing the RESTFul service 
 
@@ -52,7 +48,10 @@ import ballerina.net.http;
 
 @http:configuration {basePath:"/ordermgt"}
 service<http> OrderMgtService {
-
+    
+    // Order management is done using an in memory orders map.
+    // Add some sample orders to the orderMap during the startup.
+    map ordersMap = {};
 
     @Description {value:"Resource that handles the HTTP GET requests that are directed to a specific order using path '/orders/<orderID>'"}
     @http:resourceConfig {
@@ -101,114 +100,100 @@ service<http> OrderMgtService {
 
 ##### OrderMgtService.bal
 ```ballerina
-package guide.restful_service;
 
-import ballerina.net.http;
+@Description {value:"Resource that handles the HTTP GET requests that are directed to a specific order using path '/orders/<orderID>'"}
+@http:resourceConfig {
+    methods:["GET"],
+    path:"/order/{orderId}"
+}
+resource findOrder (http:Connection conn, http:InRequest req, string orderId) {
+    json payload;
+    // Find the requested order from the map and retrieve it in JSON format.
+    payload, _ = (json)ordersMap[orderId];
 
-
-@Description {value:"RESTful service."}
-@http:configuration {basePath:"/ordermgt"}
-service<http> OrderMgtService {
-
-    // Order management is done using an in memory orders map.
-    // Add some sample orders to the orderMap during the startup.
-    map ordersMap = {};
-
-    @Description {value:"Resource that handles the HTTP GET requests that are directed to a specific order using path '/orders/<orderID>'"}
-    @http:resourceConfig {
-        methods:["GET"],
-        path:"/order/{orderId}"
-    }
-    resource findOrder (http:Connection conn, http:InRequest req, string orderId) {
-        json payload;
-        // Find the requested order from the map and retrieve it in JSON format.
-        payload, _ = (json)ordersMap[orderId];
-
-        http:OutResponse response = {};
-        if (payload == null) {
-            payload = "Order : " + orderId + " cannot be found.";
-        }
-
-        // Set the JSON payload to the outgoing response message to the client.
-        response.setJsonPayload(payload);
-
-        // Send response to the client
-        _ = conn.respond(response);
+    http:OutResponse response = {};
+    if (payload == null) {
+        payload = "Order : " + orderId + " cannot be found.";
     }
 
-    @Description {value:"Resource that handles the HTTP POST requests that are directed to the path '/orders' to create a new Order."}
-    @http:resourceConfig {
-        methods:["POST"],
-        path:"/order"
-    }
-    resource addOrder (http:Connection conn, http:InRequest req) {
-        json orderReq = req.getJsonPayload();
-        var orderId, _ = (string) orderReq.Order.ID;
-        ordersMap[orderId] = orderReq;
+    // Set the JSON payload to the outgoing response message to the client.
+    response.setJsonPayload(payload);
 
-        // Create response message
-        json payload = {status:"Order Created.", orderId:orderId};
-        http:OutResponse response = {};
-        response.setJsonPayload(payload);
+    // Send response to the client
+    _ = conn.respond(response);
+}
 
-        // Set 201 Created status code in the response message
-        response.statusCode = 201;
-        // Set 'Location' header in the response message. This can be used by the client to locate the newly added order.
-        response.setHeader("Location", "http://localhost:9090/ordermgt/order/" + orderId);
+@Description {value:"Resource that handles the HTTP POST requests that are directed to the path '/orders' to create a new Order."}
+@http:resourceConfig {
+    methods:["POST"],
+    path:"/order"
+}
+resource addOrder (http:Connection conn, http:InRequest req) {
+    json orderReq = req.getJsonPayload();
+    var orderId, _ = (string) orderReq.Order.ID;
+    ordersMap[orderId] = orderReq;
 
-        // Send response to the client
-        _ = conn.respond(response);
-    }
+    // Create response message
+    json payload = {status:"Order Created.", orderId:orderId};
+    http:OutResponse response = {};
+    response.setJsonPayload(payload);
 
-    @Description {value:"Resource that handles the HTTP PUT requests that are directed to the path '/orders' to update an existing Order."}
-    @http:resourceConfig {
-        methods:["PUT"],
-        path:"/order/{orderId}"
-    }
-    resource updateOrder (http:Connection conn, http:InRequest req, string orderId) {
+    // Set 201 Created status code in the response message
+    response.statusCode = 201;
+    // Set 'Location' header in the response message. This can be used by the client to locate the newly added order.
+    response.setHeader("Location", "http://localhost:9090/ordermgt/order/" + orderId);
 
-        json updatedOrder = req.getJsonPayload();
-        json existingOrder;
+    // Send response to the client
+    _ = conn.respond(response);
+}
 
-        // Find the order that needs to be updated from the map and retrieve it in JSON format.
-        existingOrder, _ = (json)ordersMap[orderId];
+@Description {value:"Resource that handles the HTTP PUT requests that are directed to the path '/orders' to update an existing Order."}
+@http:resourceConfig {
+    methods:["PUT"],
+    path:"/order/{orderId}"
+}
+resource updateOrder (http:Connection conn, http:InRequest req, string orderId) {
 
-        // Updating existing order with the attributes of the updated order
-        if (existingOrder != null) {
-            existingOrder.Order.Name = updatedOrder.Order.Name;
-            existingOrder.Order.Description = updatedOrder.Order.Description;
-            ordersMap[orderId] = existingOrder;
-        } else {
-            existingOrder = "Order : " + orderId + " cannot be found.";
-        }
+    json updatedOrder = req.getJsonPayload();
+    json existingOrder;
 
-        http:OutResponse response = {};
-        // Set the JSON payload to the outgoing response message to the client.
-        response.setJsonPayload(existingOrder);
+    // Find the order that needs to be updated from the map and retrieve it in JSON format.
+    existingOrder, _ = (json)ordersMap[orderId];
 
-        // Send response to the client
-        _ = conn.respond(response);
-    }
-
-
-    @Description {value:"Resource that handles the HTTP DELETE requests that are directed to the path '/orders/<orderId>' to delete an existing Order."}
-    @http:resourceConfig {
-        methods:["DELETE"],
-        path:"/order/{orderId}"
-    }
-    resource cancelOrder (http:Connection conn, http:InRequest req, string orderId) {
-        http:OutResponse response = {};
-        // Remove the requested order from the map.
-        ordersMap.remove(orderId);
-
-        json payload = "Order : " + orderId + " removed.";
-        // Set a generated payload with order status.
-        response.setJsonPayload(payload);
-
-        // Send response to the client
-        _ = conn.respond(response);
+    // Updating existing order with the attributes of the updated order
+    if (existingOrder != null) {
+        existingOrder.Order.Name = updatedOrder.Order.Name;
+        existingOrder.Order.Description = updatedOrder.Order.Description;
+        ordersMap[orderId] = existingOrder;
+    } else {
+        existingOrder = "Order : " + orderId + " cannot be found.";
     }
 
+    http:OutResponse response = {};
+    // Set the JSON payload to the outgoing response message to the client.
+    response.setJsonPayload(existingOrder);
+
+    // Send response to the client
+    _ = conn.respond(response);
+}
+
+
+@Description {value:"Resource that handles the HTTP DELETE requests that are directed to the path '/orders/<orderId>' to delete an existing Order."}
+@http:resourceConfig {
+    methods:["DELETE"],
+    path:"/order/{orderId}"
+}
+resource cancelOrder (http:Connection conn, http:InRequest req, string orderId) {
+    http:OutResponse response = {};
+    // Remove the requested order from the map.
+    ordersMap.remove(orderId);
+
+    json payload = "Order : " + orderId + " removed.";
+    // Set a generated payload with order status.
+    response.setJsonPayload(payload);
+
+    // Send response to the client
+    _ = conn.respond(response);
 }
 
 ```
@@ -233,7 +218,7 @@ $ballerina build guide/restful_service
 2. Once the restful_service.balx is created, you can run that with the following command. 
 
 ```
-ballerina run restful_service.balx 
+$ballerina run restful_service.balx 
 ```
 
 3. The successful execution of the service should show us the following output. 
@@ -302,7 +287,7 @@ Once you are done with the development, you can deploy the service using any of 
 You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
 ```
-ballerina run restful_service.balx 
+$ballerina run restful_service.balx 
 ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
