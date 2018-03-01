@@ -243,8 +243,6 @@ function main (string[] args) {
                   "withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient" +
                   "account ID; Hence \nthe TX failed and the withdraw operation rollbacked, which is in the same TX" +
                   "\n");
-    log:printInfo("\n-------------------------------------------------------------------" +
-                  "---------------------------------------------------------------------");
 }
 
 ```
@@ -391,9 +389,6 @@ $ ballerina run application.bal
 2018-02-16 07:16:33,601 INFO  [BankingApplication] - Explanation: When trying to transfer $500 from Bob's account to account ID 123, 
 initially $500 withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient account ID; Hence 
 the TX failed and the withdraw operation rollbacked, which is in the same TX
- 
-2018-02-16 07:16:33,601 INFO  [BankingApplication] - 
----------------------------------------------------------------------------------------------------------------------------------------- 
 
 ```
 
