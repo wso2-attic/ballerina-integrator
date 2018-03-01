@@ -291,7 +291,18 @@ $ballerina run restful_service.balx
 ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
-(Work in progress) 
+
+
+You can use the Ballerina executable archive (.balx) archive that we created above and create a docker image using either of the following commands. 
+```
+ballerina docker restful_service.balx  
+```
+
+Once you have created the docker image, you can run it using docker run. 
+
+```
+docker run -p <host_port>:9090 --name ballerina_restful_service -d restful_service:latest
+```
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
 (Work in progress) 
