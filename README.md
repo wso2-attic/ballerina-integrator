@@ -1,8 +1,8 @@
 # Database Backed RESTful Web Service
-This guide walks you through building a database-backed RESTful web service with Ballerina. Also, this guide will walks you through the process of accessing relational data using SQL connectors in Ballerina language.
+This guide walks you through building a database-backed RESTful web service with Ballerina.
 
 ## <a name="what-you-build"></a>  What you'll build
-You'll build an employee data management web service that performs CRUD Operations(Create, Read, Update, Delete) on MySQL database. The service will have following functionalities,
+You'll build an employee data management web service that performs CRUD Operations(Create, Read, Update, Delete) on MySQL database.  Also, this guide will walks you through the process of accessing relational data via Ballerina language.The service will have following functionalities,
 * Add new employees to the database via HTTP POST method
 * Retrieve existing employee details from the database via HTTP GET method
 * Update existing employee in the database via HTTP PUT method
