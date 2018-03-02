@@ -63,7 +63,7 @@ public function checkBalance (int accId) (int balance, error err) {
     log:printInfo("Checking balance for account ID: " + accId);
     // Verify account whether it exists and return an error if not
     if (!verifyAccount(accId)) {
-        err = {msg:"Error: Account does not exist"};
+        err = {message:"Error: Account does not exist"};
         return;
     }
     // SQL query parameters
@@ -88,12 +88,12 @@ public function depositMoney (int accId, int amount) (error err) {
     log:printInfo("Depositing money to account ID: " + accId);
     // Check whether the amount specified is valid and return an error if not
     if (amount <= 0) {
-        err = {msg:"Error: Invalid amount"};
+        err = {message:"Error: Invalid amount"};
         return;
     }
     // Verify account whether it exists and return an error if not
     if (!verifyAccount(accId)) {
-        err = {msg:"Error: Account does not exist"};
+        err = {message:"Error: Account does not exist"};
         return;
     }
     // SQL query parameters
@@ -115,7 +115,7 @@ public function withdrawMoney (int accId, int amount) (error err) {
     // Check whether the amount specified is valid and return an error if not
     log:printInfo("Withdrawing money from account ID: " + accId);
     if (amount <= 0) {
-        err = {msg:"Error: Invalid amount"};
+        err = {message:"Error: Invalid amount"};
         return;
     }
     // Check current balance
@@ -126,7 +126,7 @@ public function withdrawMoney (int accId, int amount) (error err) {
     }
     // Check whether the user has enough money to withdraw the requested amount and return an error if not
     if (balance < amount) {
-        err = {msg:"Error: Not enough balance"};
+        err = {message:"Error: Not enough balance"};
         return;
     }
     // SQL query parameters
@@ -150,14 +150,14 @@ public function transferMoney (int fromAccId, int toAccId, int amount) (boolean 
         // Withdraw money from transferor's account
         error withdrawError = withdrawMoney(fromAccId, amount);
         if (withdrawError != null) {
-            log:printError("Error while withdrawing the money: " + withdrawError.msg);
+            log:printError("Error while withdrawing the money: " + withdrawError.message);
             // Abort transaction if withdrawal fails
             abort;
         }
         // Deposit money to transferee's account
         error depositError = depositMoney(toAccId, amount);
         if (depositError != null) {
-            log:printError("Error while depositing the money: " + depositError.msg);
+            log:printError("Error while depositing the money: " + depositError.message);
             // Abort transaction if deposit fails
             abort;
         }
