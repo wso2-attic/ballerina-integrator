@@ -435,25 +435,13 @@ You can deploy the RESTful services that you developed above, in your local envi
 
 Building 
    ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina build TravelAgency/AirlineReservation/
-
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina build TravelAgency/HotelReservation/
-
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina build TravelAgency/CarRental/
-    
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina build TravelAgency/
+    <SAMPLE_ROOT_DIRECTORY>$ ballerina build TravelAgency/<Package_Name>
 
    ```
 
 Running
    ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run AirlineReservation.balx
-    
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run HotelReservation.balx 
-
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run CarRental.balx
-     
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run TravelAgency.balx
+    <SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
 
    ```
 
@@ -461,13 +449,7 @@ Running
 
 You can use the Ballerina executable archives (.balx) that we created above and create docker images for the services using the following commands, 
 ```
-<SAMPLE_ROOT_DIRECTORY>$ ballerina docker AirlineReservation.balx  
-
-<SAMPLE_ROOT_DIRECTORY>$ ballerina docker HotelReservation.balx  
-
-<SAMPLE_ROOT_DIRECTORY>$ ballerina docker CarRental.balx  
-
-<SAMPLE_ROOT_DIRECTORY>$ ballerina docker TravelAgency.balx  
+<SAMPLE_ROOT_DIRECTORY>$ ballerina docker <Exec_Archive_File_Name>  
 
 ```
 
@@ -475,6 +457,7 @@ Once you have created the docker images, you can run them using docker run as fo
 
 ```
 docker run -p <host_port>:<service_port> --name <container_instance_name> -d <image_name>:<tag_name>
+
 ```
 
 For example,
@@ -483,6 +466,7 @@ To run the Travel agency service,
 
 ```
 docker run -p <host_port>:9090 --name ballerina_TravelAgency -d TravelAgency:latest
+
 ```
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
