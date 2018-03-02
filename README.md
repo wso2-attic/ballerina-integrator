@@ -38,12 +38,12 @@ Ballerina is a complete programming language that can have any custom project st
 managing-database-transactions
 ├── ballerina.conf
 ├── BankingApplication
-│   ├── account-manager.bal
-│   ├── account-manager_test.bal
+│   ├── account_manager.bal
+│   ├── account_manager_test.bal
 │   ├── application.bal
 │   └── dbUtil
-│       ├── database-utilities.bal
-│       └── database-utilities_test.bal
+│       ├── database_utilities.bal
+│       └── database_utilities_test.bal
 └── README.md
 
 ```
@@ -62,7 +62,7 @@ First you have to replace `localhost`, `3306`, `username`, `password`, `5` with 
 
 ### <a name="Implementation"></a> Implementation
 
-Let's get started with the implementation of the function `transferMoney` in `account-manager.bal` file. This function explains how we can use transactions in Ballerina. This function comprises of two different operations, withdrawal and deposit. In order to ensure that the transferring operation happens as a whole, we need to carry out the transfer money operation as a database transaction. This will ensure the 'ACID' properties and hence if any of the withdrawal or deposit fails, the transaction will be aborted and all the operations carried out in the same transaction will be rolled out. The transaction is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. 
+Let's get started with the implementation of the function `transferMoney` in `account_manager.bal` file. This function explains how we can use transactions in Ballerina. This function comprises of two different operations, withdrawal and deposit. In order to ensure that the transferring operation happens as a whole, we need to carry out the transfer money operation as a database transaction. This will ensure the 'ACID' properties and hence if any of the withdrawal or deposit fails, the transaction will be aborted and all the operations carried out in the same transaction will be rolled out. The transaction is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. 
 
 The below code segment shows the implementation of function `transferMoney`. Inline comments are used to explain the code line by line. 
 
@@ -104,10 +104,10 @@ public function transferMoney (int fromAccId, int toAccId, int amount) (boolean 
 }
 ```
 
-Let's now look at the implementation of the `account-manager.bal`, which includes the account management related logic. It consists of a private method to initialize the database and public functions to create an account, verify an account, check account balance, withdraw money from an account, deposit money to an account, and transfer money from one account to another. 
-Skeleton of the `account-manager.bal` is given below.
+Let's now look at the implementation of the `account_manager.bal`, which includes the account management related logic. It consists of a private method to initialize the database and public functions to create an account, verify an account, check account balance, withdraw money from an account, deposit money to an account, and transfer money from one account to another. 
+Skeleton of the `account_manager.bal` is given below.
 
-##### account-manager.bal
+##### account_manager.bal
 ```ballerina
 package BankingApplication;
 
@@ -180,7 +180,7 @@ function initializeDB () (boolean isInitialized) {
 
 ```
 
-Refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account-manager.bal file to see the complete implementation of `account-manager.bal`.
+Refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account_manager.bal file to see the complete implementation of `account_manager.bal`.
 
 Let's next focus on the implementation of `application.bal` file, which includes the main function. This file has three possible scenarios to check the transfer money operation of our banking application to clearly explain the database transaction management using Ballerina. Code is attached below, which also includes inline comments for further understanding.
 
@@ -247,10 +247,10 @@ function main (string[] args) {
 
 ```
 
-Finally, let's focus on the implementation of `database-utilities.bal`, which consists database utility functions. Before accessing the database from ballerina, we need to have the SQL client connector. We also need a function to create databases if we decide to do it from the code itself. 
-File `database-utilities.bal` in the dbUtil package includes the implementations for the above-mentioned functions. Skeleton of this file is attached below. Inline comments are used to explain the important code segments.
+Finally, let's focus on the implementation of `database_utilities.bal`, which consists database utility functions. Before accessing the database from ballerina, we need to have the SQL client connector. We also need a function to create databases if we decide to do it from the code itself. 
+File `database_utilities.bal` in the dbUtil package includes the implementations for the above-mentioned functions. Skeleton of this file is attached below. Inline comments are used to explain the important code segments.
 
-##### database-utilities.bal
+##### database_utilities.bal
 ```ballerina
 package BankingApplication.dbUtil;
 
@@ -276,7 +276,7 @@ public function createDatabase (sql:ClientConnector sqlConnector, string dbName)
 
 ```
 
-Refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database-utilities.bal file to see the complete implementation of `database-utilities.bal`.
+Refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database_utilities.bal file to see the complete implementation of `database_utilities.bal`.
 
 
 ## <a name="testing"></a> Testing 
@@ -399,7 +399,7 @@ In ballerina, the unit test cases should be in the same package and the naming c
 * Test functions should contain test prefix.
   * e.g.: testCreateAccount()
 
-This guide contains unit test cases for each method implemented in `database-utilities.bal` and `account-manager.bal` files.
+This guide contains unit test cases for each method implemented in `database_utilities.bal` and `account_manager.bal` files.
 Test files are in the same packages in which the above files are located.
 
 To run the unit tests, go to the sample root directory and run the following command
@@ -407,4 +407,4 @@ To run the unit tests, go to the sample root directory and run the following com
 $ ballerina test BankingApplication/
 ```
 
-To check the implementations of these test files, please go to https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/ and refer the respective folders of `database-utilities.bal` and `account-manager.bal` files.
+To check the implementations of these test files, please go to https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/ and refer the respective folders of `database_utilities.bal` and `account_manager.bal` files.
