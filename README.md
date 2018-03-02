@@ -283,10 +283,11 @@ To see the complete implementation of `database_utilities.bal` file, refer https
 
 ### <a name="try-out"></a> Try it out
 
+Run this sample by entering the following command in a terminal
 You can run this sample by simply navigating to the `managing-database-transactions/BankingApplication` folder and running the following command in the terminal,
 
 ```bash
-$ ballerina run application.bal
+<SAMPLE_ROOT_DIRECTORY>$ ballerina run application.bal
 ```
 
 #### <a name="response"></a> Response you'll get
