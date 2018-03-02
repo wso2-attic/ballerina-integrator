@@ -27,7 +27,7 @@ This example explains three different scenarios where one user tries to transfer
 - A Text Editor or an IDE 
 
 Optional Requirements
-- Ballerina IDE plugins ( IntelliJ IDEA, VSCode, Atom)
+- Ballerina IDE plugins (IntelliJ IDEA, VSCode, Atom)
 
 ## <a name="develop-app"></a> Developing the Application
 ### <a name="before-begin"></a> Before You Begin
