@@ -12,7 +12,7 @@ To understanding how you can manage database transactions using Ballerina, letâ€
 - **Transfer money** : Transfer money from one account to another account
 
 
-Transferring money from one account to another account includes both operations, withdrawal from the transferor and deposit to the transferee. Thus, transferring operation required to be done using a transaction block. A transaction will ensure the 'ACID'properties, which is a set of properties of database transactions intended to guarantee validity even in the event of errors, power failures, etc.
+Transferring money from one account to another account includes both operations, withdrawal from the transferor and deposit to the transferee. Thus, transferring operation required to be done using a transaction block. A transaction will ensure the 'ACID' properties, which is a set of properties of database transactions intended to guarantee validity even in the event of errors, power failures, etc.
 
 For example, when transferring money if the transaction fails during deposit operation, then the withdrawal operation that carried out prior to deposit operation also needs to be rolled back. If not we will end up in a state where transferor loses money. Therefore, in order to ensure the atomicity (all or nothing property), we need to perform the money transfer operation as a transaction. 
 
