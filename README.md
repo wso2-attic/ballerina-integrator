@@ -459,7 +459,7 @@ Running
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 
-You can use the Ballerina executable archives (.balx) that we created above and create docker images for the services using the following commands. 
+You can use the Ballerina executable archives (.balx) that we created above and create docker images for the services using the following commands, 
 ```
 <SAMPLE_ROOT_DIRECTORY>$ ballerina docker AirlineReservation.balx  
 
@@ -471,13 +471,15 @@ You can use the Ballerina executable archives (.balx) that we created above and 
 
 ```
 
-Once you have created the docker images, you can run them using docker run. 
+Once you have created the docker images, you can run them using docker run as follows, 
 
 ```
 docker run -p <host_port>:<service_port> --name <container_instance_name> -d <image_name>:<tag_name>
 ```
 
 For example,
+
+To run the Travel agency service,
 
 ```
 docker run -p <host_port>:9090 --name ballerina_TravelAgency -d TravelAgency:latest
