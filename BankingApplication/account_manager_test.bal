@@ -61,7 +61,7 @@ function testDepositMoneyFailCase1 () {
     // Expected error message
     string expectedErrMsg = "Error: Invalid amount";
     // Test whether the error message is as expected
-    test:assertStringEquals(err.msg, expectedErrMsg, "Method 'depositMoney()' is not behaving as intended");
+    test:assertStringEquals(err.message, expectedErrMsg, "Method 'depositMoney()' is not behaving as intended");
 }
 
 // Unit test for testing depositMoney() function - failing scenario: due to invalid account
@@ -73,7 +73,7 @@ function testDepositMoneyFailCase2 () {
     // Expected error message
     string expectedErrMsg = "Error: Account does not exist";
     // Test whether the error message is as expected
-    test:assertStringEquals(err.msg, expectedErrMsg, "Method 'depositMoney()' is not behaving as intended");
+    test:assertStringEquals(err.message, expectedErrMsg, "Method 'depositMoney()' is not behaving as intended");
 }
 
 // Unit test for testing checkBalance() function - passing scenario
@@ -100,7 +100,7 @@ function testCheckBalanceFail () {
     // Expected error message
     string expectedErrMsg = "Error: Account does not exist";
     // Test whether the error message is as expected
-    test:assertStringEquals(err.msg, expectedErrMsg, "Method 'checkBalance()' is not behaving as intended");
+    test:assertStringEquals(err.message, expectedErrMsg, "Method 'checkBalance()' is not behaving as intended");
     // 'balance' should be zero (default value)
     test:assertIntEquals(balance, 0, "Method 'checkBalance()' is not behaving as intended");
 }
@@ -132,7 +132,7 @@ function testWithdrawMoneyFailCase1 () {
     // Expected error message
     string expectedErrMsg = "Error: Invalid amount";
     // Test whether the error message is as expected
-    test:assertStringEquals(err.msg, expectedErrMsg, "Method 'withdrawMoney()' is not behaving as intended");
+    test:assertStringEquals(err.message, expectedErrMsg, "Method 'withdrawMoney()' is not behaving as intended");
 }
 
 // Unit test for testing withdrawMoney() function - failing scenario: due to invalid account
@@ -144,7 +144,7 @@ function testWithdrawMoneyFailCase2 () {
     // Expected error message
     string expectedErrMsg = "Error: Account does not exist";
     // Test whether the error message is as expected
-    test:assertStringEquals(err.msg, expectedErrMsg, "Method 'withdrawMoney()' is not behaving as intended");
+    test:assertStringEquals(err.message, expectedErrMsg, "Method 'withdrawMoney()' is not behaving as intended");
 }
 
 // Unit test for testing withdrawMoney() function - failing scenario: due to not enough balance
@@ -161,7 +161,7 @@ function testWithdrawMoneyFailCase3 () {
     // Expected error message
     string expectedErrMsg = "Error: Not enough balance";
     // Test whether the error message is as expected
-    test:assertStringEquals(err.msg, expectedErrMsg, "Method 'withdrawMoney()' is not behaving as intended");
+    test:assertStringEquals(err.message, expectedErrMsg, "Method 'withdrawMoney()' is not behaving as intended");
 }
 
 // Unit test for testing transferMoney() function - passing scenario

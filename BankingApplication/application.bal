@@ -54,6 +54,4 @@ function main (string[] args) {
                   "withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient " +
                   "account ID; Hence \nthe TX failed and the withdraw operation rollbacked, which is in the same TX " +
                   "\n");
-    log:printInfo("\n-------------------------------------------------------------------" +
-                  "---------------------------------------------------------------------");
 }
