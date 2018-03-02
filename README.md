@@ -283,16 +283,15 @@ To see the complete implementation of `database_utilities.bal` file, refer https
 
 ### <a name="try-out"></a> Try it out
 
-Run this sample by entering the following command in a terminal
-You can run this sample by simply navigating to the `managing-database-transactions/BankingApplication` folder and running the following command in the terminal,
+Run this sample by entering the following command in a terminal,
 
 ```bash
-<SAMPLE_ROOT_DIRECTORY>$ ballerina run application.bal
+<SAMPLE_ROOT_DIRECTORY>$ ballerina run BankingApplication/
 ```
 
 #### <a name="response"></a> Response you'll get
 
-```
+```bash
 2018-02-16 07:16:33,259 INFO  [BankingApplication] - ------------------------------- DB Initialization ------------------------------- 
 2018-02-16 07:16:33,264 INFO  [BankingApplication] - Creating database 'bankDB' if not exists; Status: 1 
 2018-02-16 07:16:33,265 INFO  [BankingApplication] - Selecting database: 'bankDB'; Status: 0 
@@ -403,7 +402,8 @@ In ballerina, the unit test cases should be in the same package and the naming c
 This guide contains unit test cases for each method implemented in `database_utilities.bal` and `account_manager.bal` files.
 Test files are in the same packages in which the above files are located.
 
-To run the unit tests, go to the sample root directory and run the following command
+To run the unit tests, go to the sample root directory and run the following command,
+
 ```bash
 $ ballerina test BankingApplication/
 ```
