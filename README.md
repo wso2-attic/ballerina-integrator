@@ -2,7 +2,7 @@
 This guide walks you through building a database-backed RESTful web service with Ballerina.
 
 ## <a name="what-you-build"></a>  What you'll build
-You'll build an employee data management web service that performs CRUD Operations(Create, Read, Update, Delete) on MySQL database. The service will have following functionalities,
+You'll build an employee data management web service that performs CRUD Operations(Create, Read, Update, Delete) on MySQL database.  Also, this guide will walks you through the process of accessing relational data via Ballerina language.The service will have following functionalities,
 * Add new employees to the database via HTTP POST method
 * Retrieve existing employee details from the database via HTTP GET method
 * Update existing employee in the database via HTTP PUT method
@@ -18,23 +18,20 @@ Please refer to the following scenario diagram to understand the complete end-to
 ## <a name="pre-req"></a> Prerequisites
  
 * JDK 1.8 or later
-* Ballerina Distribution (Install Instructions:  https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
+* [Ballerina Distribution](https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
 * MySQL version 5.6 or better
 * Official JDBC driver for MySQL ( Download https://dev.mysql.com/downloads/connector/j/)
   * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
 * A Text Editor or an IDE
 
 
-Optional Requirements
-- Docker (Follow instructions in https://docs.docker.com/engine/installation/)
-- Ballerina IDE plugins. ( IntelliJ IDEA, VSCode, Atom)
-- Testerina (Refer: https://github.com/ballerinalang/testerina)
-- Container-support (Refer: https://github.com/ballerinalang/container-support)
-- Docerina (Refer: https://github.com/ballerinalang/docerina)
+Optional requirements
+- [Docker](https://docs.docker.com/engine/installation/)
+- Ballerina IDE plugins. ( [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 
-## <a name="develop-app"></a> Develop the application
+## <a name="develop-app"></a> Developing the SQL data backed web service
 ### Before you begin
-##### Create the database
+#### Create the database
 Go to the terminal (command Prompt in Microsoft Windows). Open MySQL client by entering the following command
 
 ```bash
@@ -45,7 +42,7 @@ Then create a database named as `RECORDS` by entering following command in mysql
 mysql> CREATE DATABASE RECORDS;
 ```
 
-##### Understand the package structure
+#### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although language allows you to have any package structure, we'll stick with the following package structure for this project.
 
 ```
@@ -59,7 +56,7 @@ Ballerina is a complete programming language that can have any custom project st
 └── ballerina.conf
 
 ```
-##### Add database configurations to the `ballerina.conf` file
+#### Add database configurations to the `ballerina.conf` file
 The purpose of  `ballerina.conf` file is to provide any external configurations that are needed for ballerina programs. Since this guide has MySQL database integration, we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
 This configuration file will have the following fields,
 ```
@@ -71,8 +68,7 @@ DATABASE_NAME = RECORDS
 ```
 First, you need to replace `localhost`, `3306`, `username`, `password` the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
-
-### Develop the Ballerina web service
+### Implementation of the Ballerina web service
 Ballerina language has built-in support for writing web services. The `service` keyword in ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource using `resource` keyword in Ballerina. We can implement the business logic inside a resource block using Ballerina language syntaxes. The following ballerina code is the complete service with resources to add, retrieve, update and delete employee data.
 
 ```ballerina
@@ -191,7 +187,7 @@ service<http> records {
 Please refer `ballerina-guides/data-backed-service/employeeService/employee_database_service.bal` file for the complete implementaion of employee management web service.
 
 
-### Develop the database handling utility functions
+### Implementation of the database handling utility functions
 You can implement custom functions in Ballerina which does specific tasks. For this scenario, we need to have utility functions that deal with MySQL database. The following code is the implementation of the database utility package.
 ```ballerina 
 package employeeService.util.db;
@@ -365,7 +361,7 @@ Output:
 {"Employee ID":"1","Status":{"Status":"Data Deleted Successfully"}}
 ```
 
-### <a name="unit-testing"></a> Writing Unit Tests 
+### <a name="unit-testing"></a> Writing unit tests 
 
 In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 * Test files should contain _test.bal suffix.
@@ -383,7 +379,7 @@ $ ballerina test employeeService/
 
 Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying Locally
+### <a name="deploying-on-locally"></a> Deploying locally
 You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
 ```
