@@ -2,7 +2,7 @@
 
 This guide walks you through the process of implementing a service composition using Ballerina language. A service composition is an aggregate of services collectively composed to automate a particular task or business process. 
 
-## <a name="what-you-build"></a>  What you’ll Build
+## <a name="what-you-build"></a>  What you’ll build
 To understanding how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency, which arranges complete tour packages for users. Tour package includes Airline ticket reservation, Hotel room reservation and Car rental. Therefore, the Travel agency required to communicate with other back-ends, which provide the above-mentioned services. Once a client initiates a request to arrange a tour, the Travel agency service will first communicate with the Airline reservation service to book the flight ticket. Then it will communicate with the Hotel reservation service to reserve hotel rooms. Finally, it will connect with the Car rental service to arrange internal transports. If all successful, the Travel agency service will confirm and arrange the complete tour for the user. The below diagram illustrates this use case clearly.
 
 
@@ -19,10 +19,10 @@ To understanding how you can build a service composition using Ballerina, let's 
 Optional Requirements
 - Ballerina IDE plugins (IntelliJ IDEA, VSCode, Atom)
 
-## <a name="developing-service"></a> Developing the Service
+## <a name="developing-service"></a> Developing the service
 
-### <a name="before-begin"></a> Before You Begin
-##### Understand the Package Structure
+### <a name="before-begin"></a> Before you begin
+##### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although language allows you to have any package structure, we'll stick with the following package structure for this project.
 
 ```
@@ -350,7 +350,7 @@ https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency
 
 ## <a name="testing"></a> Testing 
 
-### <a name="try-it"></a> Try it Out
+### <a name="try-it"></a> Try it out
 
 1. Start all 4 http services by entering the following commands in separate terminals. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
@@ -407,7 +407,7 @@ https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency
    ```
    
    
-### <a name="unit-testing"></a> Writing Unit Tests 
+### <a name="unit-testing"></a> Writing unit tests 
 
 In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 * Test files should contain _test.bal suffix.
@@ -430,7 +430,7 @@ To check the implementations of these test files, please go to https://github.co
 
 Once you are done with the development, you can deploy the services using any of the methods that we listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying Locally
+### <a name="deploying-on-locally"></a> Deploying locally
 You can deploy the RESTful services that you developed above, in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows,
 
 Building 
