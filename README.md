@@ -291,7 +291,7 @@ Run this sample by entering the following command in a terminal,
 
 #### <a name="response"></a> Response you'll get
 
-```bash
+```
 2018-02-16 07:16:33,259 INFO  [BankingApplication] - ------------------------------- DB Initialization ------------------------------- 
 2018-02-16 07:16:33,264 INFO  [BankingApplication] - Creating database 'bankDB' if not exists; Status: 1 
 2018-02-16 07:16:33,265 INFO  [BankingApplication] - Selecting database: 'bankDB'; Status: 0 
