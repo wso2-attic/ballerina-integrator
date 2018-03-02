@@ -1,7 +1,7 @@
 # Managing Database Transactions
 In this guide, you will learn about managing database transactions using Ballerina.
 
-## <a name="what-you-build"></a> What you’ll Build 
+## <a name="what-you-build"></a> What you’ll build 
 To understanding how you can manage database transactions using Ballerina, let’s consider a real-world use case of a simple banking application. In this example, you will build a simple banking application, which will allow users to,
 
 - **Create accounts** : Create a new account by providing username
@@ -26,12 +26,12 @@ This example explains three different scenarios where one user tries to transfer
   * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
 - A Text Editor or an IDE 
 
-Optional Requirements
+Optional requirements
 - Ballerina IDE plugins (IntelliJ IDEA, VSCode, Atom)
 
-## <a name="develop-app"></a> Developing the Application
-### <a name="before-begin"></a> Before You Begin
-##### Understand the Package Structure
+## <a name="develop-app"></a> Developing the application
+### <a name="before-begin"></a> Before you begin
+##### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although language allows you to have any package structure, we'll stick with the following package structure for this project.
 
 ```
@@ -281,15 +281,15 @@ To see the complete implementation of `database_utilities.bal` file, refer https
 
 ## <a name="testing"></a> Testing 
 
-### <a name="running"></a> Running the Application
+### <a name="try-out"></a> Try it out
 
-You can run this sample by simply navigating to the `managing-database-transactions/BankingApplication` folder and running the following command in the terminal.
+You can run this sample by simply navigating to the `managing-database-transactions/BankingApplication` folder and running the following command in the terminal,
 
 ```bash
 $ ballerina run application.bal
 ```
 
-### <a name="response"></a> Response You'll Get
+#### <a name="response"></a> Response you'll get
 
 ```
 2018-02-16 07:16:33,259 INFO  [BankingApplication] - ------------------------------- DB Initialization ------------------------------- 
@@ -392,7 +392,7 @@ the TX failed and the withdraw operation rollbacked, which is in the same TX
 
 ```
 
-### <a name="unit-testing"></a> Writing Unit Tests 
+### <a name="unit-testing"></a> Writing unit tests 
 
 In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 * Test files should contain _test.bal suffix.
