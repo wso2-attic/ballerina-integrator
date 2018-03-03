@@ -17,9 +17,9 @@ function beforeTest () {
 
 function afterTest () {
     // Clean up the database from the test entries
-    _ = deleteData("111111111");
-    _ = deleteData("222222222");
-    _ = deleteData("333333333");
+    _ = deleteData(111111111);
+    _ = deleteData(222222222);
+    _ = deleteData(333333333);
 }
 
 public function testCreateTable () {
@@ -35,7 +35,7 @@ public function testCreateTable () {
 
 public function testInsertData () {
     // Insert test employee to database using insertData function
-    json jsonResponse = insertData("Test Case 1", "11", "111111111", "111111111");
+    json jsonResponse = insertData("Test Case 1", 11, 111111111, 111111111);
     // Assert to check whether the function returns the status as success
     test:assertStringEquals(jsonResponse.Status.toString(), "Data Inserted Successfully", "insertData function failed");
     // Write a SQL query to retrieve the test employee that previous added
@@ -54,7 +54,7 @@ public function testRetrieveById () {
                              '222222222', '222222222')";
     _ = executeSqlQuery(sqlQueryString);
     // Retrieve employee data from retrieveById function
-    json employeeData = retrieveById("222222222");
+    json employeeData = retrieveById(222222222);
     // Assert that the retrieved data matched with the stored employee data
     test:assertTrue(lengthof employeeData > 0, "retrieveById function failed");
     test:assertStringEquals(employeeData[0].Name.toString(), "Test Case 2", "retrieveById Name not matched");
@@ -69,7 +69,7 @@ public function testUpdateData () {
                             '333333333', '333333333')";
     _ = executeSqlQuery(sqlQueryString);
     // Update the employee details using updateData function
-    json updateStatus = updateData("Updated Test", "99", "999999999", "333333333");
+    json updateStatus = updateData("Updated Test", 99, 999999999, 333333333);
     // Test the return value of the updateData function is correct
     test:assertStringEquals(updateStatus.Status.toString(), "Data Updated Successfully", "updateData function failed");
     // Retrieve data directly from MySQL database
@@ -88,7 +88,7 @@ public function testDeleteData () {
                             '444444444', '444444444')";
     _ = executeSqlQuery(sqlQueryString);
     // Delete employee data using deleteData function
-    json updateStatus = deleteData("444444444");
+    json updateStatus = deleteData(444444444);
     // Check the return value of the function is correct
     test:assertStringEquals(updateStatus.Status.toString(), "Data Deleted Successfully", "deleteData function failed");
 }

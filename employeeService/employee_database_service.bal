@@ -25,9 +25,9 @@ service<http> records {
         json requestPayload = request.getJsonPayload();
         // Convert the json payload to string values
         var name, nameError = (string)requestPayload.Name;
-        var age, ageError = (string)requestPayload.Age;
-        var ssn, ssnError = (string)requestPayload.SSN;
-        var employeeId, empIdError = (string)requestPayload.EmployeeID;
+        var age, ageError = <int>requestPayload.Age.toString();
+        var ssn, ssnError = <int>requestPayload.SSN.toString();
+        var employeeId, empIdError = <int>requestPayload.EmployeeID.toString();
 
         // Initialize an empty http response message
         http:OutResponse response = {};
@@ -57,13 +57,14 @@ service<http> records {
     resource retrieveEmployeeResource (http:Connection httpConnection, http:InRequest request) {
         // Extract the data from the request payload
         map queryParams = request.getQueryParams();
-        var employeeId, employeeIdError = (string)queryParams.EmployeeID;
+        var employeeIdStr, employeeIdParamError = (string)queryParams.EmployeeID;
+        var employeeId, employeeIdError = <int>employeeIdStr;
 
         // Initialize an empty http response message
         http:OutResponse response = {};
 
         // Check query parameter errors and sending bad request response if errors present
-        if (employeeIdError != null) {
+        if (employeeIdError != null || employeeIdParamError != null) {
             response.setStringPayload("Error : Please check the input parameters ");
             response.statusCode = 400;
             _ = httpConnection.respond(response);
@@ -87,15 +88,15 @@ service<http> records {
         json requestPayload = request.getJsonPayload();
         // Convert the json payload to string values
         var name, nameError = (string)requestPayload.Name;
-        var age, ageError = (string)requestPayload.Age;
-        var ssn, ssnError = (string)requestPayload.SSN;
-        var employeeId, employeeIdError = (string)requestPayload.EmployeeID;
+        var age, ageError = <int>requestPayload.Age.toString();
+        var ssn, ssnError = <int>requestPayload.SSN.toString();
+        var employeeId, empIdError = <int>requestPayload.EmployeeID.toString();
 
         // Initialize an empty http response message
         http:OutResponse response = {};
 
         // Check query parameter errors and sending bad request response if errors present
-        if (nameError != null || ageError != null || ssnError != null || employeeIdError != null) {
+        if (nameError != null || ageError != null || ssnError != null || empIdError != null) {
             response.setStringPayload("Error : Please check the input parameters ");
             response.statusCode = 400;
             _ = httpConnection.respond(response);
@@ -119,7 +120,7 @@ service<http> records {
     resource deleteEmployeeResource (http:Connection httpConnection, http:InRequest request) {
         // Extract the data from the request payload
         json requestPayload = request.getJsonPayload();
-        var employeeId, employeeIdError = (string)requestPayload.EmployeeID;
+        var employeeId, employeeIdError = <int>requestPayload.EmployeeID.toString();
 
         // Initialize an empty http response message
         http:OutResponse response = {};

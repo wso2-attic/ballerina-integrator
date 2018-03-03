@@ -34,19 +34,18 @@ public function createTable () (int) {
     return updateRowCount;
 }
 
-public function insertData (string name, string age, string ssn, string employeeId) (json) {
+public function insertData (string name, int age, int ssn, int employeeId) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Inserted"};
     // Prepare the sql string with employee data as parameters
-    sql:Parameter[] params = [];
     sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:name};
-    sql:Parameter para2 = {sqlType:sql:Type.VARCHAR, value:age};
-    sql:Parameter para3 = {sqlType:sql:Type.VARCHAR, value:ssn};
-    sql:Parameter para4 = {sqlType:sql:Type.VARCHAR, value:employeeId};
-    params = [para1, para2, para3, para4];
+    sql:Parameter para2 = {sqlType:sql:Type.INTEGER, value:age};
+    sql:Parameter para3 = {sqlType:sql:Type.INTEGER, value:ssn};
+    sql:Parameter para4 = {sqlType:sql:Type.INTEGER, value:employeeId};
+    sql:Parameter[] params = [para1, para2, para3, para4];
     string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
     // Insert data to SQL database by invoking update action defined in ballerina sql connector
     int updateRowCount = employeeDataBase.update(sqlString, params);
@@ -58,7 +57,7 @@ public function insertData (string name, string age, string ssn, string employee
     return updateStatus;
 }
 
-public function updateData (string name, string age, string ssn, string employeeId) (json) {
+public function updateData (string name, int age, int ssn, int employeeId) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
@@ -66,12 +65,11 @@ public function updateData (string name, string age, string ssn, string employee
     json updateStatus = {"Status":"Data Not Updated"};
 
     // Prepare the sql string with employee data as parameters
-    sql:Parameter[] params = [];
     sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:name};
-    sql:Parameter para2 = {sqlType:sql:Type.VARCHAR, value:age};
-    sql:Parameter para3 = {sqlType:sql:Type.VARCHAR, value:ssn};
-    sql:Parameter para4 = {sqlType:sql:Type.VARCHAR, value:employeeId};
-    params = [para1, para2, para3, para4];
+    sql:Parameter para2 = {sqlType:sql:Type.INTEGER, value:age};
+    sql:Parameter para3 = {sqlType:sql:Type.INTEGER, value:ssn};
+    sql:Parameter para4 = {sqlType:sql:Type.INTEGER, value:employeeId};
+    sql:Parameter[] params = [para1, para2, para3, para4];
     string sqlString = "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
     // Update existing data by invoking update action defined in ballerina sql connector
     int updateRowCount = employeeDataBase.update(sqlString, params);
@@ -83,7 +81,7 @@ public function updateData (string name, string age, string ssn, string employee
     return updateStatus;
 }
 
-public function deleteData (string employeeID) (json) {
+public function deleteData (int employeeID) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
@@ -91,9 +89,8 @@ public function deleteData (string employeeID) (json) {
     json updateStatus = {"Status":"Data Not Deleted"};
 
     // Prepare the sql string with employee data as parameters
-    sql:Parameter[] params = [];
-    sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:employeeID};
-    params = [para1];
+    sql:Parameter para1 = {sqlType:sql:Type.INTEGER, value:employeeID};
+    sql:Parameter[] params = [para1];
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
     // Delete existing data by invoking update action defined in ballerina sql connector
     int updateRowCount = employeeDataBase.update(sqlString, params);
@@ -105,15 +102,14 @@ public function deleteData (string employeeID) (json) {
     return updateStatus;
 }
 
-public function retrieveById (string employeeID) (json) {
+public function retrieveById (int employeeID) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
 
     // Prepare the sql string with employee data as parameters
-    sql:Parameter[] params = [];
-    sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:employeeID};
-    params = [para1];
+    sql:Parameter para1 = {sqlType:sql:Type.INTEGER, value:employeeID};
+    sql:Parameter[] params = [para1];
     string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
     // Retrieve employee data by invoking call action defined in ballerina sql connector
     var dataTable = employeeDataBase.call(sqlString, params, null);
