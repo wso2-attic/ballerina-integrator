@@ -40,11 +40,16 @@ public function insertData (string name, string age, string ssn, string employee
     }
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Inserted"};
-
-    string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES ('" + name + "','" + age + "','" +
-                       ssn + "','" + employeeId + "')";
+    // Prepare the sql string with employee data as parameters
+    sql:Parameter[] params = [];
+    sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:name};
+    sql:Parameter para2 = {sqlType:sql:Type.VARCHAR, value:age};
+    sql:Parameter para3 = {sqlType:sql:Type.VARCHAR, value:ssn};
+    sql:Parameter para4 = {sqlType:sql:Type.VARCHAR, value:employeeId};
+    params = [para1, para2, para3, para4];
+    string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
     // Insert data to SQL database by invoking update action defined in ballerina sql connector
-    int updateRowCount = employeeDataBase.update(sqlString, null);
+    int updateRowCount = employeeDataBase.update(sqlString, params);
 
     // Check the MySQL updated row count to set the status
     if (updateRowCount > 0) {
@@ -60,10 +65,16 @@ public function updateData (string name, string age, string ssn, string employee
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Updated"};
 
-    string sqlString = "UPDATE EMPLOYEES SET Name = '" + name + "', Age = '" + age + "', SSN = '" + ssn + "'WHERE
-                        EmployeeID  = '" + employeeId + "'";
+    // Prepare the sql string with employee data as parameters
+    sql:Parameter[] params = [];
+    sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:name};
+    sql:Parameter para2 = {sqlType:sql:Type.VARCHAR, value:age};
+    sql:Parameter para3 = {sqlType:sql:Type.VARCHAR, value:ssn};
+    sql:Parameter para4 = {sqlType:sql:Type.VARCHAR, value:employeeId};
+    params = [para1, para2, para3, para4];
+    string sqlString = "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
     // Update existing data by invoking update action defined in ballerina sql connector
-    int updateRowCount = employeeDataBase.update(sqlString, null);
+    int updateRowCount = employeeDataBase.update(sqlString, params);
 
     // Check the MySQL updated row count to set the status
     if (updateRowCount > 0) {
@@ -79,9 +90,13 @@ public function deleteData (string employeeID) (json) {
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Deleted"};
 
-    string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = '" + employeeID + "'";
+    // Prepare the sql string with employee data as parameters
+    sql:Parameter[] params = [];
+    sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:employeeID};
+    params = [para1];
+    string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
     // Delete existing data by invoking update action defined in ballerina sql connector
-    int updateRowCount = employeeDataBase.update(sqlString, null);
+    int updateRowCount = employeeDataBase.update(sqlString, params);
 
     // Check the MySQL updated row count to set the status
     if (updateRowCount > 0) {
@@ -94,9 +109,14 @@ public function retrieveById (string employeeID) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
-    string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = '" + employeeID + "'";
+
+    // Prepare the sql string with employee data as parameters
+    sql:Parameter[] params = [];
+    sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:employeeID};
+    params = [para1];
+    string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
     // Retrieve employee data by invoking call action defined in ballerina sql connector
-    var dataTable = employeeDataBase.call(sqlString, null, null);
+    var dataTable = employeeDataBase.call(sqlString, params, null);
     // Convert the sql data table into JSON using type conversion
     var jsonReturnValue, _ = <json>dataTable;
     return jsonReturnValue;
