@@ -85,7 +85,7 @@ Finally, Travel agency service needs to connect with the Car rental service to a
 Refer [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) to check the implementation of Car rental service.
 
 
-If all successful, the Travel agency service will confirm and arrange the complete tour for the user. Refer the code attached below to see the complete implementation of the Travel agency service. Inline comments are added for better understanding.
+If all successful, the Travel agency service will confirm and arrange the complete tour for the user. Refer the code attached below to see the implementation of Travel agency service. Inline comments added for better understanding.
 
 ##### travel_agency_service.bal
 
