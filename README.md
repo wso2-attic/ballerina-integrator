@@ -5,10 +5,7 @@ This guide walks you through the process of implementing a service composition u
 ## <a name="what-you-build"></a>  What you’ll build
 To understanding how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes Airline ticket reservation, Hotel room reservation and Car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. The below diagram illustrates this use case clearly.
 
-
 ![alt text](https://github.com/pranavan15/service-composition/blob/master/images/serviceComposition.png)
-
-
 
 ## <a name="pre-req"></a> Prerequisites
  
