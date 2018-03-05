@@ -56,7 +56,9 @@ Package `HotelReservation` contains the service that provides online hotel room 
 
 Let's look at the implementation of the Travel agency service, which acts as the composition initiator.
 
-Once a client initiates a request to arrange a tour, the Travel agency service first needs to communicate with the Airline reservation service to book a flight ticket. For this, Travel agency service needs to send a POST request with a JSON payload. Airline reservation service will then respond with a JSON payload.
+To arrange a complete tour travel agency service requires communicating with three other services Airline reservation, Hotel reservation, and Car rental respectively. All these services accept POST requests with appropriate JSON payloads and respond with JSON payloads.
+
+Once a client initiates a request to arrange a tour, the Travel agency service first needs to communicate with the Airline reservation service to book a flight ticket. 
 
 Sample request payload,
 
@@ -70,10 +72,10 @@ Sample response payload,
 {"Status":"Success"}
 ```
 
-Refer [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/airline_reservation_service.bal) to check the implementation of Airline reservation service.
+Refer [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service.bal) to check the implementation of Airline reservation service.
 
 
-Once the airline ticket reservation is successful, Travel agency service needs to communicate with the Hotel reservation service to reserve hotel rooms. For this, Travel agency service needs to send a POST request with a JSON payload. Hotel reservation service will then respond with a JSON payload.
+Once the airline ticket reservation is successful, Travel agency service needs to communicate with the Hotel reservation service to reserve hotel rooms. 
 
 Sample request payload,
 
@@ -90,7 +92,7 @@ Sample response payload,
 Refer [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal) to check the implementation of Hotel reservation service.
 
 
-Finally, Travel agency service needs to connect with the Car rental service to arrange internal transports. For this, Travel agency service needs to send a POST request with a JSON payload. Car rental service will then respond with a JSON payload.
+Finally, Travel agency service needs to connect with the Car rental service to arrange internal transports.
 
 Sample request payload,
 
@@ -104,7 +106,7 @@ Sample response payload,
 {"Status":"Success"}
 ```
 
-Refer [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/car_rental_service.bal) to check the implementation of Car rental service.
+Refer [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) to check the implementation of Car rental service.
 
 
 If all successful, the Travel agency service will confirm and arrange the complete tour for the user. Refer the code attached below to see the complete implementation of the Travel agency service. Inline comments are added for better understanding.
