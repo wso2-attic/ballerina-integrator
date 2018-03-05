@@ -63,7 +63,7 @@ Once a client initiates a request to arrange a tour, the Travel agency service f
 Sample request payload,
 
 ```bash
-{"Name":"Alice", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Business"};
+{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Business"};
 ```
 
 Sample response payload,
@@ -80,7 +80,7 @@ Once the airline ticket reservation is successful, Travel agency service needs t
 Sample request payload,
 
 ```bash
-{"Name":"Alice", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Air Conditioned"};
+{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Air Conditioned"};
 ```
 
 Sample response payload,
@@ -97,7 +97,7 @@ Finally, Travel agency service needs to connect with the Car rental service to a
 Sample request payload,
 
 ```bash
-{"Name":"Alice", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Air Conditioned"};
+{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Air Conditioned"};
 ```
 
 Sample response payload,
@@ -278,7 +278,7 @@ service<http> travelAgencyService {
 
    ```bash
     curl -v -X POST -d \
-    '{"Name":"Alice", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
+    '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
      "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
      "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
     ```
@@ -294,23 +294,23 @@ service<http> travelAgencyService {
    
    ```
     2018-02-28 10:34:14,198 INFO  [TravelAgency] - Parsing request payload 
-    2018-02-28 10:34:14,201 INFO  [TravelAgency] - Successfully parsed; Username: Alice 
-    2018-02-28 10:34:14,203 INFO  [TravelAgency] - Reserving airline ticket for user: Alice
+    2018-02-28 10:34:14,201 INFO  [TravelAgency] - Successfully parsed; Username: Bob 
+    2018-02-28 10:34:14,203 INFO  [TravelAgency] - Reserving airline ticket for user: Bob
     
-    2018-02-28 10:34:14,212 INFO  [TravelAgency.AirlineReservation] - Successfully reserved airline ticket for user: Alice 
+    2018-02-28 10:34:14,212 INFO  [TravelAgency.AirlineReservation] - Successfully reserved airline ticket for user: Bob 
     
     2018-02-28 10:34:14,217 INFO  [TravelAgency] - Airline reservation successful! 
-    2018-02-28 10:34:14,217 INFO  [TravelAgency] - Reserving hotel room for user: Alice
+    2018-02-28 10:34:14,217 INFO  [TravelAgency] - Reserving hotel room for user: Bob
     
-    2018-02-28 10:34:14,221 INFO  [TravelAgency.HotelReservation] - Successfully reserved hotel room for user: Alice 
+    2018-02-28 10:34:14,221 INFO  [TravelAgency.HotelReservation] - Successfully reserved hotel room for user: Bob 
     
     2018-02-28 10:34:14,225 INFO  [TravelAgency] - Hotel reservation successful! 
-    2018-02-28 10:34:14,225 INFO  [TravelAgency] - Renting car for user: Alice
+    2018-02-28 10:34:14,225 INFO  [TravelAgency] - Renting car for user: Bob
     
-    2018-02-28 10:34:14,229 INFO  [TravelAgency.CarRental] - Successfully rented car for user: Alice 
+    2018-02-28 10:34:14,229 INFO  [TravelAgency.CarRental] - Successfully rented car for user: Bob 
     
     2018-02-28 10:34:14,233 INFO  [TravelAgency] - Car rental successful! 
-    2018-02-28 10:34:14,235 INFO  [TravelAgency] - Successfully arranged tour for user: Alice !!    
+    2018-02-28 10:34:14,235 INFO  [TravelAgency] - Successfully arranged tour for user: Bob !!    
    ```
    
    
