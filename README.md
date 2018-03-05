@@ -103,6 +103,7 @@ public function transferMoney (int fromAccId, int toAccId, int amount) (boolean 
     // Return a boolean, which will be true if transaction is successful; false otherwise
     return;
 }
+
 ```
 
 Let's now look at the implementation of the `account_manager.bal`, which includes the account management related logic. It consists of a private method to initialize the database and public functions to create an account, verify an account, check account balance, withdraw money from an account, deposit money to an account, and transfer money from one account to another. 
@@ -274,7 +275,6 @@ Let's now look at some important log statements we will get as the response for 
 2018-02-16 07:16:33,560 INFO  [BankingApplication] - Check balance for Bob's account 
 2018-02-16 07:16:33,563 INFO  [BankingApplication] - Available balance in account ID 2: 1300 
 2018-02-16 07:16:33,564 INFO  [BankingApplication] - You should see $1300 balance in Bob's account 
-
 ```
 
 2. For the `scenario 2` where 'Alice' tries to transfer $500 to Bob's account, the transaction is expected to fail as 'Alice' has insufficient balance
@@ -310,7 +310,6 @@ Let's now look at some important log statements we will get as the response for 
 2018-02-16 07:16:33,601 INFO  [BankingApplication] - Explanation: When trying to transfer $500 from Bob's account to account ID 1234, 
 initially $500 withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient account ID; Hence 
 the TX failed and the withdraw operation rollbacked, which is in the same TX
-
 ```
 
 ### <a name="unit-testing"></a> Writing unit tests 
