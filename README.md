@@ -98,16 +98,15 @@ import ballerina.log;
 // Travel agency service to arrange a complete tour for a user
 @http:configuration {basePath:"/travel", port:9090}
 service<http> travelAgencyService {
+
     // Endpoint to communicate with Airline reservation service
     endpoint<http:HttpClient> airlineReservationEP {
         create http:HttpClient("http://localhost:9091/airline", {});
     }
-
     // Endpoint to communicate with Hotel reservation service
     endpoint<http:HttpClient> hotelReservationEP {
         create http:HttpClient("http://localhost:9092/hotel", {});
     }
-
     // Endpoint to communicate with Car rental service
     endpoint<http:HttpClient> carRentalEP {
         create http:HttpClient("http://localhost:9093/car", {});
@@ -218,6 +217,7 @@ service<http> travelAgencyService {
             return;
         }
         log:printInfo("Car rental successful!");
+
 
         // If all three services response positive status, send a successful message to the user
         outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
