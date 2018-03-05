@@ -125,49 +125,42 @@ boolean init = initializeDB();
 public function createAccount (string name) (int accId) {
     // Implemetation
     // Return the primary key, which will be the account number of the account
-    return;
 }
 
 // Function to verify an account whether it exists or not
 public function verifyAccount (int accId) (boolean accExists) {
     // Implementation
     // Return a boolean, which will be true if account exists; false otherwise
-    return;
 }
 
 // Function to check balance in an account
 public function checkBalance (int accId) (int balance, error err) {
     // Implementation
     // Return the balance
-    return;
 }
 
 // Function to deposit money to an account
 public function depositMoney (int accId, int amount) (error err) {
     // Implementation
     // Return error if amount is invalid or account does not exist
-    return;
 }
 
 // Function to withdraw money from an account
 public function withdrawMoney (int accId, int amount) (error err) {
     // Implementation
     // Return error if amount is invalid or account does not exist or if balance is not enough
-    return;
 }
 
 // Function to transfer money from one account to another
 public function transferMoney (int fromAccId, int toAccId, int amount) (boolean isSuccessful) {
     // Implementation 
     // Return a boolean, which will be true if transaction is successful; false otherwise
-    return;
 }
 
 // Private function to initialize the database
 function initializeDB () (boolean isInitialized) {
     // Implementation 
     // Return a boolean, which will be true if the initialization is successful; false otherwise
-    return;
 }
 
 ```
@@ -224,14 +217,12 @@ public function getDatabaseClientConnector () (sql:ClientConnector sqlConnector)
     // Get database configuration details from the ballerina.config file
     // Implementation
     // Return the SQL client connector
-    return;
 }
 
 // Function to create a database
 public function createDatabase (sql:ClientConnector sqlConnector, string dbName) (int updateStatus) {
     // Implementation
     // Return the update status
-    return;
 }
 
 ```
