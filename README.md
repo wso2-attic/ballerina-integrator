@@ -92,7 +92,6 @@ import ballerina.log;
 // Travel agency service to arrange a complete tour for a user
 @http:configuration {basePath:"/travel", port:9090}
 service<http> travelAgencyService {
-
     // Endpoint to communicate with Airline reservation service
     endpoint<http:HttpClient> airlineReservationEP {
         create http:HttpClient("http://localhost:9091/airline", {});
