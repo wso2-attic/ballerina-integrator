@@ -12,11 +12,11 @@ To understanding how you can manage database transactions using Ballerina, letâ€
 - **Transfer money** : Transfer money from one account to another account
 
 
-Transferring money from one account to another account includes both operations, withdrawal from the transferor and deposit to the transferee. Thus, transferring operation required to be done using a transaction block. A transaction will ensure the 'ACID' properties, which is a set of properties of database transactions intended to guarantee validity even in the event of errors, power failures, etc.
+Transferring money from one account to another account involves both operations withdrawal from the transferor and deposit to the transferee. Hence transferring operation required to be done using a transaction block. A transaction ensures the 'ACID' properties, which database transactions intended to guarantee validity even in the event of errors, power failures, etc.
 
-For example, when transferring money if the transaction fails during deposit operation, then the withdrawal operation that carried out prior to deposit operation also needs to be rolled back. If not we will end up in a state where transferor loses money. Therefore, in order to ensure the atomicity (all or nothing property), we need to perform the money transfer operation as a transaction. 
+When transferring money assume the transaction fails during the deposit operation. Now the withdrawal operation carried out prior to deposit operation also needs to be rolled back. Otherwise, we will end up in a state where transferor loses money. Therefore, to ensure the atomicity (all or nothing property), we need to perform the money transfer operation as a transaction. 
 
-This example explains three different scenarios where one user tries to transfer money from his/her account to another user's account. The first scenario shows a successful transaction whereas the other two scenarios fail due to unique reasons. You can observe how transactions using Ballerina ensure the 'ACID' properties through this example.
+This example explains three different scenarios where one user tries to transfer money from his/her account to another user's account. The first scenario shows a successful transaction whereas the other two fail due to different reasons. You can observe how Ballerina transactions ensure the 'ACID' properties through this example.
 
 ## <a name="pre-req"></a> Prerequisites
  
@@ -48,8 +48,9 @@ managing-database-transactions
 
 ```
 ##### Add database configurations to the `ballerina.conf` file
-The purpose of  `ballerina.conf` file is to provide any external configurations that are required by ballerina programs. Since we need to interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.conf` file.
+The purpose of  `ballerina.conf` file is to provide any external configurations that are required by ballerina programs. Since we need to interact with MySQL database, we can provide the database connection properties to the ballerina program via `ballerina.conf` file.
 This configuration file will have the following fields,
+
 ```
 DATABASE_HOST = localhost
 DATABASE_PORT = 3306
@@ -58,13 +59,13 @@ DATABASE_PASSWORD = password
 DATABASE_MAX_POOL_SIZE = 5
 DATABASE_NAME = bankDB
 ```
-First you have to replace `localhost`, `3306`, `username`, `password`, `5` with the respective MySQL database connection properties you need in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
+Make sure to edit these configurations with your MySQL database connection properties. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
 ### <a name="Implementation"></a> Implementation
 
-Let's get started with the implementation of the function `transferMoney` in `account_manager.bal` file. This function explains how we can use transactions in Ballerina. This function comprises of two different operations, withdrawal and deposit. In order to ensure that the transferring operation happens as a whole, we need to carry out the transfer money operation as a database transaction. This will ensure the 'ACID' properties and hence if any of the withdrawal or deposit fails, the transaction will be aborted and all the operations carried out in the same transaction will be rolled out. The transaction is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. 
+Let's get started with the implementation of the function `transferMoney` in `account_manager.bal` file. This function explains how we can use transactions in Ballerina. It comprises of two different operations, withdrawal and deposit. To ensure that the transferring operation happens as a whole, it needs to reside in a database transaction block. Transactions guarantee the 'ACID' properties. So if any of the withdrawal or deposit fails, the transaction will be aborted and all the operations carried out in the same transaction will be rolled back. The transaction will be successful only when both, withdrawal from the transferor and deposit to the transferee are successful. 
 
-The below code segment shows the implementation of function `transferMoney`. Inline comments are used to explain the code line by line. 
+The below code segment shows the implementation of function `transferMoney`. Inline comments used for better understandings. 
 
 ##### transferMoney function
 ```ballerina
