@@ -71,17 +71,14 @@ Sample response payload,
 ```
 
 When a client initiates a request to arrange a tour, the Travel agency service first needs to communicate with the Airline reservation service to book a flight ticket. 
-
 Refer [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service.bal) to check the implementation of Airline reservation service.
 
 
 Once the airline ticket reservation is successful, Travel agency service needs to communicate with the Hotel reservation service to reserve hotel rooms. 
-
 Refer [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal) to check the implementation of Hotel reservation service.
 
 
 Finally, Travel agency service needs to connect with the Car rental service to arrange internal transports.
-
 Refer [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) to check the implementation of Car rental service.
 
 
