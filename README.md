@@ -98,7 +98,6 @@ import ballerina.log;
 // Travel agency service to arrange a complete tour for a user
 @http:configuration {basePath:"/travel", port:9090}
 service<http> travelAgencyService {
-
     // Endpoint to communicate with Airline reservation service
     endpoint<http:HttpClient> airlineReservationEP {
         create http:HttpClient("http://localhost:9091/airline", {});
@@ -145,7 +144,6 @@ service<http> travelAgencyService {
             log:printWarn("Failed to parse! Bad user request\n");
             return;
         }
-
 
         // Reserve airline ticket for the user by calling Airline reservation service
         log:printInfo("Reserving airline ticket for user: " + name);
@@ -220,7 +218,6 @@ service<http> travelAgencyService {
             return;
         }
         log:printInfo("Car rental successful!");
-
 
         // If all three services response positive status, send a successful message to the user
         outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
@@ -319,13 +316,11 @@ You can deploy the RESTful services that you developed above, in your local envi
 Building 
    ```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina build TravelAgency/<Package_Name>
-
    ```
 
 Running
    ```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
-
    ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
@@ -334,14 +329,12 @@ You can use the Ballerina executable archives (.balx) that we created above and 
 
 ```bash
 <SAMPLE_ROOT_DIRECTORY>$ ballerina docker <Exec_Archive_File_Name>  
-
 ```
 
 Once you have created the docker images, you can run them using docker run as follows, 
 
 ```bash
 docker run -p <host_port>:<service_port> --name <container_instance_name> -d <image_name>:<tag_name>
-
 ```
 
 For example,
@@ -350,7 +343,6 @@ To run the Travel agency service,
 
 ```bash
 docker run -p <host_port>:9090 --name ballerina_TravelAgency -d TravelAgency:latest
-
 ```
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
