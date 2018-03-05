@@ -57,7 +57,7 @@ Ballerina is a complete programming language that can have any custom project st
 
 ```
 #### Add database configurations to the `ballerina.conf` file
-We can use `ballerina.conf` file is to provide external configurations to Ballerina programs. Since this guide has MySQL database integration, we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
+We can use `ballerina.conf` file to provide external configurations to Ballerina programs. Since this guide has MySQL database integration, we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
 This configuration file will have the following fields,
 ```
 DATABASE_HOST = localhost
