@@ -56,14 +56,12 @@ Package `HotelReservation` contains the service that provides online hotel room 
 
 Let's look at the implementation of the Travel agency service, which acts as the composition initiator.
 
-To arrange a complete tour travel agency service requires communicating with three other services Airline reservation, Hotel reservation, and Car rental respectively. All these services accept POST requests with appropriate JSON payloads and respond with JSON payloads.
-
-Once a client initiates a request to arrange a tour, the Travel agency service first needs to communicate with the Airline reservation service to book a flight ticket. 
+To arrange a complete tour travel agency service requires communicating with three other services Airline reservation, Hotel reservation, and Car rental respectively. All these services accept POST requests with appropriate JSON payloads and respond with JSON payloads. Request and response payloads are similar for all three backend services.
 
 Sample request payload,
 
 ```bash
-{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Business"};
+{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":<service_dependent_preference>};
 ```
 
 Sample response payload,
@@ -71,40 +69,18 @@ Sample response payload,
 ```bash
 {"Status":"Success"}
 ```
+
+When a client initiates a request to arrange a tour, the Travel agency service first needs to communicate with the Airline reservation service to book a flight ticket. 
 
 Refer [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service.bal) to check the implementation of Airline reservation service.
 
 
 Once the airline ticket reservation is successful, Travel agency service needs to communicate with the Hotel reservation service to reserve hotel rooms. 
 
-Sample request payload,
-
-```bash
-{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Air Conditioned"};
-```
-
-Sample response payload,
-
-```bash
-{"Status":"Success"}
-```
-
 Refer [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal) to check the implementation of Hotel reservation service.
 
 
 Finally, Travel agency service needs to connect with the Car rental service to arrange internal transports.
-
-Sample request payload,
-
-```bash
-{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Air Conditioned"};
-```
-
-Sample response payload,
-
-```bash
-{"Status":"Success"}
-```
 
 Refer [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) to check the implementation of Car rental service.
 
