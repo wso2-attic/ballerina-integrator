@@ -112,10 +112,7 @@ Skeleton of the `account_manager.bal` is given below.
 ```ballerina
 package BankingApplication;
 
-import ballerina.data.sql;
-import ballerina.log;
-import BankingApplication.dbUtil;
-import ballerina.config;
+// Imports
 
 // Get the SQL client connector
 sql:ClientConnector sqlConnector = dbUtil:getDatabaseClientConnector();
@@ -183,70 +180,41 @@ function initializeDB () (boolean isInitialized) {
 
 To see the complete implementation of `account_manager.bal` file, refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account_manager.bal.
 
-Let's next focus on the implementation of `application.bal` file, which includes the main function. This file has three possible scenarios to check the transfer money operation of our banking application to clearly explain the database transaction management using Ballerina. Code is attached below, which also includes inline comments for further understanding.
+Let's next focus on the implementation of `application.bal` file, which includes the main function. It consists of three possible scenarios to check the transfer money operation of our banking application to explain the database transaction management using Ballerina. Skeleton of `application.bal` is attached below.
+
 
 ##### application.bal
 
 ```ballerina
 package BankingApplication;
 
-import ballerina.log;
+// Imports
 
 function main (string[] args) {
-    log:printInfo("----------------------------------------------------------------------------------");
     // Create two new accounts
-    log:printInfo("Creating two new accounts for users 'Alice' and 'Bob'");
     int accIdUser1 = createAccount("Alice");
     int accIdUser2 = createAccount("Bob");
 
     // Deposit money to both new accounts
-    log:printInfo("Deposit $500 to Alice's account initially");
     _ = depositMoney(accIdUser1, 500);
-    log:printInfo("Deposit $1000 to Bob's account initially");
     _ = depositMoney(accIdUser2, 1000);
 
     // Scenario 1 - Transaction expected to be successful
-    log:printInfo("\n\n--------------------------------------------------------------- Scenario 1"
-                  + "--------------------------------------------------------------");
-    log:printInfo("Transfer $300 from Alice's account to Bob's account");
-    log:printInfo("Expected: Transaction to be successful");
     _ = transferMoney(accIdUser1, accIdUser2, 300);
-    log:printInfo("Check balance for Alice's account");
-    _, _ = checkBalance(accIdUser1);
-    log:printInfo("You should see $200 balance in Alice's account");
-    log:printInfo("Check balance for Bob's account");
-    _, _ = checkBalance(accIdUser2);
-    log:printInfo("You should see $1300 balance in Bob's account");
 
-    // Scenario 2 - Transaction expected to fail
-    log:printInfo("\n\n--------------------------------------------------------------- Scenario 2"
-                  + "--------------------------------------------------------------");
-    log:printInfo("Again try to transfer $500 from Alice's account to Bob's account");
-    log:printInfo("Expected: Transaction to fail as Alice now only has a balance of $200 in account");
+    // Scenario 2 - Transaction expected to fail due to insufficient ballance
+    // 'accIdUser1' now only has a balance of 200
     _ = transferMoney(accIdUser1, accIdUser2, 500);
-    log:printInfo("Check balance for Alice's account");
-    _, _ = checkBalance(accIdUser1);
-    log:printInfo("You should see $200 balance in Alice's account");
-    log:printInfo("Check balance for Bob's account");
-    _, _ = checkBalance(accIdUser2);
-    log:printInfo("You should see $1300 balance in Bob's account");
 
-    // Scenario 3 - Transaction expected to fail
-    log:printInfo("\n\n--------------------------------------------------------------- Scenario 3"
-                  + "--------------------------------------------------------------");
-    log:printInfo("Try to transfer $500 from Bob's account to a non existing account ID");
-    log:printInfo("Expected: Transaction to fail as account ID of recipient is invalid");
+    // Scenario 3 - Transaction expected to fail due to invalid recipient account ID
+    // Account ID 1234 does not exist
     _ = transferMoney(accIdUser2, 1234, 500);
-    log:printInfo("Check balance for Bob's account");
-    _, _ = checkBalance(accIdUser2);
-    log:printInfo("You should see $1300 balance in Bob's account (NOT $800)");
-    log:printInfo("Explanation: When trying to transfer $500 from Bob's account to account ID 123, \ninitially $500" +
-                  "withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient" +
-                  "account ID; Hence \nthe TX failed and the withdraw operation rollbacked, which is in the same TX" +
-                  "\n");
 }
 
 ```
+
+To see the complete implementation of `application.bal` file, refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/application.bal. 
+
 
 Finally, let's focus on the implementation of `database_utilities.bal`, which consists database utility functions. Before accessing the database from ballerina, we need to have the SQL client connector. We also need a function to create databases if we decide to do it from the code itself. 
 File `database_utilities.bal` in the dbUtil package includes the implementations for the above-mentioned functions. Skeleton of this file is attached below. Inline comments are used to explain the important code segments.
@@ -255,8 +223,7 @@ File `database_utilities.bal` in the dbUtil package includes the implementations
 ```ballerina
 package BankingApplication.dbUtil;
 
-import ballerina.data.sql;
-import ballerina.config;
+// Imports
 
 // Function to get SQL database client connector
 public function getDatabaseClientConnector () (sql:ClientConnector sqlConnector) {
