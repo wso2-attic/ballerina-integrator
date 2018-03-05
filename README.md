@@ -3,7 +3,7 @@
 This guide walks you through the process of implementing a service composition using Ballerina language. A service composition is an aggregate of services collectively composed to automate a particular task or business process. 
 
 ## <a name="what-you-build"></a>  What you’ll build
-To understanding how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency, which arranges complete tour packages for users. Tour package includes Airline ticket reservation, Hotel room reservation and Car rental. Therefore, the Travel agency required to communicate with other back-ends, which provide the above-mentioned services. Once a client initiates a request to arrange a tour, the Travel agency service will first communicate with the Airline reservation service to book the flight ticket. Then it will communicate with the Hotel reservation service to reserve hotel rooms. Finally, it will connect with the Car rental service to arrange internal transports. If all successful, the Travel agency service will confirm and arrange the complete tour for the user. The below diagram illustrates this use case clearly.
+To understanding how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes Airline ticket reservation, Hotel room reservation and Car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. The below diagram illustrates this use case clearly.
 
 
 ![alt text](https://github.com/pranavan15/service-composition/blob/master/images/serviceComposition.png)
@@ -54,8 +54,60 @@ Package `HotelReservation` contains the service that provides online hotel room 
 
 ### <a name="Implementation"></a> Implementation
 
-Let's get started with the development of `travel_agency_service.bal` file, which includes the implementation of the Travel agency service. This is the service that acts as the composition initiator. It gets requests from users for tour arrangements and communicates with other necessary services to successfully arrange a complete journey for the user. Refer the code attached below. Inline comments are added for better understanding.
+Let's look at the implementation of the Travel agency service, which acts as the composition initiator.
 
+Once a client initiates a request to arrange a tour, the Travel agency service first needs to communicate with the Airline reservation service to book a flight ticket. For this, Travel agency service needs to send a POST request with a JSON payload. Airline reservation service will then respond with a JSON payload.
+
+Sample request payload,
+
+```bash
+{"Name":"Alice", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Business"};
+```
+
+Sample response payload,
+
+```bash
+{"Status":"Success"}
+```
+
+Refer [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/airline_reservation_service.bal) to check the implementation of Airline reservation service.
+
+
+Once the airline ticket reservation is successful, Travel agency service needs to communicate with the Hotel reservation service to reserve hotel rooms. For this, Travel agency service needs to send a POST request with a JSON payload. Hotel reservation service will then respond with a JSON payload.
+
+Sample request payload,
+
+```bash
+{"Name":"Alice", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Air Conditioned"};
+```
+
+Sample response payload,
+
+```bash
+{"Status":"Success"}
+```
+
+Refer [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal) to check the implementation of Hotel reservation service.
+
+
+Finally, Travel agency service needs to connect with the Car rental service to arrange internal transports. For this, Travel agency service needs to send a POST request with a JSON payload. Car rental service will then respond with a JSON payload.
+
+Sample request payload,
+
+```bash
+{"Name":"Alice", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":"Air Conditioned"};
+```
+
+Sample response payload,
+
+```bash
+{"Status":"Success"}
+```
+
+Refer [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/car_rental_service.bal) to check the implementation of Car rental service.
+
+
+If all successful, the Travel agency service will confirm and arrange the complete tour for the user. Refer the code attached below to see the complete implementation of the Travel agency service. Inline comments are added for better understanding.
 
 ##### travel_agency_service.bal
 
@@ -200,153 +252,6 @@ service<http> travelAgencyService {
 }
 
 ```
-
-Let's next focus on the development of `airline_reservation_service.bal` file, which includes the implementation of the Airline reservation service. This service provides the capability of online airline ticket reservation. Refer the code attached below. Inline comments are added for better understanding.
-
-
-##### airline_reservation_service.bal
-
-```ballerina
-package TravelAgency.AirlineReservation;
-
-import ballerina.net.http;
-import ballerina.log;
-
-// Available flight classes
-const string ECONOMY = "Economy";
-const string BUSINESS = "Business";
-const string FIRST = "First";
-
-// Airline reservation service to reserve airline tickets
-@http:configuration {basePath:"/airline", port:9091}
-service<http> airlineReservationService {
-
-    // Resource to reserve a ticket
-    @http:resourceConfig {methods:["POST"], path:"/reserve"}
-    resource reserveTicket (http:Connection connection, http:InRequest request) {
-        http:OutResponse response = {};
-        string name;
-        string arrivalDate;
-        string departureDate;
-        string preferredClass;
-
-        // Try parsing the JSON payload from the request
-        try {
-            json payload = request.getJsonPayload();
-            name = payload.Name.toString();
-            arrivalDate = payload.ArrivalDate.toString();
-            departureDate = payload.DepartureDate.toString();
-            preferredClass = payload.Preference.toString().trim();
-        } catch (error err) {
-            // If payload parsing fails, send a "Bad Request" message as the response
-            response.statusCode = 400;
-            response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = connection.respond(response);
-            return;
-        }
-
-        // Mock logic
-        // If request is for an available flight class, send a reservation successful status
-        if (preferredClass.equalsIgnoreCase(ECONOMY) || preferredClass.equalsIgnoreCase(BUSINESS) ||
-            preferredClass.equalsIgnoreCase(FIRST)) {
-            log:printInfo("Successfully reserved airline ticket for user: " + name);
-            response.setJsonPayload({"Status":"Success"});
-        }
-        else {
-            // If request is not for an available flight class, send a reservation failure status
-            log:printWarn("Failed to reserve airline ticket for user: " + name);
-            response.setJsonPayload({"Status":"Failed"});
-        }
-        // Send the response
-        _ = connection.respond(response);
-    }
-}
-
-```
-
-
-
-Similar to the above implementation of Airline reservation service, you can also implement the Hotel reservation service and car rental service with a mock logic alike above. 
-Refer the skeletons attached below.
-
-
-##### hotel_reservation_service.bal
-
-```ballerina
-package TravelAgency.HotelReservation;
-
-// Imports 
-
-// Declare constants for Available room types
-
-// Hotel reservation service to reserve hotel rooms
-@http:configuration {basePath:"/hotel", port:9092}
-service<http> hotelReservationService {
-
-    // Resource to reserve a room
-    @http:resourceConfig {methods:["POST"], path:"/reserve"}
-    resource reserveRoom (http:Connection connection, http:InRequest request) {
-    
-        try {
-            // Try parsing the JSON payload from the request            
-        } catch (error err) {
-            // If payload parsing fails, send a "Bad Request" message as the response
-        }
-
-        // Mock logic
-        // If request is for an available room type, send a reservation successful status
-        // Otherwise, send a reservation failure status
-           
-        // Send the response
-        _ = connection.respond(response);
-    }
-}
-
-```
-
-To see the complete implementation of file `hotel_reservation_service.bal` refer
-https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal.
-
-
-
-##### car_rental_service.bal
-
-```ballerina
-package TravelAgency.CarRental;
-
-// Imports 
-
-// Declare constants for Available car types
-
-// Car rental service to rent cars
-@http:configuration {basePath:"/car", port:9093}
-service<http> carRentalService {
-
-    // Resource to rent a car
-    @http:resourceConfig {methods:["POST"], path:"/rent"}
-    resource rentCar (http:Connection connection, http:InRequest request) {
-    
-        try {
-            // Try parsing the JSON payload from the request            
-        } catch (error err) {
-            // If payload parsing fails, send a "Bad Request" message as the response
-        }
-
-        // Mock logic
-        // If request is for an available car type, send a rental successful status
-        // Otherwise, send a rental failure status
-           
-        // Send the response
-        _ = connection.respond(response);
-    }
-}
-
-```
-
-To see the complete implementation of file `car_rental_service.bal` refer
-https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal.
-
-
 
 ## <a name="testing"></a> Testing 
 
