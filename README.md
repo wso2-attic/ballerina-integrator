@@ -57,7 +57,7 @@ Ballerina is a complete programming language that can have any custom project st
 
 ```
 #### Add database configurations to the `ballerina.conf` file
-The purpose of  `ballerina.conf` file is to provide any external configurations that are needed for ballerina programs. Since this guide has MySQL database integration, we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
+We can use `ballerina.conf` file is to provide external configurations to Ballerina programs. Since this guide has MySQL database integration, we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
 This configuration file will have the following fields,
 ```
 DATABASE_HOST = localhost
@@ -69,7 +69,7 @@ DATABASE_NAME = RECORDS
 First, you need to replace `localhost`, `3306`, `username`, `password` the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
 ### Implementation of the Ballerina web service
-Ballerina language has built-in support for writing web services. The `service` keyword in ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource using `resource` keyword in Ballerina. We can implement the business logic inside a resource block using Ballerina language syntaxes. The following ballerina code is the complete service with resources to add, retrieve, update and delete employee data.
+Ballerina language has built-in support for writing web services. The `service` keyword in ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource using `resource` keyword. We can implement the business logic inside a resource block using Ballerina language syntaxes. The following ballerina code is the employee data service with resources to add, retrieve, update and delete employee data.
 
 ```ballerina
 package employeeService;
@@ -79,7 +79,9 @@ import ballerina.log;
 import ballerina.net.http;
 import employeeService.util.db as databaseUtil;
 
+
 service<http> records {
+
     string dbHost = config:getGlobalValue("DATABASE_HOST");
     string dbPort = config:getGlobalValue("DATABASE_PORT");
     string userName = config:getGlobalValue("DATABASE_USERNAME");
@@ -95,11 +97,11 @@ service<http> records {
     resource addEmployeeResource (http:Connection httpConnection, http:InRequest request) {
         // Extract the data from the request payload
         json requestPayload = request.getJsonPayload();
-        // Convert the json payload to string values
+        // Convert the json payload to string values or int values
         var name, nameError = (string)requestPayload.Name;
-        var age, ageError = (string)requestPayload.Age;
-        var ssn, ssnError = (string)requestPayload.SSN;
-        var employeeId, empIdError = (string)requestPayload.EmployeeID;
+        var age, ageError = <int>requestPayload.Age.toString();
+        var ssn, ssnError = <int>requestPayload.SSN.toString();
+        var employeeId, empIdError = <int>requestPayload.EmployeeID.toString();
 
         // Initialize an empty http response message
         http:OutResponse response = {};
@@ -121,7 +123,8 @@ service<http> records {
     resource retrieveEmployeeResource (http:Connection httpConnection, http:InRequest request) {
         // Extract the data from the request payload
         map queryParams = request.getQueryParams();
-        var employeeId, employeeIdError = (string)queryParams.EmployeeID;
+        var employeeIdStr, employeeIdParamError = (string)queryParams.EmployeeID;
+        var employeeId, employeeIdError = <int>employeeIdStr;
 
         // Initialize an empty http response message
         http:OutResponse response = {};
@@ -143,9 +146,9 @@ service<http> records {
         json requestPayload = request.getJsonPayload();
         // Convert the json payload to string values
         var name, nameError = (string)requestPayload.Name;
-        var age, ageError = (string)requestPayload.Age;
-        var ssn, ssnError = (string)requestPayload.SSN;
-        var employeeId, employeeIdError = (string)requestPayload.EmployeeID;
+        var age, ageError = <int>requestPayload.Age.toString();
+        var ssn, ssnError = <int>requestPayload.SSN.toString();
+        var employeeId, empIdError = <int>requestPayload.EmployeeID.toString();
 
         // Initialize an empty http response message
         http:OutResponse response = {};
@@ -167,7 +170,7 @@ service<http> records {
     resource deleteEmployeeResource (http:Connection httpConnection, http:InRequest request) {
         // Extract the data from the request payload
         json requestPayload = request.getJsonPayload();
-        var employeeId, employeeIdError = (string)requestPayload.EmployeeID;
+        var employeeId, employeeIdError = <int>requestPayload.EmployeeID.toString();
 
         // Initialize an empty http response message
         http:OutResponse response = {};
@@ -188,7 +191,7 @@ Please refer `ballerina-guides/data-backed-service/employeeService/employee_data
 
 
 ### Implementation of the database handling utility functions
-You can implement custom functions in Ballerina which does specific tasks. For this scenario, we need to have utility functions that deal with MySQL database. The following code is the implementation of the database utility package.
+You can implement custom functions in Ballerina which does specific tasks. For this scenario, we need to have utility functions to deal with MySQL database. The following code is the implementation of the database utility package.
 ```ballerina 
 package employeeService.util.db;
 
@@ -200,12 +203,17 @@ public function initializeDatabase (string dbHost, string dbPort, string userNam
 (boolean) {
     // Convert dbPort string to integer value
     var dbPortNumber, _ = <int>dbPort;
-    dbName = dbName + "?useSSL=false";
-    // Initialize the global variable "sqlConnection" with MySQL database connection
-    sqlConnection = create sql:ClientConnector(sql:DB.MYSQL, dbHost, dbPortNumber, dbName, userName, password,
-                                               {maximumPoolSize:5});
-    // Create the employee database table by invoking createTable function
-    _ = createTable();
+    try {
+        // Initialize the global variable "sqlConnection" with MySQL database connection
+        sqlConnection = create sql:ClientConnector(sql:DB.MYSQL, dbHost, dbPortNumber, dbName, userName, password,
+                                                   {maximumPoolSize:5});
+        // Create the employee database table by invoking createTable function
+        _ = createTable();
+    }
+    catch (error err) {
+        error initializationError = {msg:"Database Initialization Error. Please check the database: " + err.msg};
+        throw initializationError;
+    }
     return true;
 }
 
@@ -220,17 +228,23 @@ public function createTable () (int) {
     return updateRowCount;
 }
 
-public function insertData (string name, string age, string ssn, string employeeId) (json) {
+public function insertData (string name, int age, int ssn, int employeeId) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Inserted"};
-
-    string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES ('" + name + "','" + age + "','" +
-                       ssn + "','" + employeeId + "')";
+    
+    // Prepare the sql string with employee data as parameters
+    sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:name};
+    sql:Parameter para2 = {sqlType:sql:Type.INTEGER, value:age};
+    sql:Parameter para3 = {sqlType:sql:Type.INTEGER, value:ssn};
+    sql:Parameter para4 = {sqlType:sql:Type.INTEGER, value:employeeId};
+    sql:Parameter[] params = [para1, para2, para3, para4];
+    string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
+    
     // Insert data to SQL database by invoking update action defined in ballerina sql connector
-    int updateRowCount = employeeDataBase.update(sqlString, null);
+    int updateRowCount = employeeDataBase.update(sqlString, params);
 
     // Check the MySQL updated row count to set the status
     if (updateRowCount > 0) {
@@ -239,17 +253,23 @@ public function insertData (string name, string age, string ssn, string employee
     return updateStatus;
 }
 
-public function updateData (string name, string age, string ssn, string employeeId) (json) {
+public function updateData (string name, int age, int ssn, int employeeId) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Updated"};
 
-    string sqlString = "UPDATE EMPLOYEES SET Name = '" + name + "', Age = '" + age + "', SSN = '" + ssn + "'WHERE
-                        EmployeeID  = '" + employeeId + "'";
+    // Prepare the sql string with employee data as parameters
+    sql:Parameter para1 = {sqlType:sql:Type.VARCHAR, value:name};
+    sql:Parameter para2 = {sqlType:sql:Type.INTEGER, value:age};
+    sql:Parameter para3 = {sqlType:sql:Type.INTEGER, value:ssn};
+    sql:Parameter para4 = {sqlType:sql:Type.INTEGER, value:employeeId};
+    sql:Parameter[] params = [para1, para2, para3, para4];
+    string sqlString = "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
+    
     // Update existing data by invoking update action defined in ballerina sql connector
-    int updateRowCount = employeeDataBase.update(sqlString, null);
+    int updateRowCount = employeeDataBase.update(sqlString, params);
 
     // Check the MySQL updated row count to set the status
     if (updateRowCount > 0) {
@@ -258,16 +278,20 @@ public function updateData (string name, string age, string ssn, string employee
     return updateStatus;
 }
 
-public function deleteData (string employeeID) (json) {
+public function deleteData (int employeeID) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Deleted"};
 
-    string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = '" + employeeID + "'";
+    // Prepare the sql string with employee data as parameters
+    sql:Parameter para1 = {sqlType:sql:Type.INTEGER, value:employeeID};
+    sql:Parameter[] params = [para1];
+    string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
+    
     // Delete existing data by invoking update action defined in ballerina sql connector
-    int updateRowCount = employeeDataBase.update(sqlString, null);
+    int updateRowCount = employeeDataBase.update(sqlString, params);
 
     // Check the MySQL updated row count to set the status
     if (updateRowCount > 0) {
@@ -276,22 +300,25 @@ public function deleteData (string employeeID) (json) {
     return updateStatus;
 }
 
-public function retrieveById (string employeeID) (json) {
+public function retrieveById (int employeeID) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
-    string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = '" + employeeID + "'";
+
+    // Prepare the sql string with employee data as parameters
+    sql:Parameter para1 = {sqlType:sql:Type.INTEGER, value:employeeID};
+    sql:Parameter[] params = [para1];
+    string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
+    
     // Retrieve employee data by invoking call action defined in ballerina sql connector
-    var dataTable = employeeDataBase.call(sqlString, null, null);
+    var dataTable = employeeDataBase.call(sqlString, params, null);
     // Convert the sql data table into JSON using type conversion
     var jsonReturnValue, _ = <json>dataTable;
     return jsonReturnValue;
 }
 ```
 
-The `endpoint` keyword in ballerina refers to a connection with remote service, in this case, the remote service is MySQL database. `employee database` is the reference name for the SQL endpoint. This endpoint is initialized with the  SQL connection. The rest of the code is just preparing SQL queries and executing them by calling `update` action in `ballerina.data.sql` package. finally, the status of the SQL operation is returned as a JSON file.
-
-
+The `endpoint` keyword in ballerina refers to a connection with remote service, in this case, the remote service is MySQL database. `employeeDataBase` is the reference name for the SQL endpoint. The endpoint is initialized with an SQL connection. The rest of the code is just preparing SQL queries and executing them by calling `update` action in `ballerina.data.sql` package. Finally, the status of the SQL operation is returned as a JSON file.
 
 ## <a name="testing"></a> Testing 
 
@@ -302,13 +329,13 @@ You can run the RESTful service that you developed above, in your local environm
 1. As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
-$ballerina build  /employeeService
+$ ballerina build  /employeeService
 ```
 
 2. Once the employeeService.balx is created, you can run that with the following command. 
 
 ```
-ballerina run employeeService.balx 
+$ ballerina run employeeService.balx 
 ```
 
 3. The successful execution of the service should show us the following output. 
