@@ -1,4 +1,3 @@
-
 // Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -17,10 +16,10 @@
 
 package BankingApplication;
 
-import ballerina.data.sql;
-import ballerina.log;
 import BankingApplication.dbUtil;
 import ballerina.config;
+import ballerina.data.sql;
+import ballerina.log;
 
 // Get the SQL client connector
 sql:ClientConnector sqlConnector = dbUtil:getDatabaseClientConnector();
