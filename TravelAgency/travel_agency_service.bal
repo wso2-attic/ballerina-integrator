@@ -1,4 +1,3 @@
-
 // Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -39,28 +38,25 @@ service<http> travelAgencyService {
     }
 
     // Resource to arrange a tour
-    @http:resourceConfig {methods:["POST"]}
+    @http:resourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
     resource arrangeTour (http:Connection connection, http:InRequest inRequest) {
         http:OutResponse outResponse = {};
-        string name;
-        json hotelPreference;
-        json airlinePreference;
-        json carPreference;
+
         // Json payload format for an http out request
         json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"", "Preference":""};
 
         // Try parsing the JSON payload from the user request
-        try {
-            json inReqPayload = inRequest.getJsonPayload();
-            name = inReqPayload.Name.toString();
-            outReqPayload.Name = name;
-            outReqPayload.ArrivalDate = inReqPayload.ArrivalDate.toString();
-            outReqPayload.DepartureDate = inReqPayload.DepartureDate.toString();
-            airlinePreference = inReqPayload.Preference.Airline.toString();
-            hotelPreference = inReqPayload.Preference.Accommodation.toString();
-            carPreference = inReqPayload.Preference.Car.toString();
-        } catch (error err) {
-            // If payload parsing fails, send a "Bad Request" message as the response
+        json inReqPayload = inRequest.getJsonPayload();
+        outReqPayload.Name = inReqPayload.Name;
+        outReqPayload.ArrivalDate = inReqPayload.ArrivalDate;
+        outReqPayload.DepartureDate = inReqPayload.DepartureDate;
+        json airlinePreference = inReqPayload.Preference.Airline;
+        json hotelPreference = inReqPayload.Preference.Accommodation;
+        json carPreference = inReqPayload.Preference.Car;
+
+        // If payload parsing fails, send a "Bad Request" message as the response
+        if (outReqPayload.Name == null || outReqPayload.ArrivalDate == null || outReqPayload.DepartureDate == null ||
+            airlinePreference == null || hotelPreference == null || carPreference == null) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = connection.respond(outResponse);

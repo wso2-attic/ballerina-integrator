@@ -1,4 +1,3 @@
-
 // Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -29,23 +28,20 @@ const string FIRST = "First";
 service<http> airlineReservationService {
 
     // Resource to reserve a ticket
-    @http:resourceConfig {methods:["POST"], path:"/reserve"}
+    @http:resourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
+                          produces:["application/json"]}
     resource reserveTicket (http:Connection connection, http:InRequest request) {
         http:OutResponse response = {};
-        string name;
-        string arrivalDate;
-        string departureDate;
-        string preferredClass;
 
         // Try parsing the JSON payload from the request
-        try {
-            json payload = request.getJsonPayload();
-            name = payload.Name.toString();
-            arrivalDate = payload.ArrivalDate.toString();
-            departureDate = payload.DepartureDate.toString();
-            preferredClass = payload.Preference.toString().trim();
-        } catch (error err) {
-            // If payload parsing fails, send a "Bad Request" message as the response
+        json payload = request.getJsonPayload();
+        json name = payload.Name;
+        json arrivalDate = payload.ArrivalDate;
+        json departureDate = payload.DepartureDate;
+        json preferredClass = payload.Preference;
+
+        // If payload parsing fails, send a "Bad Request" message as the response
+        if (name == null || arrivalDate == null || departureDate == null || preferredClass == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = connection.respond(response);
@@ -54,8 +50,9 @@ service<http> airlineReservationService {
 
         // Mock logic
         // If request is for an available flight class, send a reservation successful status
-        if (preferredClass.equalsIgnoreCase(ECONOMY) || preferredClass.equalsIgnoreCase(BUSINESS) ||
-            preferredClass.equalsIgnoreCase(FIRST)) {
+        string preferredClassStr = preferredClass.toString().trim();
+        if (preferredClassStr.equalsIgnoreCase(ECONOMY) || preferredClassStr.equalsIgnoreCase(BUSINESS) ||
+            preferredClassStr.equalsIgnoreCase(FIRST)) {
             response.setJsonPayload({"Status":"Success"});
         }
         else {

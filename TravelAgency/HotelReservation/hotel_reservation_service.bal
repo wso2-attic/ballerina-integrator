@@ -1,4 +1,3 @@
-
 // Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -28,23 +27,20 @@ const string NORMAL = "Normal";
 service<http> hotelReservationService {
 
     // Resource to reserve a room
-    @http:resourceConfig {methods:["POST"], path:"/reserve"}
+    @http:resourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
+                          produces:["application/json"]}
     resource reserveRoom (http:Connection connection, http:InRequest request) {
         http:OutResponse response = {};
-        string name;
-        string arrivalDate;
-        string departureDate;
-        string preferredRoomType;
 
         // Try parsing the JSON payload from the request
-        try {
-            json payload = request.getJsonPayload();
-            name = payload.Name.toString();
-            arrivalDate = payload.ArrivalDate.toString();
-            departureDate = payload.DepartureDate.toString();
-            preferredRoomType = payload.Preference.toString().trim();
-        } catch (error err) {
-            // If payload parsing fails, send a "Bad Request" message as the response
+        json payload = request.getJsonPayload();
+        json name = payload.Name;
+        json arrivalDate = payload.ArrivalDate;
+        json departureDate = payload.DepartureDate;
+        json preferredRoomType = payload.Preference;
+
+        // If payload parsing fails, send a "Bad Request" message as the response
+        if (name == null || arrivalDate == null || departureDate == null || preferredRoomType == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = connection.respond(response);
@@ -53,7 +49,8 @@ service<http> hotelReservationService {
 
         // Mock logic
         // If request is for an available room type, send a reservation successful status
-        if (preferredRoomType.equalsIgnoreCase(AC) || preferredRoomType.equalsIgnoreCase(NORMAL)) {
+        string preferredRoomTypeStr = preferredRoomType.toString().trim();
+        if (preferredRoomTypeStr.equalsIgnoreCase(AC) || preferredRoomTypeStr.equalsIgnoreCase(NORMAL)) {
             response.setJsonPayload({"Status":"Success"});
         }
         else {
