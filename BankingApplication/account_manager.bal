@@ -16,10 +16,10 @@
 
 package BankingApplication;
 
-import BankingApplication.dbUtil;
 import ballerina.config;
-import ballerina.data.sql;
 import ballerina.log;
+import ballerina.data.sql;
+import BankingApplication.dbUtil;
 
 // Get the SQL client connector
 sql:ClientConnector sqlConnector = dbUtil:getDatabaseClientConnector();
