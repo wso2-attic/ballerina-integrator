@@ -18,7 +18,6 @@
 package TravelAgency.HotelReservation;
 
 import ballerina.net.http;
-import ballerina.log;
 
 // Available room types
 const string AC = "Air Conditioned";
@@ -55,12 +54,10 @@ service<http> hotelReservationService {
         // Mock logic
         // If request is for an available room type, send a reservation successful status
         if (preferredRoomType.equalsIgnoreCase(AC) || preferredRoomType.equalsIgnoreCase(NORMAL)) {
-            log:printInfo("Successfully reserved hotel room for user: " + name);
             response.setJsonPayload({"Status":"Success"});
         }
         else {
             // If request is not for an available room type, send a reservation failure status
-            log:printWarn("Failed to reserve hotel room for user: " + name);
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response

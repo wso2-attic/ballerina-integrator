@@ -18,7 +18,6 @@
 package TravelAgency.AirlineReservation;
 
 import ballerina.net.http;
-import ballerina.log;
 
 // Available flight classes
 const string ECONOMY = "Economy";
@@ -57,12 +56,10 @@ service<http> airlineReservationService {
         // If request is for an available flight class, send a reservation successful status
         if (preferredClass.equalsIgnoreCase(ECONOMY) || preferredClass.equalsIgnoreCase(BUSINESS) ||
             preferredClass.equalsIgnoreCase(FIRST)) {
-            log:printInfo("Successfully reserved airline ticket for user: " + name);
             response.setJsonPayload({"Status":"Success"});
         }
         else {
             // If request is not for an available flight class, send a reservation failure status
-            log:printWarn("Failed to reserve airline ticket for user: " + name);
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response

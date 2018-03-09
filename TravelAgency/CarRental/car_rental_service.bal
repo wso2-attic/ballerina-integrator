@@ -18,7 +18,6 @@
 package TravelAgency.CarRental;
 
 import ballerina.net.http;
-import ballerina.log;
 
 // Available car types
 const string AC = "Air Conditioned";
@@ -55,12 +54,10 @@ service<http> carRentalService {
         // Mock logic
         // If request is for an available car type, send a rental successful status
         if (preferredType.equalsIgnoreCase(AC) || preferredType.equalsIgnoreCase(NORMAL)) {
-            log:printInfo("Successfully rented car for user: " + name);
             response.setJsonPayload({"Status":"Success"});
         }
         else {
             // If request is not for an available car type, send a rental failure status
-            log:printWarn("Failed to reserve rent car for user: " + name);
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
