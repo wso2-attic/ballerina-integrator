@@ -185,7 +185,7 @@ string hotelReservationStatus = inResHotel.getJsonPayload().Status.toString();
 // If reservation status is negative, send a failure response to user
 if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
-                                          "Provide a valid 'Preference' for 'Accommodation' and try again"});
+                                        "Provide a valid 'Preference' for 'Accommodation' and try again"});
     _ = connection.respond(outResponse);
     return;
 }
