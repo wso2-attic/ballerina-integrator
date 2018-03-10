@@ -1,7 +1,22 @@
+// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+//
+// WSO2 Inc. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package TravelAgency;
 
 import ballerina.net.http;
-import ballerina.log;
 
 // Travel agency service to arrange a complete tour for a user
 @http:configuration {basePath:"/travel", port:9090}
@@ -23,40 +38,33 @@ service<http> travelAgencyService {
     }
 
     // Resource to arrange a tour
-    @http:resourceConfig {methods:["POST"]}
+    @http:resourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
     resource arrangeTour (http:Connection connection, http:InRequest inRequest) {
         http:OutResponse outResponse = {};
-        string name;
-        json hotelPreference;
-        json airlinePreference;
-        json carPreference;
+
         // Json payload format for an http out request
         json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"", "Preference":""};
 
         // Try parsing the JSON payload from the user request
-        try {
-            log:printInfo("Parsing request payload");
-            json inReqPayload = inRequest.getJsonPayload();
-            name = inReqPayload.Name.toString();
-            outReqPayload.Name = name;
-            outReqPayload.ArrivalDate = inReqPayload.ArrivalDate.toString();
-            outReqPayload.DepartureDate = inReqPayload.DepartureDate.toString();
-            airlinePreference = inReqPayload.Preference.Airline.toString();
-            hotelPreference = inReqPayload.Preference.Accommodation.toString();
-            carPreference = inReqPayload.Preference.Car.toString();
-            log:printInfo("Successfully parsed; Username: " + name);
-        } catch (error err) {
-            // If payload parsing fails, send a "Bad Request" message as the response
+        json inReqPayload = inRequest.getJsonPayload();
+        outReqPayload.Name = inReqPayload.Name;
+        outReqPayload.ArrivalDate = inReqPayload.ArrivalDate;
+        outReqPayload.DepartureDate = inReqPayload.DepartureDate;
+        json airlinePreference = inReqPayload.Preference.Airline;
+        json hotelPreference = inReqPayload.Preference.Accommodation;
+        json carPreference = inReqPayload.Preference.Car;
+
+        // If payload parsing fails, send a "Bad Request" message as the response
+        if (outReqPayload.Name == null || outReqPayload.ArrivalDate == null || outReqPayload.DepartureDate == null ||
+            airlinePreference == null || hotelPreference == null || carPreference == null) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = connection.respond(outResponse);
-            log:printWarn("Failed to parse! Bad user request\n");
             return;
         }
 
 
         // Reserve airline ticket for the user by calling Airline reservation service
-        log:printInfo("Reserving airline ticket for user: " + name);
         http:OutRequest outReqAirline = {};
         http:InResponse inResAirline = {};
         // construct the payload
@@ -74,14 +82,11 @@ service<http> travelAgencyService {
             outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
                                                   "Provide a valid 'Preference' for 'Airline' and try again"});
             _ = connection.respond(outResponse);
-            log:printWarn("Cannot arrange tour for user: " + name + "; Failed to reserve ticket\n");
             return;
         }
-        log:printInfo("Airline reservation successful!");
 
 
         // Reserve hotel room for the user by calling Hotel reservation service
-        log:printInfo("Reserving hotel room for user: " + name);
         http:OutRequest outReqHotel = {};
         http:InResponse inResHotel = {};
         // construct the payload
@@ -99,14 +104,11 @@ service<http> travelAgencyService {
             outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
                                                   "Provide a valid 'Preference' for 'Accommodation' and try again"});
             _ = connection.respond(outResponse);
-            log:printWarn("Cannot arrange tour for user: " + name + "; Failed to reserve room\n");
             return;
         }
-        log:printInfo("Hotel reservation successful!");
 
 
         // Renting car for the user by calling Car rental service
-        log:printInfo("Renting car for user: " + name);
         http:OutRequest outReqCar = {};
         http:InResponse inResCar = {};
         // construct the payload
@@ -124,15 +126,12 @@ service<http> travelAgencyService {
             outResponse.setJsonPayload({"Message":"Failed to rent car! " +
                                                   "Provide a valid 'Preference' for 'Car' and try again"});
             _ = connection.respond(outResponse);
-            log:printWarn("Cannot arrange tour for user: " + name + "; Failed to rent car\n");
             return;
         }
-        log:printInfo("Car rental successful!");
 
 
         // If all three services response positive status, send a successful message to the user
         outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
         _ = connection.respond(outResponse);
-        log:printInfo("Successfully arranged tour for user: " + name + " !!\n");
     }
 }
