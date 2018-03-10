@@ -165,7 +165,7 @@ function initializeDB () (boolean isInitialized) {
 
 ```
 
-To see the complete implementation of `account_manager.bal` file, refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account_manager.bal.
+To see the complete implementation of the above, refer [account_manager.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account_manager.bal).
 
 Let's next focus on the implementation of `application.bal` file, which includes the main function. It consists of three possible scenarios to check the transfer money operation of our banking application to explain the database transaction management using Ballerina. Skeleton of `application.bal` is attached below.
 
@@ -200,7 +200,7 @@ function main (string[] args) {
 
 ```
 
-To see the complete implementation of `application.bal` file, refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/application.bal. 
+To see the complete implementation of the above, refer [application.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/application.bal). 
 
 
 Finally, let's focus on the implementation of `database_utilities.bal`, which consists database utility functions. Before accessing the database from ballerina, we need to have the SQL client connector. We also need a function to create databases if we decide to do it from the code itself. 
@@ -227,7 +227,7 @@ public function createDatabase (sql:ClientConnector sqlConnector, string dbName)
 
 ```
 
-To see the complete implementation of `database_utilities.bal` file, refer https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database_utilities.bal.
+To see the complete implementation of the above, refer [database_utilities.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database_utilities.bal).
 
 
 ## <a name="testing"></a> Testing 
@@ -319,4 +319,4 @@ To run the unit tests, go to the sample root directory and run the following com
 $ ballerina test BankingApplication/
 ```
 
-To check the implementations of these test files, please go to https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/ and refer the respective folders of `database_utilities.bal` and `account_manager.bal` files.
+To check the implementations of these test files, refer [database_utilities_test.bal](https://github.com/pranavan15/managing-database-transactions/blob/master/BankingApplication/dbUtil/database_utilities_test.bal) and [account_manager_test.bal](https://github.com/pranavan15/managing-database-transactions/blob/master/BankingApplication/account_manager_test.bal).
