@@ -319,4 +319,4 @@ To run the unit tests, go to the sample root directory and run the following com
 $ ballerina test BankingApplication/
 ```
 
-To check the implementations of these test files, refer [database_utilities_test.bal](https://github.com/pranavan15/managing-database-transactions/blob/master/BankingApplication/dbUtil/database_utilities_test.bal) and [account_manager_test.bal](https://github.com/pranavan15/managing-database-transactions/blob/master/BankingApplication/account_manager_test.bal).
+To check the implementations of these test files, refer [database_utilities_test.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database_utilities_test.bal) and [account_manager_test.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account_manager_test.bal).
