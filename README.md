@@ -79,7 +79,8 @@ Finally, Travel agency service needs to connect with the Car rental service to a
 Refer [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) to check the implementation of Car rental service.
 
 
-If all successful, the Travel agency service will confirm and arrange the complete tour for the user. Refer the code attached below to see the implementation of Travel agency service. Inline comments added for better understanding.
+If all successful, the Travel agency service will confirm and arrange the complete tour for the user. Skeleton of `travel_agency_service.bal` file attached below. Inline comments added for better understanding.
+
 
 ##### travel_agency_service.bal
 
@@ -116,90 +117,17 @@ service<http> travelAgencyService {
         json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"", "Preference":""};
 
         // Try parsing the JSON payload from the user request
-        json inReqPayload = inRequest.getJsonPayload();
-        outReqPayload.Name = inReqPayload.Name;
-        outReqPayload.ArrivalDate = inReqPayload.ArrivalDate;
-        outReqPayload.DepartureDate = inReqPayload.DepartureDate;
-        json airlinePreference = inReqPayload.Preference.Airline;
-        json hotelPreference = inReqPayload.Preference.Accommodation;
-        json carPreference = inReqPayload.Preference.Car;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (outReqPayload.Name == null || outReqPayload.ArrivalDate == null || outReqPayload.DepartureDate == null ||
-            airlinePreference == null || hotelPreference == null || carPreference == null) {
-            outResponse.statusCode = 400;
-            outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = connection.respond(outResponse);
-            return;
-        }
-
+        
 
         // Reserve airline ticket for the user by calling Airline reservation service
-        http:OutRequest outReqAirline = {};
-        http:InResponse inResAirline = {};
-        // construct the payload
-        json outReqPayloadAirline = outReqPayload;
-        outReqPayloadAirline.Preference = airlinePreference;
-        outReqAirline.setJsonPayload(outReqPayloadAirline);
-
-        // Send a post request to airlineReservationService with appropriate payload and get response
-        inResAirline, _ = airlineReservationEP.post("/reserve", outReqAirline);
-
-        // Get the reservation status
-        string airlineReservationStatus = inResAirline.getJsonPayload().Status.toString();
-        // If reservation status is negative, send a failure response to user
-        if (airlineReservationStatus.equalsIgnoreCase("Failed")) {
-            outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
-                                                  "Provide a valid 'Preference' for 'Airline' and try again"});
-            _ = connection.respond(outResponse);
-            return;
-        }
-
 
         // Reserve hotel room for the user by calling Hotel reservation service
-        http:OutRequest outReqHotel = {};
-        http:InResponse inResHotel = {};
-        // construct the payload
-        json outReqPayloadHotel = outReqPayload;
-        outReqPayloadHotel.Preference = hotelPreference;
-        outReqHotel.setJsonPayload(outReqPayloadHotel);
-
-        // Send a post request to hotelReservationService with appropriate payload and get response
-        inResHotel, _ = hotelReservationEP.post("/reserve", outReqHotel);
-
-        // Get the reservation status
-        string hotelReservationStatus = inResHotel.getJsonPayload().Status.toString();
-        // If reservation status is negative, send a failure response to user
-        if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
-            outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
-                                                  "Provide a valid 'Preference' for 'Accommodation' and try again"});
-            _ = connection.respond(outResponse);
-            return;
-        }
-
 
         // Renting car for the user by calling Car rental service
-        http:OutRequest outReqCar = {};
-        http:InResponse inResCar = {};
-        // construct the payload
-        json outReqPayloadCar = outReqPayload;
-        outReqPayloadCar.Preference = carPreference;
-        outReqCar.setJsonPayload(outReqPayloadCar);
-
-        // Send a post request to carRentalService with appropriate payload and get response
-        inResCar, _ = carRentalEP.post("/rent", outReqCar);
-
-        // Get the rental status
-        string carRentalStatus = inResCar.getJsonPayload().Status.toString();
-        // If rental status is negative, send a failure response to user
-        if (carRentalStatus.equalsIgnoreCase("Failed")) {
-            outResponse.setJsonPayload({"Message":"Failed to rent car! " +
-                                                  "Provide a valid 'Preference' for 'Car' and try again"});
-            _ = connection.respond(outResponse);
-            return;
-        }
-
-
+        
+        
         // If all three services response positive status, send a successful message to the user
         outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
         _ = connection.respond(outResponse);
@@ -207,6 +135,91 @@ service<http> travelAgencyService {
 }
 
 ```
+
+Let's now look at the code segment that is responsible for communicating with Airline reservation service. 
+
+```ballerina
+// Reserve airline ticket for the user by calling Airline reservation service
+http:OutRequest outReqAirline = {};
+http:InResponse inResAirline = {};
+
+// construct the payload
+json outReqPayloadAirline = outReqPayload;
+outReqPayloadAirline.Preference = airlinePreference;
+outReqAirline.setJsonPayload(outReqPayloadAirline);
+
+// Send a post request to airlineReservationService with appropriate payload and get response
+inResAirline, _ = airlineReservationEP.post("/reserve", outReqAirline);
+
+// Get the reservation status
+string airlineReservationStatus = inResAirline.getJsonPayload().Status.toString();
+
+// If reservation status is negative, send a failure response to user
+if (airlineReservationStatus.equalsIgnoreCase("Failed")) {
+    outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
+                                          "Provide a valid 'Preference' for 'Airline' and try again"});
+    _ = connection.respond(outResponse);
+    return;
+}
+```
+
+The above code shows how the Travel agency service initiates a request to Airline reservation service to book a flight ticket. `airlineReservationEP` is the endpoint we defined through which our Ballerina service communicates with the external Airline reservation service.
+
+
+Let's now look at the code segment that is responsible for communicating with Hotel reservation service. 
+
+```ballerina
+// Reserve hotel room for the user by calling Hotel reservation service
+http:OutRequest outReqHotel = {};
+http:InResponse inResHotel = {};
+// construct the payload
+json outReqPayloadHotel = outReqPayload;
+outReqPayloadHotel.Preference = hotelPreference;
+outReqHotel.setJsonPayload(outReqPayloadHotel);
+
+// Send a post request to hotelReservationService with appropriate payload and get response
+inResHotel, _ = hotelReservationEP.post("/reserve", outReqHotel);
+
+// Get the reservation status
+string hotelReservationStatus = inResHotel.getJsonPayload().Status.toString();
+// If reservation status is negative, send a failure response to user
+if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
+    outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
+                                          "Provide a valid 'Preference' for 'Accommodation' and try again"});
+    _ = connection.respond(outResponse);
+    return;
+}
+```
+Travel agency service communicates with the Hotel reservation service to book a room for the client as shown above. The endpoint defined for this external service call is `hotelReservationEP`.
+
+
+Finally, let's look at the code segment that is responsible for communicating with Car rental service. 
+
+```ballerina
+// Renting car for the user by calling Car rental service
+http:OutRequest outReqCar = {};
+http:InResponse inResCar = {};
+// construct the payload
+json outReqPayloadCar = outReqPayload;
+outReqPayloadCar.Preference = carPreference;
+outReqCar.setJsonPayload(outReqPayloadCar);
+
+// Send a post request to carRentalService with appropriate payload and get response
+inResCar, _ = carRentalEP.post("/rent", outReqCar);
+
+// Get the rental status
+string carRentalStatus = inResCar.getJsonPayload().Status.toString();
+// If rental status is negative, send a failure response to user
+if (carRentalStatus.equalsIgnoreCase("Failed")) {
+    outResponse.setJsonPayload({"Message":"Failed to rent car! " +
+                                          "Provide a valid 'Preference' for 'Car' and try again"});
+    _ = connection.respond(outResponse);
+    return;
+}
+
+```
+
+As shown above, Travel agency service rents a car for the requested user by calling the Car rental service. `carRentalEP` is the endpoint defined to communicate with the external Car rental service.
 
 ## <a name="testing"></a> Testing 
 
