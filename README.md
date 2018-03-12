@@ -101,7 +101,7 @@ In the above code, we have implemented a Kafka service that is subscribed to lis
 
 Resource `onMessage` will be triggered whenever a message published to the topic specified.
 
-To check the implementations of the other subscribers refer [franchisee1.bal](https://github.com/pranavan15/messaging-with-kafka/blob/master/ProductMgtSystem/Subscribers/Franchisee1/franchisee1.bal) and [franchisee2.bal](https://github.com/pranavan15/messaging-with-kafka/blob/master/ProductMgtSystem/Subscribers/Franchisee2/franchisee2.bal).
+To check the implementations of the other subscribers refer [franchisee1.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Subscribers/Franchisee1/franchisee1.bal) and [franchisee2.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Subscribers/Franchisee2/franchisee2.bal).
 
 
 Let's next focus on the implementation of `product_admin_portal.bal`, which acts as the message publisher. It contains an HTTP service using which a product admin can update the price of a product. Skeleton of `product_admin_portal.bal` is attached below. Inline comments added for better understanding.
@@ -162,7 +162,7 @@ function kafkaProduce (kafka:ProducerRecord record, kafka:ProducerConfig produce
 
 ```
 
-Refer [product_admin_portal.bal](https://github.com/pranavan15/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal.bal) to see the complete implementation of the above.
+Refer [product_admin_portal.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal.bal) to see the complete implementation of the above.
 
 ## <a name="testing"></a> Testing 
 
@@ -234,7 +234,7 @@ To run the unit test, go to the sample root directory and run the following comm
    <SAMPLE_ROOT_DIRECTORY>$ ballerina test ProductMgtSystem/Publisher/
    ```
 
-To check the implementation of this test file, refer [product_admin_portal_test.bal](https://github.com/pranavan15/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal_test.bal).
+To check the implementation of this test file, refer [product_admin_portal_test.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal_test.bal).
 
 ## <a name="deploying-the-scenario"></a> Deployment
 
