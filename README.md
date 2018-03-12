@@ -5,7 +5,7 @@ This guide walks you through the process of messaging with Apache Kafka using Ba
 To understanding how you can use Kafka for publish-subscribe messaging, let's consider a real-world use case of a product management system. This product management system consists of a product admin portal using which the product administrator can update the price for a product. This price update message should be consumed by a couple of franchisees and an inventory control system to take appropriate actions. Kafka is an ideal messaging system for this scenario. In this particular use case, once the admin updates the price of a product, the update message is published to a Kafka topic called 'product-price' to which the franchisees and the inventory control system subscribed to listen. The below diagram illustrates this use case clearly.
 
 
-![alt text](https://github.com/pranavan15/messaging-with-kafka/blob/master/images/Kafka.png)
+![alt text](/images/Kafka.png)
 
 
 In this example Ballerina Kafka Connector is used to connect Ballerina and Apache Kafka. With this Kafka Connector, Ballerina can act as both message publisher and subscriber.
@@ -120,12 +120,12 @@ const string ADMIN_PASSWORD = "Admin";
 @http:configuration {basePath:"/product"}
 service<http> productAdminService {
     // Resource that allows the admin to send a price update for a product
-    @http:resourceConfig {methods:["POST"]}
+    @http:resourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
     resource updatePrice (http:Connection connection, http:InRequest request) {
       
         // Try getting the JSON payload from the incoming request
 
-        //Check whether the specified value for 'Price' is appropriate
+        // Check whether the specified value for 'Price' is appropriate
 
         // Check whether the credentials provided are Admin credentials
 
@@ -162,7 +162,7 @@ function kafkaProduce (kafka:ProducerRecord record, kafka:ProducerConfig produce
 
 ```
 
-Refer [inventory_control_system.bal](https://github.com/pranavan15/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal.bal) to see the complete implementation of the above.
+Refer [product_admin_portal.bal](https://github.com/pranavan15/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal.bal) to see the complete implementation of the above.
 
 ## <a name="testing"></a> Testing 
 
@@ -234,7 +234,7 @@ To run the unit test, go to the sample root directory and run the following comm
    <SAMPLE_ROOT_DIRECTORY>$ ballerina test ProductMgtSystem/Publisher/
    ```
 
-To check the implementation of this test file, please go to https://github.com/pranavan15/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal_test.bal.
+To check the implementation of this test file, refer [product_admin_portal_test.bal](https://github.com/pranavan15/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal_test.bal).
 
 ## <a name="deploying-the-scenario"></a> Deployment
 
