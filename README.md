@@ -300,8 +300,7 @@ containers, you just need to put the corresponding docker annotations on your se
 image generation during the build time. 
 
 ##### OrderMgtService.bal
-        ```ballerina
-        
+```ballerina
         package guide.restful_service;
         
         import ballerina.net.http;
@@ -316,8 +315,7 @@ image generation during the build time.
         
         @http:configuration {basePath:"/ordermgt"}
         service<http> OrderMgtService {
-        
-        ``` 
+``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. 
@@ -353,8 +351,8 @@ So you don't need to explicitly create docker images prior to deploying it on Ku
 image generation during the build time. 
 
 ##### OrderMgtService.bal
-        ```ballerina
-        
+
+```ballerina
         package guide.restful_service;
         
         import ballerina.net.http;
@@ -373,7 +371,7 @@ image generation during the build time.
         @http:configuration {basePath:"/ordermgt"}
         service<http> OrderMgtService {
         
-        ``` 
+``` 
 - Here we have used ``  @kubernetes:deployment `` to specify the docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:svc {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes :ingress `` which is the external interface to access your service (with path `` /`` and host name `` ordermgt.com``)
@@ -412,7 +410,7 @@ $kubectl get ingress
 Node Port:
  
 ```
-    curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
         "http://localhost:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"    
 ```
 Ingress:
@@ -426,8 +424,8 @@ Access the service
 
 
 ``` 
-    curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-         "http://ordermgt.com/ordermgt/order" -H "Content-Type:application/json" 
+curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+     "http://ordermgt.com/ordermgt/order" -H "Content-Type:application/json" 
     
 ```
 
