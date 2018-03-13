@@ -249,7 +249,9 @@ As shown above, the travel agency service rents a car for the requested user by 
 2. Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
 
    ```bash
-    curl -v -X POST -d '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
+    curl -v -X POST -d \
+    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+    "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
     ```
 
     The `travelAgencyService` sends a response similar to the following:
@@ -257,7 +259,11 @@ As shown above, the travel agency service rents a car for the requested user by 
     ```bash
      < HTTP/1.1 200 OK
      
-    {"Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},"Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},"Vehicle":{"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018","PricePerDay":5}}
+    {
+    "Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
+    "Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
+    "Vehicle":{"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018","PricePerDay":5}
+    }
     ``` 
    
    
