@@ -231,19 +231,10 @@ As shown above, the travel agency service rents a car for the requested user by 
 
 ### <a name="try-it"></a> Try it out
 
-1. Start all four HTTP services by entering the following commands in separate terminals. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
+1. Start all four HTTP services by entering the following command in a separate terminal for each service. This command will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file located.
 
    ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run TravelAgency/AirlineReservation/
-   ```
-   ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run TravelAgency/HotelReservation/
-   ```
-   ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run TravelAgency/CarRental/
-   ```
-   ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run TravelAgency/
+    <SAMPLE_ROOT_DIRECTORY>$ ballerina run TravelAgency/<Package_Name>
    ```
    
 2. Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
@@ -252,19 +243,19 @@ As shown above, the travel agency service rents a car for the requested user by 
     curl -v -X POST -d \
     '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
-    ```
+   ```
 
-    The `travelAgencyService` sends a response similar to the following:
+   The `travelAgencyService` sends a response similar to the following:
     
-    ```bash
-     < HTTP/1.1 200 OK
-     
+   ```bash
+    < HTTP/1.1 200 OK
+
     {
-    "Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
-    "Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
-    "Vehicle":{"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018","PricePerDay":5}
+      "Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
+      "Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
+      "Vehicle":{"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018","PricePerDay":5}
     }
-    ``` 
+   ``` 
    
    
 ### <a name="unit-testing"></a> Writing unit tests 
@@ -278,7 +269,7 @@ This guide contains unit test cases for each service implemented above.
 
 Test files are in the same packages in which the service files are located.
 
-To run the unit tests, go to the sample root directory and run the following command. Here `<Package_Name>` is the corresponding package names in which the test files located.
+To run the unit tests, go to the sample root directory and run the following command. Here `<Package_Name>` is the corresponding package name in which each test file located.
    ```bash
    <SAMPLE_ROOT_DIRECTORY>$ ballerina test TravelAgency/<Package_Name>
    ```
@@ -307,21 +298,21 @@ Running
 
 You can use the Ballerina executable archives (.balx) that you created above and create docker images for the services using the following commands.
 
-```bash
-<SAMPLE_ROOT_DIRECTORY>$ ballerina docker <Exec_Archive_File_Name>  
-```
+  ```bash
+  <SAMPLE_ROOT_DIRECTORY>$ ballerina docker <Exec_Archive_File_Name>  
+  ```
 
 Once you have created the docker images, you can run them using `docker run` as follows, 
 
-```bash
-docker run -p <host_port>:<service_port> --name <container_instance_name> -d <image_name>:<tag_name>
-```
+  ```bash
+  docker run -p <host_port>:<service_port> --name <container_instance_name> -d <image_name>:<tag_name>
+  ```
 
 For example, to run the Travel agency service, use the following command.
 
-```bash
-docker run -p <host_port>:9090 --name ballerina_TravelAgency -d TravelAgency:latest
-```
+  ```bash
+  docker run -p <host_port>:9090 --name ballerina_TravelAgency -d TravelAgency:latest
+  ```
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
 (Work in progress) 
