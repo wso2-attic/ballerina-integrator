@@ -203,7 +203,6 @@ resource cancelOrder (http:Connection conn, http:InRequest req, string orderId) 
 
 
 ## <a name="testing"></a> Testing 
-(Work in progress) 
 
 ### <a name="invoking"></a> Invoking the RESTful service 
 
@@ -275,8 +274,21 @@ Output:
 ```
 
 ### <a name="unit-testing"></a> Writing Unit Tests 
-(Work in progress)
 
+In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
+* Test files should contain _test.bal suffix.
+  * e.g.: OrderMgtService_test.bal
+* Test functions should contain test prefix.
+  * e.g.: testResourceAddOrder()
+
+This guide contains unit test cases for each resource available in 'OrderMgtService'.
+
+To run the unit tests, go to the sample root directory and run the following command.
+   ```bash
+   $ballerina test guide/restful_service/
+   ```
+
+To check the implementation of the test file, refer to the [OrderMgtService_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/OrderMgtService_test.bal).
 
 
 ## <a name="deploying-the-scenario"></a> Deployment
