@@ -3,6 +3,7 @@ package guide.restful_service;
 import ballerina.test;
 import ballerina.net.http;
 
+// Create HTTP Client
 http:HttpClient httpClient = create http:HttpClient("http://localhost:9090/ordermgt", {});
 
 function beforeTest () {
