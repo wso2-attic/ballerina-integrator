@@ -293,10 +293,10 @@ $ballerina run restful_service.balx
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 
 
-You can run the service that we developed above as a docker container. As Ballerina language offers native support for running ballerina programs on 
+You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on 
 containers, you just need to put the corresponding docker annotations on your service code. 
 
-- In our OrderMgtService, we need to import  `` import ballerinax.docker; `` and use `` @docker:configuration `` as shown below to enable docker 
+- In our OrderMgtService, we need to import  `` import ballerinax.docker; `` and use the annotation `` @docker:configuration `` as shown below to enable docker 
 image generation during the build time. 
 
 ##### OrderMgtService.bal
@@ -344,7 +344,7 @@ This will also create the corresponding docker image using the docker annotation
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
 
 - You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
-with the use of Kubernetes annotations that you can include as part of your service code. ALso, it will take care of the creation of the docker images. 
+with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
 So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
 
 - In our OrderMgtService, we need to import  `` import ballerinax.kubernetes; `` and use `` @kubernetes `` as shown below to enable docker 
