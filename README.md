@@ -15,7 +15,7 @@ The following are the sections available in this guide.
 
 ## <a name="what-you-build"></a>  What you’ll build
 To understanding how you can build a parallel service orchestration using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. 
-This scenario is similar to what we had in [service-composition guide](https://github.com/ballerina-guides/service-composition) except, all three external services (Airline reservation, Hotel reservation and Car rental) contain multiple resources, and the Travel agency service checks these resources in parallel to determine the suitable resource when communicating with each service. The following diagram illustrates this use case clearly.
+This scenario is similar to what we had in [service-composition guide](https://github.com/ballerina-guides/service-composition) except, all three external services (Airline reservation, Hotel reservation and Car rental) contain multiple resources, and the Travel agency service checks these resources in parallel to select the best-suited resource for each requirement. For example, Travel agency service checks three different airways in parallel and selects the airway with the lowest cost. Similarly, it checks several hotels in parallel and selects the closest one to the client's preferred location. The following diagram illustrates this use case.
 
 ![alt text](/images/parallel_service_orchestration.png)
 
