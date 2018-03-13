@@ -293,16 +293,56 @@ $ballerina run restful_service.balx
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 
 
-You can use the Ballerina executable archive (.balx) archive that we created above and create a docker image using either of the following commands. 
-```
-ballerina docker restful_service.balx  
-```
+You can run the service that we developed above as a docker container. As Ballerina language offers native support for running ballerina programs on 
+containers, you just need to put the corresponding docker annotations on your service code. 
 
-Once you have created the docker image, you can run it using docker run. 
+- In our OrderMgtService, we need to import  `` import ballerinax.docker; `` and use `` @docker:configuration `` as shown below to enable docker 
+image generation during the build time. 
 
-```
-docker run -p <host_port>:9090 --name ballerina_restful_service -d restful_service:latest
-```
+##### OrderMgtService.bal
+        ```ballerina
+        
+        package guide.restful_service;
+        
+        import ballerina.net.http;
+        import ballerinax.docker;
+        
+        
+        @docker:configuration {
+            registry:"docker.abc.com",
+            name:"restful-ordermgt-service",
+            tag:"v1.0"
+        }
+        
+        @http:configuration {basePath:"/ordermgt"}
+        service<http> OrderMgtService {
+        
+        ``` 
+
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
+This will also create the corresponding docker image using the docker annotations that you have configured above. 
+  
+  ```
+  $ballerina build guide/restful_service
+  Run following command to start docker container: 
+  docker run -d -p 9090:9090 docker.abc.com/restful-ordermgt-service:v1.0
+  ```
+- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+
+    ```   
+    docker run -d -p 9090:9090 docker.abc.com/restful-ordermgt-service:v1.0
+    ```
+    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+
+- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+- You can access the service using the same curl commands that we've used above. 
+
+    **Create Order** 
+    ```
+    curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+     "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
+    ```
+
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
 (Work in progress) 
