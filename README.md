@@ -305,19 +305,141 @@ $ballerina run restful_service.balx
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 
 
-You can use the Ballerina executable archive (.balx) archive that we created above and create a docker image using either of the following commands. 
-```
-ballerina docker restful_service.balx  
-```
+You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on 
+containers, you just need to put the corresponding docker annotations on your service code. 
 
-Once you have created the docker image, you can run it using docker run. 
+- In our OrderMgtService, we need to import  `` import ballerinax.docker; `` and use the annotation `` @docker:configuration `` as shown below to enable docker 
+image generation during the build time. 
 
-```
-docker run -p <host_port>:9090 --name ballerina_restful_service -d restful_service:latest
-```
+##### OrderMgtService.bal
+```ballerina
+    package guide.restful_service;
+    
+    import ballerina.net.http;
+    import ballerinax.docker;
+    
+    
+    @docker:configuration {
+        registry:"docker.abc.com",
+        name:"restful-ordermgt-service",
+        tag:"v1.0"
+    }
+    
+    @http:configuration {basePath:"/ordermgt"}
+    service<http> OrderMgtService {
+``` 
+
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
+This will also create the corresponding docker image using the docker annotations that you have configured above. 
+  
+  ```
+  $ballerina build guide/restful_service
+  Run following command to start docker container: 
+  docker run -d -p 9090:9090 docker.abc.com/restful-ordermgt-service:v1.0
+  ```
+- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+
+    ```   
+    docker run -d -p 9090:9090 docker.abc.com/restful-ordermgt-service:v1.0
+    ```
+    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+
+- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+- You can access the service using the same curl commands that we've used above. 
+ 
+    ```
+    curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+     "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
+    ```
+
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
-(Work in progress) 
+
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
+with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
+So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
+
+- In our OrderMgtService, we need to import  `` import ballerinax.kubernetes; `` and use `` @kubernetes `` as shown below to enable docker 
+image generation during the build time. 
+
+##### OrderMgtService.bal
+
+```ballerina
+    package guide.restful_service;
+    
+    import ballerina.net.http;
+    import ballerinax.kubernetes;
+    
+    
+    @kubernetes:deployment {
+        image:"ballerina.com/order-mgt-service:1.0.0"
+    }
+    @kubernetes:svc {}
+    @kubernetes :ingress {
+        hostname:"ordermgt.com",
+        path:"/"
+    }
+    
+    @http:configuration {basePath:"/ordermgt"}
+    service<http> OrderMgtService {
+        
+``` 
+- Here we have used ``  @kubernetes:deployment `` to specify the docker image name which will be created as part of building this service. 
+- We have also specified `` @kubernetes:svc {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
+- In addition we have used `` @kubernetes :ingress `` which is the external interface to access your service (with path `` /`` and host name `` ordermgt.com``)
+
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
+This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+  
+  ```
+  $ballerina build guide/restful_service
+  Run following command to deploy kubernetes artifacts:  
+  kubectl create -f ./target/guide/restful_service/kubernetes
+ 
+  ```
+
+- You can verify that the docker image that we specified in `` @kubernetes:deployment `` is created, by using `` docker ps images ``. 
+- Also the Kubernetes artifacts related our service, will be generated in `` ./target/guide/restful_service/kubernetes``. 
+- Now you can create the Kubernetes deployment using:
+
+```
+ $ kubectl create -f ./target/guide/restful_service/kubernetes 
+     deployment "OrderMgtService-deployment" created
+     ingress "OrderMgtService" created
+     service "OrderMgtService" created
+```
+- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
+```
+$kubectl get svc
+$kubectl get deploy
+$kubectl get pods
+$kubectl get ingress
+
+```
+
+- If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
+
+Node Port:
+ 
+```
+curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+        "http://localhost:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"    
+```
+Ingress:
+
+Add /etc/host entry to match hostname. 
+``` 
+127.0.0.1 ordermgt.com
+```
+
+Access the service 
+
+
+``` 
+curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+     "http://ordermgt.com/ordermgt/order" -H "Content-Type:application/json" 
+    
+```
 
 
 ## <a name="observability"></a> Observability 
