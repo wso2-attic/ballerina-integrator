@@ -5,7 +5,6 @@ import ballerina.net.http;
 
 http:HttpClient httpClient = create http:HttpClient("http://localhost:9090/ordermgt", {});
 
-
 function beforeTest () {
     // Start the 'OrderMgtService' before running the test
     _ = test:startService("OrderMgtService");
