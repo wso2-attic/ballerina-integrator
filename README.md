@@ -249,7 +249,6 @@ As shown above, the travel agency service rents a car for the requested user by 
     
    ```bash
     < HTTP/1.1 200 OK
-
     {
       "Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
       "Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
