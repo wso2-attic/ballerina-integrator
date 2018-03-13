@@ -285,7 +285,7 @@ This guide contains unit test cases for each resource available in 'OrderMgtServ
 
 To run the unit tests, go to the sample root directory and run the following command
    ```bash
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina test guide/restful_service/
+   $ballerina test guide/restful_service/
    ```
 
 To check the implementation of the test file, refer to the [OrderMgtService_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/OrderMgtService_test.bal).
