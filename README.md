@@ -283,7 +283,7 @@ In ballerina, the unit test cases should be in the same package and the naming c
 
 This guide contains unit test cases for each resource available in 'OrderMgtService'.
 
-To run the unit tests, go to the sample root directory and run the following command
+To run the unit tests, go to the sample root directory and run the following command.
    ```bash
    $ballerina test guide/restful_service/
    ```
