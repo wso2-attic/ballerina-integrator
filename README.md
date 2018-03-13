@@ -301,20 +301,20 @@ image generation during the build time.
 
 ##### OrderMgtService.bal
 ```ballerina
-        package guide.restful_service;
-        
-        import ballerina.net.http;
-        import ballerinax.docker;
-        
-        
-        @docker:configuration {
-            registry:"docker.abc.com",
-            name:"restful-ordermgt-service",
-            tag:"v1.0"
-        }
-        
-        @http:configuration {basePath:"/ordermgt"}
-        service<http> OrderMgtService {
+    package guide.restful_service;
+    
+    import ballerina.net.http;
+    import ballerinax.docker;
+    
+    
+    @docker:configuration {
+        registry:"docker.abc.com",
+        name:"restful-ordermgt-service",
+        tag:"v1.0"
+    }
+    
+    @http:configuration {basePath:"/ordermgt"}
+    service<http> OrderMgtService {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
@@ -353,23 +353,23 @@ image generation during the build time.
 ##### OrderMgtService.bal
 
 ```ballerina
-        package guide.restful_service;
-        
-        import ballerina.net.http;
-        import ballerinax.kubernetes;
-        
-        
-        @kubernetes:deployment {
-            image:"ballerina.com/order-mgt-service:1.0.0"
-        }
-        @kubernetes:svc {}
-        @kubernetes :ingress {
-            hostname:"ordermgt.com",
-            path:"/"
-        }
-        
-        @http:configuration {basePath:"/ordermgt"}
-        service<http> OrderMgtService {
+    package guide.restful_service;
+    
+    import ballerina.net.http;
+    import ballerinax.kubernetes;
+    
+    
+    @kubernetes:deployment {
+        image:"ballerina.com/order-mgt-service:1.0.0"
+    }
+    @kubernetes:svc {}
+    @kubernetes :ingress {
+        hostname:"ordermgt.com",
+        path:"/"
+    }
+    
+    @http:configuration {basePath:"/ordermgt"}
+    service<http> OrderMgtService {
         
 ``` 
 - Here we have used ``  @kubernetes:deployment `` to specify the docker image name which will be created as part of building this service. 
