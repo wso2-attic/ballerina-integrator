@@ -1,8 +1,8 @@
 # Parallel Service Orchestration
 
-A service composition is an aggregate of services collectively composed to automate a particular task or business process. 
+Parallel service orchestration is the process of integrating two or more services together to automate a particular task or business process where the service orchestrator consumes the resources in services in a parallel manner. 
 
-> This guide walks you through the process of implementing a service composition using Ballerina language. 
+> This guide walks you through the process of implementing a parallel service orchestration using Ballerina language. 
 
 The following are the sections available in this guide.
 
@@ -37,7 +37,7 @@ Travel agency is the service that acts as the composition initiator. The other t
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
-service-composition
+parallel-service-orchestration
 ├── TravelAgency
 │   ├── AirlineReservation
 │   │   ├── airline_reservation_service.bal
@@ -48,19 +48,19 @@ service-composition
 │   ├── HotelReservation
 │   │   ├── hotel_reservation_service.bal
 │   │   └── hotel_reservation_service_test.bal
-│   ├── travel_agency_service.bal
-│   └── travel_agency_service_test.bal
+│   ├── travel_agency_service_parallel.bal
+│   └── travel_agency_service_parallel_test.bal
 └── README.md
 
 ```
 
-Package `AirlineReservation` contains the service that provides online flight ticket reservations.
+Package `AirlineReservation` contains the service that provides airline ticket reservation functionality.
 
-Package `CarRental` contains the service that provides online car rentals.
+Package `CarRental` contains the service that provides car rental functionality.
 
-Package `HotelReservation` contains the service that provides online hotel room reservations.
+Package `HotelReservation` contains the service that provides hotel room reservation functionality.
 
-The `travel_agency_service.bal` file provides travel agency service, which consumes the other three services, and arranges a complete tour for the requested user.
+The `travel_agency_service_parallel.bal` file consists of the travel agency service, which communicates with the other three services, and arranges a complete tour for the client.
 
 
 ### <a name="Implementation"></a> Implementation
@@ -249,17 +249,15 @@ As shown above, the travel agency service rents a car for the requested user by 
 2. Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
 
    ```bash
-    curl -v -X POST -d \
-    '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
-     "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
-     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
+    curl -v -X POST -d '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
     ```
 
     The `travelAgencyService` sends a response similar to the following:
     
     ```bash
      < HTTP/1.1 200 OK
-    {"Message":"Congratulations! Your journey is ready!!"}
+     
+    {"Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},"Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},"Vehicle":{"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018","PricePerDay":5}}
     ``` 
    
    
@@ -274,12 +272,12 @@ This guide contains unit test cases for each service implemented above.
 
 Test files are in the same packages in which the service files are located.
 
-To run the unit tests, go to the sample root directory and run the following command
+To run the unit tests, go to the sample root directory and run the following command. Here `<Package_Name>` is the corresponding package names in which the test files located.
    ```bash
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina test TravelAgency/
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina test TravelAgency/<Package_Name>
    ```
 
-To check the implementations of these test files, refer [airline_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service_test.bal) and [travel_agency_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/travel_agency_service_test.bal).
+To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/AirlineReservation/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/HotelReservation/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/CarRental/car_rental_service_test.bal) and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/travel_agency_service_parallel_test.bal).
 
 
 ## <a name="deploying-the-scenario"></a> Deployment
@@ -287,7 +285,7 @@ To check the implementations of these test files, refer [airline_reservation_ser
 Once you are done with the development, you can deploy the services using any of the methods that are listed below. 
 
 ### <a name="deploying-on-locally"></a> Deploying locally
-You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
+You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows,
 
 Building 
    ```bash
