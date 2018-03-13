@@ -15,11 +15,11 @@ The following are the sections available in this guide.
 
 ## <a name="what-you-build"></a>  What you’ll build
 To understanding how you can build a parallel service orchestration using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. 
-This scenario is similar to what we had in [service-composition](https://github.com/ballerina-guides/service-composition) guide except, all three external services (Airline reservation, Hotel reservation and Car rental) contain multiple resources, and the Travel agency service checks these resources in parallel to determine the suitable resource when communicating with each service. The following diagram illustrates this use case clearly.
+This scenario is similar to what we had in [service-composition guide](https://github.com/ballerina-guides/service-composition) except, all three external services (Airline reservation, Hotel reservation and Car rental) contain multiple resources, and the Travel agency service checks these resources in parallel to determine the suitable resource when communicating with each service. The following diagram illustrates this use case clearly.
 
 ![alt text](/images/parallel_service_orchestration.png)
 
-Travel agency is the service that acts as the composition initiator. The other three services are external services that the travel agency service calls to do airline ticket booking, hotel reservation and car rental. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third party services are also written in Ballerina.
+Travel agency is the service that acts as the service orchestration initiator. The other three services are external services that the travel agency service calls to do airline ticket booking, hotel reservation and car rental. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third party services are also written in Ballerina.
 
 ## <a name="pre-req"></a> Prerequisites
  
@@ -66,9 +66,9 @@ The `travel_agency_service_parallel.bal` file consists of the travel agency serv
 
 ### <a name="Implementation"></a> Implementation
 
-Let's look at the implementation of the travel agency service, which acts as the composition initiator.
+Let's look at the implementation of the travel agency service, which acts as the service orchestration initiator.
 
-Arranging a complete tour travel agency service requires communicating with three other services: airline reservation, hotel reservation, and car rental. All these services accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. Request and response payloads are similar for all three backend services.
+To arrange a complete tour travel agency service requires communicating with three other services: airline reservation, hotel reservation, and car rental. All these services accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. Request and response payloads are similar for all three backend services.
 
 Sample request payload:
 
