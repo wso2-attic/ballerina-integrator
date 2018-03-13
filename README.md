@@ -52,7 +52,26 @@ Package `Subscribers` contains three different subscribers who subscribed to Kaf
 
 ### <a name="Implementation"></a> Implementation
 
-Let's get started with the implementation of a Kafka service, which is subscribed to the Kafka topic 'product-price'. Let's consider `inventory_control_system.bal` for example. Refer the code attached below. Inline comments added for better understanding.
+Let's get started with the implementation of a Kafka service, which is subscribed to the Kafka topic 'product-price'. Let's consider `inventory_control_system.bal` for example. Let's first see how to add the Kafka configurations for a Kafka subscriber written in Ballerina language. Refer to the code segment attached below.
+
+##### Kafka subscriber configurations
+```ballerina
+// Kafka subscriber configurations
+@Description {value:"Service level annotation to provide Kafka consumer configuration"}
+@kafka:configuration {
+    bootstrapServers:"localhost:9092, localhost:9093",
+    // Consumer group ID
+    groupId:"inventorySystem",
+    // Listen from topic 'product-price'
+    topics:["product-price"],
+    // Poll every 1 second
+    pollingInterval:1000
+}
+```
+
+A Kafka subscriber in Ballerina should contain this `@kafka:configuration {}` block in which we specify the required configurations for a Kafka subscriber. Field `bootstrapServers` provides the list of host and port pairs, which are the addresses of the Kafka brokers in a "bootstrap" Kafka cluster. Field `groupId` specifies the Id of the consumer group. Field `topics` specifies the topics need to be listened by this consumer. Field `pollingInterval` is the time interval that a consumer polls the topic. 
+
+Let's now see the complete implementation of the `inventory_control_system.bal` file, which is a Kafka topic subscriber.
 
 ##### inventory_control_system.bal
 ```ballerina
@@ -97,14 +116,34 @@ service<kafka> inventoryControlService {
 
 ```
 
-In the above code, we have implemented a Kafka service that is subscribed to listen the topic 'product-price'. We require providing the Kafka subscriber configurations for this Kafka service. `@kafka:configuration {}` block contains these Kafka consumer configurations. Field `bootstrapServers` provides the list of host and port pairs, which are the addresses of the Kafka brokers in a "bootstrap" Kafka cluster. Field `groupId` specifies the Id of the consumer group. Field `topics` specifies the topics need to be listened by this consumer. Field `pollingInterval` is the time interval that a consumer polls the topic. 
+In the above code, we have implemented a Kafka service that is subscribed to listen the topic 'product-price'. We require providing the Kafka subscriber configurations for this Kafka service as shown above. 
 
 Resource `onMessage` will be triggered whenever a message published to the topic specified.
 
 To check the implementations of the other subscribers refer [franchisee1.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Subscribers/Franchisee1/franchisee1.bal) and [franchisee2.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Subscribers/Franchisee2/franchisee2.bal).
 
 
-Let's next focus on the implementation of `product_admin_portal.bal`, which acts as the message publisher. It contains an HTTP service using which a product admin can update the price of a product. Skeleton of `product_admin_portal.bal` is attached below. Inline comments added for better understanding.
+Let's next focus on the implementation of `product_admin_portal.bal`, which acts as the message publisher. It contains an HTTP service using which a product admin can update the price of a product. 
+
+In this example, we first serialized the message in `blob` format before publishing it to the topic. Then `kafka:ProducerRecord` is created where we specify the serialized message, destination topic name and the number of partitions. Then we specified the Kafka producer cofigurations by creating a `kafka:ProducerConfig`. Look at the code snippet added below.
+
+##### Kafka producer configurations
+```ballerina
+// Kafka message publishing logic
+// Construct and serialize the message to be published to the Kafka topic
+json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPrice};
+blob serializedMsg = priceUpdateInfo.toString().toBlob("UTF-8");
+// Create the Kafka ProducerRecord and specify the destination topic - 'product-price' in this case
+// Set a valid partition number, which will be used when sending the record
+kafka:ProducerRecord record = {value:serializedMsg, topic:"product-price", partition:0};
+
+// Create a Kafka ProducerConfig with optional parameters 'clientID' - for broker side logging,
+// acks - number of acknowledgments for requests, noRetries - number of retries if record send fails
+kafka:ProducerConfig producerConfig = {clientID:"basic-producer", acks:"all", noRetries:3};
+// Produce the message and publish it to the Kafka topic
+```
+
+Let's now see the skeleton of the `product_admin_portal.bal` file. Inline comments added for better understanding.
 
 ##### product_admin_portal.bal
 ```ballerina
@@ -162,7 +201,7 @@ function kafkaProduce (kafka:ProducerRecord record, kafka:ProducerConfig produce
 
 ```
 
-Refer [product_admin_portal.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal.bal) to see the complete implementation of the above.
+Refer [product_admin_portal.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal.bal) to see the complete implementation of the above. 
 
 ## <a name="testing"></a> Testing 
 
