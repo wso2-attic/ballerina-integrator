@@ -68,18 +68,42 @@ The `travel_agency_service_parallel.bal` file consists of the travel agency serv
 
 Let's look at the implementation of the travel agency service, which acts as the service orchestration initiator.
 
-To arrange a complete tour travel agency service requires communicating with three other services: airline reservation, hotel reservation, and car rental. All these services accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. Request and response payloads are similar for all three backend services.
+To arrange a complete tour travel agency service requires communicating with three other services: airline reservation, hotel reservation, and car rental. These external services consist of multiple resources, which can be consumed by the callers. Airline reservation service has three different resources each depicting an airway provider. Similarly, Hotel reservation service has three resources to check different hotels and Car rental service has three resources to check different rental providing companies. All these services accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. 
 
-Sample request payload:
+Sample request payload for Airline reservation service:
 
 ```bash
-{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":<service_dependent_preference>};
+{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi"} 
 ```
 
-Sample response payload:
+Sample response payload from Airline reservation service:
 
 ```bash
-{"Status":"Success"}
+{"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018", "From":"Colombo", "To":"Changi", "Price":273}
+```
+
+Sample request payload for Hotel reservation service:
+
+```bash
+{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Location":"Changi"}
+```
+
+Sample response payload from Hotel reservation service:
+
+```bash
+{"HotelName":"Miramar", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "DistanceToLocation":6}
+```
+
+Sample request payload for Car rental service:
+
+```bash
+{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "VehicleType":"Car"}
+```
+
+Sample response payload from Car rental service:
+
+```bash
+{"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "PricePerDay":5}
 ```
 
 When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to book a flight ticket. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service.bal) file.
