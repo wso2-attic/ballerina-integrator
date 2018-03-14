@@ -106,16 +106,266 @@ Sample response payload from Car rental service:
 {"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "PricePerDay":5}
 ```
 
-When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to book a flight ticket. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service.bal) file.
+When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to arrange an airway. Airline reservation service allows the client to check about three different airways by providing a separate resource for each airway. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service.bal) file.
 
-Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal) file.
+Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. Hotel reservation service allows the client to check about three different hotels by providing a separate resource for each hotel. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal) file.
 
-Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) file.
+Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. Car rental service also provides three different resources for three car rental providing companies. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) file.
 
-If all services work successfully, the travel agency service confirms and arrange the complete tour for the user. The skeleton of `travel_agency_service.bal` file is attached below. Inline comments are added for better understanding.
+When communicating with an external service, the Travel agency service sends separate requests for all the available resources in parallel.
 
+Travel agency service checks all three airways available in parallel and waits for all of them to respond. Once it receives the responses, it selects the airway that has the lowest cost. Refer to the below code segment attached, which is responsible for the integration with Airline reservation service.
 
-##### travel_agency_service.bal
+```ballerina
+// Airline reservation
+// Call Airline reservation service and consume different resources in parallel to check about different airways
+// Fork - Join to run parallel workers and join the results
+fork {
+    // Worker to communicate with airline 'Qatar Airways'
+    worker qatarWorker {
+        http:OutRequest req = {};
+        http:InResponse respWorkerQatar = {};
+        // Out request payload
+        req.setJsonPayload(flightPayload);
+        // Send a POST request to 'Qatar Airways' and get the results
+        respWorkerQatar, _ = airlineReservationEP.post("/qatarAirways", req);
+        // Reply to the join block from this worker - Send the response from 'Qatar Airways'
+        respWorkerQatar -> fork;
+    }
+
+    // Worker to communicate with airline 'Asiana'
+    worker asianaWorker {
+        http:OutRequest req = {};
+        http:InResponse respWorkerAsiana = {};
+        // Out request payload
+        req.setJsonPayload(flightPayload);
+        // Send a POST request to 'Asiana' and get the results
+        respWorkerAsiana, _ = airlineReservationEP.post("/asiana", req);
+        // Reply to the join block from this worker - Send the response from 'Asiana'
+        respWorkerAsiana -> fork;
+    }
+
+    // Worker to communicate with airline 'Emirates'
+    worker emiratesWorker {
+        http:OutRequest req = {};
+        http:InResponse respWorkerEmirates = {};
+        // Out request payload
+        req.setJsonPayload(flightPayload);
+        // Send a POST request to 'Emirates' and get the results
+        respWorkerEmirates, _ = airlineReservationEP.post("/emirates", req);
+        // Reply to the join block from this worker - Send the response from 'Emirates'
+        respWorkerEmirates -> fork;
+    }
+} join (all) (map airlineResponses) {
+    // Wait until the responses received from all the workers running in parallel
+
+    int qatarPrice;
+    int asianaPrice;
+    int emiratesPrice;
+
+    // Get the response and price for airline 'Qatar Airways'
+    if (airlineResponses["qatarWorker"] != null) {
+        var resQatarWorker, _ = (any[])airlineResponses["qatarWorker"];
+        var responseQatar, _ = (http:InResponse)(resQatarWorker[0]);
+        jsonFlightResponseQatar = responseQatar.getJsonPayload();
+        qatarPrice, _ = (int)jsonFlightResponseQatar.Price;
+    }
+
+    // Get the response and price for airline 'Asiana'
+    if (airlineResponses["asianaWorker"] != null) {
+        var resAsianaWorker, _ = (any[])airlineResponses["asianaWorker"];
+        var responseAsiana, _ = (http:InResponse)(resAsianaWorker[0]);
+        jsonFlightResponseAsiana = responseAsiana.getJsonPayload();
+        asianaPrice, _ = (int)jsonFlightResponseAsiana.Price;
+    }
+
+    // Get the response and price for airline 'Emirates'
+    if (airlineResponses["emiratesWorker"] != null) {
+        var resEmiratesWorker, _ = (any[])airlineResponses["emiratesWorker"];
+        var responseEmirates, _ = ((http:InResponse)(resEmiratesWorker[0]));
+        jsonFlightResponseEmirates = responseEmirates.getJsonPayload();
+        emiratesPrice, _ = (int)jsonFlightResponseEmirates.Price;
+
+    }
+
+    // Select the airline with the least price
+    if (qatarPrice < asianaPrice) {
+        if (qatarPrice < emiratesPrice) {
+            jsonFlightResponse = jsonFlightResponseQatar;
+        }
+    } else {
+        if (qatarPrice < emiratesPrice) {
+            jsonFlightResponse = jsonFlightResponseAsiana;
+        }
+        else {
+            jsonFlightResponse = jsonFlightResponseEmirates;
+        }
+    }
+}
+```
+
+As shown in the above code, we used `fork-join` to run parallel workers and join their responses. The fork-join allows developers to spawn (fork) multiple workers within a Ballerina program and join the results from those workers. Here we used "all" as the join condition, which means the program waits for all the workers to respond.
+
+Let's now look at how the Travel agency service integrates with the Hotel reservation service. Similar to the above scenario, Travel agency service sends requests to all three available resources in Parallel and wait for all of them to respond. Once it receives the responses, it selects the hotel that is closest to the client's preferred location. Refer to the below code segment attached.
+
+```ballerina
+// Hotel reservation
+// Call Hotel reservation service and consume different resources in parallel to check about different hotels
+// Fork - Join to run parallel workers and join the results
+fork {
+    // Worker to communicate with hotel 'Miramar'
+    worker miramar {
+        http:OutRequest req = {};
+        http:InResponse respWorkerMiramar = {};
+        // Out request payload
+        req.setJsonPayload(hotelPayload);
+        // Send a POST request to 'Asiana' and get the results
+        respWorkerMiramar, _ = hotelReservationEP.post("/miramar", req);
+        // Reply to the join block from this worker - Send the response from 'Asiana'
+        respWorkerMiramar -> fork;
+    }
+
+    // Worker to communicate with hotel 'Aqueen'
+    worker aqueen {
+        http:OutRequest req = {};
+        http:InResponse respWorkerAqueen = {};
+        // Out request payload
+        req.setJsonPayload(hotelPayload);
+        // Send a POST request to 'Aqueen' and get the results
+        respWorkerAqueen, _ = hotelReservationEP.post("/aqueen", req);
+        // Reply to the join block from this worker - Send the response from 'Aqueen'
+        respWorkerAqueen -> fork;
+    }
+
+    // Worker to communicate with hotel 'Elizabeth'
+    worker elizabeth {
+        http:OutRequest req = {};
+        http:InResponse respWorkerElizabeth = {};
+        // Out request payload
+        req.setJsonPayload(hotelPayload);
+        // Send a POST request to 'Elizabeth' and get the results
+        respWorkerElizabeth, _ = hotelReservationEP.post("/elizabeth", req);
+        // Reply to the join block from this worker - Send the response from 'Elizabeth'
+        respWorkerElizabeth -> fork;
+    }
+} join (all) (map hotelResponses) {
+    // Wait until the responses received from all the workers running in parallel
+
+    int miramarDistance;
+    int aqueenDistance;
+    int elizabethDistance;
+
+    // Get the response and distance to the preferred location from the hotel 'Miramar'
+    if (hotelResponses["miramar"] != null) {
+        var resMiramarWorker, _ = (any[])hotelResponses["miramar"];
+        var responseMiramar, _ = (http:InResponse)(resMiramarWorker[0]);
+        miramarJsonResponse = responseMiramar.getJsonPayload();
+        miramarDistance, _ = (int)miramarJsonResponse.DistanceToLocation;
+    }
+
+    // Get the response and distance to the preferred location from the hotel 'Aqueen'
+    if (hotelResponses["aqueen"] != null) {
+        var resAqueenWorker, _ = (any[])hotelResponses["aqueen"];
+        var responseAqueen, _ = (http:InResponse)(resAqueenWorker[0]);
+        aqueenJsonResponse = responseAqueen.getJsonPayload();
+        aqueenDistance, _ = (int)aqueenJsonResponse.DistanceToLocation;
+    }
+
+    // Get the response and distance to the preferred location from the hotel 'Elizabeth'
+    if (hotelResponses["elizabeth"] != null) {
+        var resElizabethWorker, _ = (any[])hotelResponses["elizabeth"];
+        var responseElizabeth, _ = ((http:InResponse)(resElizabethWorker[0]));
+        elizabethJsonResponse = responseElizabeth.getJsonPayload();
+        elizabethDistance, _ = (int)elizabethJsonResponse.DistanceToLocation;
+    }
+
+    // Select the hotel with the lowest distance
+    if (miramarDistance < aqueenDistance) {
+        if (miramarDistance < elizabethDistance) {
+            jsonHotelResponse = miramarJsonResponse;
+        }
+    } else {
+        if (aqueenDistance < elizabethDistance) {
+            jsonHotelResponse = aqueenJsonResponse;
+        }
+        else {
+            jsonHotelResponse = elizabethJsonResponse;
+        }
+    }
+}
+
+```
+
+Let's next look at how the Travel agency service integrates with the Car rental service. Travel agency service sends requests to all three car rental providers in Parallel and gets only the first one to respond. Refer to the below code segment attached.
+
+```ballerina
+// Car rental
+// Call Car rental service and consume different resources in parallel to check about different companies
+// Fork - Join to run parallel workers and join the results
+fork {
+    // Worker to communicate with Company 'DriveSg'
+    worker driveSg {
+        http:OutRequest req = {};
+        http:InResponse respWorkerDriveSg = {};
+        // Out request payload
+        req.setJsonPayload(vehiclePayload);
+        // Send a POST request to 'DriveSg' and get the results
+        respWorkerDriveSg, _ = carRentalEP.post("/driveSg", req);
+        // Reply to the join block from this worker - Send the response from 'DriveSg'
+        respWorkerDriveSg -> fork;
+    }
+
+    // Worker to communicate with Company 'DreamCar'
+    worker dreamCar {
+        http:OutRequest req = {};
+        http:InResponse respWorkerDreamCar = {};
+        // Out request payload
+        req.setJsonPayload(vehiclePayload);
+        // Send a POST request to 'DreamCar' and get the results
+        respWorkerDreamCar, _ = carRentalEP.post("/dreamCar", req);
+        // Reply to the join block from this worker - Send the response from 'DreamCar'
+        respWorkerDreamCar -> fork;
+    }
+
+    // Worker to communicate with Company 'Sixt'
+    worker sixt {
+        http:OutRequest req = {};
+        http:InResponse respWorkerSixt = {};
+        // Out request payload
+        req.setJsonPayload(vehiclePayload);
+        // Send a POST request to 'Sixt' and get the results
+        respWorkerSixt, _ = carRentalEP.post("/sixt", req);
+        // Reply to the join block from this worker - Send the response from 'Sixt'
+        respWorkerSixt -> fork;
+    }
+} join (some 1) (map vehicleResponses) {
+    // Get the first responding worker
+
+    // Get the response from company 'DriveSg' if not null
+    if (vehicleResponses["driveSg"] != null) {
+        var resDriveSgWorker, _ = (any[])vehicleResponses["driveSg"];
+        var responseDriveSg, _ = (http:InResponse)(resDriveSgWorker[0]);
+        jsonVehicleResponse = responseDriveSg.getJsonPayload();
+    } else if (vehicleResponses["dreamCar"] != null) {
+        // Get the response from company 'DreamCar' if not null
+        var resDreamCarWorker, _ = (any[])vehicleResponses["dreamCar"];
+        var responseDreamCar, _ = (http:InResponse)(resDreamCarWorker[0]);
+        jsonVehicleResponse = responseDreamCar.getJsonPayload();
+    } else if (vehicleResponses["sixt"] != null) {
+        // Get the response from company 'Sixt' if not null
+        var resSixtWorker, _ = (any[])vehicleResponses["sixt"];
+        var responseSixt, _ = ((http:InResponse)(resSixtWorker[0]));
+        jsonVehicleResponse = responseSixt.getJsonPayload();
+    }
+}
+
+```
+
+Here we used "some 1" as the join condition, which means the program gets results from only one worker, which responds first. Therefore, the Travel agency service will get the car rental provider that responds first.
+
+Finally, let's look at the skeleton of the `travel_agency_service_parallel.bal` file that is responsible for the Travel agency service.
+
+##### travel_agency_service_parallel.bal
 
 ```ballerina
 package TravelAgency;
@@ -144,113 +394,25 @@ service<http> travelAgencyService {
     // Resource to arrange a tour
     @http:resourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
     resource arrangeTour (http:Connection connection, http:InRequest inRequest) {
-        http:OutResponse outResponse = {};
-
-        // JSON payload format for an HTTP OUT request
-        json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"", "Preference":""};
-
+      
         // Try parsing the JSON payload from the user request
 
-        // If payload parsing fails, send a "Bad Request" message as the response
+        // Integration with Airline reservation service to reserve airway
 
-        // Reserve airline ticket for the user by calling the airline reservation service
+        // Integration with Hotel reservation service to reserve hotel
 
-        // Reserve hotel room for the user by calling the hotel reservation service
-
-        // Renting car for the user by calling the car rental service
+        // Integration with Car rental service to rent vehicle
         
-        
-        // If the response from all three services have a positive status, send a successful message to the user
-        outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
-        _ = connection.respond(outResponse);
+        // Respond back to the client
     }
 }
 
 ```
 
-Let's now look at the code segment that is responsible for communicating with the airline reservation service. 
+In the above code, `airlineReservationEP` is the endpoint defined through which the Ballerina service communicates with the external airline reservation service. The endpoint defined to communicate with the external Hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the endpoint defined to communicate with the external car rental service.
 
-```ballerina
-// Reserve airline ticket for the user by calling the airline reservation service
-http:OutRequest outReqAirline = {};
-http:InResponse inResAirline = {};
+To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/travel_agency_service_parallel.bal).
 
-// Construct the payload
-json outReqPayloadAirline = outReqPayload;
-outReqPayloadAirline.Preference = airlinePreference;
-outReqAirline.setJsonPayload(outReqPayloadAirline);
-
-// Send a POST request to the airlineReservationService with an appropriate payload and get response
-inResAirline, _ = airlineReservationEP.post("/reserve", outReqAirline);
-
-// Get the reservation status
-string airlineReservationStatus = inResAirline.getJsonPayload().Status.toString();
-
-// If reservation status is negative, send a failure response to the user
-if (airlineReservationStatus.equalsIgnoreCase("Failed")) {
-    outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
-                                          "Provide a valid 'Preference' for 'Airline' and try again"});
-    _ = connection.respond(outResponse);
-    return;
-}
-```
-
-The above code shows how the travel agency service initiates a request to the airline reservation service to book a flight ticket. `airlineReservationEP` is the endpoint you defined through which the Ballerina service communicates with the external airline reservation service.
-
-
-Let's now look at the code segment that is responsible for communicating with the hotel reservation service. 
-
-```ballerina
-// Reserve hotel room for the user by calling the hotel reservation service
-http:OutRequest outReqHotel = {};
-http:InResponse inResHotel = {};
-// construct the payload
-json outReqPayloadHotel = outReqPayload;
-outReqPayloadHotel.Preference = hotelPreference;
-outReqHotel.setJsonPayload(outReqPayloadHotel);
-
-// Send a POST request to hotelReservationService with an appropriate payload and get response
-inResHotel, _ = hotelReservationEP.post("/reserve", outReqHotel);
-
-// Get the reservation status
-string hotelReservationStatus = inResHotel.getJsonPayload().Status.toString();
-// If the reservation status is negative, send a failure response to the user
-if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
-    outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
-                                     "Provide a valid 'Preference' for 'Accommodation' and try again"});
-    _ = connection.respond(outResponse);
-    return;
-}
-```
-The travel agency service communicates with the hotel reservation service to book a room for the client as shown above. The endpoint defined for this external service call is `hotelReservationEP`.
-
-Finally, let's look at the code segment that is responsible for communicating with the car rental service. 
-
-```ballerina
-// Renting car for the user by calling the car rental service
-http:OutRequest outReqCar = {};
-http:InResponse inResCar = {};
-// Construct the payload
-json outReqPayloadCar = outReqPayload;
-outReqPayloadCar.Preference = carPreference;
-outReqCar.setJsonPayload(outReqPayloadCar);
-
-// Send a POST request to carRentalService with an appropriate payload and get response
-inResCar, _ = carRentalEP.post("/rent", outReqCar);
-
-// Get the rental status
-string carRentalStatus = inResCar.getJsonPayload().Status.toString();
-// If rental status is negative, send a failure response to the user
-if (carRentalStatus.equalsIgnoreCase("Failed")) {
-    outResponse.setJsonPayload({"Message":"Failed to rent car! " +
-                                          "Provide a valid 'Preference' for 'Car' and try again"});
-    _ = connection.respond(outResponse);
-    return;
-}
-
-```
-
-As shown above, the travel agency service rents a car for the requested user by calling the car rental service. `carRentalEP` is the endpoint defined to communicate with the external car rental service.
 
 ## <a name="testing"></a> Testing 
 
