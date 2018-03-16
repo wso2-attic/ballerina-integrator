@@ -12,7 +12,7 @@ Basically, this service will deal with MySQL database and expose the data operat
 Please refer to the following scenario diagram to understand the complete end-to-end scenario.
 
 
-![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/bellerinaDataBackedApiSample/images/database_service_scenario.png)
+![alt text](/images/database_service_scenario2.png)
 
 
 ## <a name="pre-req"></a> Prerequisites
