@@ -23,28 +23,39 @@ const string ECONOMY = "Economy";
 const string BUSINESS = "Business";
 const string FIRST = "First";
 
+// Service endpoint
+endpoint http:ServiceEndpoint airlineEP {
+port:9091
+};
+
 // Airline reservation service to reserve airline tickets
-@http:configuration {basePath:"/airline", port:9091}
-service<http> airlineReservationService {
+@http:serviceConfig { basePath:"/airline"}
+service<http: Service > airlineReservationService bind airlineEP {
 
     // Resource to reserve a ticket
     @http:resourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
                           produces:["application/json"]}
-    resource reserveTicket (http:Connection connection, http:InRequest request) {
-        http:OutResponse response = {};
+reserveTicket (endpoint client, http:Request request) {
+http:Response response = {};
+json name;
+json arrivalDate;
+json departDate;
+json preferredClass;
 
         // Try parsing the JSON payload from the request
-        json payload = request.getJsonPayload();
-        json name = payload.Name;
-        json arrivalDate = payload.ArrivalDate;
-        json departureDate = payload.DepartureDate;
-        json preferredClass = payload.Preference;
+var payload, entityErr = request.getJsonPayload();
+if(payload != null) {
+   name = payload.Name;
+arrivalDate = payload.ArrivalDate;
+                      departDate = payload.DepartureDate;
+preferredClass = payload.Preference;
+                         }
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (name == null || arrivalDate == null || departureDate == null || preferredClass == null) {
+                         if ( entityErr != null || name == null || arrivalDate == null || departDate == null || preferredClass == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = connection.respond(response);
+_ = client -> respond( response);
             return;
         }
 
@@ -60,6 +71,6 @@ service<http> airlineReservationService {
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-        _ = connection.respond(response);
+                     _ = client-> respond( response);
     }
 }

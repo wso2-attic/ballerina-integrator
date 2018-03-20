@@ -22,35 +22,46 @@ import ballerina.net.http;
 const string AC = "Air Conditioned";
 const string NORMAL = "Normal";
 
+// Service endpoint
+endpoint http:ServiceEndpoint hotelEP {
+port:9092
+};
+
 // Hotel reservation service to reserve hotel rooms
-@http:configuration {basePath:"/hotel", port:9092}
-service<http> hotelReservationService {
+@http:serviceConfig { basePath:"/hotel"}
+service<http: Service > hotelReservationService bind hotelEP {
 
     // Resource to reserve a room
     @http:resourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
                           produces:["application/json"]}
-    resource reserveRoom (http:Connection connection, http:InRequest request) {
-        http:OutResponse response = {};
+reserveRoom (endpoint client, http:Request request) {
+http:Response response = {};
+json name;
+json arrivalDate;
+json departDate;
+json preferredType;
 
         // Try parsing the JSON payload from the request
-        json payload = request.getJsonPayload();
-        json name = payload.Name;
-        json arrivalDate = payload.ArrivalDate;
-        json departureDate = payload.DepartureDate;
-        json preferredRoomType = payload.Preference;
+var payload, entityErr = request.getJsonPayload();
+if(payload != null) {
+   name = payload.Name;
+arrivalDate = payload.ArrivalDate;
+                      departDate = payload.DepartureDate;
+preferredType = payload.Preference;
+                        }
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (name == null || arrivalDate == null || departureDate == null || preferredRoomType == null) {
+                        if ( entityErr != null || name == null || arrivalDate == null || departDate == null || preferredType == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = connection.respond(response);
+_ = client -> respond( response);
             return;
         }
 
         // Mock logic
         // If request is for an available room type, send a reservation successful status
-        string preferredRoomTypeStr = preferredRoomType.toString().trim();
-        if (preferredRoomTypeStr.equalsIgnoreCase(AC) || preferredRoomTypeStr.equalsIgnoreCase(NORMAL)) {
+string preferredTypeStr = preferredType.toString().trim();
+if (preferredTypeStr. equalsIgnoreCase(AC) || preferredTypeStr.equalsIgnoreCase( NORMAL)) {
             response.setJsonPayload({"Status":"Success"});
         }
         else {
@@ -58,6 +69,6 @@ service<http> hotelReservationService {
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-        _ = connection.respond(response);
+_ = client -> respond( response);
     }
 }
