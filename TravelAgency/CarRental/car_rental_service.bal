@@ -24,36 +24,36 @@ const string NORMAL = "Normal";
 
 // Service endpoint
 endpoint http:ServiceEndpoint carEP {
-port:9093
+    port:9093
 };
 
 // Car rental service to rent cars
-@http:serviceConfig { basePath:"/car"}
-service<http: Service > carRentalService bind carEP {
+@http:serviceConfig {basePath:"/car"}
+service<http:Service> carRentalService bind carEP {
 
     // Resource to rent a car
     @http:resourceConfig {methods:["POST"], path:"/rent", consumes:["application/json"], produces:["application/json"]}
-rentCar (endpoint client, http:Request request) {
-http:Response response = {};
-json name;
-json arrivalDate;
-json departDate;
-json preferredType;
+    rentCar (endpoint client, http:Request request) {
+        http:Response response = {};
+        json name;
+        json arrivalDate;
+        json departDate;
+        json preferredType;
 
         // Try parsing the JSON payload from the request
-var payload, entityErr = request.getJsonPayload();
-if(payload != null) {
-   name = payload.Name;
-arrivalDate = payload.ArrivalDate;
-                      departDate = payload.DepartureDate;
-preferredType = payload.Preference;
-                        }
+        var payload, entityErr = request.getJsonPayload();
+        if(payload != null) {
+            name = payload.Name;
+            arrivalDate = payload.ArrivalDate;
+            departDate = payload.DepartureDate;
+            preferredType = payload.Preference;
+        }
 
         // If payload parsing fails, send a "Bad Request" message as the response
-                        if ( entityErr != null || name == null || arrivalDate == null || departDate == null || preferredType == null) {
+        if (entityErr != null || name == null || arrivalDate == null || departDate == null || preferredType == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-_ = client -> respond( response);
+            _ = client -> respond(response);
             return;
         }
 
@@ -68,6 +68,6 @@ _ = client -> respond( response);
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-_ = client -> respond( response);
+        _ = client -> respond(response);
     }
 }

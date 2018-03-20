@@ -25,37 +25,37 @@ const string FIRST = "First";
 
 // Service endpoint
 endpoint http:ServiceEndpoint airlineEP {
-port:9091
+    port:9091
 };
 
 // Airline reservation service to reserve airline tickets
-@http:serviceConfig { basePath:"/airline"}
-service<http: Service > airlineReservationService bind airlineEP {
+@http:serviceConfig {basePath:"/airline"}
+service<http:Service> airlineReservationService bind airlineEP {
 
     // Resource to reserve a ticket
     @http:resourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
                           produces:["application/json"]}
-reserveTicket (endpoint client, http:Request request) {
-http:Response response = {};
-json name;
-json arrivalDate;
-json departDate;
-json preferredClass;
+    reserveTicket (endpoint client, http:Request request) {
+        http:Response response = {};
+        json name;
+        json arrivalDate;
+        json departDate;
+        json preferredClass;
 
         // Try parsing the JSON payload from the request
-var payload, entityErr = request.getJsonPayload();
-if(payload != null) {
-   name = payload.Name;
-arrivalDate = payload.ArrivalDate;
-                      departDate = payload.DepartureDate;
-preferredClass = payload.Preference;
-                         }
+        var payload, entityErr = request.getJsonPayload();
+        if(payload != null) {
+            name = payload.Name;
+            arrivalDate = payload.ArrivalDate;
+            departDate = payload.DepartureDate;
+            preferredClass = payload.Preference;
+        }
 
         // If payload parsing fails, send a "Bad Request" message as the response
-                         if ( entityErr != null || name == null || arrivalDate == null || departDate == null || preferredClass == null) {
+        if (entityErr != null || name == null || arrivalDate == null || departDate == null || preferredClass == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-_ = client -> respond( response);
+            _ = client -> respond(response);
             return;
         }
 
@@ -71,6 +71,6 @@ _ = client -> respond( response);
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-                     _ = client-> respond( response);
+        _ = client -> respond(response);
     }
 }
