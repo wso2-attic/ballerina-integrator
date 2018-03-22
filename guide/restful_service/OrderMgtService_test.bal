@@ -53,7 +53,7 @@ function testResourceUpdateOrder () {
     // 'err' is expected to be null
     test:assertTrue(err == null, "Error: Failed to update the order!");
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "updateOrder resource did not respond with expected response code!");
+    test:assertIntEquals(response.statusCode, 500, "updateOrder resource did not respond with expected response code!");
     // Check whether the response is as expected
     test:assertStringEquals(response.getJsonPayload().toString(), "{\"Order\":{\"ID\":\"100500\",\"Name\":\"XYZ\"," +
                                                                   "\"Description\":\"Updated order.\"}}",
