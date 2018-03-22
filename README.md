@@ -12,9 +12,6 @@ The following are the sections available in this guide.
 - [Testing](#testing)
 - [Deployment](#deploying-the-scenario)
 - [Observability](#observability)
-- [Logging](#logging)
-- [Metrics](#metrics)
-- [Tracing](#tracing)
 
 ## <a name="what-you-build"></a>  What you’ll build
 To understand how you can build a parallel service orchestration using Ballerina, let's consider a real-world use case of a travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the travel agency service requires communicating with other necessary back-ends. 
