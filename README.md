@@ -12,6 +12,9 @@ The following are the sections available in this guide.
 - [Testing](#testing)
 - [Deployment](#deploying-the-scenario)
 - [Observability](#observability)
+- [Logging](#logging)
+- [Metrics](#metrics)
+- [Tracing](#tracing)
 
 ## <a name="what-you-build"></a>  What you’ll build
 To understand how you can build a parallel service orchestration using Ballerina, let's consider a real-world use case of a travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the travel agency service requires communicating with other necessary back-ends. 
@@ -115,7 +118,7 @@ Finally, the travel agency service needs to connect with the car rental service 
 
 When communicating with an external service, the travel agency service sends separate requests for all the available resources in parallel.
 
-The travel agency service checks all three airlines available in parallel and waits for all of them to respond. Once it receives the responses, it selects the airline that has the lowest cost. Refer to the below code segment attached, which is responsible for the integration with the airline reservation service.
+The travel agency service checks if all three airlines available in parallel and waits for all of them to respond. Once it receives the responses, it selects the airline that has the lowest cost. Refer to the following code snippet, which is responsible for the integration with the airline reservation service.
 
 ```ballerina
 // Airline reservation
@@ -210,11 +213,11 @@ fork {
 
 As shown in the above code, we used `fork-join` to run parallel workers and join their responses. The fork-join allows developers to spawn (fork) multiple workers within a Ballerina program and join the results from those workers. Here we used "all" as the join condition, which means the program waits for all the workers to respond.
 
-Let's now look at how the Travel agency service integrates with the Hotel reservation service. Similar to the above scenario, Travel agency service sends requests to all three available resources in Parallel and wait for all of them to respond. Once it receives the responses, it selects the hotel that is closest to the client's preferred location. Refer to the below code segment attached.
+Let's now look at how the travel agency service integrates with the hotel reservation service. Similar to the above scenario, the travel agency service sends requests to all three available resources in parallel and waits for all of them to respond. Once it receives the responses, it selects the hotel that is closest to the client's preferred location. Refer to the following code snippet.
 
 ```ballerina
 // Hotel reservation
-// Call Hotel reservation service and consume different resources in parallel to check about different hotels
+// Call the hotel reservation service and consume different resources in parallel to check about different hotels
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with hotel 'Miramar'
@@ -225,7 +228,8 @@ fork {
         req.setJsonPayload(hotelPayload);
         // Send a POST request to 'Asiana' and get the results
         respWorkerMiramar, _ = hotelReservationEP.post("/miramar", req);
-        // Reply to the join block from this worker - Send the response from 'Asiana'
+        // Reply to the join block from this worker 
+        // Send the response from 'Asiana'
         respWorkerMiramar -> fork;
     }
 
@@ -237,7 +241,8 @@ fork {
         req.setJsonPayload(hotelPayload);
         // Send a POST request to 'Aqueen' and get the results
         respWorkerAqueen, _ = hotelReservationEP.post("/aqueen", req);
-        // Reply to the join block from this worker - Send the response from 'Aqueen'
+        // Reply to the join block from this worker 
+        // Send the response from 'Aqueen'
         respWorkerAqueen -> fork;
     }
 
@@ -249,11 +254,12 @@ fork {
         req.setJsonPayload(hotelPayload);
         // Send a POST request to 'Elizabeth' and get the results
         respWorkerElizabeth, _ = hotelReservationEP.post("/elizabeth", req);
-        // Reply to the join block from this worker - Send the response from 'Elizabeth'
+        // Reply to the join block from this worker 
+        // Send the response from 'Elizabeth'
         respWorkerElizabeth -> fork;
     }
 } join (all) (map hotelResponses) {
-    // Wait until the responses received from all the workers running in parallel
+    // Wait until the responses are received from all the workers running in parallel
 
     int miramarDistance;
     int aqueenDistance;
@@ -300,14 +306,14 @@ fork {
 
 ```
 
-Let's next look at how the Travel agency service integrates with the Car rental service. Travel agency service sends requests to all three car rental providers in Parallel and gets only the first one to respond. Refer to the below code segment attached.
+Let's next look at how the travel agency service integrates with the car rental service. The travel agency service sends requests to all three car rental providers in parallel and gets only the first one to respond. Refer to the following code snippet.
 
 ```ballerina
 // Car rental
-// Call Car rental service and consume different resources in parallel to check about different companies
+// Call the car rental service and consume different resources in parallel to check about different companies
 // Fork - Join to run parallel workers and join the results
 fork {
-    // Worker to communicate with Company 'DriveSg'
+    // Worker to communicate with company 'DriveSg'
     worker driveSg {
         http:OutRequest req = {};
         http:InResponse respWorkerDriveSg = {};
@@ -315,11 +321,12 @@ fork {
         req.setJsonPayload(vehiclePayload);
         // Send a POST request to 'DriveSg' and get the results
         respWorkerDriveSg, _ = carRentalEP.post("/driveSg", req);
-        // Reply to the join block from this worker - Send the response from 'DriveSg'
+        // Reply to the join block from this worker 
+        // Send the response from 'DriveSg'
         respWorkerDriveSg -> fork;
     }
 
-    // Worker to communicate with Company 'DreamCar'
+    // Worker to communicate with company 'DreamCar'
     worker dreamCar {
         http:OutRequest req = {};
         http:InResponse respWorkerDreamCar = {};
@@ -327,11 +334,12 @@ fork {
         req.setJsonPayload(vehiclePayload);
         // Send a POST request to 'DreamCar' and get the results
         respWorkerDreamCar, _ = carRentalEP.post("/dreamCar", req);
-        // Reply to the join block from this worker - Send the response from 'DreamCar'
+        // Reply to the join block from this worker 
+        // Send the response from 'DreamCar'
         respWorkerDreamCar -> fork;
     }
 
-    // Worker to communicate with Company 'Sixt'
+    // Worker to communicate with company 'Sixt'
     worker sixt {
         http:OutRequest req = {};
         http:InResponse respWorkerSixt = {};
@@ -339,12 +347,12 @@ fork {
         req.setJsonPayload(vehiclePayload);
         // Send a POST request to 'Sixt' and get the results
         respWorkerSixt, _ = carRentalEP.post("/sixt", req);
-        // Reply to the join block from this worker - Send the response from 'Sixt'
+        // Reply to the join block from this worker 
+        // Send the response from 'Sixt'
         respWorkerSixt -> fork;
     }
 } join (some 1) (map vehicleResponses) {
     // Get the first responding worker
-
     // Get the response from company 'DriveSg' if not null
     if (vehicleResponses["driveSg"] != null) {
         var resDriveSgWorker, _ = (any[])vehicleResponses["driveSg"];
@@ -365,9 +373,9 @@ fork {
 
 ```
 
-Here we used "some 1" as the join condition, which means the program gets results from only one worker, which responds first. Therefore, the Travel agency service will get the car rental provider that responds first.
+Here we used "some 1" as the join condition, which means the program gets results from only one worker, which responds first. Therefore, the travel agency service gets the car rental provider that responds first.
 
-Finally, let's look at the skeleton of the `travel_agency_service_parallel.bal` file that is responsible for the Travel agency service.
+Finally, let's look at the structure of the `travel_agency_service_parallel.bal` file that is responsible for the Travel agency service.
 
 ##### travel_agency_service_parallel.bal
 
@@ -401,11 +409,11 @@ service<http> travelAgencyService {
       
         // Try parsing the JSON payload from the user request
 
-        // Integration with Airline reservation service to reserve airway
+        // Integration with Airline reservation service to reserve an airline
 
-        // Integration with Hotel reservation service to reserve hotel
+        // Integration with the hotel reservation service to reserve a hotel
 
-        // Integration with Car rental service to rent vehicle
+        // Integration with the car rental service to rent a vehicle
         
         // Respond back to the client
     }
@@ -413,16 +421,16 @@ service<http> travelAgencyService {
 
 ```
 
-In the above code, `airlineReservationEP` is the endpoint defined through which the Ballerina service communicates with the external airline reservation service. The endpoint defined to communicate with the external Hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the endpoint defined to communicate with the external car rental service.
+In the above code, `airlineReservationEP` is the endpoint defined through which the Ballerina service communicates with the external airline reservation service. The endpoint defined to communicate with the external hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the endpoint defined to communicate with the external car rental service.
 
-To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/travel_agency_service_parallel.bal).
+To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/travel_agency_service_parallel.bal) file.
 
 
 ## <a name="testing"></a> Testing 
 
 ### <a name="try-it"></a> Try it out
 
-1. Start all four HTTP services by entering the following command in a separate terminal for each service. This command will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file located.
+1. Start all four HTTP services by entering the following command in a separate terminal for each service. This command starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093, and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file is located.
 
    ```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina run TravelAgency/<Package_Name>
@@ -464,22 +472,22 @@ To run the unit tests, go to the sample root directory and run the following com
    <SAMPLE_ROOT_DIRECTORY>$ ballerina test TravelAgency/<Package_Name>
    ```
 
-To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/AirlineReservation/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/HotelReservation/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/CarRental/car_rental_service_test.bal) and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/travel_agency_service_parallel_test.bal).
+To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/AirlineReservation/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/HotelReservation/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/CarRental/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/travel_agency_service_parallel_test.bal).
 
 
 ## <a name="deploying-the-scenario"></a> Deployment
 
-Once you are done with the development, you can deploy the services using any of the methods that are listed below. 
+Once you are done with the development, you can deploy the services using any of the methods listed below. 
 
 ### <a name="deploying-on-locally"></a> Deploying locally
-You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows,
+You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
 
-Building 
+**Building** 
    ```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina build TravelAgency/<Package_Name>
    ```
 
-Running
+**Running**
    ```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
    ```
@@ -498,7 +506,7 @@ Once you have created the docker images, you can run them using `docker run` as 
   docker run -p <host_port>:<service_port> --name <container_instance_name> -d <image_name>:<tag_name>
   ```
 
-For example, to run the Travel agency service, use the following command.
+For example, to run the travel agency service, use the following command.
 
   ```bash
   docker run -p <host_port>:9090 --name ballerina_TravelAgency -d TravelAgency:latest
