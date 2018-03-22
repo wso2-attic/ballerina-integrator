@@ -5,6 +5,7 @@ install: ./install-dependencies.sh
 script:
 - ls
 - export PATH=$PATH:$(pwd)/ballerina-0.964.0/bin
+- echo $PATH
 - ballerina version
 - ballerina test guide/restful_service
 
