@@ -23,7 +23,7 @@ In this example, the Ballerina Kafka Connector is used to connect Ballerina to A
 
 ## <a name="pre-req"></a> Prerequisites
 - JDK 1.8 or later
-- [Ballerina Distribution](https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
+- [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
 - [Apache Kafka 1.0.0](https://kafka.apache.org/downloads)
   * Download the binary distribution and extract the contents
 - [Ballerina Kafka Connector](https://github.com/wso2-ballerina/package-kafka)
