@@ -1,0 +1,12 @@
+before_install:
+- sudo chmod +x install-dependencies.sh 
+install: ./install-dependencies.sh
+
+script:
+- export PATH=$PATH:$(pwd)/ballerina-0.964.0/bin
+- ballerina test TravelAgency/AirlineReservation/
+- ballerina test TravelAgency/CarRental/
+- ballerina test TravelAgency/HotelReservation/
+
+jdk:
+ - oraclejdk8
