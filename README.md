@@ -31,7 +31,7 @@ Basically, this service will deal with a MySQL database and expose the data oper
 ## <a name="pre-req"></a> Prerequisites
  
 * JDK 1.8 or later
-* [Ballerina Distribution](https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
+* [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
 * MySQL version 5.6 or better
 * Official JDBC driver for MySQL ( Download https://dev.mysql.com/downloads/connector/j/)
   * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
