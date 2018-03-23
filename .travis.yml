@@ -11,5 +11,5 @@ script:
 - ballerina test TravelAgency/CarRental/
 - ballerina test TravelAgency/HotelReservation/
 
-jdk:
- - oraclejdk8
+#jdk:
+# - oraclejdk8
