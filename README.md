@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pranavan15/parallel-service-orchestration.svg?branch=master)](https://travis-ci.org/pranavan15/parallel-service-orchestration)
+
 # Parallel Service Orchestration
 
 Parallel service orchestration is the process of integrating two or more services together to automate a particular task or business process where the service orchestrator consumes the resources in services in a parallel manner. 
