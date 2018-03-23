@@ -3,7 +3,10 @@ before_install:
 install: ./install-dependencies.sh
 
 script:
-- export PATH=$PATH:$(pwd)/ballerina-0.964.0/bin
+- BALLERINA_PACKAGE_NAME="ballerina-tools-0.964.0"
+- export PATH=$PATH:$(pwd)/$BALLERINA_PACKAGE_NAME/bin
+- echo $PATH
+- ballerina version
 - ballerina test TravelAgency/AirlineReservation/
 - ballerina test TravelAgency/CarRental/
 - ballerina test TravelAgency/HotelReservation/
