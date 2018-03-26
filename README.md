@@ -226,20 +226,21 @@ You can run the RESTful service that you developed above, in your local environm
 1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
-$ballerina build restfulService/
+$ballerina build guides.restful_service
 ```
 
-2. Once the restful_service.balx is created, you can run that with the following command. 
+2. Once the guides.restful_service.balx is created, you can run that with the following command. 
 
 ```
-$ballerina run restfulService.balx 
+$ballerina run target/guides.restful_service.balx 
 ```
 
 3. The successful execution of the service should show us the following output. 
 ```
-$ballerina run restfulService.balx 
-ballerina: deploying service(s) in 'restfulService.balx'
-Sample orders are added.
+$ ballerina run target/guides.restful_service.balx 
+ballerina: deploying service(s) in 'target/guides.restful_service.balx'
+ballerina: started HTTP/WS server connector 0.0.0.0:9090
+
  
 ```
 
