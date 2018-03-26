@@ -1,27 +1,27 @@
-package guide.restful_service;
+package restfulService;
 
-import ballerina.net.http;
+import ballerina/net.http;
 
+endpoint http:ServiceEndpoint orderMgtServiceEP {
+    port:9090
+};
 
 @Description {value:"RESTful service."}
-@http:configuration {basePath:"/ordermgt"}
-service<http> OrderMgtService {
+@http:ServiceConfig {basePath:"/ordermgt"}
+service<http:Service> OrderMgtService bind orderMgtServiceEP {
 
     // Order management is done using an in memory orders map.
     // Add some sample orders to the orderMap during the startup.
-    map ordersMap = {};
-
+    map<json> ordersMap = {};
     @Description {value:"Resource that handles the HTTP GET requests that are directed to a specific order using path '/orders/<orderID>'"}
-    @http:resourceConfig {
+    @http:ResourceConfig {
         methods:["GET"],
         path:"/order/{orderId}"
     }
-    resource findOrder (http:Connection conn, http:InRequest req, string orderId) {
-        json payload;
+    findOrder (endpoint client, http:Request req, string orderId) {
         // Find the requested order from the map and retrieve it in JSON format.
-        payload, _ = (json)ordersMap[orderId];
-
-        http:OutResponse response = {};
+        json payload = ordersMap[orderId];
+        http:Response response = {};
         if (payload == null) {
             payload = "Order : " + orderId + " cannot be found.";
         }
@@ -29,24 +29,23 @@ service<http> OrderMgtService {
         // Set the JSON payload to the outgoing response message to the client.
         response.setJsonPayload(payload);
 
-
         // Send response to the client
-        _ = conn.respond(response);
+        _ = client -> respond(response);
     }
 
     @Description {value:"Resource that handles the HTTP POST requests that are directed to the path '/orders' to create a new Order."}
-    @http:resourceConfig {
+    @http:ResourceConfig {
         methods:["POST"],
         path:"/order"
     }
-    resource addOrder (http:Connection conn, http:InRequest req) {
-        json orderReq = req.getJsonPayload();
-        var orderId, _ = (string) orderReq.Order.ID;
+    addOrder (endpoint client, http:Request req) {
+        json orderReq =? req.getJsonPayload();
+        string orderId = orderReq.Order.ID.toString();
         ordersMap[orderId] = orderReq;
 
         // Create response message
         json payload = {status:"Order Created.", orderId:orderId};
-        http:OutResponse response = {};
+        http:Response response = {};
         response.setJsonPayload(payload);
 
         // Set 201 Created status code in the response message
@@ -55,21 +54,19 @@ service<http> OrderMgtService {
         response.setHeader("Location", "http://localhost:9090/ordermgt/order/" + orderId);
 
         // Send response to the client
-        _ = conn.respond(response);
+        _ = client -> respond(response);
     }
 
     @Description {value:"Resource that handles the HTTP PUT requests that are directed to the path '/orders' to update an existing Order."}
-    @http:resourceConfig {
+    @http:ResourceConfig {
         methods:["PUT"],
         path:"/order/{orderId}"
     }
-    resource updateOrder (http:Connection conn, http:InRequest req, string orderId) {
-
-        json updatedOrder = req.getJsonPayload();
-        json existingOrder;
+    updateOrder (endpoint client, http:Request req, string orderId) {
+        json updatedOrder =? req.getJsonPayload();
 
         // Find the order that needs to be updated from the map and retrieve it in JSON format.
-        existingOrder, _ = (json)ordersMap[orderId];
+        json existingOrder = ordersMap[orderId];
 
         // Updating existing order with the attributes of the updated order
         if (existingOrder != null) {
@@ -80,32 +77,30 @@ service<http> OrderMgtService {
             existingOrder = "Order : " + orderId + " cannot be found.";
         }
 
-        http:OutResponse response = {};
+        http:Response response = {};
         // Set the JSON payload to the outgoing response message to the client.
         response.setJsonPayload(existingOrder);
-
         // Send response to the client
-        _ = conn.respond(response);
+        _ = client -> forward(response);
     }
 
 
     @Description {value:"Resource that handles the HTTP DELETE requests that are directed to the path '/orders/<orderId>' to delete an existing Order."}
-    @http:resourceConfig {
+    @http:ResourceConfig {
         methods:["DELETE"],
         path:"/order/{orderId}"
     }
-    resource cancelOrder (http:Connection conn, http:InRequest req, string orderId) {
-        http:OutResponse response = {};
+    cancelOrder (endpoint client, http:Request req, string orderId) {
+        http:Response response = {};
         // Remove the requested order from the map.
-        ordersMap.remove(orderId);
+        _ = ordersMap.remove(orderId);
 
         json payload = "Order : " + orderId + " removed.";
         // Set a generated payload with order status.
         response.setJsonPayload(payload);
 
         // Send response to the client
-        _ = conn.respond(response);
+        _ = client -> respond(response);
     }
 
 }
-
