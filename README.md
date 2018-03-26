@@ -223,24 +223,28 @@ service<http:Service> OrderMgtService bind orderMgtServiceEP {
 
 You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
-1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
+1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/restfulService/` folder and run the following command. 
 
 ```
+
 $ballerina build guides.restful_service
+
 ```
 
 2. Once the guides.restful_service.balx is created, you can run that with the following command. 
 
 ```
+
 $ballerina run target/guides.restful_service.balx 
+
 ```
 
 3. The successful execution of the service should show us the following output. 
 ```
+
 $ ballerina run target/guides.restful_service.balx 
 ballerina: deploying service(s) in 'target/guides.restful_service.balx'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
-
  
 ```
 
@@ -313,7 +317,7 @@ Once you are done with the development, you can deploy the service using any of 
 You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
 ```
-$ballerina run restfulService.balx 
+$ballerina run OrderMgtService.balx 
 ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
@@ -348,11 +352,12 @@ containers, you just need to put the corresponding docker annotations on your se
    
 ``` 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. 
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/restfulService/` folder and run the following command.  
   
   ```
-  $ballerina build restfulService
+  $ballerina build OrderMgtService.bal
+  
   Run following command to start docker container: 
   docker run -d -p 9090:9090 docker.abc.com/restful-ordermgt-service:v1.0
   ```
@@ -403,7 +408,7 @@ image generation during the build time.
     }
     
    @http:ServiceConfig {
-        basePath:"/ordermgt"
+        basePath:"/ordermgt"/
    }
    service<http:Service> OrderMgtService bind orderMgtServiceEP {
         
@@ -412,11 +417,11 @@ image generation during the build time.
 - We have also specified `` @kubernetes:svc {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes :ingress `` which is the external interface to access your service (with path `` /`` and host name `` ordermgt.com``)
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
   ```
-  $ballerina build restfulService
+  $ballerina build OrderMgtService.bal
   Run following command to deploy kubernetes artifacts:  
   kubectl create -f ./target/restfulService/kubernetes
  
