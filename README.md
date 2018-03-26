@@ -223,7 +223,7 @@ service<http:Service> OrderMgtService bind orderMgtServiceEP {
 
 You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
-1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. Navigate to the `restful-service/restfulService/` folder and run the following command. 
+1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/restfulService/` folder and run the following command. 
 
 ```
 $ballerina build OrderMgtService.bal
@@ -348,7 +348,7 @@ containers, you just need to put the corresponding docker annotations on your se
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `restful-service/restfulService/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/restfulService/` folder and run the following command.  
   
   ```
   $ballerina build OrderMgtService.bal
