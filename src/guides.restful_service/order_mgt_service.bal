@@ -1,4 +1,4 @@
-package restfulService;
+package guides.restful_service;
 
 import ballerina/net.http;
 

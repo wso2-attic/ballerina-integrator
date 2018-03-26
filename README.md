@@ -226,20 +226,25 @@ You can run the RESTful service that you developed above, in your local environm
 1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/restfulService/` folder and run the following command. 
 
 ```
-$ballerina build OrderMgtService.bal
-```
 
-2. Once the restful_service.balx is created, you can run that with the following command. 
+$ballerina build guides.restful_service
 
 ```
-$ballerina run OrderMgtService.balx 
+
+2. Once the guides.restful_service.balx is created, you can run that with the following command. 
+
+```
+
+$ballerina run target/guides.restful_service.balx 
+
 ```
 
 3. The successful execution of the service should show us the following output. 
 ```
-$ballerina run OrderMgtService.balx 
-ballerina: deploying service(s) in 'OrderMgtService.balx'
-Sample orders are added.
+
+$ ballerina run target/guides.restful_service.balx 
+ballerina: deploying service(s) in 'target/guides.restful_service.balx'
+ballerina: started HTTP/WS server connector 0.0.0.0:9090
  
 ```
 
@@ -403,7 +408,7 @@ image generation during the build time.
     }
     
    @http:ServiceConfig {
-        basePath:"/ordermgt"
+        basePath:"/ordermgt"/
    }
    service<http:Service> OrderMgtService bind orderMgtServiceEP {
         
