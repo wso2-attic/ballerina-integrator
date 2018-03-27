@@ -430,6 +430,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
   
   ```
   $ballerina build restful_service
+  
   Run following command to deploy kubernetes artifacts:  
   kubectl create -f ./target/restful_service/kubernetes
  
