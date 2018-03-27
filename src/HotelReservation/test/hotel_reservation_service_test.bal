@@ -1,4 +1,3 @@
-
 // Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -15,25 +14,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package TravelAgency.CarRental;
+package HotelReservation;
 
-import ballerina.test;
-import ballerina.net.http;
+import ballerina/test;
+import ballerina/net.http;
 
-// Function to test Car rental service
-function testCarRentalService () {
-    endpoint<http:HttpClient> httpEndpoint {
-        create http:HttpClient("http://localhost:9093/car", {});
-    }
+@test:BeforeSuite
+function beforeFunc () {
+    // Start the 'hotelReservationService' before running the test
+    _ = test:startServices("HotelReservation");
+}
+
+// Client endpoint
+endpoint http:ClientEndpoint clientEP {
+    targets:[{uri:"http://localhost:9092/hotel"}]
+};
+
+// Function to test Hotel reservation service
+@test:Config
+function testHotelReservationService () {
     // Initialize the empty http requests and responses
-    http:OutRequest request = {};
-    http:InResponse response = {};
-    http:HttpConnectorError err;
+    http:Request request = {};
 
-    // Start the Car rental service
-    _ = test:startService("carRentalService");
-
-    // Test the 'rentCar' resource
+    // Test the 'reserveRoom' resource
     // Construct a request payload
     json payload = {
                        "Name":"Alice",
@@ -44,11 +47,10 @@ function testCarRentalService () {
 
     request.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    response, err = httpEndpoint.post("/rent", request);
-    // 'err' is expected to be null
-    test:assertTrue(err == null, "Error: Cannot rent car!");
+    http:Response response =? clientEP -> post("/reserve", request);
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "Car rental service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Hotel reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    test:assertStringEquals(response.getJsonPayload().toString(), "{\"Status\":\"Success\"}", "Response mismatch!");
+    json resPayload =? response.getJsonPayload();
+    test:assertEquals(resPayload, {"Status":"Success"}, msg = "Response mismatch!");
 }

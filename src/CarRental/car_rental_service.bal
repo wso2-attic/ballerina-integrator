@@ -14,35 +14,52 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package TravelAgency.CarRental;
+package CarRental;
 
-import ballerina.net.http;
+import ballerina/net.http;
 
 // Available car types
 const string AC = "Air Conditioned";
 const string NORMAL = "Normal";
 
+// Service endpoint
+endpoint http:ServiceEndpoint carEP {
+    port:9093
+};
+
 // Car rental service to rent cars
-@http:configuration {basePath:"/car", port:9093}
-service<http> carRentalService {
+@http:ServiceConfig {basePath:"/car"}
+service<http:Service> carRentalService bind carEP {
 
     // Resource to rent a car
-    @http:resourceConfig {methods:["POST"], path:"/rent", consumes:["application/json"], produces:["application/json"]}
-    resource rentCar (http:Connection connection, http:InRequest request) {
-        http:OutResponse response = {};
+    @http:ResourceConfig {methods:["POST"], path:"/rent", consumes:["application/json"], produces:["application/json"]}
+    rentCar (endpoint client, http:Request request) {
+        http:Response response = {};
+        json reqPayload;
 
         // Try parsing the JSON payload from the request
-        json payload = request.getJsonPayload();
-        json name = payload.Name;
-        json arrivalDate = payload.ArrivalDate;
-        json departureDate = payload.DepartureDate;
-        json preferredType = payload.Preference;
+        match request.getJsonPayload() {
+        // Valid JSON payload
+            json payload => reqPayload = payload;
+        // NOT a valid JSON payload
+            any | null => {
+                response.statusCode = 400;
+                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+                _ = client -> respond(response);
+                return;
+            }
+        }
+
+        json name = reqPayload.Name;
+        json arrivalDate = reqPayload.ArrivalDate;
+        json departDate = reqPayload.DepartureDate;
+        json preferredType = reqPayload.Preference;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (name == null || arrivalDate == null || departureDate == null || preferredType == null) {
+        if (name == null || arrivalDate == null || departDate == null || preferredType == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = connection.respond(response);
+            _ = client -> respond(response);
             return;
         }
 
@@ -57,6 +74,6 @@ service<http> carRentalService {
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-        _ = connection.respond(response);
+        _ = client -> respond(response);
     }
 }

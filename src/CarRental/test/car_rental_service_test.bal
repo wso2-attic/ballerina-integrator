@@ -1,4 +1,3 @@
-
 // Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -15,40 +14,43 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package TravelAgency.AirlineReservation;
+package CarRental;
 
-import ballerina.test;
-import ballerina.net.http;
+import ballerina/test;
+import ballerina/net.http;
 
-// Function to test Airline reservation service
-function testAirlineReservationService () {
-    endpoint<http:HttpClient> httpEndpoint {
-        create http:HttpClient("http://localhost:9091/airline", {});
-    }
+@test:BeforeSuite
+function beforeFunc () {
+    // Start the 'carRentalService' before running the test
+    _ = test:startServices("CarRental");
+}
+
+// Client endpoint
+endpoint http:ClientEndpoint clientEP {
+    targets:[{uri:"http://localhost:9093/car"}]
+};
+
+// Function to test Car rental service
+@test:Config
+function testCarRentalService () {
     // Initialize the empty http requests and responses
-    http:OutRequest request = {};
-    http:InResponse response = {};
-    http:HttpConnectorError err;
+    http:Request request = {};
 
-    // Start the Airline reservation service
-    _ = test:startService("airlineReservationService");
-
-    // Test the 'reserveTicket' resource
+    // Test the 'rentCar' resource
     // Construct a request payload
     json payload = {
                        "Name":"Alice",
                        "ArrivalDate":"12-03-2018",
                        "DepartureDate":"13-04-2018",
-                       "Preference":"Business"
+                       "Preference":"Air Conditioned"
                    };
 
     request.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    response, err = httpEndpoint.post("/reserve", request);
-    // 'err' is expected to be null
-    test:assertTrue(err == null, "Error: Cannot reserve airline ticket!");
+    http:Response response =? clientEP -> post("/rent", request);
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "Airline reservation service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    test:assertStringEquals(response.getJsonPayload().toString(), "{\"Status\":\"Success\"}", "Response mismatch!");
+    json resPayload =? response.getJsonPayload();
+    test:assertEquals(resPayload, {"Status":"Success"}, msg = "Response mismatch!");
 }
