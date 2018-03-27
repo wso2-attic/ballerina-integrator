@@ -1,16 +1,16 @@
-package guides.restful_service;
+package restful_service;
 
 import ballerina/net.http;
-// import ballerinax/kubernetes;
+//import ballerinax/kubernetes;
+
+endpoint http:ServiceEndpoint orderMgtServiceEP {
+    port:9090
+};
 
 //@kubernetes:SVC {
 //    serviceType:"NodePort",
 //    name:"ballerina-guides-restful-service"
 //}
-endpoint http:ServiceEndpoint orderMgtServiceEP {
-    port:9090
-};
-
 
 //@kubernetes:Deployment {
 //    image: "ballerinaguides/ballerina-guides-restful-service",
@@ -24,13 +24,15 @@ endpoint http:ServiceEndpoint orderMgtServiceEP {
 //    path:"/"
 //}
 
+
+// Order management is done using an in memory orders map.
+// Add some sample orders to the orderMap during the startup.
+map<json> ordersMap = {};
+
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
 service<http:Service> OrderMgtService bind orderMgtServiceEP {
 
-    // Order management is done using an in memory orders map.
-    // Add some sample orders to the orderMap during the startup.
-    map<json> ordersMap = {};
     @Description {value:"Resource that handles the HTTP GET requests that are directed to a specific order using path '/orders/<orderID>'"}
     @http:ResourceConfig {
         methods:["GET"],
