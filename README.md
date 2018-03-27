@@ -17,33 +17,35 @@ The following figure illustrates all the required functionalities of the OrderMg
 ## <a name="pre-req"></a> Prerequisites
  
 - JDK 1.8 or later
-- [Ballerina Distribution](https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
-- A Text Editor or an IDE. 
+- [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
+- A Text Editor or an IDE 
 
-Optional Requirements
-- Ballerina IDE plugins. ( Intellij IDEA, VSCode, Atom)
+### Optional requirements
+- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
+- [Docker](https://docs.docker.com/engine/installation/)
 
 ## <a name="developing-service"></a> Developing the RESTFul service 
 
 We can model the OrderMgt RESTful service using Ballerina services and resources constructs. 
 
 1. We can get started with a Ballerina service; 'OrderMgtService', which is the RESTful service that serves the order management request. OrderMgtService can have multiple resources and each resource is dedicated for a specific order management functionality.
-2. You can decide the package structure for the service and then create the service in the corresponding directory structure. For example, suppose that you are going to use the package name 'restfulService', then you need to create the following directory structure and create the service file using the text editor or IDE that you use. 
+2. You can decide the package structure for the service and then create the service in the corresponding directory structure. For example, suppose that you are going to use the package name 'restful_service', then you need to create the following directory structure and create the service file using the text editor or IDE that you use. 
 
 ```
 restful-service
-  └── restfulService
-      ├── OrderMgtService.bal
-      └── tests
-          └── OrderMgtService_test.bal
+  └── src
+      └── restful_service
+          ├── order_mgt_service.bal
+          └── test
+              └── order_mgt_service_test.bal
           
 ```
 2. You can add the content to your Ballerina service as shown below. In that code segment you can find the implementation of the service and resource skeletons of 'OrderMgtService'. 
 For each order management operation, there is a dedicated resource and inside each resource we can implement the order management operation logic. 
 
-##### OrderMgtService.bal
+##### order_mgt_service.bal
 ```ballerina
-package restfulService;
+package restful_service;
 
 import ballerina/net.http;
 
@@ -51,13 +53,13 @@ endpoint http:ServiceEndpoint orderMgtServiceEP {
     port:9090
 };
 
+// Order management is done using an in memory orders map.
+// Add some sample orders to the orderMap during the startup.
+map ordersMap = {};
+
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
 service<http:Service> OrderMgtService bind orderMgtServiceEP {
-    
-    // Order management is done using an in memory orders map.
-    // Add some sample orders to the orderMap during the startup.
-    map ordersMap = {};
 
     @Description {value:"Resource that handles the HTTP GET requests that are directed to a specific order using path '/orders/<orderID>'"}
     @http:ResourceConfig {
@@ -97,15 +99,14 @@ service<http:Service> OrderMgtService bind orderMgtServiceEP {
     }
 }
 
-
 ```
 
 3. You can implement the business logic of each resources as per your requirements. For simplicity we have used an in-memory map to keep all the order details. You can find the full source code of the OrderMgtService below. In addition to the order processing logic, we have also manipulated some HTTP status codes and headers whenever required.  
 
 
-##### OrderMgtService.bal
+##### order_mgt_service.bal
 ```ballerina
-package restfulService;
+package restful_service;
 
 import ballerina/net.http;
 
@@ -113,13 +114,14 @@ endpoint http:ServiceEndpoint orderMgtServiceEP {
     port:9090
 };
 
+// Order management is done using an in memory orders map.
+// Add some sample orders to the orderMap during the startup.
+map<json> ordersMap = {};
+
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
 service<http:Service> OrderMgtService bind orderMgtServiceEP {
 
-    // Order management is done using an in memory orders map.
-    // Add some sample orders to the orderMap during the startup.
-    map<json> ordersMap = {};
     @Description {value:"Resource that handles the HTTP GET requests that are directed to a specific order using path '/orders/<orderID>'"}
     @http:ResourceConfig {
         methods:["GET"],
@@ -223,27 +225,26 @@ service<http:Service> OrderMgtService bind orderMgtServiceEP {
 
 You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
-1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/restfulService/` folder and run the following command. 
+1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command. 
+
+```
+$ballerina build restful_service
 
 ```
 
-$ballerina build guides.restful_service
+2. Once the restful_service.balx is created inside the target folder, you can run that with the following command. 
 
 ```
 
-2. Once the guides.restful_service.balx is created, you can run that with the following command. 
-
-```
-
-$ballerina run target/guides.restful_service.balx 
+$ballerina run target/restful_service.balx
 
 ```
 
 3. The successful execution of the service should show us the following output. 
 ```
 
-$ ballerina run target/guides.restful_service.balx 
-ballerina: deploying service(s) in 'target/guides.restful_service.balx'
+$ ballerina run target/restful_service.balx 
+ballerina: deploying service(s) in 'target/restful_service.balx'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
  
 ```
@@ -294,20 +295,19 @@ Output:
 
 ### <a name="unit-testing"></a> Writing Unit Tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'. The naming convention should be as follows,
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'. The naming convention should be as follows,
 
 * Test functions should contain test prefix.
   * e.g.: testResourceAddOrder()
 
-This guide contains unit test cases for each resource available in 'OrderMgtService'.
+This guide contains unit test cases for each resource available in the 'order_mgt_service.bal'.
 
-To run the unit tests, go to the sample root directory and run the following command.
+To run the unit tests, go to the sample src directory and run the following command.
    ```bash
-   $ballerina test restfulService/
+   $ballerina test
    ```
 
-To check the implementation of the test file, refer to the [OrderMgtService_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/restfulService/OrderMgtService_test.bal).
-
+To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/src/restful_service/test/order_mgt_service_test.bal).
 
 ## <a name="deploying-the-scenario"></a> Deployment
 
@@ -317,7 +317,7 @@ Once you are done with the development, you can deploy the service using any of 
 You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
 ```
-$ballerina run OrderMgtService.balx 
+$ballerina run target/restful_service.balx
 ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
@@ -328,9 +328,9 @@ containers, you just need to put the corresponding docker annotations on your se
 
 - In our OrderMgtService, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
 
-##### OrderMgtService.bal
+##### order_mgt_service.bal
 ```ballerina
-    package restfulService;
+    package restful_service;
     
     import ballerina/net.http;
     import ballerinax/docker;
@@ -339,6 +339,10 @@ containers, you just need to put the corresponding docker annotations on your se
         port:9090
     };
     
+    // Order management is done using an in memory orders map.
+    // Add some sample orders to the orderMap during the startup.
+    map<json> ordersMap = {};
+
     @docker:Config {
         registry:"docker.abc.com",
         name:"restful-ordermgt-service",
@@ -353,10 +357,10 @@ containers, you just need to put the corresponding docker annotations on your se
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/restfulService/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
   
   ```
-  $ballerina build OrderMgtService.bal
+  $ballerina build restful_service
   
   Run following command to start docker container: 
   docker run -d -p 9090:9090 docker.abc.com/restful-ordermgt-service:v1.0
@@ -386,10 +390,10 @@ So you don't need to explicitly create docker images prior to deploying it on Ku
 - In our OrderMgtService, we need to import  `` import ballerinax/kubernetes; `` and use `` @kubernetes `` as shown below to enable docker 
 image generation during the build time. 
 
-##### OrderMgtService.bal
+##### order_mgt_service.bal
 
 ```ballerina
-    package restfulService;
+    package restful_service;
     
     import ballerina/net.http;
     import ballerinax/kubernetes;
@@ -397,12 +401,16 @@ image generation during the build time.
     endpoint http:ServiceEndpoint orderMgtServiceEP {
         port:9090
     };
+     
+    // Order management is done using an in memory orders map.
+    // Add some sample orders to the orderMap during the startup.
+    map<json> ordersMap = {};
     
-    @kubernetes:deployment {
+    @kubernetes:Deployment {
         image:"ballerina.com/order-mgt-service:1.0.0"
     }
-    @kubernetes:svc {}
-    @kubernetes :ingress {
+    @kubernetes:SVC {}
+    @kubernetes :Ingress {
         hostname:"ordermgt.com",
         path:"/"
     }
@@ -413,26 +421,27 @@ image generation during the build time.
    service<http:Service> OrderMgtService bind orderMgtServiceEP {
         
 ``` 
-- Here we have used ``  @kubernetes:deployment `` to specify the docker image name which will be created as part of building this service. 
-- We have also specified `` @kubernetes:svc {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
-- In addition we have used `` @kubernetes :ingress `` which is the external interface to access your service (with path `` /`` and host name `` ordermgt.com``)
+- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
+- We have also specified `` @kubernetes:SVC {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
+- In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name `` ordermgt.com``)
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
   ```
-  $ballerina build OrderMgtService.bal
+  $ballerina build restful_service
+  
   Run following command to deploy kubernetes artifacts:  
-  kubectl create -f ./target/restfulService/kubernetes
+  kubectl create -f ./target/restful_service/kubernetes
  
   ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:deployment `` is created, by using `` docker ps images ``. 
-- Also the Kubernetes artifacts related our service, will be generated in `` ./target/restfulService/kubernetes``. 
+- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
+- Also the Kubernetes artifacts related our service, will be generated in `` ./target/restful_service/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
 ```
- $ kubectl create -f ./target/restfulService/kubernetes 
+ $ kubectl create -f ./target/restful_service/kubernetes 
      deployment "OrderMgtService-deployment" created
      ingress "OrderMgtService" created
      service "OrderMgtService" created
@@ -468,7 +477,6 @@ curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "
      "http://ordermgt.com/ordermgt/order" -H "Content-Type:application/json" 
     
 ```
-
 
 ## <a name="observability"></a> Observability 
 
