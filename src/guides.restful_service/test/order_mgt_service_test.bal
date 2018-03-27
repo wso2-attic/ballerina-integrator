@@ -6,7 +6,7 @@ import ballerina/net.http;
 @test:BeforeSuite
 function beforeFunc () {
     // Start the 'OrderMgtService' before running the test
-    _ = test:startServices("OrderMgtService");
+    _ = test:startServices("guides.restful_service");
 }
 
 endpoint http:ClientEndpoint clientEP {

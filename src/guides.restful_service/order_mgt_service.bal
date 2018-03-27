@@ -1,10 +1,28 @@
 package guides.restful_service;
 
 import ballerina/net.http;
+// import ballerinax/kubernetes;
 
+//@kubernetes:SVC {
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-restful-service"
+//}
 endpoint http:ServiceEndpoint orderMgtServiceEP {
     port:9090
 };
+
+
+//@kubernetes:Deployment {
+//    image: "ballerinaguides/ballerina-guides-restful-service",
+//    env:"SIDECAR_HTTP_PORT:9090, SERVICE_PORT:8080",
+//    name: "ballerina-guides-restful-service"
+//}
+//
+//@kubernetes:Ingress {
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-restful-service",
+//    path:"/"
+//}
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
