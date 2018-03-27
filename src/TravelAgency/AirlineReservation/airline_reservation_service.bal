@@ -16,7 +16,7 @@
 
 package TravelAgency.AirlineReservation;
 
-import ballerina.net.http;
+import ballerina/net.http;
 
 // Available flight classes
 const string ECONOMY = "Economy";
@@ -29,30 +29,36 @@ endpoint http:ServiceEndpoint airlineEP {
 };
 
 // Airline reservation service to reserve airline tickets
-@http:serviceConfig {basePath:"/airline"}
+@http:ServiceConfig {basePath:"/airline"}
 service<http:Service> airlineReservationService bind airlineEP {
 
     // Resource to reserve a ticket
-    @http:resourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
-                          produces:["application/json"]}
+    @http:ResourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
+        produces:["application/json"]}
     reserveTicket (endpoint client, http:Request request) {
         http:Response response = {};
-        json name;
-        json arrivalDate;
-        json departDate;
-        json preferredClass;
+        json reqPayload;
 
         // Try parsing the JSON payload from the request
-        var payload, entityErr = request.getJsonPayload();
-        if(payload != null) {
-            name = payload.Name;
-            arrivalDate = payload.ArrivalDate;
-            departDate = payload.DepartureDate;
-            preferredClass = payload.Preference;
+        match request.getJsonPayload() {
+            // Valid JSON payload
+            json payload => reqPayload = payload;
+            // NOT a valid JSON payload
+            any | null => {
+                response.statusCode = 400;
+                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+                _ = client -> respond(response);
+                return;
+            }
         }
 
+        json name = reqPayload.Name;
+        json arrivalDate = reqPayload.ArrivalDate;
+        json departDate = reqPayload.DepartureDate;
+        json preferredClass = reqPayload.Preference;
+
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (entityErr != null || name == null || arrivalDate == null || departDate == null || preferredClass == null) {
+        if (name == null || arrivalDate == null || departDate == null || preferredClass == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);

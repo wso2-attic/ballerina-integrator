@@ -17,6 +17,7 @@
 package TravelAgency;
 
 import ballerina.net.http;
+// import ballerinax.docker;
 
 // Service endpoint
 endpoint http:ServiceEndpoint travelAgencyEP {
@@ -37,6 +38,12 @@ endpoint http:ClientEndpoint hotelReservationEP {
 endpoint http:ClientEndpoint carRentalEP {
     targets:[{uri:"http://localhost:9093/car"}]
 };
+
+//@docker:DockerConfig {
+//    registry:"docker.ballerina.guides.com",
+//    name:"airline-reservation-service",
+//    tag:"v1.0"
+//}
 
 // Travel agency service to arrange a complete tour for a user
 @http:serviceConfig {basePath:"/travel"}
