@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package TravelAgency.HotelReservation;
+package HotelReservation;
 
 import ballerina/net.http;
 

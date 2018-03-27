@@ -16,8 +16,7 @@
 
 package TravelAgency;
 
-import ballerina.net.http;
-// import ballerinax.docker;
+import ballerina/net.http;
 
 // Service endpoint
 endpoint http:ServiceEndpoint travelAgencyEP {
@@ -39,42 +38,41 @@ endpoint http:ClientEndpoint carRentalEP {
     targets:[{uri:"http://localhost:9093/car"}]
 };
 
-//@docker:DockerConfig {
-//    registry:"docker.ballerina.guides.com",
-//    name:"airline-reservation-service",
-//    tag:"v1.0"
-//}
-
 // Travel agency service to arrange a complete tour for a user
-@http:serviceConfig {basePath:"/travel"}
+@http:ServiceConfig {basePath:"/travel"}
 service<http:Service> travelAgencyService bind travelAgencyEP {
 
     // Resource to arrange a tour
-    @http:resourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
+    @http:ResourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
     arrangeTour (endpoint client, http:Request inRequest) {
         http:Response outResponse = {};
-        json airlinePreference;
-        json hotelPreference;
-        json carPreference;
-
+        json inReqPayload;
         // Json payload format for an http out request
         json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"", "Preference":""};
 
         // Try parsing the JSON payload from the user request
-        var inReqPayload, inReqEntityErr = inRequest.getJsonPayload();
-        if(inReqPayload != null) {
-            outReqPayload.Name = inReqPayload.Name;
-            outReqPayload.ArrivalDate = inReqPayload.ArrivalDate;
-            outReqPayload.DepartureDate = inReqPayload.DepartureDate;
-            airlinePreference = inReqPayload.Preference.Airline;
-            hotelPreference = inReqPayload.Preference.Accommodation;
-            carPreference = inReqPayload.Preference.Car;
+        match inRequest.getJsonPayload() {
+            // Valid JSON payload
+            json payload => inReqPayload = payload;
+            // NOT a valid JSON payload
+            any | null => {
+                outResponse.statusCode = 400;
+                outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+                _ = client -> respond(outResponse);
+                return;
+            }
         }
 
+        outReqPayload.Name = inReqPayload.Name;
+        outReqPayload.ArrivalDate = inReqPayload.ArrivalDate;
+        outReqPayload.DepartureDate = inReqPayload.DepartureDate;
+        json airlinePreference = inReqPayload.Preference.Airline;
+        json hotelPreference = inReqPayload.Preference.Accommodation;
+        json carPreference = inReqPayload.Preference.Car;
+
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (inReqEntityErr != null || outReqPayload.Name == null || outReqPayload.ArrivalDate == null ||
-            outReqPayload.DepartureDate == null ||airlinePreference == null || hotelPreference == null ||
-            carPreference == null) {
+        if (outReqPayload.Name == null || outReqPayload.ArrivalDate == null || outReqPayload.DepartureDate == null ||
+            airlinePreference == null || hotelPreference == null || carPreference == null) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(outResponse);
@@ -91,10 +89,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqAirline.setJsonPayload(outReqPayloadAirline);
 
         // Send a post request to airlineReservationService with appropriate payload and get response
-        inResAirline, _ = airlineReservationEP -> post("/reserve", outReqAirline);
+        inResAirline =? airlineReservationEP -> post("/reserve", outReqAirline);
 
         // Get the reservation status
-        var airlineResPayload, _ = inResAirline.getJsonPayload();
+        var airlineResPayload =? inResAirline.getJsonPayload();
         string airlineReservationStatus = airlineResPayload.Status.toString();
         // If reservation status is negative, send a failure response to user
         if (airlineReservationStatus.equalsIgnoreCase("Failed")) {
@@ -114,10 +112,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqHotel.setJsonPayload(outReqPayloadHotel);
 
         // Send a post request to hotelReservationService with appropriate payload and get response
-        inResHotel, _ = hotelReservationEP -> post("/reserve", outReqHotel);
+        inResHotel =? hotelReservationEP -> post("/reserve", outReqHotel);
 
         // Get the reservation status
-        var hotelResPayload, _ = inResHotel.getJsonPayload();
+        var hotelResPayload =? inResHotel.getJsonPayload();
         string hotelReservationStatus = hotelResPayload.Status.toString();
         // If reservation status is negative, send a failure response to user
         if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
@@ -137,10 +135,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqCar.setJsonPayload(outReqPayloadCar);
 
         // Send a post request to carRentalService with appropriate payload and get response
-        inResCar, _ = carRentalEP -> post("/rent", outReqCar);
+        inResCar =? carRentalEP -> post("/rent", outReqCar);
 
         // Get the rental status
-        var carResPayload, _ = inResCar.getJsonPayload();
+        var carResPayload =? inResCar.getJsonPayload();
         string carRentalStatus = carResPayload.Status.toString();
         // If rental status is negative, send a failure response to user
         if (carRentalStatus.equalsIgnoreCase("Failed")) {
