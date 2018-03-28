@@ -102,11 +102,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Worker to communicate with airline 'Qatar Airways'
             worker qatarWorker {
                 http:Request outRequest = {};
-                http:Response respWorkerQatar = {};
                 // Out request payload
                 outRequest.setJsonPayload(flightPayload);
                 // Send a POST request to 'Qatar Airways' and get the results
-                respWorkerQatar =? airlineReservationEP -> post("/qatarAirways", outRequest);
+                http:Response respWorkerQatar =? airlineReservationEP -> post("/qatarAirways", outRequest);
                 // Reply to the join block from this worker - Send the response from 'Qatar Airways'
                 respWorkerQatar -> fork;
             }
@@ -114,11 +113,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Worker to communicate with airline 'Asiana'
             worker asianaWorker {
                 http:Request outRequest = {};
-                http:Response respWorkerAsiana = {};
                 // Out request payload
                 outRequest.setJsonPayload(flightPayload);
                 // Send a POST request to 'Asiana' and get the results
-                respWorkerAsiana =? airlineReservationEP -> post("/asiana", outRequest);
+                http:Response respWorkerAsiana =? airlineReservationEP -> post("/asiana", outRequest);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
                 respWorkerAsiana -> fork;
             }
@@ -126,11 +124,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Worker to communicate with airline 'Emirates'
             worker emiratesWorker {
                 http:Request outRequest = {};
-                http:Response respWorkerEmirates = {};
                 // Out request payload
                 outRequest.setJsonPayload(flightPayload);
                 // Send a POST request to 'Emirates' and get the results
-                respWorkerEmirates =? airlineReservationEP -> post("/emirates", outRequest);
+                http:Response respWorkerEmirates =? airlineReservationEP -> post("/emirates", outRequest);
                 // Reply to the join block from this worker - Send the response from 'Emirates'
                 respWorkerEmirates -> fork;
             }
@@ -186,11 +183,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Worker to communicate with hotel 'Miramar'
             worker miramar {
                 http:Request outRequest = {};
-                http:Response respWorkerMiramar = {};
                 // Out request payload
                 outRequest.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Asiana' and get the results
-                respWorkerMiramar =? hotelReservationEP -> post("/miramar", outRequest);
+                http:Response respWorkerMiramar =? hotelReservationEP -> post("/miramar", outRequest);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
                 respWorkerMiramar -> fork;
             }
@@ -198,11 +194,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Worker to communicate with hotel 'Aqueen'
             worker aqueen {
                 http:Request outRequest = {};
-                http:Response respWorkerAqueen = {};
                 // Out request payload
                 outRequest.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Aqueen' and get the results
-                respWorkerAqueen =? hotelReservationEP -> post("/aqueen", outRequest);
+                http:Response respWorkerAqueen =? hotelReservationEP -> post("/aqueen", outRequest);
                 // Reply to the join block from this worker - Send the response from 'Aqueen'
                 respWorkerAqueen -> fork;
             }
@@ -210,11 +205,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Worker to communicate with hotel 'Elizabeth'
             worker elizabeth {
                 http:Request outRequest = {};
-                http:Response respWorkerElizabeth = {};
                 // Out request payload
                 outRequest.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Elizabeth' and get the results
-                respWorkerElizabeth =? hotelReservationEP -> post("/elizabeth", outRequest);
+                http:Response respWorkerElizabeth =? hotelReservationEP -> post("/elizabeth", outRequest);
                 // Reply to the join block from this worker - Send the response from 'Elizabeth'
                 respWorkerElizabeth -> fork;
             }
@@ -271,11 +265,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Worker to communicate with Company 'DriveSg'
             worker driveSg {
                 http:Request outRequest = {};
-                http:Response respWorkerDriveSg = {};
                 // Out request payload
                 outRequest.setJsonPayload(vehiclePayload);
                 // Send a POST request to 'DriveSg' and get the results
-                respWorkerDriveSg =? carRentalEP -> post("/driveSg", outRequest);
+                http:Response respWorkerDriveSg =? carRentalEP -> post("/driveSg", outRequest);
                 // Reply to the join block from this worker - Send the response from 'DriveSg'
                 respWorkerDriveSg -> fork;
             }
@@ -283,11 +276,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Worker to communicate with Company 'DreamCar'
             worker dreamCar {
                 http:Request outRequest = {};
-                http:Response respWorkerDreamCar = {};
                 // Out request payload
                 outRequest.setJsonPayload(vehiclePayload);
                 // Send a POST request to 'DreamCar' and get the results
-                respWorkerDreamCar =? carRentalEP -> post("/dreamCar", outRequest);
+                http:Response respWorkerDreamCar =? carRentalEP -> post("/dreamCar", outRequest);
                 // Reply to the join block from this worker - Send the response from 'DreamCar'
                 respWorkerDreamCar -> fork;
             }
@@ -295,11 +287,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Worker to communicate with Company 'Sixt'
             worker sixt {
                 http:Request outRequest = {};
-                http:Response respWorkerSixt = {};
                 // Out request payload
                 outRequest.setJsonPayload(vehiclePayload);
                 // Send a POST request to 'Sixt' and get the results
-                respWorkerSixt =? carRentalEP -> post("/sixt", outRequest);
+                http:Response respWorkerSixt =? carRentalEP -> post("/sixt", outRequest);
                 // Reply to the join block from this worker - Send the response from 'Sixt'
                 respWorkerSixt -> fork;
             }
