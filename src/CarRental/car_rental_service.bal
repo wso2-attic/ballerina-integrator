@@ -14,31 +14,48 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package TravelAgency.CarRental;
+package CarRental;
 
-import ballerina.net.http;
+import ballerina/net.http;
+
+// Service endpoint
+endpoint http:ServiceEndpoint carEP {
+    port:9093
+};
 
 // Car rental service
-@http:configuration {basePath:"/car", port:9093}
-service<http> carRentalService {
+@http:ServiceConfig {basePath:"/car"}
+service<http:Service> carRentalService bind carEP {
 
     // Resource 'driveSg', which checks about hotel 'DriveSg'
-    @http:resourceConfig {methods:["POST"], path:"/driveSg", consumes:["application/json"],
+    @http:ResourceConfig {methods:["POST"], path:"/driveSg", consumes:["application/json"],
                           produces:["application/json"]}
-    resource driveSg (http:Connection connection, http:InRequest inRequest) {
-        http:OutResponse outResponse = {};
+    driveSg (endpoint client, http:Request request) {
+        http:Response response = {};
+        json reqPayload;
 
         // Try parsing the JSON payload from the request
-        json receivedPayload = inRequest.getJsonPayload();
-        json arrivalDate = receivedPayload.ArrivalDate;
-        json departureDate = receivedPayload.DepartureDate;
-        json vehicleType = receivedPayload.VehicleType;
+        match request.getJsonPayload() {
+        // Valid JSON payload
+            json payload => reqPayload = payload;
+        // NOT a valid JSON payload
+            any | null => {
+                response.statusCode = 400;
+                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+                _ = client -> respond(response);
+                return;
+            }
+        }
+
+        json arrivalDate = reqPayload.ArrivalDate;
+        json departureDate = reqPayload.DepartureDate;
+        json vehicleType = reqPayload.VehicleType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (arrivalDate == null || departureDate == null || vehicleType == null) {
-            outResponse.statusCode = 400;
-            outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = connection.respond(outResponse);
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
+            _ = client -> respond(response);
             return;
         }
 
@@ -52,28 +69,40 @@ service<http> carRentalService {
                                   "PricePerDay":5
                               };
         // Response payload
-        outResponse.setJsonPayload(vehicleDetails);
+        response.setJsonPayload(vehicleDetails);
         // Send the response to the client
-        _ = connection.respond(outResponse);
+        _ = client -> respond(response);
     }
 
     // Resource 'dreamCar', which checks about hotel 'DreamCar'
-    @http:resourceConfig {methods:["POST"], path:"/dreamCar", consumes:["application/json"],
+    @http:ResourceConfig {methods:["POST"], path:"/dreamCar", consumes:["application/json"],
                           produces:["application/json"]}
-    resource dreamCar (http:Connection connection, http:InRequest inRequest) {
-        http:OutResponse outResponse = {};
+    dreamCar (endpoint client, http:Request request) {
+        http:Response response = {};
+        json reqPayload;
 
         // Try parsing the JSON payload from the request
-        json receivedPayload = inRequest.getJsonPayload();
-        json arrivalDate = receivedPayload.ArrivalDate;
-        json departureDate = receivedPayload.DepartureDate;
-        json vehicleType = receivedPayload.VehicleType;
+        match request.getJsonPayload() {
+        // Valid JSON payload
+            json payload => reqPayload = payload;
+        // NOT a valid JSON payload
+            any | null => {
+                response.statusCode = 400;
+                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+                _ = client -> respond(response);
+                return;
+            }
+        }
+
+        json arrivalDate = reqPayload.ArrivalDate;
+        json departureDate = reqPayload.DepartureDate;
+        json vehicleType = reqPayload.VehicleType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (arrivalDate == null || departureDate == null || vehicleType == null) {
-            outResponse.statusCode = 400;
-            outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = connection.respond(outResponse);
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
+            _ = client -> respond(response);
             return;
         }
 
@@ -87,27 +116,39 @@ service<http> carRentalService {
                                   "PricePerDay":6
                               };
         // Response payload
-        outResponse.setJsonPayload(vehicleDetails);
+        response.setJsonPayload(vehicleDetails);
         // Send the response to the client
-        _ = connection.respond(outResponse);
+        _ = client -> respond(response);
     }
 
     // Resource 'sixt', which checks about hotel 'Sixt'
-    @http:resourceConfig {methods:["POST"], path:"/sixt", consumes:["application/json"], produces:["application/json"]}
-    resource sixt (http:Connection connection, http:InRequest inRequest) {
-        http:OutResponse outResponse = {};
+    @http:ResourceConfig {methods:["POST"], path:"/sixt", consumes:["application/json"], produces:["application/json"]}
+    sixt (endpoint client, http:Request request) {
+        http:Response response = {};
+        json reqPayload;
 
         // Try parsing the JSON payload from the request
-        json receivedPayload = inRequest.getJsonPayload();
-        json arrivalDate = receivedPayload.ArrivalDate;
-        json departureDate = receivedPayload.DepartureDate;
-        json vehicleType = receivedPayload.VehicleType;
+        match request.getJsonPayload() {
+        // Valid JSON payload
+            json payload => reqPayload = payload;
+        // NOT a valid JSON payload
+            any | null => {
+                response.statusCode = 400;
+                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+                _ = client -> respond(response);
+                return;
+            }
+        }
+
+        json arrivalDate = reqPayload.ArrivalDate;
+        json departureDate = reqPayload.DepartureDate;
+        json vehicleType = reqPayload.VehicleType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (arrivalDate == null || departureDate == null || vehicleType == null) {
-            outResponse.statusCode = 400;
-            outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = connection.respond(outResponse);
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
+            _ = client -> respond(response);
             return;
         }
 
@@ -121,8 +162,8 @@ service<http> carRentalService {
                                   "PricePerDay":7
                               };
         // Response payload
-        outResponse.setJsonPayload(vehicleDetails);
+        response.setJsonPayload(vehicleDetails);
         // Send the response to the client
-        _ = connection.respond(outResponse);
+        _ = client -> respond(response);
     }
 }
