@@ -8,6 +8,5 @@ script:
 - export PATH=$PATH:$(pwd)/$BALLERINA_PACKAGE_NAME/bin
 - echo $PATH
 - ballerina version
-- ballerina test TravelAgency/AirlineReservation/
-- ballerina test TravelAgency/CarRental/
-- ballerina test TravelAgency/HotelReservation/
+- cd src/
+- ballerina test
