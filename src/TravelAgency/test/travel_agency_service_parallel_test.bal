@@ -16,24 +16,36 @@
 
 package TravelAgency;
 
-import ballerina.net.http;
-import ballerina.test;
+import ballerina/net.http;
+import ballerina/test;
 
-// Start the service before running the tests
-function beforeTest () {
-    _ = test:startService("travelAgencyService");
+@test:BeforeSuite
+function beforeFunc () {
+    // Start the 'travelAgencyService' before running the test
+    _ = test:startServices("TravelAgency");
+
+    // 'travelAgencyService' needs to communicate with airline reservation, hotel reservation and car rental services
+    // Therefore, start these three services before running the test
+    // Start the 'airlineReservationService'
+    _ = test:startServices("AirlineReservation");
+
+    // Start the 'hotelReservationService'
+    _ = test:startServices("HotelReservation");
+
+    // Start the 'carRentalService'
+    _ = test:startServices("CarRental");
 }
 
+// Client endpoint
+endpoint http:ClientEndpoint clientEP {
+    targets:[{uri:"http://localhost:9090/travel"}]
+};
+
 // Function to test the Travel agency service
-// NOTE: Run the other 3 services (Airline, Hotel and Car) before running this test
+@test:Config
 function testTravelAgencyService () {
-    endpoint<http:HttpClient> httpEndpoint {
-        create http:HttpClient("http://localhost:9090/travel", {});
-    }
     // Initialize the empty http requests and responses
-    http:OutRequest request = {};
-    http:InResponse response = {};
-    http:HttpConnectorError err;
+    http:Request request = {};
 
     // Request Payload
     json requestPayload = {
@@ -48,18 +60,17 @@ function testTravelAgencyService () {
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    response, err = httpEndpoint.post("/arrangeTour", request);
-    // 'err' is expected to be null
-    test:assertTrue(err == null, "Error: Cannot arrange tour!");
+    http:Response response =? clientEP -> post("/arrangeTour", request);
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "Travel agency service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Travel agency service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     // Flight details
     string expectedFlight = "{\"Airline\":\"Emirates\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
                             "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":273}";
-    test:assertStringEquals(response.getJsonPayload().Flight.toString(), expectedFlight, "Response mismatch!");
+    json resPayload =? response.getJsonPayload();
+    test:assertEquals(resPayload.Flight.toString(), expectedFlight, msg = "Response mismatch!");
     // Hotel details
     string expectedHotel = "{\"HotelName\":\"Elizabeth\",\"FromDate\":\"12-03-2018\"," +
                            "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":2}";
-    test:assertStringEquals(response.getJsonPayload().Hotel.toString(), expectedHotel, "Response mismatch!");
+    test:assertEquals(resPayload.Hotel.toString(), expectedHotel, msg = "Response mismatch!");
 }

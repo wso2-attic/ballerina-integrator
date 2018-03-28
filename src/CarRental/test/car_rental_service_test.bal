@@ -14,10 +14,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package TravelAgency.CarRental;
+package CarRental;
 
-import ballerina.test;
-import ballerina.net.http;
+import ballerina/test;
+import ballerina/net.http;
 
 // Common request Payload
 json requestPayload = {
@@ -26,82 +26,70 @@ json requestPayload = {
                           "VehicleType":"Car"
                       };
 
-// Create HTTP Client
-http:HttpClient httpClient = create http:HttpClient("http://localhost:9093/car", {});
-
-// Start the service before running the tests
-function beforeTest () {
-    _ = test:startService("carRentalService");
+@test:BeforeSuite
+function beforeFunc () {
+    // Start the 'carRentalService' before running the test
+    _ = test:startServices("CarRental");
 }
 
+// Client endpoint
+endpoint http:ClientEndpoint clientEP {
+    targets:[{uri:"http://localhost:9093/car"}]
+};
+
 // Function to test resource 'driveSg'
+@test:Config
 function testResourceDriveSg () {
-    endpoint<http:HttpClient> httpEndpoint {
-        httpClient;
-    }
     // Initialize the empty http requests and responses
-    http:OutRequest request = {};
-    http:InResponse response = {};
-    http:HttpConnectorError err;
+    http:Request request = {};
 
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    response, err = httpEndpoint.post("/driveSg", request);
-    // 'err' is expected to be null
-    test:assertTrue(err == null, "Error: Cannot rent car!");
+    http:Response response =? clientEP -> post("/driveSg", request);
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "Car rental service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Company\":\"DriveSG\",\"VehicleType\":\"Car\",\"FromDate\":\"12-03-2018\"," +
                       "\"ToDate\":\"13-04-2018\",\"PricePerDay\":5}";
-    test:assertStringEquals(response.getJsonPayload().toString(), expected, "Response mismatch!");
+    json resPayload =? response.getJsonPayload();
+    test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
 // Function to test resource 'dreamCar'
+@test:Config
 function testResourceDreamCar () {
-    endpoint<http:HttpClient> httpEndpoint {
-        httpClient;
-    }
     // Initialize the empty http requests and responses
-    http:OutRequest request = {};
-    http:InResponse response = {};
-    http:HttpConnectorError err;
+    http:Request request = {};
 
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    response, err = httpEndpoint.post("/dreamCar", request);
-    // 'err' is expected to be null
-    test:assertTrue(err == null, "Error: Cannot rent car!");
+    http:Response response =? clientEP -> post("/dreamCar", request);
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "Car rental service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Company\":\"DreamCar\",\"VehicleType\":\"Car\",\"FromDate\":\"12-03-2018\"," +
                       "\"ToDate\":\"13-04-2018\",\"PricePerDay\":6}";
-    test:assertStringEquals(response.getJsonPayload().toString(), expected, "Response mismatch!");
+    json resPayload =? response.getJsonPayload();
+    test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
 // Function to test resource 'sixt'
+@test:Config
 function testResourceSixt () {
-    endpoint<http:HttpClient> httpEndpoint {
-        httpClient;
-    }
     // Initialize the empty http requests and responses
-    http:OutRequest request = {};
-    http:InResponse response = {};
-    http:HttpConnectorError err;
+    http:Request request = {};
 
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    response, err = httpEndpoint.post("/sixt", request);
-    // 'err' is expected to be null
-    test:assertTrue(err == null, "Error: Cannot rent car!");
+    http:Response response =? clientEP -> post("/sixt", request);
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "Car rental service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Company\":\"Sixt\",\"VehicleType\":\"Car\",\"FromDate\":\"12-03-2018\"," +
                       "\"ToDate\":\"13-04-2018\",\"PricePerDay\":7}";
-    test:assertStringEquals(response.getJsonPayload().toString(), expected, "Response mismatch!");
+    json resPayload =? response.getJsonPayload();
+    test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }

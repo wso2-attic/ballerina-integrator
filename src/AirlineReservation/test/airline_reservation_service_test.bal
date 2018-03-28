@@ -14,10 +14,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package TravelAgency.AirlineReservation;
+package AirlineReservation;
 
-import ballerina.test;
-import ballerina.net.http;
+import ballerina/test;
+import ballerina/net.http;
 
 // Common request Payload
 json requestPayload = {
@@ -27,82 +27,73 @@ json requestPayload = {
                           "To":"Changi"
                       };
 
-// Create HTTP Client
-http:HttpClient httpClient = create http:HttpClient("http://localhost:9091/airline", {});
-
-// Start the service before running the tests
-function beforeTest () {
-    _ = test:startService("airlineReservationService");
+@test:BeforeSuite
+function beforeFunc () {
+    // Start the 'airlineReservationService' before running the test
+    _ = test:startServices("AirlineReservation");
 }
 
+// Client endpoint
+endpoint http:ClientEndpoint clientEP {
+    targets:[{uri:"http://localhost:9091/airline"}]
+};
+
 // Function to test resource 'flightConcord'
+@test:Config
 function testResourceFlightConcord () {
-    endpoint<http:HttpClient> httpEndpoint {
-        httpClient;
-    }
     // Initialize the empty http requests and responses
-    http:OutRequest request = {};
-    http:InResponse response = {};
-    http:HttpConnectorError err;
+    http:Request request = {};
 
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    response, err = httpEndpoint.post("/qatarAirways", request);
-    // 'err' is expected to be null
-    test:assertTrue(err == null, "Error: Cannot reserve airline ticket!");
+    http:Response response =? clientEP -> post("/qatarAirways", request);
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "Airline reservation service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200,
+                      msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Airline\":\"Qatar Airways\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
                       "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":278}";
-    test:assertStringEquals(response.getJsonPayload().toString(), expected, "Response mismatch!");
+    json resPayload =? response.getJsonPayload();
+    test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
 // Function to test resource 'flightAsiana'
+@test:Config
 function testResourceFlightAsiana () {
-    endpoint<http:HttpClient> httpEndpoint {
-        httpClient;
-    }
     // Initialize the empty http requests and responses
-    http:OutRequest request = {};
-    http:InResponse response = {};
-    http:HttpConnectorError err;
+    http:Request request = {};
 
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    response, err = httpEndpoint.post("/asiana", request);
-    // 'err' is expected to be null
-    test:assertTrue(err == null, "Error: Cannot reserve airline ticket!");
+    http:Response response =? clientEP -> post("/asiana", request);
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "Airline reservation service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200,
+                      msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Airline\":\"Asiana\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
                       "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":275}";
-    test:assertStringEquals(response.getJsonPayload().toString(), expected, "Response mismatch!");
+    json resPayload =? response.getJsonPayload();
+    test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
 // Function to test resource 'flightEmirates'
+@test:Config
 function testResourceFlightEmirates () {
-    endpoint<http:HttpClient> httpEndpoint {
-        httpClient;
-    }
     // Initialize the empty http requests and responses
-    http:OutRequest request = {};
-    http:InResponse response = {};
-    http:HttpConnectorError err;
+    http:Request request = {};
 
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    response, err = httpEndpoint.post("/emirates", request);
-    // 'err' is expected to be null
-    test:assertTrue(err == null, "Error: Cannot reserve airline ticket!");
+    http:Response response =? clientEP -> post("/emirates", request);
     // Expected response code is 200
-    test:assertIntEquals(response.statusCode, 200, "Airline reservation service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200,
+                      msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Airline\":\"Emirates\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
                       "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":273}";
-    test:assertStringEquals(response.getJsonPayload().toString(), expected, "Response mismatch!");
+    json resPayload =? response.getJsonPayload();
+    test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
