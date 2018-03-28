@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/pranavan15/parallel-service-orchestration.svg?branch=master)](https://travis-ci.org/pranavan15/parallel-service-orchestration)
-
 # Parallel Service Orchestration
 
 Parallel service orchestration is the process of integrating two or more services together to automate a particular task or business process where the service orchestrator consumes the resources available in services in a parallel manner. 
@@ -42,19 +40,23 @@ Ballerina is a complete programming language that can have any custom project st
 
 ```
 parallel-service-orchestration
-├── TravelAgency
-│   ├── AirlineReservation
-│   │   ├── airline_reservation_service.bal
-│   │   └── airline_reservation_service_test.bal
-│   ├── CarRental
-│   │   ├── car_rental_service.bal
-│   │   └── car_rental_service_test.bal
-│   ├── HotelReservation
-│   │   ├── hotel_reservation_service.bal
-│   │   └── hotel_reservation_service_test.bal
-│   ├── travel_agency_service_parallel.bal
-│   └── travel_agency_service_parallel_test.bal
-└── README.md
+   └── src
+       ├── AirlineReservation
+       │   ├── airline_reservation_service.bal
+       │   └── test
+       │       └── airline_reservation_service_test.bal
+       ├── CarRental
+       │   ├── car_rental_service.bal
+       │   └── test
+       │       └── car_rental_service_test.bal
+       ├── HotelReservation
+       │   ├── hotel_reservation_service.bal
+       │   └── test
+       │       └── hotel_reservation_service_test.bal
+       └── TravelAgency
+           ├── test
+           │   └── travel_agency_service_parallel_test.bal
+           └── travel_agency_service_parallel.bal
 
 ```
 
@@ -109,11 +111,11 @@ Sample response payload from the car rental service:
 {"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "PricePerDay":5}
 ```
 
-When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to arrange an airline. The airline reservation service allows the client to check about three different airlines by providing a separate resource for each airline. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service.bal) file.
+When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to arrange an airline. The airline reservation service allows the client to check about three different airlines by providing a separate resource for each airline. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/AirlineReservation/airline_reservation_service.bal) file.
 
-Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. The hotel reservation service allows the client to check about three different hotels by providing a separate resource for each hotel. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal) file.
+Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. The hotel reservation service allows the client to check about three different hotels by providing a separate resource for each hotel. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/HotelReservation/hotel_reservation_service.bal) file.
 
-Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. The car rental service also provides three different resources for three car rental providing companies. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) file.
+Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. The car rental service also provides three different resources for three car rental providing companies. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/CarRental/car_rental_service.bal) file.
 
 When communicating with an external service, the travel agency service sends separate requests for all the available resources in parallel.
 
@@ -121,77 +123,69 @@ The travel agency service checks if all three airlines available in parallel and
 
 ```ballerina
 // Airline reservation
-// Call the airline reservation service and consume different resources in parallel to check about different airlines
+// Call Airline reservation service and consume different resources in parallel to check different airways
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with airline 'Qatar Airways'
     worker qatarWorker {
-        http:OutRequest req = {};
-        http:InResponse respWorkerQatar = {};
+        http:Request outRequest = {};
         // Out request payload
-        req.setJsonPayload(flightPayload);
+        outRequest.setJsonPayload(flightPayload);
         // Send a POST request to 'Qatar Airways' and get the results
-        respWorkerQatar, _ = airlineReservationEP.post("/qatarAirways", req);
-        // Reply to the join block from this worker 
-        // Send the response from 'Qatar Airways'
+        http:Response respWorkerQatar =? airlineReservationEP -> post("/qatarAirways", outRequest);
+        // Reply to the join block from this worker - Send the response from 'Qatar Airways'
         respWorkerQatar -> fork;
     }
 
     // Worker to communicate with airline 'Asiana'
     worker asianaWorker {
-        http:OutRequest req = {};
-        http:InResponse respWorkerAsiana = {};
+        http:Request outRequest = {};
         // Out request payload
-        req.setJsonPayload(flightPayload);
+        outRequest.setJsonPayload(flightPayload);
         // Send a POST request to 'Asiana' and get the results
-        respWorkerAsiana, _ = airlineReservationEP.post("/asiana", req);
-        // Reply to the join block from this worker 
-        // Send the response from 'Asiana'
+        http:Response respWorkerAsiana =? airlineReservationEP -> post("/asiana", outRequest);
+        // Reply to the join block from this worker - Send the response from 'Asiana'
         respWorkerAsiana -> fork;
     }
 
     // Worker to communicate with airline 'Emirates'
     worker emiratesWorker {
-        http:OutRequest req = {};
-        http:InResponse respWorkerEmirates = {};
+        http:Request outRequest = {};
         // Out request payload
-        req.setJsonPayload(flightPayload);
+        outRequest.setJsonPayload(flightPayload);
         // Send a POST request to 'Emirates' and get the results
-        respWorkerEmirates, _ = airlineReservationEP.post("/emirates", req);
-        // Reply to the join block from this worker 
-        // Send the response from 'Emirates'
+        http:Response respWorkerEmirates =? airlineReservationEP -> post("/emirates", outRequest);
+        // Reply to the join block from this worker - Send the response from 'Emirates'
         respWorkerEmirates -> fork;
     }
 } join (all) (map airlineResponses) {
-    // Wait until the responses are received from all the workers running in parallel
-
+    // Wait until the responses received from all the workers running in parallel
     int qatarPrice;
     int asianaPrice;
     int emiratesPrice;
 
     // Get the response and price for airline 'Qatar Airways'
     if (airlineResponses["qatarWorker"] != null) {
-        var resQatarWorker, _ = (any[])airlineResponses["qatarWorker"];
-        var responseQatar, _ = (http:InResponse)(resQatarWorker[0]);
-        jsonFlightResponseQatar = responseQatar.getJsonPayload();
-        qatarPrice, _ = (int)jsonFlightResponseQatar.Price;
+        var resQatarWorker =? <any[]>airlineResponses["qatarWorker"];
+        var responseQatar =? <http:Response>(resQatarWorker[0]);
+        jsonFlightResponseQatar =? responseQatar.getJsonPayload();
+        qatarPrice =? <int>jsonFlightResponseQatar.Price.toString();
     }
 
     // Get the response and price for airline 'Asiana'
     if (airlineResponses["asianaWorker"] != null) {
-        var resAsianaWorker, _ = (any[])airlineResponses["asianaWorker"];
-        var responseAsiana, _ = (http:InResponse)(resAsianaWorker[0]);
-        jsonFlightResponseAsiana = responseAsiana.getJsonPayload();
-        asianaPrice, _ = (int)jsonFlightResponseAsiana.Price;
+        var resAsianaWorker =? <any[]>airlineResponses["asianaWorker"];
+        var responseAsiana =? <http:Response>(resAsianaWorker[0]);
+        jsonFlightResponseAsiana =? responseAsiana.getJsonPayload();
+        asianaPrice =? <int>jsonFlightResponseAsiana.Price.toString();
     }
 
     // Get the response and price for airline 'Emirates'
     if (airlineResponses["emiratesWorker"] != null) {
-        var resEmiratesWorker, _ = (any[])airlineResponses["emiratesWorker"];
-        var responseEmirates, _ = ((http:InResponse)(resEmiratesWorker[0]));
-        jsonFlightResponseEmirates = responseEmirates.getJsonPayload();
-        emiratesPrice, _ = (int)jsonFlightResponseEmirates.Price;
-
+        var resEmiratesWorker =? <any[]>airlineResponses["emiratesWorker"];
+        var responseEmirates =? (<http:Response>(resEmiratesWorker[0]));
+        jsonFlightResponseEmirates =? responseEmirates.getJsonPayload();
+        emiratesPrice =? <int>jsonFlightResponseEmirates.Price.toString();
     }
 
     // Select the airline with the least price
@@ -208,6 +202,7 @@ fork {
         }
     }
 }
+
 ```
 
 As shown in the above code, we used `fork-join` to run parallel workers and join their responses. The fork-join allows developers to spawn (fork) multiple workers within a Ballerina program and join the results from those workers. Here we used "all" as the join condition, which means the program waits for all the workers to respond.
@@ -216,49 +211,43 @@ Let's now look at how the travel agency service integrates with the hotel reserv
 
 ```ballerina
 // Hotel reservation
-// Call the hotel reservation service and consume different resources in parallel to check about different hotels
+// Call Hotel reservation service and consume different resources in parallel to check different hotels
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with hotel 'Miramar'
     worker miramar {
-        http:OutRequest req = {};
-        http:InResponse respWorkerMiramar = {};
+        http:Request outRequest = {};
         // Out request payload
-        req.setJsonPayload(hotelPayload);
+        outRequest.setJsonPayload(hotelPayload);
         // Send a POST request to 'Asiana' and get the results
-        respWorkerMiramar, _ = hotelReservationEP.post("/miramar", req);
-        // Reply to the join block from this worker 
-        // Send the response from 'Asiana'
+        http:Response respWorkerMiramar =? hotelReservationEP -> post("/miramar", outRequest);
+        // Reply to the join block from this worker - Send the response from 'Asiana'
         respWorkerMiramar -> fork;
     }
 
     // Worker to communicate with hotel 'Aqueen'
     worker aqueen {
-        http:OutRequest req = {};
-        http:InResponse respWorkerAqueen = {};
+        http:Request outRequest = {};
         // Out request payload
-        req.setJsonPayload(hotelPayload);
+        outRequest.setJsonPayload(hotelPayload);
         // Send a POST request to 'Aqueen' and get the results
-        respWorkerAqueen, _ = hotelReservationEP.post("/aqueen", req);
-        // Reply to the join block from this worker 
-        // Send the response from 'Aqueen'
+        http:Response respWorkerAqueen =? hotelReservationEP -> post("/aqueen", outRequest);
+        // Reply to the join block from this worker - Send the response from 'Aqueen'
         respWorkerAqueen -> fork;
     }
 
     // Worker to communicate with hotel 'Elizabeth'
     worker elizabeth {
-        http:OutRequest req = {};
-        http:InResponse respWorkerElizabeth = {};
+        http:Request outRequest = {};
         // Out request payload
-        req.setJsonPayload(hotelPayload);
+        outRequest.setJsonPayload(hotelPayload);
         // Send a POST request to 'Elizabeth' and get the results
-        respWorkerElizabeth, _ = hotelReservationEP.post("/elizabeth", req);
-        // Reply to the join block from this worker 
-        // Send the response from 'Elizabeth'
+        http:Response respWorkerElizabeth =? hotelReservationEP -> post("/elizabeth", outRequest);
+        // Reply to the join block from this worker - Send the response from 'Elizabeth'
         respWorkerElizabeth -> fork;
     }
 } join (all) (map hotelResponses) {
-    // Wait until the responses are received from all the workers running in parallel
+    // Wait until the responses received from all the workers running in parallel
 
     int miramarDistance;
     int aqueenDistance;
@@ -266,26 +255,26 @@ fork {
 
     // Get the response and distance to the preferred location from the hotel 'Miramar'
     if (hotelResponses["miramar"] != null) {
-        var resMiramarWorker, _ = (any[])hotelResponses["miramar"];
-        var responseMiramar, _ = (http:InResponse)(resMiramarWorker[0]);
-        miramarJsonResponse = responseMiramar.getJsonPayload();
-        miramarDistance, _ = (int)miramarJsonResponse.DistanceToLocation;
+        var resMiramarWorker =? <any[]>hotelResponses["miramar"];
+        var responseMiramar =? <http:Response>(resMiramarWorker[0]);
+        miramarJsonResponse =? responseMiramar.getJsonPayload();
+        miramarDistance =? <int>miramarJsonResponse.DistanceToLocation.toString();
     }
 
     // Get the response and distance to the preferred location from the hotel 'Aqueen'
     if (hotelResponses["aqueen"] != null) {
-        var resAqueenWorker, _ = (any[])hotelResponses["aqueen"];
-        var responseAqueen, _ = (http:InResponse)(resAqueenWorker[0]);
-        aqueenJsonResponse = responseAqueen.getJsonPayload();
-        aqueenDistance, _ = (int)aqueenJsonResponse.DistanceToLocation;
+        var resAqueenWorker =? <any[]>hotelResponses["aqueen"];
+        var responseAqueen =? <http:Response>(resAqueenWorker[0]);
+        aqueenJsonResponse =? responseAqueen.getJsonPayload();
+        aqueenDistance =? <int>aqueenJsonResponse.DistanceToLocation.toString();
     }
 
     // Get the response and distance to the preferred location from the hotel 'Elizabeth'
     if (hotelResponses["elizabeth"] != null) {
-        var resElizabethWorker, _ = (any[])hotelResponses["elizabeth"];
-        var responseElizabeth, _ = ((http:InResponse)(resElizabethWorker[0]));
-        elizabethJsonResponse = responseElizabeth.getJsonPayload();
-        elizabethDistance, _ = (int)elizabethJsonResponse.DistanceToLocation;
+        var resElizabethWorker =? <any[]>hotelResponses["elizabeth"];
+        var responseElizabeth =? (<http:Response>(resElizabethWorker[0]));
+        elizabethJsonResponse =? responseElizabeth.getJsonPayload();
+        elizabethDistance =? <int>elizabethJsonResponse.DistanceToLocation.toString();
     }
 
     // Select the hotel with the lowest distance
@@ -309,64 +298,59 @@ Let's next look at how the travel agency service integrates with the car rental 
 
 ```ballerina
 // Car rental
-// Call the car rental service and consume different resources in parallel to check about different companies
+// Call Car rental service and consume different resources in parallel to check different companies
 // Fork - Join to run parallel workers and join the results
 fork {
-    // Worker to communicate with company 'DriveSg'
+    // Worker to communicate with Company 'DriveSg'
     worker driveSg {
-        http:OutRequest req = {};
-        http:InResponse respWorkerDriveSg = {};
+        http:Request outRequest = {};
         // Out request payload
-        req.setJsonPayload(vehiclePayload);
+        outRequest.setJsonPayload(vehiclePayload);
         // Send a POST request to 'DriveSg' and get the results
-        respWorkerDriveSg, _ = carRentalEP.post("/driveSg", req);
-        // Reply to the join block from this worker 
-        // Send the response from 'DriveSg'
+        http:Response respWorkerDriveSg =? carRentalEP -> post("/driveSg", outRequest);
+        // Reply to the join block from this worker - Send the response from 'DriveSg'
         respWorkerDriveSg -> fork;
     }
 
-    // Worker to communicate with company 'DreamCar'
+    // Worker to communicate with Company 'DreamCar'
     worker dreamCar {
-        http:OutRequest req = {};
-        http:InResponse respWorkerDreamCar = {};
+        http:Request outRequest = {};
         // Out request payload
-        req.setJsonPayload(vehiclePayload);
+        outRequest.setJsonPayload(vehiclePayload);
         // Send a POST request to 'DreamCar' and get the results
-        respWorkerDreamCar, _ = carRentalEP.post("/dreamCar", req);
-        // Reply to the join block from this worker 
-        // Send the response from 'DreamCar'
+        http:Response respWorkerDreamCar =? carRentalEP -> post("/dreamCar", outRequest);
+        // Reply to the join block from this worker - Send the response from 'DreamCar'
         respWorkerDreamCar -> fork;
     }
 
-    // Worker to communicate with company 'Sixt'
+    // Worker to communicate with Company 'Sixt'
     worker sixt {
-        http:OutRequest req = {};
-        http:InResponse respWorkerSixt = {};
+        http:Request outRequest = {};
         // Out request payload
-        req.setJsonPayload(vehiclePayload);
+        outRequest.setJsonPayload(vehiclePayload);
         // Send a POST request to 'Sixt' and get the results
-        respWorkerSixt, _ = carRentalEP.post("/sixt", req);
-        // Reply to the join block from this worker 
-        // Send the response from 'Sixt'
+        http:Response respWorkerSixt =? carRentalEP -> post("/sixt", outRequest);
+        // Reply to the join block from this worker - Send the response from 'Sixt'
         respWorkerSixt -> fork;
     }
 } join (some 1) (map vehicleResponses) {
     // Get the first responding worker
+
     // Get the response from company 'DriveSg' if not null
     if (vehicleResponses["driveSg"] != null) {
-        var resDriveSgWorker, _ = (any[])vehicleResponses["driveSg"];
-        var responseDriveSg, _ = (http:InResponse)(resDriveSgWorker[0]);
-        jsonVehicleResponse = responseDriveSg.getJsonPayload();
+        var resDriveSgWorker =? <any[]>vehicleResponses["driveSg"];
+        var responseDriveSg =? <http:Response>(resDriveSgWorker[0]);
+        jsonVehicleResponse =? responseDriveSg.getJsonPayload();
     } else if (vehicleResponses["dreamCar"] != null) {
         // Get the response from company 'DreamCar' if not null
-        var resDreamCarWorker, _ = (any[])vehicleResponses["dreamCar"];
-        var responseDreamCar, _ = (http:InResponse)(resDreamCarWorker[0]);
-        jsonVehicleResponse = responseDreamCar.getJsonPayload();
+        var resDreamCarWorker =? <any[]>vehicleResponses["dreamCar"];
+        var responseDreamCar =? <http:Response>(resDreamCarWorker[0]);
+        jsonVehicleResponse =? responseDreamCar.getJsonPayload();
     } else if (vehicleResponses["sixt"] != null) {
         // Get the response from company 'Sixt' if not null
-        var resSixtWorker, _ = (any[])vehicleResponses["sixt"];
-        var responseSixt, _ = ((http:InResponse)(resSixtWorker[0]));
-        jsonVehicleResponse = responseSixt.getJsonPayload();
+        var resSixtWorker =? <any[]>vehicleResponses["sixt"];
+        var responseSixt =? (<http:Response>(resSixtWorker[0]));
+        jsonVehicleResponse =? responseSixt.getJsonPayload();
     }
 }
 
@@ -381,30 +365,35 @@ Finally, let's look at the structure of the `travel_agency_service_parallel.bal`
 ```ballerina
 package TravelAgency;
 
-import ballerina.net.http;
+import ballerina/net.http;
+
+// Service endpoint
+endpoint http:ServiceEndpoint travelAgencyEP {
+    port:9090
+};
+
+// Client endpoint to communicate with Airline reservation service
+endpoint http:ClientEndpoint airlineReservationEP {
+    targets:[{uri:"http://localhost:9091/airline"}]
+};
+
+// Client endpoint to communicate with Hotel reservation service
+endpoint http:ClientEndpoint hotelReservationEP {
+    targets:[{uri:"http://localhost:9092/hotel"}]
+};
+
+// Client endpoint to communicate with Car rental service
+endpoint http:ClientEndpoint carRentalEP {
+    targets:[{uri:"http://localhost:9093/car"}]
+};
 
 // Travel agency service to arrange a complete tour for a user
-@http:configuration {basePath:"/travel", port:9090}
-service<http> travelAgencyService {
-
-    // Endpoint to communicate with the airline reservation service
-    endpoint<http:HttpClient> airlineReservationEP {
-        create http:HttpClient("http://localhost:9091/airline", {});
-    }
-
-    // Endpoint to communicate with the hotel reservation service
-    endpoint<http:HttpClient> hotelReservationEP {
-        create http:HttpClient("http://localhost:9092/hotel", {});
-    }
-
-    // Endpoint to communicate with the car rental service
-    endpoint<http:HttpClient> carRentalEP {
-        create http:HttpClient("http://localhost:9093/car", {});
-    }
+@http:ServiceConfig {basePath:"/travel"}
+service<http:Service> travelAgencyService bind travelAgencyEP {
 
     // Resource to arrange a tour
-    @http:resourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
-    resource arrangeTour (http:Connection connection, http:InRequest inRequest) {
+    @http:ResourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
+    arrangeTour (endpoint client, http:Request inRequest) {
       
         // Try parsing the JSON payload from the user request
 
@@ -420,9 +409,9 @@ service<http> travelAgencyService {
 
 ```
 
-In the above code, `airlineReservationEP` is the endpoint defined through which the Ballerina service communicates with the external airline reservation service. The endpoint defined to communicate with the external hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the endpoint defined to communicate with the external car rental service.
+In the above code, `airlineReservationEP` is the client endpoint defined through which the Ballerina service communicates with the external airline reservation service. The client endpoint defined to communicate with the external hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
 
-To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/travel_agency_service_parallel.bal) file.
+To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/TravelAgency/travel_agency_service_parallel.bal) file.
 
 
 ## <a name="testing"></a> Testing 
@@ -432,7 +421,7 @@ To see the complete implementation of the above file, refer to the [travel_agenc
 1. Start all four HTTP services by entering the following command in a separate terminal for each service. This command starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093, and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file is located.
 
    ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run TravelAgency/<Package_Name>
+    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run <Package_Name>
    ```
    
 2. Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
@@ -457,21 +446,21 @@ To see the complete implementation of the above file, refer to the [travel_agenc
    
 ### <a name="unit-testing"></a> Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package and the naming convention should be as follows.
-* Test files should contain _test.bal suffix.
-* Test functions should contain test prefix.
-  * e.g., testTravelAgencyService()
-
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
+* Test functions should be annotated with `@test:Config`. See the below example.
+  ```ballerina
+    @test:Config
+    function testTravelAgencyService () {
+  ```
+  
 This guide contains unit test cases for each service implemented above. 
 
-Test files are in the same packages in which the service files are located.
-
-To run the unit tests, go to the sample root directory and run the following command. Here `<Package_Name>` is the corresponding package name in which each test file located.
+To run the unit tests, go to the sample src directory and run the following command
    ```bash
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina test TravelAgency/<Package_Name>
+   <SAMPLE_ROOT_DIRECTORY>/src$ ballerina test
    ```
 
-To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/AirlineReservation/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/HotelReservation/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/CarRental/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/travel_agency_service_parallel_test.bal).
+To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/AirlineReservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/HotelReservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/CarRental/test/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/TravelAgency/test/travel_agency_service_parallel_test.bal).
 
 
 ## <a name="deploying-the-scenario"></a> Deployment
@@ -483,33 +472,16 @@ You can deploy the services that you developed above in your local environment. 
 
 **Building** 
    ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina build TravelAgency/<Package_Name>
+    <SAMPLE_ROOT_DIRECTORY/src>$ ballerina build <Package_Name>
    ```
 
 **Running**
    ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
+    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run target/<Exec_Archive_File_Name>
    ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
-
-You can use the Ballerina executable archives (.balx) that you created above and create docker images for the services using the following commands.
-
-  ```bash
-  <SAMPLE_ROOT_DIRECTORY>$ ballerina docker <Exec_Archive_File_Name>  
-  ```
-
-Once you have created the docker images, you can run them using `docker run` as follows, 
-
-  ```bash
-  docker run -p <host_port>:<service_port> --name <container_instance_name> -d <image_name>:<tag_name>
-  ```
-
-For example, to run the travel agency service, use the following command.
-
-  ```bash
-  docker run -p <host_port>:9090 --name ballerina_TravelAgency -d TravelAgency:latest
-  ```
+(Work in progress) 
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
 (Work in progress) 
