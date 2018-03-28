@@ -2,7 +2,7 @@
 
 # Parallel Service Orchestration
 
-Parallel service orchestration is the process of integrating two or more services together to automate a particular task or business process where the service orchestrator consumes the resources in services in a parallel manner. 
+Parallel service orchestration is the process of integrating two or more services together to automate a particular task or business process where the service orchestrator consumes the resources available in services in a parallel manner. 
 
 > This guide walks you through the process of implementing a parallel service orchestration using Ballerina language. 
 
@@ -16,12 +16,13 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## <a name="what-you-build"></a>  What you’ll build
-To understanding how you can build a parallel service orchestration using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. 
-This scenario is similar to what we had in [service-composition guide](https://github.com/ballerina-guides/service-composition) except, all three external services (Airline reservation, Hotel reservation and Car rental) contain multiple resources, and the Travel agency service checks these resources in parallel to select the best-suited resource for each requirement. For example, Travel agency service checks three different airways in parallel and selects the airway with the lowest cost. Similarly, it checks several hotels in parallel and selects the closest one to the client's preferred location. The following diagram illustrates this use case.
+To understand how you can build a parallel service orchestration using Ballerina, let's consider a real-world use case of a travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the travel agency service requires communicating with other necessary back-ends. 
+
+This scenario is similar to the scenario used in the [service-composition guide](https://github.com/ballerina-guides/service-composition) except, all three external services (airline reservation, hotel reservation and car rental) contain multiple resources. The travel agency service checks these resources in parallel to select the best-suited resource for each requirement. For example, the travel agency service checks three different airways in parallel and selects the airway with the lowest cost. Similarly, it checks several hotels in parallel and selects the closest one to the client's preferred location. The following diagram illustrates this use case.
 
 ![alt text](/images/parallel_service_orchestration.png)
 
-Travel agency is the service that acts as the service orchestration initiator. The other three services are external services that the travel agency service calls to do airline ticket booking, hotel reservation and car rental. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third party services are also written in Ballerina.
+Travel agency is the service that acts as the service orchestration initiator. The other three services are external services that the travel agency service calls to do airline ticket booking, hotel reservation and car rental. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
 ## <a name="pre-req"></a> Prerequisites
  
@@ -29,7 +30,7 @@ Travel agency is the service that acts as the service orchestration initiator. T
 - [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
 - A Text Editor or an IDE 
 
-### Optional Requirements
+### Optional requirements
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 
@@ -70,57 +71,57 @@ The `travel_agency_service_parallel.bal` file consists of the travel agency serv
 
 Let's look at the implementation of the travel agency service, which acts as the service orchestration initiator.
 
-To arrange a complete tour travel agency service requires communicating with three other services: airline reservation, hotel reservation, and car rental. These external services consist of multiple resources, which can be consumed by the callers. Airline reservation service has three different resources each depicting an airway provider. Similarly, Hotel reservation service has three resources to check different hotels and Car rental service has three resources to check different rental providing companies. All these services accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. 
+To arrange a complete tour travel agency service requires communicating with three other services: airline reservation, hotel reservation, and car rental. These external services consist of multiple resources, which can be consumed by the callers. The airline reservation service has three different resources each depicting an airline service provider. Similarly, the hotel reservation service has three resources to check different hotels and the car rental service has three resources to check different rental providing companies. All these services accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. 
 
-Sample request payload for Airline reservation service:
+Sample request payload for the airline reservation service:
 
 ```bash
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi"} 
 ```
 
-Sample response payload from Airline reservation service:
+Sample response payload from the airline reservation service:
 
 ```bash
 {"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018", "From":"Colombo", "To":"Changi", "Price":273}
 ```
 
-Sample request payload for Hotel reservation service:
+Sample request payload for the hotel reservation service:
 
 ```bash
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Location":"Changi"}
 ```
 
-Sample response payload from Hotel reservation service:
+Sample response payload from the hotel reservation service:
 
 ```bash
 {"HotelName":"Miramar", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "DistanceToLocation":6}
 ```
 
-Sample request payload for Car rental service:
+Sample request payload for the car rental service:
 
 ```bash
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "VehicleType":"Car"}
 ```
 
-Sample response payload from Car rental service:
+Sample response payload from the car rental service:
 
 ```bash
 {"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "PricePerDay":5}
 ```
 
-When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to arrange an airway. Airline reservation service allows the client to check about three different airways by providing a separate resource for each airway. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service.bal) file.
+When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to arrange an airline. The airline reservation service allows the client to check about three different airlines by providing a separate resource for each airline. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/AirlineReservation/airline_reservation_service.bal) file.
 
-Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. Hotel reservation service allows the client to check about three different hotels by providing a separate resource for each hotel. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal) file.
+Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. The hotel reservation service allows the client to check about three different hotels by providing a separate resource for each hotel. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/HotelReservation/hotel_reservation_service.bal) file.
 
-Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. Car rental service also provides three different resources for three car rental providing companies. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) file.
+Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. The car rental service also provides three different resources for three car rental providing companies. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/CarRental/car_rental_service.bal) file.
 
-When communicating with an external service, the Travel agency service sends separate requests for all the available resources in parallel.
+When communicating with an external service, the travel agency service sends separate requests for all the available resources in parallel.
 
-Travel agency service checks all three airways available in parallel and waits for all of them to respond. Once it receives the responses, it selects the airway that has the lowest cost. Refer to the below code segment attached, which is responsible for the integration with Airline reservation service.
+The travel agency service checks if all three airlines available in parallel and waits for all of them to respond. Once it receives the responses, it selects the airline that has the lowest cost. Refer to the following code snippet, which is responsible for the integration with the airline reservation service.
 
 ```ballerina
 // Airline reservation
-// Call Airline reservation service and consume different resources in parallel to check about different airways
+// Call the airline reservation service and consume different resources in parallel to check about different airlines
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with airline 'Qatar Airways'
@@ -131,7 +132,8 @@ fork {
         req.setJsonPayload(flightPayload);
         // Send a POST request to 'Qatar Airways' and get the results
         respWorkerQatar, _ = airlineReservationEP.post("/qatarAirways", req);
-        // Reply to the join block from this worker - Send the response from 'Qatar Airways'
+        // Reply to the join block from this worker 
+        // Send the response from 'Qatar Airways'
         respWorkerQatar -> fork;
     }
 
@@ -143,7 +145,8 @@ fork {
         req.setJsonPayload(flightPayload);
         // Send a POST request to 'Asiana' and get the results
         respWorkerAsiana, _ = airlineReservationEP.post("/asiana", req);
-        // Reply to the join block from this worker - Send the response from 'Asiana'
+        // Reply to the join block from this worker 
+        // Send the response from 'Asiana'
         respWorkerAsiana -> fork;
     }
 
@@ -155,11 +158,12 @@ fork {
         req.setJsonPayload(flightPayload);
         // Send a POST request to 'Emirates' and get the results
         respWorkerEmirates, _ = airlineReservationEP.post("/emirates", req);
-        // Reply to the join block from this worker - Send the response from 'Emirates'
+        // Reply to the join block from this worker 
+        // Send the response from 'Emirates'
         respWorkerEmirates -> fork;
     }
 } join (all) (map airlineResponses) {
-    // Wait until the responses received from all the workers running in parallel
+    // Wait until the responses are received from all the workers running in parallel
 
     int qatarPrice;
     int asianaPrice;
@@ -208,11 +212,11 @@ fork {
 
 As shown in the above code, we used `fork-join` to run parallel workers and join their responses. The fork-join allows developers to spawn (fork) multiple workers within a Ballerina program and join the results from those workers. Here we used "all" as the join condition, which means the program waits for all the workers to respond.
 
-Let's now look at how the Travel agency service integrates with the Hotel reservation service. Similar to the above scenario, Travel agency service sends requests to all three available resources in Parallel and wait for all of them to respond. Once it receives the responses, it selects the hotel that is closest to the client's preferred location. Refer to the below code segment attached.
+Let's now look at how the travel agency service integrates with the hotel reservation service. Similar to the above scenario, the travel agency service sends requests to all three available resources in parallel and waits for all of them to respond. Once it receives the responses, it selects the hotel that is closest to the client's preferred location. Refer to the following code snippet.
 
 ```ballerina
 // Hotel reservation
-// Call Hotel reservation service and consume different resources in parallel to check about different hotels
+// Call the hotel reservation service and consume different resources in parallel to check about different hotels
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with hotel 'Miramar'
@@ -223,7 +227,8 @@ fork {
         req.setJsonPayload(hotelPayload);
         // Send a POST request to 'Asiana' and get the results
         respWorkerMiramar, _ = hotelReservationEP.post("/miramar", req);
-        // Reply to the join block from this worker - Send the response from 'Asiana'
+        // Reply to the join block from this worker 
+        // Send the response from 'Asiana'
         respWorkerMiramar -> fork;
     }
 
@@ -235,7 +240,8 @@ fork {
         req.setJsonPayload(hotelPayload);
         // Send a POST request to 'Aqueen' and get the results
         respWorkerAqueen, _ = hotelReservationEP.post("/aqueen", req);
-        // Reply to the join block from this worker - Send the response from 'Aqueen'
+        // Reply to the join block from this worker 
+        // Send the response from 'Aqueen'
         respWorkerAqueen -> fork;
     }
 
@@ -247,11 +253,12 @@ fork {
         req.setJsonPayload(hotelPayload);
         // Send a POST request to 'Elizabeth' and get the results
         respWorkerElizabeth, _ = hotelReservationEP.post("/elizabeth", req);
-        // Reply to the join block from this worker - Send the response from 'Elizabeth'
+        // Reply to the join block from this worker 
+        // Send the response from 'Elizabeth'
         respWorkerElizabeth -> fork;
     }
 } join (all) (map hotelResponses) {
-    // Wait until the responses received from all the workers running in parallel
+    // Wait until the responses are received from all the workers running in parallel
 
     int miramarDistance;
     int aqueenDistance;
@@ -298,14 +305,14 @@ fork {
 
 ```
 
-Let's next look at how the Travel agency service integrates with the Car rental service. Travel agency service sends requests to all three car rental providers in Parallel and gets only the first one to respond. Refer to the below code segment attached.
+Let's next look at how the travel agency service integrates with the car rental service. The travel agency service sends requests to all three car rental providers in parallel and gets only the first one to respond. Refer to the following code snippet.
 
 ```ballerina
 // Car rental
-// Call Car rental service and consume different resources in parallel to check about different companies
+// Call the car rental service and consume different resources in parallel to check about different companies
 // Fork - Join to run parallel workers and join the results
 fork {
-    // Worker to communicate with Company 'DriveSg'
+    // Worker to communicate with company 'DriveSg'
     worker driveSg {
         http:OutRequest req = {};
         http:InResponse respWorkerDriveSg = {};
@@ -313,11 +320,12 @@ fork {
         req.setJsonPayload(vehiclePayload);
         // Send a POST request to 'DriveSg' and get the results
         respWorkerDriveSg, _ = carRentalEP.post("/driveSg", req);
-        // Reply to the join block from this worker - Send the response from 'DriveSg'
+        // Reply to the join block from this worker 
+        // Send the response from 'DriveSg'
         respWorkerDriveSg -> fork;
     }
 
-    // Worker to communicate with Company 'DreamCar'
+    // Worker to communicate with company 'DreamCar'
     worker dreamCar {
         http:OutRequest req = {};
         http:InResponse respWorkerDreamCar = {};
@@ -325,11 +333,12 @@ fork {
         req.setJsonPayload(vehiclePayload);
         // Send a POST request to 'DreamCar' and get the results
         respWorkerDreamCar, _ = carRentalEP.post("/dreamCar", req);
-        // Reply to the join block from this worker - Send the response from 'DreamCar'
+        // Reply to the join block from this worker 
+        // Send the response from 'DreamCar'
         respWorkerDreamCar -> fork;
     }
 
-    // Worker to communicate with Company 'Sixt'
+    // Worker to communicate with company 'Sixt'
     worker sixt {
         http:OutRequest req = {};
         http:InResponse respWorkerSixt = {};
@@ -337,12 +346,12 @@ fork {
         req.setJsonPayload(vehiclePayload);
         // Send a POST request to 'Sixt' and get the results
         respWorkerSixt, _ = carRentalEP.post("/sixt", req);
-        // Reply to the join block from this worker - Send the response from 'Sixt'
+        // Reply to the join block from this worker 
+        // Send the response from 'Sixt'
         respWorkerSixt -> fork;
     }
 } join (some 1) (map vehicleResponses) {
     // Get the first responding worker
-
     // Get the response from company 'DriveSg' if not null
     if (vehicleResponses["driveSg"] != null) {
         var resDriveSgWorker, _ = (any[])vehicleResponses["driveSg"];
@@ -363,9 +372,9 @@ fork {
 
 ```
 
-Here we used "some 1" as the join condition, which means the program gets results from only one worker, which responds first. Therefore, the Travel agency service will get the car rental provider that responds first.
+Here we used "some 1" as the join condition, which means the program gets results from only one worker, which responds first. Therefore, the travel agency service gets the car rental provider that responds first.
 
-Finally, let's look at the skeleton of the `travel_agency_service_parallel.bal` file that is responsible for the Travel agency service.
+Finally, let's look at the structure of the `travel_agency_service_parallel.bal` file that is responsible for the Travel agency service.
 
 ##### travel_agency_service_parallel.bal
 
@@ -399,11 +408,11 @@ service<http> travelAgencyService {
       
         // Try parsing the JSON payload from the user request
 
-        // Integration with Airline reservation service to reserve airway
+        // Integration with Airline reservation service to reserve an airline
 
-        // Integration with Hotel reservation service to reserve hotel
+        // Integration with the hotel reservation service to reserve a hotel
 
-        // Integration with Car rental service to rent vehicle
+        // Integration with the car rental service to rent a vehicle
         
         // Respond back to the client
     }
@@ -411,16 +420,16 @@ service<http> travelAgencyService {
 
 ```
 
-In the above code, `airlineReservationEP` is the endpoint defined through which the Ballerina service communicates with the external airline reservation service. The endpoint defined to communicate with the external Hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the endpoint defined to communicate with the external car rental service.
+In the above code, `airlineReservationEP` is the endpoint defined through which the Ballerina service communicates with the external airline reservation service. The endpoint defined to communicate with the external hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the endpoint defined to communicate with the external car rental service.
 
-To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/travel_agency_service_parallel.bal).
+To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/service-composition/blob/master/TravelAgency/travel_agency_service_parallel.bal) file.
 
 
 ## <a name="testing"></a> Testing 
 
 ### <a name="try-it"></a> Try it out
 
-1. Start all four HTTP services by entering the following command in a separate terminal for each service. This command will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file located.
+1. Start all four HTTP services by entering the following command in a separate terminal for each service. This command starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093, and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file is located.
 
    ```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina run TravelAgency/<Package_Name>
@@ -462,22 +471,22 @@ To run the unit tests, go to the sample root directory and run the following com
    <SAMPLE_ROOT_DIRECTORY>$ ballerina test TravelAgency/<Package_Name>
    ```
 
-To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/AirlineReservation/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/HotelReservation/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/CarRental/car_rental_service_test.bal) and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/travel_agency_service_parallel_test.bal).
+To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/AirlineReservation/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/HotelReservation/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/CarRental/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/TravelAgency/travel_agency_service_parallel_test.bal).
 
 
 ## <a name="deploying-the-scenario"></a> Deployment
 
-Once you are done with the development, you can deploy the services using any of the methods that are listed below. 
+Once you are done with the development, you can deploy the services using any of the methods listed below. 
 
 ### <a name="deploying-on-locally"></a> Deploying locally
-You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows,
+You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
 
-Building 
+**Building** 
    ```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina build TravelAgency/<Package_Name>
    ```
 
-Running
+**Running**
    ```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
    ```
@@ -496,7 +505,7 @@ Once you have created the docker images, you can run them using `docker run` as 
   docker run -p <host_port>:<service_port> --name <container_instance_name> -d <image_name>:<tag_name>
   ```
 
-For example, to run the Travel agency service, use the following command.
+For example, to run the travel agency service, use the following command.
 
   ```bash
   docker run -p <host_port>:9090 --name ballerina_TravelAgency -d TravelAgency:latest
