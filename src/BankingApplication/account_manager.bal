@@ -20,21 +20,15 @@ import ballerina/config;
 import ballerina/log;
 import ballerina/data.sql;
 
-const int DB_PORT =? <int>config:getGlobalValue("DATABASE_PORT");
-const int DB_MAX_POOL_SIZE =? <int>config:getGlobalValue("DATABASE_MAX_POOL_SIZE");
-
 endpoint sql:Client bankDB {
     database:sql:DB.MYSQL,
-    host:config:getGlobalValue("DATABASE_HOST"),
-    port:DB_PORT,
-    name:config:getGlobalValue("DATABASE_NAME"),
-    username:config:getGlobalValue("DATABASE_USERNAME"),
-    password:config:getGlobalValue("DATABASE_PASSWORD"),
-    options:{maximumPoolSize:DB_MAX_POOL_SIZE}
+    host:"localhost",
+    port:3306,
+    name:"bankDB?useSSL=false",
+    username:"root",
+    password:"Mathematics",
+    options:{maximumPoolSize:5}
 };
-
-// Execute the database initialization function
-boolean init = initializeDB();
 
 // Function to add users to 'ACCOUNT' table of 'bankDB' database
 public function createAccount (string name) returns (int) {
@@ -73,7 +67,7 @@ public function verifyAccount (int accId) returns (boolean) {
 }
 
 // Function to check balance in an account
-public function checkBalance (int accId) returns (int | error) {
+public function checkBalance (int accId) returns (int|error) {
     log:printInfo("Checking balance for account ID: " + accId);
     // Verify account whether it exists and return an error if not
     if (!verifyAccount(accId)) {
@@ -95,15 +89,15 @@ public function checkBalance (int accId) returns (int | error) {
 }
 
 // Function to deposit money to an account
-public function depositMoney (int accId, int amount) returns (error | null) {
+public function depositMoney (int accId, int amount) returns (error| null) {
     log:printInfo("Depositing money to account ID: " + accId);
     // Check whether the amount specified is valid and return an error if not
     if (amount <= 0) {
         error err = {message:"Error: Invalid amount"};
         return err;
     }
-    // Verify account whether it exists and return an error if not
     if (!verifyAccount(accId)) {
+        // Verify account whether it exists and return an error if not
         error err = {message:"Error: Account does not exist"};
         return err;
     }
@@ -115,84 +109,75 @@ public function depositMoney (int accId, int amount) returns (error | null) {
     int rowsAffected =? bankDB -> update("UPDATE ACCOUNT SET BALANCE = (BALANCE + ?) WHERE ID = ?", parameters);
     log:printInfo("Updating balance for account ID: " + accId + "; Rows affected in ACCOUNT table: " + rowsAffected);
     log:printInfo("$" + amount + " has been deposited to account ID " + accId);
+    return null;
 }
 
 // Function to withdraw money from an account
-public function withdrawMoney (int accId, int amount) returns (error | null) {
-    // Check whether the amount specified is valid and return an error if not
+public function withdrawMoney (int accId, int amount) returns (error| null) {
     log:printInfo("Withdrawing money from account ID: " + accId);
+    // Check whether the amount specified is valid and return an error if not
     if (amount <= 0) {
         error err = {message:"Error: Invalid amount"};
         return err;
     }
     // Check current balance
     match checkBalance(accId) {
+        error checkBalanceError => return checkBalanceError;
         int balance => {
-            // Check whether the user has enough money to withdraw the requested amount and return an error if not
+        // Check whether the user has enough money to withdraw the requested amount and return an error if not
             if (balance < amount) {
                 error err = {message:"Error: Not enough balance"};
                 return err;
             }
         }
-        error checkBalanceError => return checkBalanceError;
     }
-
     // SQL query parameters
     sql:Parameter id = {sqlType:sql:Type.INTEGER, value:accId};
     sql:Parameter withdrawAmount = {sqlType:sql:Type.INTEGER, value:amount};
     sql:Parameter[] parameters = [withdrawAmount, id];
     // Update query to reduce the current balance
-    int rowsAffected =? bankDB -> update("UPDATE ACCOUNT SET BALANCE = (BALANCE - ?) WHERE ID = ?", parameters);
-    log:printInfo("Updating balance for account ID: " + accId + "; Rows affected in ACCOUNT table: " + rowsAffected);
+    int rowsAffected =? bankDB -> update("UPDATE ACCOUNT SET BALANCE = (BALANCE - ?) WHERE ID = ?",
+                                         parameters);
+    log:printInfo("Updating balance for account ID: " + accId + "; Rows affected in ACCOUNT table: " +
+                  rowsAffected);
     log:printInfo("$" + amount + " has been withdrawn from account ID " + accId);
+    return null;
 }
 
 // Function to transfer money from one account to another
 public function transferMoney (int fromAccId, int toAccId, int amount) returns (boolean) {
+    boolean isSuccessful;
     // Transaction block - Ensures the 'ACID' properties
     // Withdraw and deposit should happen as a transaction when transfer money from one account to another
-    transaction with retries(0) {
+    transaction with retries = 0 {
         log:printInfo("Initiating transaction");
         log:printInfo("Transferring money from account ID " + fromAccId + " to account ID " + toAccId);
         // Withdraw money from transferor's account
-        error withdrawError = withdrawMoney(fromAccId, amount);
-        if (withdrawError != null) {
-            log:printError("Error while withdrawing the money: " + withdrawError.message);
-            // Abort transaction if withdrawal fails
-            abort;
-        }
-        // Deposit money to transferee's account
-        error depositError = depositMoney(toAccId, amount);
-        if (depositError != null) {
-            log:printError("Error while depositing the money: " + depositError.message);
-            // Abort transaction if deposit fails
-            abort;
+        match withdrawMoney(fromAccId, amount) {
+            error withdrawError => {
+                log:printError("Error while withdrawing the money: " + withdrawError.message);
+                // Abort transaction if withdrawal fails
+                abort;
+            }
+            null => {
+                match depositMoney(toAccId, amount) {
+                    error depositError => {
+                        log:printError("Error while depositing the money: " + depositError.message);
+                        // Abort transaction if deposit fails
+                        abort;
+                    }
+                    null => isSuccessful = true;
+                }
+            }
         }
         // If transaction successful
         log:printInfo("Transaction committed");
         log:printInfo("Successfully transferred $" + amount + " from account ID " + fromAccId + " to account ID " +
                       toAccId);
-        return true;
     } onretry {
         // Executed when a transaction fails
         log:printError("Error while transferring money from account ID " + fromAccId + " to account ID " + toAccId);
         log:printError("Transaction failed");
-        return false;
     }
-}
-
-// Private function to initialize the database
-function initializeDB () returns (boolean) {
-    // Drop table 'ACCOUNT' if exists
-    int updateStatus1 =? bankDB -> update("DROP TABLE IF EXISTS ACCOUNT", null);
-    log:printInfo("Dropping table 'ACCOUNT' if exists; Status: " + updateStatus1);
-    // Create 'ACCOUNT' table
-    int updateStatus2 =? bankDB -> update("CREATE TABLE ACCOUNT(ID INT AUTO_INCREMENT, USERNAME VARCHAR(20) NOT NULL,
-    BALANCE INT UNSIGNED NOT NULL, PRIMARY KEY (ID))", null);
-    log:printInfo("Creating table 'ACCOUNT'; Status: " + updateStatus2 + "\n");
-    if (updateStatus1 == 1 && updateStatus2 == 0) {
-        return true;
-    }
-    // Return a boolean, which will be true if the initialization is successful; false otherwise
-    return false;
+    return isSuccessful;
 }
