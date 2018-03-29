@@ -53,5 +53,6 @@ function testAirlineReservationService () {
                       msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     json resPayload =? response.getJsonPayload();
-    test:assertEquals(resPayload, {"Status":"Success"}, msg = "Response mismatch!");
+    json expected = {"Status":"Success"};
+    test:assertEquals(resPayload, expected, msg = "Response mismatch!");
 }
