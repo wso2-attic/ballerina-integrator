@@ -191,7 +191,6 @@ public function insertData (string name, int age, int ssn, int employeeId) retur
     return updateStatus;
 }
 
-
 public function retrieveById (int employeeID) returns (json) {
 
     // Prepare the sql string with employee data as parameters
@@ -204,8 +203,6 @@ public function retrieveById (int employeeID) returns (json) {
     var jsonReturnValue =? <json>dataTable;
     return jsonReturnValue;
 }
-
-
 
 public function updateData (string name, int age, int ssn, int employeeId) returns (json) {
     // Initialize update status as unsuccessful MySQL operation
@@ -256,4 +253,3 @@ public function deleteData (int employeeID) returns (json) {
     }
     return updateStatus;
 }
-
