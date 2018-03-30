@@ -87,7 +87,7 @@ public function checkBalance (int accId) returns (int|error) {
 }
 
 // Function to deposit money to an account
-public function depositMoney (int accId, int amount) returns (error| null) {
+public function depositMoney (int accId, int amount) returns (error|null) {
     // Check whether the amount specified is valid and return an error if not
     if (amount <= 0) {
         error err = {message:"Error: Invalid amount"};
@@ -110,7 +110,7 @@ public function depositMoney (int accId, int amount) returns (error| null) {
 }
 
 // Function to withdraw money from an account
-public function withdrawMoney (int accId, int amount) returns (error| null) {
+public function withdrawMoney (int accId, int amount) returns (error|null) {
     // Check whether the amount specified is valid and return an error if not
     if (amount <= 0) {
         error err = {message:"Error: Invalid amount"};
