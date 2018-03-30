@@ -332,7 +332,7 @@ Please refer to the `ballerina-guides/data-backed-service/src/data_backed_servic
 
 You can implement custom functions in Ballerina that do specific tasks. For this scenario, you need to have functions to deal with the MySQL database.
 
-The `endpoint` keyword in Ballerina refers to a connection with a remote service. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the SQL endpoint. The endpoint is initialized with an SQL connection. The rest of the code is just preparing SQL queries and executing them by calling the `update` action in the `ballerina.data.sql` package. Finally, the status of the SQL operation is returned as a JSON file.
+The `endpoint` keyword in Ballerina refers to a connection with a remote service. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the SQL endpoint. The endpoint is initialized with an SQL connection. The rest of the code is just preparing SQL queries and executing them by calling the `update` action in the `ballerina/data.sql` package. Finally, the status of the SQL operation is returned as a JSON file.
 
 ## <a name="testing"></a> Testing 
 
