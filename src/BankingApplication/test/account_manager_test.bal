@@ -16,7 +16,7 @@
 //
 //package BankingApplication;
 //
-import ballerina/test;
+//import ballerina/test;
 //
 //// Unit test for testing initializeDB() function
 //function testInitializeDB () {
