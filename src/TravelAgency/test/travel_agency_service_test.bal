@@ -63,6 +63,6 @@ function testTravelAgencyService () {
     test:assertEquals(response.statusCode, 200, msg = "Travel agency service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     json resPayload =? response.getJsonPayload();
-    test:assertEquals(resPayload, {"Message":"Congratulations! Your journey is ready!!"},
-                            msg = "Response mismatch!");
+    json expected = {"Message":"Congratulations! Your journey is ready!!"};
+    test:assertEquals(resPayload, expected, msg = "Response mismatch!");
 }
