@@ -36,30 +36,34 @@ Ballerina is a complete programming language that can have any custom project st
 
 ```
 managing-database-transactions
-├── ballerina.conf
-├── BankingApplication
-│   ├── account_manager.bal
-│   ├── account_manager_test.bal
-│   ├── application.bal
-│   └── dbUtil
-│       ├── database_utilities.bal
-│       └── database_utilities_test.bal
-└── README.md
+  ├── resources
+  │   └── DatabaseInitializer.sql
+  └── src
+      └── BankingApplication
+          ├── account_manager.bal
+          ├── application.bal
+          └── test
+              └── account_manager_test.bal
+              
+```
+
+##### Change the database configurations in the `account_manager.bal` file
+As we need to interact with MySQL database, we should provide the database connection properties when defining the `sql:Client` endpoint. This is defined in the `account_manager.bal` file. 
+The required configurations are,
 
 ```
-##### Add database configurations to the `ballerina.conf` file
-The purpose of  `ballerina.conf` file is to provide any external configurations that are required by ballerina programs. Since we need to interact with MySQL database, we can provide the database connection properties to the ballerina program via `ballerina.conf` file.
-This configuration file will have the following fields,
+host:<HOST>,
+port:<PORT>,
+name:<DATABASE_NAME>,
+username:<USERNAME>,
+password:<PASSWORD>,
+options:{maximumPoolSize:<MAXIMUM_POOL_SIZE>}
 
 ```
-DATABASE_HOST = localhost
-DATABASE_PORT = 3306
-DATABASE_USERNAME = username
-DATABASE_PASSWORD = password
-DATABASE_MAX_POOL_SIZE = 5
-DATABASE_NAME = bankDB
-```
-Make sure to edit these configurations with your MySQL database connection properties. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
+Make sure to edit these configurations with your MySQL database connection properties. You can keep the <DATABASE_NAME> as available now if you don't want to change the name explicitly.
+
+##### Run the `DatabaseInitializer.sql` script 
+You have to run the mysql database script `DatabaseInitializer.sql` provided inside the resource folder to initialize the database with required table details.
 
 ### <a name="Implementation"></a> Implementation
 
@@ -70,38 +74,41 @@ The below code segment shows the implementation of function `transferMoney`. Inl
 ##### transferMoney function
 ```ballerina
 // Function to transfer money from one account to another
-public function transferMoney (int fromAccId, int toAccId, int amount) (boolean isSuccessful) {
+public function transferMoney (int fromAccId, int toAccId, int amount) returns (boolean) {
+    boolean isSuccessful;
     // Transaction block - Ensures the 'ACID' properties
     // Withdraw and deposit should happen as a transaction when transfer money from one account to another
-    transaction with retries(0) {
+    transaction with retries= 0 {
         log:printInfo("Initiating transaction");
-        log:printInfo("Transferring money from account ID " + fromAccId + " to account ID " + toAccId);
         // Withdraw money from transferor's account
-        error withdrawError = withdrawMoney(fromAccId, amount);
-        if (withdrawError != null) {
-            log:printError("Error while withdrawing the money: " + withdrawError.msg);
-            // Abort transaction if withdrawal fails
-            abort;
-        }
-        // Deposit money to transferee's account
-        error depositError = depositMoney(toAccId, amount);
-        if (depositError != null) {
-            log:printError("Error while depositing the money: " + depositError.msg);
-            // Abort transaction if deposit fails
-            abort;
+        match withdrawMoney(fromAccId, amount) {
+            error withdrawError => {
+                log:printError("Error while withdrawing the money: " + withdrawError.message);
+                // Abort transaction if withdrawal fails
+                log:printInfo("Transaction aborted");
+                log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " + toAccId);
+                abort;
+            }
+            null => {
+                match depositMoney(toAccId, amount) {
+                    error depositError => {
+                        log:printError("Error while depositing the money: " + depositError.message);
+                        // Abort transaction if deposit fails
+                        log:printInfo("Transaction aborted");
+                        log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " +
+                                       toAccId);
+                        abort;
+                    }
+                    null => isSuccessful = true;
+                }
+            }
         }
         // If transaction successful
-        isSuccessful = true;
         log:printInfo("Transaction committed");
         log:printInfo("Successfully transferred $" + amount + " from account ID " + fromAccId + " to account ID " +
                       toAccId);
-    } failed {
-        // Executed when a transaction fails
-        log:printError("Error while transferring money from account ID " + fromAccId + " to account ID " + toAccId);
-        log:printError("Transaction failed");
     }
-    // Return a boolean, which will be true if transaction is successful; false otherwise
-    return;
+    return isSuccessful;
 }
 
 ```
@@ -115,57 +122,55 @@ package BankingApplication;
 
 // Imports
 
-// Get the SQL client connector
-sql:ClientConnector sqlConnector = dbUtil:getDatabaseClientConnector();
-
-// Execute the database initialization function
-boolean init = initializeDB();
+endpoint sql:Client bankDB {
+    database:sql:DB.MYSQL,
+    host:"localhost",
+    port:3306,
+    name:"bankDB",
+    username:<USERNAME>,
+    password:<PASSWORD>,
+    options:{maximumPoolSize:5}
+};
 
 // Function to add users to 'ACCOUNT' table of 'bankDB' database
-public function createAccount (string name) (int accId) {
+public function createAccount (string name) returns (int) {
     // Implemetation
     // Return the primary key, which will be the account number of the account
 }
 
 // Function to verify an account whether it exists or not
-public function verifyAccount (int accId) (boolean accExists) {
+public function verifyAccount (int accId) returns (boolean) {
     // Implementation
     // Return a boolean, which will be true if account exists; false otherwise
 }
 
 // Function to check balance in an account
-public function checkBalance (int accId) (int balance, error err) {
+public function checkBalance (int accId) returns (int|error) {
     // Implementation
-    // Return the balance
+    // Return the balance or error
 }
 
 // Function to deposit money to an account
-public function depositMoney (int accId, int amount) (error err) {
+public function depositMoney (int accId, int amount) returns (error|null) {
     // Implementation
-    // Return error if amount is invalid or account does not exist
+    // Return error or null
 }
 
 // Function to withdraw money from an account
-public function withdrawMoney (int accId, int amount) (error err) {
+public function withdrawMoney (int accId, int amount) returns (error|null) {
     // Implementation
-    // Return error if amount is invalid or account does not exist or if balance is not enough
+    // Return error or null
 }
 
 // Function to transfer money from one account to another
-public function transferMoney (int fromAccId, int toAccId, int amount) (boolean isSuccessful) {
+public function transferMoney (int fromAccId, int toAccId, int amount) returns (boolean) {
     // Implementation 
     // Return a boolean, which will be true if transaction is successful; false otherwise
 }
 
-// Private function to initialize the database
-function initializeDB () (boolean isInitialized) {
-    // Implementation 
-    // Return a boolean, which will be true if the initialization is successful; false otherwise
-}
-
 ```
 
-To see the complete implementation of the above, refer [account_manager.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account_manager.bal).
+To see the complete implementation of the above, refer [account_manager.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/src/BankingApplication/account_manager.bal).
 
 Let's next focus on the implementation of `application.bal` file, which includes the main function. It consists of three possible scenarios to check the transfer money operation of our banking application to explain the database transaction management using Ballerina. Skeleton of `application.bal` is attached below.
 
@@ -200,35 +205,7 @@ function main (string[] args) {
 
 ```
 
-To see the complete implementation of the above, refer [application.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/application.bal). 
-
-
-Finally, let's focus on the implementation of `database_utilities.bal`, which consists database utility functions. Before accessing the database from ballerina, we need to have the SQL client connector. We also need a function to create databases if we decide to do it from the code itself. 
-File `database_utilities.bal` in the dbUtil package includes the implementations for the above-mentioned functions. Skeleton of this file is attached below. Inline comments are used to explain the important code segments.
-
-##### database_utilities.bal
-```ballerina
-package BankingApplication.dbUtil;
-
-// Imports
-
-// Function to get SQL database client connector
-public function getDatabaseClientConnector () (sql:ClientConnector sqlConnector) {
-    // Get database configuration details from the ballerina.config file
-    // Implementation
-    // Return the SQL client connector
-}
-
-// Function to create a database
-public function createDatabase (sql:ClientConnector sqlConnector, string dbName) (int updateStatus) {
-    // Implementation
-    // Return the update status
-}
-
-```
-
-To see the complete implementation of the above, refer [database_utilities.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database_utilities.bal).
-
+To see the complete implementation of the above, refer [application.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/src/BankingApplication/application.bal). 
 
 ## <a name="testing"></a> Testing 
 
@@ -237,7 +214,7 @@ To see the complete implementation of the above, refer [database_utilities.bal](
 Run this sample by entering the following command in a terminal,
 
 ```bash
-<SAMPLE_ROOT_DIRECTORY>$ ballerina run BankingApplication/
+<SAMPLE_ROOT_DIRECTORY>/src$ ballerina run BankingApplication/
 ```
 
 #### <a name="response"></a> Response you'll get
@@ -260,12 +237,7 @@ Let's now look at some important log statements we will get as the response for 
 2018-02-16 07:16:33,549 INFO  [BankingApplication] - $300 has been deposited to account ID 2 
 2018-02-16 07:16:33,550 INFO  [BankingApplication] - Transaction committed 
 2018-02-16 07:16:33,550 INFO  [BankingApplication] - Successfully transferred $300 from account ID 1 to account ID 2 
-2018-02-16 07:16:33,555 INFO  [BankingApplication] - Check balance for Alice's account 
-2018-02-16 07:16:33,559 INFO  [BankingApplication] - Available balance in account ID 1: 200 
-2018-02-16 07:16:33,559 INFO  [BankingApplication] - You should see $200 balance in Alice's account 
-2018-02-16 07:16:33,560 INFO  [BankingApplication] - Check balance for Bob's account 
-2018-02-16 07:16:33,563 INFO  [BankingApplication] - Available balance in account ID 2: 1300 
-2018-02-16 07:16:33,564 INFO  [BankingApplication] - You should see $1300 balance in Bob's account 
+
 ```
 
 2. For the `scenario 2` where 'Alice' tries to transfer $500 to Bob's account, the transaction is expected to fail as 'Alice' has insufficient balance
@@ -280,6 +252,7 @@ Let's now look at some important log statements we will get as the response for 
 2018-02-16 07:16:33,566 INFO  [BankingApplication] - Checking balance for account ID: 1 
 2018-02-16 07:16:33,569 INFO  [BankingApplication] - Available balance in account ID 1: 200 
 2018-02-16 07:16:33,570 ERROR [BankingApplication] - Error while withdrawing the money: Error: Not enough balance 
+
 ```
 
 2. For the `scenario 3` where 'Bob' tries to transfer $500 to account ID 1234, the transaction is expected to fail as account ID 1234 does not exist
@@ -299,24 +272,26 @@ Let's now look at some important log statements we will get as the response for 
 2018-02-16 07:16:33,601 INFO  [BankingApplication] - Available balance in account ID 2: 1300 
 2018-02-16 07:16:33,601 INFO  [BankingApplication] - You should see $1300 balance in Bob's account (NOT $800) 
 2018-02-16 07:16:33,601 INFO  [BankingApplication] - Explanation: When trying to transfer $500 from Bob's account to account ID 1234, 
-initially $500 withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient account ID; Hence 
+initially $500 withdrew from Bob's account. But then the deposit operation failed due to an invalid recipient account ID; Hence 
 the TX failed and the withdraw operation rollbacked, which is in the same TX
 ```
 
 ### <a name="unit-testing"></a> Writing unit tests 
 
 In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
-* Test files should contain _test.bal suffix.
-* Test functions should contain test prefix.
-  * e.g.: testCreateAccount()
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
+* Test functions should be annotated with `@test:Config`. See the below example.
+  ```ballerina
+    @test:Config
+    function testCreateAccount() {
+  ```
 
-This guide contains unit test cases for each method implemented in `database_utilities.bal` and `account_manager.bal` files.
-Test files are in the same packages in which the above files are located.
+This guide contains unit test cases for each method implemented in `account_manager.bal` file.
 
-To run the unit tests, go to the sample root directory and run the following command,
+To run the unit tests, go to the sample src directory and run the following command,
 
 ```bash
-$ ballerina test BankingApplication/
+$ <SAMPLE_ROOT_DIRECTORY>/src$ ballerina test
 ```
 
-To check the implementations of these test files, refer [database_utilities_test.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/dbUtil/database_utilities_test.bal) and [account_manager_test.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account_manager_test.bal).
+To check the implementations of this test file, refer [database_utilities_test.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/src/BankingApplication/test/account_manager_test.bal).
