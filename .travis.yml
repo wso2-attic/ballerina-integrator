@@ -1,0 +1,11 @@
+before_install:
+- sudo chmod +x install-ballerina.sh
+
+install: 
+- ./install-ballerina.sh
+- export PATH=$PATH:$(pwd)/ballerina-tools-0.970.0-alpha1/bin
+
+script:
+- cd src/
+- ballerina init
+- ballerina test
