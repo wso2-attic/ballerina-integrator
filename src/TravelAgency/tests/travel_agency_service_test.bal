@@ -14,45 +14,70 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package AirlineReservation;
+package TravelAgency;
 
 import ballerina/test;
 import ballerina/net.http;
 
 @test:BeforeSuite
 function beforeFunc () {
-    // Start the 'airlineReservationService' before running the test
+    // Start the 'travelAgencyService' before running the test
+    _ = test:startServices("TravelAgency");
+
+    // 'travelAgencyService' needs to communicate with airline reservation, hotel reservation and car rental services
+    // Therefore, start these three services before running the test
+    // Start the 'airlineReservationService'
     _ = test:startServices("AirlineReservation");
+
+    // Start the 'hotelReservationService'
+    _ = test:startServices("HotelReservation");
+
+    // Start the 'carRentalService'
+    _ = test:startServices("CarRental");
 }
 
 // Client endpoint
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9091/airline"}]
+    targets:[{uri:"http://localhost:9090/travel"}]
 };
 
-// Function to test Airline reservation service
+// Function to test Travel agency service
 @test:Config
-function testAirlineReservationService () {
+function testTravelAgencyService () {
     // Initialize the empty http requests and responses
     http:Request request = {};
 
-    // Test the 'reserveTicket' resource
+    // Test the 'arrangeTour' resource
     // Construct a request payload
     json payload = {
                        "Name":"Alice",
                        "ArrivalDate":"12-03-2018",
                        "DepartureDate":"13-04-2018",
-                       "Preference":"Business"
+                       "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}
                    };
 
     request.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response =? clientEP -> post("/reserve", request);
+    http:Response response =? clientEP -> post("/arrangeTour", request);
     // Expected response code is 200
-    test:assertEquals(response.statusCode, 200,
-                      msg = "Airline reservation service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Travel agency service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     json resPayload =? response.getJsonPayload();
-    json expected = {"Status":"Success"};
+    json expected = {"Message":"Congratulations! Your journey is ready!!"};
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+}
+
+@test:AfterSuite
+function afterFunc () {
+    // Stop the 'travelAgencyService' after running the test
+    test:stopServices("TravelAgency");
+
+    // Stop the 'airlineReservationService'
+    test:stopServices("AirlineReservation");
+
+    // Stop the 'hotelReservationService'
+    test:stopServices("HotelReservation");
+
+    // Stop the 'carRentalService'
+    test:stopServices("CarRental");
 }

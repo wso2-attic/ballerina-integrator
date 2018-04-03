@@ -14,44 +14,51 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package CarRental;
+package AirlineReservation;
 
 import ballerina/test;
 import ballerina/net.http;
 
 @test:BeforeSuite
 function beforeFunc () {
-    // Start the 'carRentalService' before running the test
-    _ = test:startServices("CarRental");
+    // Start the 'airlineReservationService' before running the test
+    _ = test:startServices("AirlineReservation");
 }
 
 // Client endpoint
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9093/car"}]
+    targets:[{uri:"http://localhost:9091/airline"}]
 };
 
-// Function to test Car rental service
+// Function to test Airline reservation service
 @test:Config
-function testCarRentalService () {
+function testAirlineReservationService () {
     // Initialize the empty http requests and responses
     http:Request request = {};
 
-    // Test the 'rentCar' resource
+    // Test the 'reserveTicket' resource
     // Construct a request payload
     json payload = {
                        "Name":"Alice",
                        "ArrivalDate":"12-03-2018",
                        "DepartureDate":"13-04-2018",
-                       "Preference":"Air Conditioned"
+                       "Preference":"Business"
                    };
 
     request.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response =? clientEP -> post("/rent", request);
+    http:Response response =? clientEP -> post("/reserve", request);
     // Expected response code is 200
-    test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200,
+                      msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     json resPayload =? response.getJsonPayload();
     json expected = {"Status":"Success"};
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+}
+
+@test:AfterSuite
+function afterFunc () {
+    // Stop the 'airlineReservationService' after running the test
+    test:stopServices("AirlineReservation");
 }
