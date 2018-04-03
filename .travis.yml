@@ -9,7 +9,7 @@ services:
 - mysql
 
 before_script:
-- mysql -u root -p  < ./resources/initializeDataBase.sql 
+- mysql -u root --password=""  < ./resources/initializeDataBase.sql 
 
 script:
 - cd src/
