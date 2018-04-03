@@ -17,7 +17,6 @@
 package TravelAgency;
 
 import ballerina/net.http;
-import ballerina/io;
 
 // Service endpoint
 endpoint http:ServiceEndpoint travelAgencyEP {

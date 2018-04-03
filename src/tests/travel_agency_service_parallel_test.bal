@@ -74,3 +74,18 @@ function testTravelAgencyService () {
                            "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":2}";
     test:assertEquals(resPayload.Hotel.toString(), expectedHotel, msg = "Response mismatch!");
 }
+
+@test:AfterSuite
+function afterFunc () {
+    // Stop the 'travelAgencyService' after running the test
+    test:stopServices("TravelAgency");
+
+    // Stop the 'airlineReservationService'
+    test:stopServices("AirlineReservation");
+
+    // Stop the 'hotelReservationService'
+    test:stopServices("HotelReservation");
+
+    // Stop the 'carRentalService'
+    test:stopServices("CarRental");
+}

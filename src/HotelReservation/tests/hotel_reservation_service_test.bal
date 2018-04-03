@@ -96,3 +96,9 @@ function testResourceElizabeth () {
     json resPayload =? response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
+
+@test:AfterSuite
+function afterFunc () {
+    // Stop the 'hotelReservationService' after running the test
+    test:stopServices("HotelReservation");
+}
