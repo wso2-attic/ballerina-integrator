@@ -95,5 +95,5 @@ function testResourceCancelOrder () {
 @test:AfterSuite
 function afterFunc () {
     // Stop the 'OrderMgtService' after running the test
-    test:startServices("restful_service");
+    test:stopServices("restful_service");
 }
