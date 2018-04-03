@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pranavan15/service-composition.svg?branch=master)](https://travis-ci.org/pranavan15/service-compositio)
+
 # Service Composition
 
 A service composition is an aggregate of services collectively composed to automate a particular task or business process. 
