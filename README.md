@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pranavan15/managing-database-transactions.svg?branch=master)](https://travis-ci.org/pranavan15/managing-database-transactions)
+
 # Managing Database Transactions
 In this guide, you will learn about managing database transactions using Ballerina.
 
