@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # declare STRING variable
 STRING="Downloading ballerina..."
 BALLERINA_VERSION="ballerina-tools-0.970.0-alpha1"
