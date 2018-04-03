@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pranavan15/service-composition.svg?branch=master)](https://travis-ci.org/pranavan15/service-compositio)
+[![Build Status](https://travis-ci.org/pranavan15/service-composition.svg?branch=master)](https://travis-ci.org/pranavan15/service-composition)
 
 # Service Composition
 
