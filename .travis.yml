@@ -7,7 +7,7 @@ install:
 
 services:
 - mysql
-- mysql -u root -pqwe123 < ./resources/initializeDataBase.sql 
+- mysql -u root -p < ./resources/initializeDataBase.sql 
 
 script:
 - cd src/
