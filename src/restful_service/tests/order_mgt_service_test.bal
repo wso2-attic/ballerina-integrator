@@ -91,3 +91,9 @@ function testResourceCancelOrder () {
     test:assertEquals(responsePayload.toString(), "Order : 100500 removed.",
                       msg = "Response mismatch!");
 }
+
+@test:AfterSuite
+function afterFunc () {
+    // Stop the 'OrderMgtService' after running the test
+    test:startServices("restful_service");
+}

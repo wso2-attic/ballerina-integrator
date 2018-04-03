@@ -293,7 +293,7 @@ Output:
 "Order : 100500 removed."
 ```
 
-### <a name="unit-testing"></a> Writing Unit Tests 
+### <a name="unit-testing"></a> Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'. The naming convention should be as follows,
 
@@ -313,7 +313,7 @@ To check the implementation of the test file, refer to the [order_mgt_service_te
 
 Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying Locally
+### <a name="deploying-on-locally"></a> Deploying locally
 You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
 ```
