@@ -25,8 +25,8 @@ endpoint sql:Client bankDB {
     host:"localhost",
     port:3306,
     name:"bankDB?useSSL=false",
-    username:<USERNAME>,
-    password:<PASSWORD>,
+    username:"root",
+    password:"",
     options:{maximumPoolSize:5}
 };
 
