@@ -1,6 +1,6 @@
 package restful_service;
 
-import ballerina/net.http;
+import ballerina/http;
 //import ballerinax/kubernetes;
 
 endpoint http:ServiceEndpoint orderMgtServiceEP {

@@ -1,7 +1,7 @@
 package restful_service;
 
 import ballerina/test;
-import ballerina/net.http;
+import ballerina/http;
 
 @test:BeforeSuite
 function beforeFunc () {
@@ -10,7 +10,7 @@ function beforeFunc () {
 }
 
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9090/ordermgt"}]
+    targets:[{url:"http://localhost:9090/ordermgt"}]
 };
 
 @test:Config
