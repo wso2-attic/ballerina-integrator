@@ -22,7 +22,7 @@ BALLERINA_VERSION="ballerina-tools-0.970.0-alpha1"
 echo $STRING
 
 #download ballerina distro
-wget https://transfer.sh/7PtBf/$BALLERINA_VERSION.zip
+wget https://transfer.sh/Dmk3i/$BALLERINA_VERSION.zip
 
 #unzip the zip file
 unzip $BALLERINA_VERSION.zip
