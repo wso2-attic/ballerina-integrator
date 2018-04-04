@@ -18,7 +18,7 @@ package BankingApplication;
 
 import ballerina/config;
 import ballerina/log;
-import ballerina/data.sql;
+import ballerina/sql;
 
 endpoint sql:Client bankDB {
     database:sql:DB.MYSQL,
