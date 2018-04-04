@@ -16,7 +16,7 @@
 
 package CarRental;
 
-import ballerina/net.http;
+import ballerina/http;
 
 // Available car types
 const string AC = "Air Conditioned";
@@ -46,7 +46,7 @@ service<http:Service> carRentalService bind carEP {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(response);
-                return;
+                //return;
             }
         }
 
@@ -60,7 +60,7 @@ service<http:Service> carRentalService bind carEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
-            return;
+            //return;
         }
 
         // Mock logic

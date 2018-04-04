@@ -17,7 +17,7 @@
 package HotelReservation;
 
 import ballerina/test;
-import ballerina/net.http;
+import ballerina/http;
 
 @test:BeforeSuite
 function beforeFunc () {
@@ -27,7 +27,7 @@ function beforeFunc () {
 
 // Client endpoint
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9092/hotel"}]
+    targets:[{url:"http://localhost:9092/hotel"}]
 };
 
 // Function to test Hotel reservation service
