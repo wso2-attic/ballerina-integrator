@@ -17,6 +17,7 @@
 # declare STRING variable
 STRING="Downloading ballerina..."
 BALLERINA_VERSION="ballerina-tools-0.970.0-alpha1"
+MYSQL_CONNECTOR_VERSION="mysql-connector-java-5.1.45"
 
 #print downloading string on a screen
 echo $STRING
@@ -30,3 +31,12 @@ unzip $BALLERINA_VERSION.zip
 export PATH=$PATH:$(pwd)/$BALLERINA_VERSION/bin
 echo $PATH
 ballerina version
+
+#download JDBC driver
+wget http://dev.mysql.com/get/Downloads/Connector-J/$MYSQL_CONNECTOR_VERSION.tar.gz
+
+#untar the tar file
+tar xvzf $MYSQL_CONNECTOR_VERSION.tar.gz
+
+#move the JDBC driver jar into the Ballerina/bre/lib folder
+mv $MYSQL_CONNECTOR_VERSION/$MYSQL_CONNECTOR_VERSION-bin.jar $BALLERINA_VERSION/bre/lib
