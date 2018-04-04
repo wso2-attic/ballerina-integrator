@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pranavan15/restful-service.svg?branch=master)](https://travis-ci.org/pranavan15/restful-service)
+
 # RESTful Service  
 
 In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
