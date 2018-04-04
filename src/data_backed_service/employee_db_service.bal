@@ -21,7 +21,7 @@ import ballerina/log;
 import ballerina/mime;
 import ballerina/http;
 import ballerina/config;
-import ballerinax/docker;
+//import ballerinax/docker;
 
 struct Employee {
     string name;
@@ -45,10 +45,10 @@ endpoint http:ServiceEndpoint listener {
     port:9090
 };
 
-@docker:Config {
-    name:"employee-database-service",
-    tag:"v1.0"
-}
+//@docker:Config {
+//    name:"employee-database-service",
+//    tag:"v1.0"
+//}
 
 @http:ServiceConfig {
     basePath:"/records"
