@@ -16,7 +16,7 @@
 
 package TravelAgency;
 
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/test;
 
 @test:BeforeSuite
@@ -38,7 +38,7 @@ function beforeFunc () {
 
 // Client endpoint
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9090/travel"}]
+    targets:[{url:"http://localhost:9090/travel"}]
 };
 
 // Function to test the Travel agency service

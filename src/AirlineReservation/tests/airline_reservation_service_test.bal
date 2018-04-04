@@ -17,7 +17,7 @@
 package AirlineReservation;
 
 import ballerina/test;
-import ballerina/net.http;
+import ballerina/http;
 
 // Common request Payload
 json requestPayload = {
@@ -35,7 +35,7 @@ function beforeFunc () {
 
 // Client endpoint
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9091/airline"}]
+    targets:[{url:"http://localhost:9091/airline"}]
 };
 
 // Function to test resource 'flightConcord'
