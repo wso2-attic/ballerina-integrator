@@ -15,13 +15,12 @@
 #!/bin/bash
 
 # declare STRING variable
-STRING1="Downloading ballerina..."
-STRING2="Downloading JDBC driver..."
+STRING="Downloading ballerina..."
 BALLERINA_VERSION="ballerina-tools-0.970.0-alpha1"
 MYSQL_CONNECTOR_VERSION="mysql-connector-java-5.1.45"
 
 #print downloading string on a screen
-echo $STRING1
+echo $STRING
 
 #download ballerina distro
 wget https://transfer.sh/Dmk3i/$BALLERINA_VERSION.zip
@@ -32,9 +31,6 @@ unzip $BALLERINA_VERSION.zip
 export PATH=$PATH:$(pwd)/$BALLERINA_VERSION/bin
 echo $PATH
 ballerina version
-
-#print downloading string on a screen
-echo $STRING2
 
 #download JDBC driver
 wget http://dev.mysql.com/get/Downloads/Connector-J/$MYSQL_CONNECTOR_VERSION.tar.gz
