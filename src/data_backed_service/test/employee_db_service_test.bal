@@ -16,7 +16,7 @@
 
 package data_backed_service;
 
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/test;
 
 int TEST_EMPLOYEE_ID = 879796979;
@@ -25,7 +25,7 @@ int TEST_EMPLOYEE_ID = 879796979;
 endpoint http:ClientEndpoint httpEndpoint {
     targets:[
             {
-                uri:"http://localhost:9090/records"
+                url:"http://localhost:9090/records"
             }
             ]
 };
@@ -43,7 +43,9 @@ function afterFunc () {
     // Stop employee database service
     test:stopServices("data_backed_service");
 }
-@test:Config
+@test:Config{
+    dependsOn:["testAddEmployeeResource"]
+}
 function testRetrieveByIdResource () {
     // Initialize the empty http request and response
     http:Request req = {};
@@ -83,7 +85,9 @@ function testAddEmployeeResource () {
     test:assertEquals(receivedPayload1, expectedJson, msg = "Name did not store in the database");
 }
 
-@test:Config
+@test:Config{
+    dependsOn:["testAddEmployeeResource"]
+}
 function testUpdateEmployeeResource () {
     // Initialize the empty http request and response
     http:Request req = {};
@@ -104,7 +108,9 @@ function testUpdateEmployeeResource () {
     test:assertEquals(receivedPayload3, expectedJson, msg = "Name did not updated in the database");
 }
 
-@test:Config
+@test:Config{
+    dependsOn:["testUpdateEmployeeResource","testRetrieveByIdResource"]
+}
 function testDeleteEmployeeResource () {
     // Initialize the empty http request and response
     http:Request req = {};
