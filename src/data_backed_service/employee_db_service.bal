@@ -37,7 +37,7 @@ endpoint sql:Client employeeDB {
     port:3306,
     name:"EMPLOYEE_RECORDS",
     username:"root",
-    password:"qwe123",
+    password:"",
     options:{maximumPoolSize:5}
 };
 
