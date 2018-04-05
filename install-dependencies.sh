@@ -1,4 +1,4 @@
-# Copyright (c) 2017, WSO2 Inc. (http://wso2.com) All Rights Reserved.
+# Copyright (c) 2018, WSO2 Inc. (http://wso2.com) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ BALLERINA_VERSION="ballerina-tools-0.970.0-alpha1"
 echo $STRING
 
 #download ballerina distro
-wget https://transfer.sh/xpG2O/$BALLERINA_VERSION.zip
+wget https://transfer.sh/Dmk3i/$BALLERINA_VERSION.zip
 
 #unzip the zip file
 unzip $BALLERINA_VERSION.zip
