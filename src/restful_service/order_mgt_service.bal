@@ -1,11 +1,18 @@
 package restful_service;
 
 import ballerina/http;
+import ballerinax/docker;
 //import ballerinax/kubernetes;
 
 endpoint http:ServiceEndpoint orderMgtServiceEP {
     port:9090
 };
+
+@docker:Config {
+    registry:"ballerina.guides.io",
+    name:"restful_service",
+    tag:"v1.0"
+}
 
 //@kubernetes:SVC {
 //    serviceType:"NodePort",
@@ -103,7 +110,6 @@ service<http:Service> OrderMgtService bind orderMgtServiceEP {
         // Send response to the client
         _ = client -> forward(response);
     }
-
 
     @Description {value:"Resource that handles the HTTP DELETE requests that are directed to the path '/orders/<orderId>' to delete an existing Order."}
     @http:ResourceConfig {
