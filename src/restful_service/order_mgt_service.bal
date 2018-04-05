@@ -1,18 +1,18 @@
 package restful_service;
 
 import ballerina/http;
-import ballerinax/docker;
+//import ballerinax/docker;
 //import ballerinax/kubernetes;
 
 endpoint http:ServiceEndpoint orderMgtServiceEP {
     port:9090
 };
 
-@docker:Config {
-    registry:"ballerina.guides.io",
-    name:"restful_service",
-    tag:"v1.0"
-}
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"restful_service",
+//    tag:"v1.0"
+//}
 
 //@kubernetes:SVC {
 //    serviceType:"NodePort",
