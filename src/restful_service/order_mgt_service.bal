@@ -4,6 +4,15 @@ import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
+//@kubernetes:Ingress {
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-restful-service",
+//    path:"/"
+//}
+//@kubernetes:Service {
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-restful-service"
+//}
 endpoint http:ServiceEndpoint orderMgtServiceEP {
     port:9090
 };
@@ -14,23 +23,13 @@ endpoint http:ServiceEndpoint orderMgtServiceEP {
 //    tag:"v1.0"
 //}
 
-//@kubernetes:SVC {
-//    serviceType:"NodePort",
-//    name:"ballerina-guides-restful-service"
-//}
 
 //@kubernetes:Deployment {
-//    image: "ballerinaguides/ballerina-guides-restful-service",
-//    env:"SIDECAR_HTTP_PORT:9090, SERVICE_PORT:8080",
-//    name: "ballerina-guides-restful-service"
+//    image: "ballerina.guides.io/restful_service:v1.0",
+//    name: "ballerina-guides-restful-service",
+//    dockerHost:"tcp://192.168.99.100:2376",
+//    dockerCertPath:"/home/pranavan/.minikube/certs"
 //}
-//
-//@kubernetes:Ingress {
-//    hostname:"ballerina.guides.io",
-//    name:"ballerina-guides-restful-service",
-//    path:"/"
-//}
-
 
 // Order management is done using an in memory orders map.
 // Add some sample orders to the orderMap during the startup.
@@ -128,5 +127,4 @@ service<http:Service> OrderMgtService bind orderMgtServiceEP {
         // Send response to the client
         _ = client -> respond(response);
     }
-
 }
