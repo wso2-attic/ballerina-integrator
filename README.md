@@ -517,7 +517,45 @@ Follow the following steps to use tracing with ballerina.
  
 
 ### <a name="metrics"></a> Metrics
-(Work in progress) 
+Matrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
+Follow the below steps to set up Promethueus and view matrics for Ballerina restful service.
 
+1) Set the below confifurations in the `ballerina.conf` file in the project root.
+   ```ballerina
+   [observability.metrics.prometheus]
+   # Flag to enable Prometheus HTTP endpoint
+   enabled=true
+   # Prometheus HTTP endpoint port. Metrics will be exposed in /metrics context.
+   # Eg: http://localhost:9797/metrics
+   port=9797
+   # Flag to indicate whether meter descriptions should be sent to Prometheus.
+   descriptions=false
+   # The step size to use in computing windowed statistics like max. The default is 1 minute.
+   step="PT1M"
+
+   ```
+2) Create a file `prometheus.yml` inside `/etc/` location. Add the below configurations to the `prometheus.yml` file.
+   ```
+   global:
+   scrape_interval:     15s
+   evaluation_interval: 15s
+
+   scrape_configs:
+    - job_name: 'prometheus'
+   
+   static_configs:
+        - targets: ['172.17.0.1:9797']
+   ```
+   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+   
+3) Run the Promethues docker image using the following command
+   ```
+   docker run -p 19090:9090 -v /tmp/prometheus.yml prom/prometheus
+   ```
+   
+4) Finally, you can access Promethues from the following URL
+   ```
+   http://localhost:19090/
+   ```
 ### <a name="logging"></a> Logging
 (Work in progress) 
