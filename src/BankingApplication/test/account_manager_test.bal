@@ -247,7 +247,7 @@ function testTransferMoneyPass () {
     // Transfer $700 from Wesley's account to Walter's account
     boolean isSuccessful = transferMoney(accountIdUser2, accountIdUser1, 700);
     // 'isSuccessful' should be true as transaction is expected to be successful
-    test:assertTrue(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
+    test:assertTrue(isSuccessful, msg="Method 'transferMoney()' is not behaving as intended");
 }
 
 // Unit test for testing transferMoney() function - failing scenario: due to invalid amount
@@ -265,7 +265,7 @@ function testTransferMoneyFail1 () {
     // Try to pass a negative amount to transfer
     boolean isSuccessful = transferMoney(accountIdUser2, accountIdUser1, -200);
     // 'isSuccessful' should be false as transaction is expected to fail
-    test:assertFalse(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
+    test:assertFalse(isSuccessful, msg="Method 'transferMoney()' is not behaving as intended");
 }
 
 // Unit test for testing transferMoney() function - failing scenario: due to not enough balance
@@ -283,7 +283,7 @@ function testTransferMoneyFail2 () {
     // Try to pass a big amount to Transfer, which is greater than the available balance
     boolean isSuccessful = transferMoney(accountIdUser2, accountIdUser1, 1500);
     // 'isSuccessful' should be false as transaction is expected to fail
-    test:assertFalse(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
+    test:assertFalse(isSuccessful, msg="Method 'transferMoney()' is not behaving as intended");
 }
 
 // Unit test for testing transferMoney() function - failing scenario: due to invalid transferor account ID
@@ -298,7 +298,7 @@ function testTransferMoneyFail3 () {
     // Provide a non existing account ID as transferor account ID to method 'transferMoney()'
     boolean isSuccessful = transferMoney(1234, accountId, 100);
     // 'isSuccessful' should be false as transaction is expected to fail
-    test:assertFalse(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
+    test:assertFalse(isSuccessful, msg="Method 'transferMoney()' is not behaving as intended");
 }
 
 // Unit test for testing transferMoney() function - failing scenario: due to invalid transferee account ID
@@ -313,5 +313,5 @@ function testTransferMoneyFail4 () {
     // Provide a non existing account ID as transferee to method 'transferMoney()'
     boolean isSuccessful = transferMoney(accountId, 1234, 100);
     // 'isSuccessful' should be false as transaction is expected to fail
-    test:assertFalse(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
+    test:assertFalse(isSuccessful, msg="Method 'transferMoney()' is not behaving as intended");
 }

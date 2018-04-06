@@ -1,4 +1,5 @@
-# Managing Database Transactions
+# Transactions
+
 In this guide, you will learn about managing database transactions using Ballerina.
 
 ## <a name="what-you-build"></a> What you’ll build 
