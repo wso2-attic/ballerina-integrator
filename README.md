@@ -1,4 +1,6 @@
-# Database Backed RESTful Web Service
+[![Build Status](https://travis-ci.org/rosensilva/data-backed-service.svg?branch=master)](https://travis-ci.org/rosensilva/data-backed-service)
+
+# Database Interaction
 
 Data inside a database can be exposed to the outside world by using a database backed RESTful web service. RESTful API calls enable you to add, view, update, and remove data stored in a database from the outside world.
 

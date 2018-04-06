@@ -16,10 +16,12 @@
 
 package data_backed_service;
 
-import ballerina/data.sql;
+import ballerina/sql;
 import ballerina/log;
 import ballerina/mime;
-import ballerina/net.http;
+import ballerina/http;
+import ballerina/config;
+//import ballerinax/docker;
 
 struct Employee {
     string name;
@@ -27,7 +29,7 @@ struct Employee {
     int ssn;
     int employeeId;
 }
-
+int PORT = 1;
 // Create SQL endpoint to MySQL database
 endpoint sql:Client employeeDB {
     database:sql:DB.MYSQL,
@@ -35,13 +37,18 @@ endpoint sql:Client employeeDB {
     port:3306,
     name:"EMPLOYEE_RECORDS",
     username:"root",
-    password:"qwe123",
+    password:"",
     options:{maximumPoolSize:5}
 };
 
 endpoint http:ServiceEndpoint listener {
     port:9090
 };
+
+//@docker:Config {
+//    name:"employee-database-service",
+//    tag:"v1.0"
+//}
 
 @http:ServiceConfig {
     basePath:"/records"
@@ -52,7 +59,7 @@ service<http:Service> employee_data_service bind listener {
         methods:["POST"],
         path:"/employee/"
     }
-    addEmployeeResource (endpoint httpConnection, http:Request request) {
+    addEmployeeResource(endpoint httpConnection, http:Request request) {
         // Initialize an empty http response message
         http:Response response = {};
         Employee employeeData = {};
@@ -72,7 +79,7 @@ service<http:Service> employee_data_service bind listener {
              {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
             response.statusCode = 400;
             _ = httpConnection -> respond(response);
-            return;
+            //return;
         }
 
         // Invoke insertData function to save data in the MySQL database
@@ -86,21 +93,21 @@ service<http:Service> employee_data_service bind listener {
         methods:["GET"],
         path:"/employee/{employeeId}"
     }
-    retrieveEmployeeResource (endpoint httpConnection, http:Request request, string employeeId) {
+    retrieveEmployeeResource(endpoint httpConnection, http:Request request, string employeeId) {
         // Initialize an empty http response message
         http:Response response = {};
         // Convert the employeeId string to integer
         var castVal = <int>employeeId;
         match castVal {
             int empID => {
-            // Invoke retrieveById function to retrieve data from MySQL database
+                // Invoke retrieveById function to retrieve data from MySQL database
                 var employeeData = retrieveById(empID);
                 // Send the response back to the client with the employee data
                 response.setJsonPayload(employeeData);
                 _ = httpConnection -> respond(response);
             }
             error err => {
-            //Check path parameter errors and send bad request message to client
+                //Check path parameter errors and send bad request message to client
                 response.setStringPayload("Error : Please enter a valid employee ID ");
                 response.statusCode = 400;
                 _ = httpConnection -> respond(response);
@@ -112,7 +119,7 @@ service<http:Service> employee_data_service bind listener {
         methods:["PUT"],
         path:"/employee/"
     }
-    updateEmployeeResource (endpoint httpConnection, http:Request request) {
+    updateEmployeeResource(endpoint httpConnection, http:Request request) {
         // Initialize an empty http response message
         http:Response response = {};
         Employee employeeData = {};
@@ -131,7 +138,7 @@ service<http:Service> employee_data_service bind listener {
              {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
             response.statusCode = 400;
             _ = httpConnection -> respond(response);
-            return;
+            //return;
         }
 
         // Invoke updateData function to update data in MySQL database
@@ -145,21 +152,21 @@ service<http:Service> employee_data_service bind listener {
         methods:["DELETE"],
         path:"/employee/{employeeId}"
     }
-    deleteEmployeeResource (endpoint httpConnection, http:Request request, string employeeId) {
+    deleteEmployeeResource(endpoint httpConnection, http:Request request, string employeeId) {
         // Initialize an empty http response message
         http:Response response = {};
         // Convert the employeeId string to integer
         var castVal = <int>employeeId;
         match castVal {
             int empID => {
-            // Invoke deleteData function to delete the data from MySQL database
+                // Invoke deleteData function to delete the data from MySQL database
                 var deleteStatus = deleteData(empID);
                 // Send the response back to the client with the employee data
                 response.setJsonPayload(deleteStatus);
                 _ = httpConnection -> respond(response);
             }
             error err => {
-            //Check path parameter errors and send bad request message to client
+                //Check path parameter errors and send bad request message to client
                 response.setStringPayload("Error : Please enter a valid employee ID ");
                 response.statusCode = 400;
                 _ = httpConnection -> respond(response);
@@ -168,7 +175,7 @@ service<http:Service> employee_data_service bind listener {
     }
 }
 
-public function insertData (string name, int age, int ssn, int employeeId) returns (json) {
+public function insertData(string name, int age, int ssn, int employeeId) returns (json) {
 
     json updateStatus;
     // Prepare the sql string with employee data as parameters
@@ -191,7 +198,7 @@ public function insertData (string name, int age, int ssn, int employeeId) retur
     return updateStatus;
 }
 
-public function retrieveById (int employeeID) returns (json) {
+public function retrieveById(int employeeID) returns (json) {
 
     // Prepare the sql string with employee data as parameters
     sql:Parameter para1 = {sqlType:sql:Type.INTEGER, value:employeeID};
@@ -204,7 +211,7 @@ public function retrieveById (int employeeID) returns (json) {
     return jsonReturnValue;
 }
 
-public function updateData (string name, int age, int ssn, int employeeId) returns (json) {
+public function updateData(string name, int age, int ssn, int employeeId) returns (json) {
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {};
 
@@ -233,7 +240,7 @@ public function updateData (string name, int age, int ssn, int employeeId) retur
     return updateStatus;
 }
 
-public function deleteData (int employeeID) returns (json) {
+public function deleteData(int employeeID) returns (json) {
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {};
 
