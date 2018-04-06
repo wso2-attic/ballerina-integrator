@@ -517,8 +517,8 @@ Follow the following steps to use tracing with Ballerina.
  
 
 ### <a name="metrics"></a> Metrics
-Matrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Prometheus and view matrics for Ballerina restful service.
+Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
+Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
 
 1) Set the below configurations in the `ballerina.conf` file in the project root.
    ```ballerina
