@@ -505,9 +505,9 @@ Follow the following steps to use tracing with ballerina.
    ```bash
    docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
    ```
-2) Run the restful-service using following command
+2) Navigate to `restful-service/src/` and run the restful-service using following command 
    ```
-   $ballerina run target/restful_service.balx
+   $ballerina run restful_service/
    ```
 3) Observe the tracing using Jaeger UI using following URL
    ```
