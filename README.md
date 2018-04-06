@@ -497,12 +497,20 @@ enabled=true
 
 ```
 
-### <a name="logging"></a> Logging
-(Work in progress) 
+
+### <a name="tracing"></a> Tracing 
+You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed Tracing System. Follow the following steps to use tracing with ballerina.
+1) Run Jaeger docker image
+
+   ```bash
+   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
+   ```
+
+
+ 
 
 ### <a name="metrics"></a> Metrics
 (Work in progress) 
 
-
-### <a name="tracing"></a> Tracing 
+### <a name="logging"></a> Logging
 (Work in progress) 
