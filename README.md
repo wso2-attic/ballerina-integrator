@@ -499,7 +499,8 @@ enabled=true
 
 
 ### <a name="tracing"></a> Tracing 
-You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed Tracing System. Follow the following steps to use tracing with ballerina.
+You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+Follow the following steps to use tracing with ballerina.
 1) Run Jaeger docker image
 
    ```bash
