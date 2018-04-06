@@ -17,7 +17,7 @@
 package CarRental;
 
 import ballerina/test;
-import ballerina/net.http;
+import ballerina/http;
 
 // Common request Payload
 json requestPayload = {
@@ -34,7 +34,7 @@ function beforeFunc () {
 
 // Client endpoint
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9093/car"}]
+    targets:[{url:"http://localhost:9093/car"}]
 };
 
 // Function to test resource 'driveSg'
@@ -92,4 +92,10 @@ function testResourceSixt () {
                       "\"ToDate\":\"13-04-2018\",\"PricePerDay\":7}";
     json resPayload =? response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
+}
+
+@test:AfterSuite
+function afterFunc () {
+    // Stop the 'carRentalService' after running the test
+    test:stopServices("CarRental");
 }

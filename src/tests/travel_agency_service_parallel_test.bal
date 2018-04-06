@@ -16,7 +16,7 @@
 
 package TravelAgency;
 
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/test;
 
 @test:BeforeSuite
@@ -38,7 +38,7 @@ function beforeFunc () {
 
 // Client endpoint
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9090/travel"}]
+    targets:[{url:"http://localhost:9090/travel"}]
 };
 
 // Function to test the Travel agency service
@@ -73,4 +73,19 @@ function testTravelAgencyService () {
     string expectedHotel = "{\"HotelName\":\"Elizabeth\",\"FromDate\":\"12-03-2018\"," +
                            "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":2}";
     test:assertEquals(resPayload.Hotel.toString(), expectedHotel, msg = "Response mismatch!");
+}
+
+@test:AfterSuite
+function afterFunc () {
+    // Stop the 'travelAgencyService' after running the test
+    test:stopServices("TravelAgency");
+
+    // Stop the 'airlineReservationService'
+    test:stopServices("AirlineReservation");
+
+    // Stop the 'hotelReservationService'
+    test:stopServices("HotelReservation");
+
+    // Stop the 'carRentalService'
+    test:stopServices("CarRental");
 }

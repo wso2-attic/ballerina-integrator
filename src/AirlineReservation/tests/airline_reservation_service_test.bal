@@ -17,7 +17,7 @@
 package AirlineReservation;
 
 import ballerina/test;
-import ballerina/net.http;
+import ballerina/http;
 
 // Common request Payload
 json requestPayload = {
@@ -35,7 +35,7 @@ function beforeFunc () {
 
 // Client endpoint
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9091/airline"}]
+    targets:[{url:"http://localhost:9091/airline"}]
 };
 
 // Function to test resource 'flightConcord'
@@ -96,4 +96,10 @@ function testResourceFlightEmirates () {
                       "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":273}";
     json resPayload =? response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
+}
+
+@test:AfterSuite
+function afterFunc () {
+    // Stop the 'airlineReservationService' after running the test
+    test:stopServices("AirlineReservation");
 }

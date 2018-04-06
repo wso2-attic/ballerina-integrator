@@ -16,7 +16,7 @@
 
 package CarRental;
 
-import ballerina/net.http;
+import ballerina/http;
 
 // Service endpoint
 endpoint http:ServiceEndpoint carEP {
@@ -43,7 +43,7 @@ service<http:Service> carRentalService bind carEP {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(response);
-                return;
+                //return;
             }
         }
 
@@ -56,7 +56,7 @@ service<http:Service> carRentalService bind carEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
-            return;
+            //return;
         }
 
         // Mock logic
@@ -90,7 +90,7 @@ service<http:Service> carRentalService bind carEP {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(response);
-                return;
+                //return;
             }
         }
 
@@ -103,7 +103,7 @@ service<http:Service> carRentalService bind carEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
-            return;
+            //return;
         }
 
         // Mock logic
@@ -136,7 +136,7 @@ service<http:Service> carRentalService bind carEP {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(response);
-                return;
+                //return;
             }
         }
 
@@ -149,7 +149,7 @@ service<http:Service> carRentalService bind carEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
-            return;
+            //return;
         }
 
         // Mock logic
