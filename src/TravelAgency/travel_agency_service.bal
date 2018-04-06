@@ -16,7 +16,7 @@
 
 package TravelAgency;
 
-import ballerina/net.http;
+import ballerina/http;
 
 // Service endpoint
 endpoint http:ServiceEndpoint travelAgencyEP {
@@ -25,17 +25,17 @@ endpoint http:ServiceEndpoint travelAgencyEP {
 
 // Client endpoint to communicate with Airline reservation service
 endpoint http:ClientEndpoint airlineReservationEP {
-    targets:[{uri:"http://localhost:9091/airline"}]
+    targets:[{url:"http://localhost:9091/airline"}]
 };
 
 // Client endpoint to communicate with Hotel reservation service
 endpoint http:ClientEndpoint hotelReservationEP {
-    targets:[{uri:"http://localhost:9092/hotel"}]
+    targets:[{url:"http://localhost:9092/hotel"}]
 };
 
 // Client endpoint to communicate with Car rental service
 endpoint http:ClientEndpoint carRentalEP {
-    targets:[{uri:"http://localhost:9093/car"}]
+    targets:[{url:"http://localhost:9093/car"}]
 };
 
 // Travel agency service to arrange a complete tour for a user
@@ -59,7 +59,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 outResponse.statusCode = 400;
                 outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(outResponse);
-                return;
+                //return;
             }
         }
 
@@ -76,7 +76,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(outResponse);
-            return;
+            //return;
         }
 
 
@@ -99,7 +99,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
                                                   "Provide a valid 'Preference' for 'Airline' and try again"});
             _ = client -> respond(outResponse);
-            return;
+            //return;
         }
 
 
@@ -122,7 +122,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
                                                   "Provide a valid 'Preference' for 'Accommodation' and try again"});
             _ = client -> respond(outResponse);
-            return;
+            //return;
         }
 
 
@@ -145,7 +145,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             outResponse.setJsonPayload({"Message":"Failed to rent car! " +
                                                   "Provide a valid 'Preference' for 'Car' and try again"});
             _ = client -> respond(outResponse);
-            return;
+            //return;
         }
 
 

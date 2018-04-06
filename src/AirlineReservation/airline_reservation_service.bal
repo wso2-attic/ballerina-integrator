@@ -16,7 +16,7 @@
 
 package AirlineReservation;
 
-import ballerina/net.http;
+import ballerina/http;
 
 // Available flight classes
 const string ECONOMY = "Economy";
@@ -48,7 +48,7 @@ service<http:Service> airlineReservationService bind airlineEP {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(response);
-                return;
+                //return;
             }
         }
 
@@ -62,7 +62,7 @@ service<http:Service> airlineReservationService bind airlineEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
-            return;
+            //return;
         }
 
         // Mock logic
