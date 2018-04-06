@@ -482,7 +482,7 @@ curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "
 
 ## <a name="observability"></a> Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/src/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/src/`.
 
 ```ballerina
 [observability]
@@ -500,8 +500,8 @@ enabled=true
 
 ### <a name="tracing"></a> Tracing 
 You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
-Follow the following steps to use tracing with ballerina.
-1) Run Jaeger docker image using following command
+Follow the following steps to use tracing with Ballerina.
+1) Run Jaeger docker image using the following command
    ```bash
    docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
    ```
@@ -518,9 +518,9 @@ Follow the following steps to use tracing with ballerina.
 
 ### <a name="metrics"></a> Metrics
 Matrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Promethueus and view matrics for Ballerina restful service.
+Follow the below steps to set up Prometheus and view matrics for Ballerina restful service.
 
-1) Set the below confifurations in the `ballerina.conf` file in the project root.
+1) Set the below configurations in the `ballerina.conf` file in the project root.
    ```ballerina
    [observability.metrics.prometheus]
    # Flag to enable Prometheus HTTP endpoint
@@ -548,12 +548,12 @@ Follow the below steps to set up Promethueus and view matrics for Ballerina rest
    ```
    NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
    
-3) Run the Promethues docker image using the following command
+3) Run the Prometheus docker image using the following command
    ```
    docker run -p 19090:9090 -v /tmp/prometheus.yml prom/prometheus
    ```
    
-4) Finally, you can access Promethues from the following URL
+4) Finally, you can access Prometheus at the following URL
    ```
    http://localhost:19090/
    ```
