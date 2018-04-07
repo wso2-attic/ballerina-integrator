@@ -27,7 +27,7 @@ You'll build an employee data management web service that performs CRUD Operatio
 Basically, this service will deal with a MySQL database and expose the data operations as a web service. Refer to the following scenario diagram to understand the complete end-to-end scenario.
 
 
-![alt text](/images/database_service_scenario2.png)
+![alt text](/images/data-backed-service.png)
 
 
 ## <a name="pre-req"></a> Prerequisites
