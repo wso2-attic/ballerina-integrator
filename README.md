@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pranavan15/restful-service.svg?branch=master)](https://travis-ci.org/pranavan15/restful-service)
+
 # RESTful Service  
 
 In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
@@ -293,7 +295,7 @@ Output:
 "Order : 100500 removed."
 ```
 
-### <a name="unit-testing"></a> Writing Unit Tests 
+### <a name="unit-testing"></a> Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'. The naming convention should be as follows,
 
@@ -313,7 +315,7 @@ To check the implementation of the test file, refer to the [order_mgt_service_te
 
 Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying Locally
+### <a name="deploying-on-locally"></a> Deploying locally
 You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
 ```
@@ -479,13 +481,81 @@ curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "
 ```
 
 ## <a name="observability"></a> Observability 
+Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/src/`.
 
-### <a name="logging"></a> Logging
-(Work in progress) 
+```ballerina
+[observability]
 
-### <a name="metrics"></a> Metrics
-(Work in progress) 
+[observability.metrics]
+# Flag to enable Metrics
+enabled=true
+
+[observability.tracing]
+# Flag to enable Tracing
+enabled=true
+
+```
 
 
 ### <a name="tracing"></a> Tracing 
+You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+Follow the following steps to use tracing with Ballerina.
+1) Run Jaeger docker image using the following command
+   ```bash
+   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
+   ```
+2) Navigate to `restful-service/src/` and run the restful-service using following command 
+   ```
+   $ballerina run restful_service/
+   ```
+3) Observe the tracing using Jaeger UI using following URL
+   ```
+   http://localhost:16686
+   ```
+
+ 
+
+### <a name="metrics"></a> Metrics
+Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
+Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
+
+1) Set the below configurations in the `ballerina.conf` file in the project root.
+   ```ballerina
+   [observability.metrics.prometheus]
+   # Flag to enable Prometheus HTTP endpoint
+   enabled=true
+   # Prometheus HTTP endpoint port. Metrics will be exposed in /metrics context.
+   # Eg: http://localhost:9797/metrics
+   port=9797
+   # Flag to indicate whether meter descriptions should be sent to Prometheus.
+   descriptions=false
+   # The step size to use in computing windowed statistics like max. The default is 1 minute.
+   step="PT1M"
+
+   ```
+2) Create a file `prometheus.yml` inside `/etc/` location. Add the below configurations to the `prometheus.yml` file.
+   ```
+   global:
+   scrape_interval:     15s
+   evaluation_interval: 15s
+
+   scrape_configs:
+    - job_name: 'prometheus'
+   
+   static_configs:
+        - targets: ['172.17.0.1:9797']
+   ```
+   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+   
+3) Run the Prometheus docker image using the following command
+   ```
+   docker run -p 19090:9090 -v /tmp/prometheus.yml prom/prometheus
+   ```
+   
+4) Finally, you can access Prometheus at the following URL
+   ```
+   http://localhost:19090/
+   ```
+### <a name="logging"></a> Logging
 (Work in progress) 

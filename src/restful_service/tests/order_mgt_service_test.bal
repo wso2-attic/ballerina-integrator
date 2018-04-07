@@ -1,21 +1,21 @@
 package restful_service;
 
 import ballerina/test;
-import ballerina/net.http;
+import ballerina/http;
 
 @test:BeforeSuite
-function beforeFunc () {
+function beforeFunc() {
     // Start the 'OrderMgtService' before running the test
     _ = test:startServices("restful_service");
 }
 
 endpoint http:ClientEndpoint clientEP {
-    targets:[{uri:"http://localhost:9090/ordermgt"}]
+    targets:[{url:"http://localhost:9090/ordermgt"}]
 };
 
 @test:Config
 // Function to test resource 'addOrder' - POST method
-function testResourceAddOrder () {
+function testResourceAddOrder() {
     // Initialize the empty http request
     http:Request request = {};
     // Construct the request payload
@@ -27,16 +27,15 @@ function testResourceAddOrder () {
     test:assertEquals(response.statusCode, 201, msg = "addOrder resource did not respond with expected response code!");
     // Check whether the response is as expected
     json responsePayload =? response.getJsonPayload();
-    test:assertEquals(responsePayload.toString(), "{\"status\":\"Order Created.\"," +
-                                                  "\"orderId\":\"100500\"}", msg = "Response
-                                                                  mismatch!");
+    test:assertEquals(responsePayload.toString(), "{\"status\":\"Order Created.\",\"orderId\":\"100500\"}",
+        msg = "Response mismatch!");
 }
 
 @test:Config {
     dependsOn:["testResourceAddOrder"]
 }
 // Function to test resource 'updateOrder' - PUT method
-function testResourceUpdateOrder () {
+function testResourceUpdateOrder() {
     // Initialize the empty http requests and responses
     http:Request request = {};
     // Construct the request payload
@@ -50,8 +49,7 @@ function testResourceUpdateOrder () {
     // Check whether the response is as expected
     json responsePayload =? response.getJsonPayload();
     test:assertEquals(responsePayload.toString(), "{\"Order\":{\"ID\":\"100500\",\"Name\":\"XYZ\"," +
-                                                  "\"Description\":\"Updated order.\"}}",
-                      msg = "Response mismatch!");
+        "\"Description\":\"Updated order.\"}}", msg = "Response mismatch!");
 
 }
 
@@ -59,7 +57,7 @@ function testResourceUpdateOrder () {
     dependsOn:["testResourceUpdateOrder"]
 }
 // Function to test resource 'findOrder' - GET method
-function testResourceFindOrder () {
+function testResourceFindOrder() {
     // Initialize the empty http requests and responses
     http:Request request = {};
     // Send a 'GET' request and obtain the response
@@ -70,15 +68,14 @@ function testResourceFindOrder () {
     // Check whether the response is as expected
     json responsePayload =? response.getJsonPayload();
     test:assertEquals(responsePayload.toString(), "{\"Order\":{\"ID\":\"100500\",\"Name\":\"XYZ\"," +
-                                                  "\"Description\":\"Updated order.\"}}",
-                      msg = "Response mismatch!");
+        "\"Description\":\"Updated order.\"}}", msg = "Response mismatch!");
 }
 
 @test:Config {
     dependsOn:["testResourceFindOrder"]
 }
 // Function to test resource 'cancelOrder' - DELETE method
-function testResourceCancelOrder () {
+function testResourceCancelOrder() {
     // Initialize the empty http requests and responses
     http:Request request = {};
     // Send a 'DELETE' request and obtain the response
@@ -88,6 +85,11 @@ function testResourceCancelOrder () {
     code!");
     // Check whether the response is as expected
     json responsePayload =? response.getJsonPayload();
-    test:assertEquals(responsePayload.toString(), "Order : 100500 removed.",
-                      msg = "Response mismatch!");
+    test:assertEquals(responsePayload.toString(), "Order : 100500 removed.", msg = "Response mismatch!");
+}
+
+@test:AfterSuite
+function afterFunc() {
+    // Stop the 'OrderMgtService' after running the test
+    test:stopServices("restful_service");
 }
