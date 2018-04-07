@@ -20,6 +20,12 @@ This scenario is similar to the scenario used in the [service-composition guide]
 
 ![alt text](/images/parallel_service_orchestration.png)
 
+In the above image, 
+
+(1), (2) - Check all the resources in parallel and wait for all three responses
+
+(3)      - Checks all three resources in parallel and get only the first response
+
 Travel agency is the service that acts as the service orchestration initiator. The other three services are external services that the travel agency service calls to do airline ticket booking, hotel reservation and car rental. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
 ## <a name="pre-req"></a> Prerequisites
