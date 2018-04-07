@@ -1,4 +1,5 @@
 # Messaging with Kafka
+
 Kafka is a distributed, partitioned, replicated commit log service. It provides the functionality of a publish-subscribe messaging system with a unique design. Kafka mainly operates based on a topic model. A topic is a category or feed name to which records get published. Topics in Kafka are always multi-subscriber.
 
 > This guide walks you through the process of messaging with Apache Kafka using Ballerina language. 
