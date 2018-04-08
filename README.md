@@ -513,7 +513,9 @@ Follow the following steps to use tracing with Ballerina.
    ```
    http://localhost:16686
    ```
+4) You should see the Jaeger UI as follows
 
+   [Jaeger UI](images/restful_service.png)
  
 
 ### <a name="metrics"></a> Metrics
