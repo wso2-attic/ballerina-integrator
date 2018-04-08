@@ -515,7 +515,7 @@ Follow the following steps to use tracing with Ballerina.
    ```
 4) You should see the Jaeger UI as follows
 
-   [Jaeger UI](images/tracing-screenshot.png)
+   ![Jaeger UI](images/tracing-screenshot.png "Tracing Screenshot")
  
 
 ### <a name="metrics"></a> Metrics
