@@ -555,10 +555,11 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    docker run -p 19090:9090 -v /tmp/prometheus.yml prom/prometheus
    ```
    
-4) Finally, you can access Prometheus at the following URL
+4) You can access Prometheus at the following URL
    ```
    http://localhost:19090/
    ```
+5) Promethues UI screenshot
    ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
 
 ### <a name="logging"></a> Logging
