@@ -559,5 +559,6 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    ```
    http://localhost:19090/
    ```
+![promethues screenshot](images/matrics-screenshot.png "Prometheus UI")
 ### <a name="logging"></a> Logging
 (Work in progress) 
