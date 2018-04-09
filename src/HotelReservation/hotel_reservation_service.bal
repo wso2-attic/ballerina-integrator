@@ -17,6 +17,32 @@
 package HotelReservation;
 
 import ballerina/http;
+//import ballerinax/docker;
+//import ballerinax/kubernetes;
+
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"hotel_reservation_service",
+//    tag:"v1.0"
+//}
+
+//@kubernetes:Ingress {
+//  hostname:"ballerina.guides.io",
+//  name:"ballerina-guides-hotel-reservation-service",
+//  path:"/"
+//}
+//
+//@kubernetes:Service {
+//  serviceType:"NodePort",
+//  name:"ballerina-guides-hotel-reservation-service"
+//}
+//
+//@kubernetes:Deployment {
+//  image:"ballerina.guides.io/hotel_reservation_service:v1.0",
+//  name:"ballerina-guides-hotel-reservation-service",
+//  dockerHost:"tcp://192.168.99.100:2376",
+//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//}
 
 // Service endpoint
 endpoint http:ServiceEndpoint hotelEP {
