@@ -4,29 +4,29 @@ import ballerina/http;
 import ballerinax/docker;
 import ballerinax/kubernetes;
 
-@docker:Config {
-  registry:"ballerina.guides.io",
-  name:"restful_service",
-  tag:"v1.0"
-}
-
-@kubernetes:Ingress {
-  hostname:"ballerina.guides.io",
-  name:"ballerina-guides-restful-service",
-  path:"/"
-}
-
-@kubernetes:Service {
-  serviceType:"NodePort",
-  name:"ballerina-guides-restful-service"
-}
-
-@kubernetes:Deployment {
-  image:"ballerina.guides.io/restful_service:v1.0",
-  name:"ballerina-guides-restful-service",
-  dockerHost:"tcp://192.168.99.100:2376",
-  dockerCertPath:"/home/pranavan/.minikube/certs"
-}
+//@docker:Config {
+//  registry:"ballerina.guides.io",
+//  name:"restful_service",
+//  tag:"v1.0"
+//}
+//
+//@kubernetes:Ingress {
+//  hostname:"ballerina.guides.io",
+//  name:"ballerina-guides-restful-service",
+//  path:"/"
+//}
+//
+//@kubernetes:Service {
+//  serviceType:"NodePort",
+//  name:"ballerina-guides-restful-service"
+//}
+//
+//@kubernetes:Deployment {
+//  image:"ballerina.guides.io/restful_service:v1.0",
+//  name:"ballerina-guides-restful-service",
+//  dockerHost:"tcp://192.168.99.100:2376",
+//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//}
 
 endpoint http:ServiceEndpoint listener {
   port:9090
@@ -94,7 +94,7 @@ service<http:Service> order_mgt bind listener {
       "http://localhost:9090/ordermgt/order/" +
       orderId);
 
-    // Send response to the client
+    // Send response to the client.
     _ = client -> respond(response);
   }
 
