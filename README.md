@@ -617,7 +617,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
   
  4) Configure filebeat to ship the ballerina logs
     
- i) Create a file named `filebeat.yml` with the following content
+     i) Create a file named `filebeat.yml` with the following content
       ```
        filebeat.prospectors:
           - type: log
