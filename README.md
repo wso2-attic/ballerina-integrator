@@ -17,7 +17,7 @@ The following are the sections available in this guide.
 
 ## <a name="what-you-build"></a>  What you'll build
 
-You'll build an employee data management web service that performs CRUD Operations (Create, Read, Update, Delete) on the MySQL database.  Also, this guide walks you through the process of accessing relational data via the Ballerina language. The service will have following functionalities.
+You'll build an employee data management REST service that performs CRUD Operations (Create, Read, Update, Delete) on the MySQL database.  Also, this guide walks you through the process of accessing relational data via the Ballerina language. The service will have following functionalities.
 
 * Add new employees to the database via HTTP POST method
 * Retrieve an existing employee details from the database via HTTP GET method
