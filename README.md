@@ -513,7 +513,9 @@ Follow the following steps to use tracing with Ballerina.
    ```
    http://localhost:16686
    ```
+4) You should see the Jaeger UI as follows
 
+   ![Jaeger UI](images/tracing-screenshot.png "Tracing Screenshot")
  
 
 ### <a name="metrics"></a> Metrics
@@ -553,9 +555,13 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    docker run -p 19090:9090 -v /tmp/prometheus.yml prom/prometheus
    ```
    
-4) Finally, you can access Prometheus at the following URL
+4) You can access Prometheus at the following URL
    ```
    http://localhost:19090/
    ```
+5) Promethues UI screenshot
+   
+   ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
+
 ### <a name="logging"></a> Logging
 (Work in progress) 
