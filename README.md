@@ -564,4 +564,12 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
 
 ### <a name="logging"></a> Logging
-(Work in progress) 
+Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+
+1) Start Elasticsearch using the following command
+
+   ```
+   docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
+   ```
+
+2) 
