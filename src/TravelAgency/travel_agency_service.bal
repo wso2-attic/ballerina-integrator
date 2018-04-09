@@ -17,6 +17,32 @@
 package TravelAgency;
 
 import ballerina/http;
+//import ballerinax/docker;
+//import ballerinax/kubernetes;
+
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"travel_agency_service",
+//    tag:"v1.0"
+//}
+
+//@kubernetes:Ingress {
+//  hostname:"ballerina.guides.io",
+//  name:"ballerina-guides-travel-agency-service",
+//  path:"/"
+//}
+//
+//@kubernetes:Service {
+//  serviceType:"NodePort",
+//  name:"ballerina-guides-travel-agency-service"
+//}
+//
+//@kubernetes:Deployment {
+//  image:"ballerina.guides.io/travel_agency_service:v1.0",
+//  name:"ballerina-guides-travel-agency-service",
+//  dockerHost:"tcp://192.168.99.100:2376",
+//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//}
 
 // Service endpoint
 endpoint http:ServiceEndpoint travelAgencyEP {

@@ -17,15 +17,41 @@
 package CarRental;
 
 import ballerina/http;
+//import ballerinax/docker;
+//import ballerinax/kubernetes;
 
-// Available car types
-const string AC = "Air Conditioned";
-const string NORMAL = "Normal";
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"car_rental_service",
+//    tag:"v1.0"
+//}
+
+//@kubernetes:Ingress {
+//  hostname:"ballerina.guides.io",
+//  name:"ballerina-guides-car-rental-service",
+//  path:"/"
+//}
+//
+//@kubernetes:Service {
+//  serviceType:"NodePort",
+//  name:"ballerina-guides-car-rental-service"
+//}
+//
+//@kubernetes:Deployment {
+//  image:"ballerina.guides.io/car_rental_service:v1.0",
+//  name:"ballerina-guides-car-rental-service",
+//  dockerHost:"tcp://192.168.99.100:2376",
+//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//}
 
 // Service endpoint
 endpoint http:ServiceEndpoint carEP {
     port:9093
 };
+
+// Available car types
+const string AC = "Air Conditioned";
+const string NORMAL = "Normal";
 
 // Car rental service to rent cars
 @http:ServiceConfig {basePath:"/car"}
