@@ -456,9 +456,10 @@ This will also create the corresponding docker image and the Kubernetes artifact
 
 ```
  $ kubectl apply -f ./target/restful_service/kubernetes 
-     deployment "OrderMgtService-deployment" created
-     ingress "OrderMgtService" created
-     service "OrderMgtService" created
+   deployment.extensions "ballerina-guides-restful-service" created
+   ingress.extensions "ballerina-guides-restful-service" created
+   service "ballerina-guides-restful-service" created
+
 ```
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 ```
