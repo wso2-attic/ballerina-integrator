@@ -494,13 +494,181 @@ You can deploy the services that you developed above in your local environment. 
 
 
 ## <a name="observability"></a> Observability 
+Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `parallel-service-orchestration/src/`.
 
-### <a name="logging"></a> Logging
-(Work in progress) 
+```ballerina
+[observability]
 
-### <a name="metrics"></a> Metrics
-(Work in progress) 
+[observability.metrics]
+# Flag to enable Metrics
+enabled=true
 
+[observability.tracing]
+# Flag to enable Tracing
+enabled=true
+
+```
 
 ### <a name="tracing"></a> Tracing 
-(Work in progress) 
+You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+Follow the following steps to use tracing with Ballerina.
+1) Run Jaeger docker image using the following command
+   ```bash
+   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
+   ```
+2) Navigate to `parallel-service-orchestration/src/` and start all services using following command 
+   ```
+   $ballerina run <package_name>
+   ```
+   NOTE: First start the `TravelAgency` package since it's the main orchastrator for other services(also we are going to trace from Traval Agancy service)
+3) Observe the tracing using Jaeger UI using following URL
+   ```
+   http://localhost:16686
+   ```
+4) You should see the Jaeger UI as follows
+
+   ![Jaeger UI](images/tracing-screenshot.png "Tracing Screenshot")
+ 
+
+### <a name="metrics"></a> Metrics
+Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
+Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
+
+1) Set the below configurations in the `ballerina.conf` file in the project root.
+   ```ballerina
+   [observability.metrics.prometheus]
+   # Flag to enable Prometheus HTTP endpoint
+   enabled=true
+   # Prometheus HTTP endpoint port. Metrics will be exposed in /metrics context.
+   # Eg: http://localhost:9797/metrics
+   port=9797
+   # Flag to indicate whether meter descriptions should be sent to Prometheus.
+   descriptions=false
+   # The step size to use in computing windowed statistics like max. The default is 1 minute.
+   step="PT1M"
+
+   ```
+2) Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
+   ```
+   global:
+   scrape_interval:     15s
+   evaluation_interval: 15s
+
+   scrape_configs:
+    - job_name: 'prometheus'
+   
+   static_configs:
+        - targets: ['172.17.0.1:9797']
+   ```
+   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+   
+3) Run the Prometheus docker image using the following command
+   ```
+   docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/tmp/prometheus.yml prom/prometheus
+   ```
+
+4) Navigate to `restful-service/src/` and run the restful-service using following command 
+   ```
+   $ballerina run restful_service/
+   ```
+   
+5) You can access Prometheus at the following URL
+   ```
+   http://localhost:19090/
+   ```
+6) Promethues UI screenshot
+   
+   ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
+
+### <a name="logging"></a> Logging
+Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+
+1) Start the Ballerina Service with the following command from `{SAMPLE_ROOT_DIRECTORY}/src`
+   ```
+   nohup ballerina run restful_service/ &>> ballerina.log&
+   ```
+   NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT_DIRECTORY}/src` directory
+2) Start Elasticsearch using the following command
+
+   ```
+   docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name 
+   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
+   ```
+   NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
+   
+3) Start Kibana plugin for data visualization with Elasticsearch
+   ```
+   docker run -p 5601:5601 -h kibana --name kibana --link elasticsearch:elasticsearch 
+   docker.elastic.co/kibana/kibana:6.2.2     
+   ```
+4) Configure logstash to format the ballerina logs
+   
+   i) Create a file named `logstash.conf` with the following content
+      ```
+      input {  
+       beats { 
+	       port => 5044 
+	      }  
+      }
+      
+      filter {  
+       grok  {  
+	       match => { 
+                  "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
+                  \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
+                 }  
+       }  
+      }   
+      
+      output {  
+       elasticsearch {  
+    	   hosts => "elasticsearch:9200"  
+    	   index => "store"  
+           document_type => "store_logs"  
+	      }  
+      }  
+      ```
+      NOTE: We have declared `store` as the index using `index => "store"` statement, you may need to add `store` keyword to kibana visualization tool to create a log visualization.
+      
+     ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
+     
+     iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
+     
+     ```
+        docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
+        -v ~/{SAMPLE_ROOT_DIRECTIRY}/pipeline:/usr/share/logstash/pipeline/ 
+        -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
+     ```
+  
+ 5) Configure filebeat to ship the ballerina logs
+    
+     i) Create a file named `filebeat.yml` with the following content
+      ```
+       filebeat.prospectors:
+          - type: log
+       paths:
+          - /usr/share/filebeat/ballerina.log
+       output.logstash:
+            hosts: ["logstash:5044"]
+      ```
+     ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
+        
+     
+     iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
+     
+     ```
+        docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
+        -v {SAMPLE_ROOT_DIRECTORY}/src/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
+	    --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
+     ```
+ 
+ 6) Access Kibana to visualize the logs using following URL
+    ```
+     http://localhost:5601 
+    ```
+ 
+ 7) Screenshot of Kibana log visualization
+ 
+     ![logging screenshot](images/logging-screenshot.png "Kibana UI")
+     
