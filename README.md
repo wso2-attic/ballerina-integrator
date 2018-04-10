@@ -309,35 +309,30 @@ Running
    ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
-You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
+You can run the services that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
+Let's see how we can deploy the travel_agency_service we developed above on docker. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
 
-- In our employee_data_service, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
+- In our travel_agency_service, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
 
-##### employee_db_service.bal
+##### travel_agency_service.bal
 ```ballerina
-package data_backed_service;
+package TravelAgency;
 
-// Other imports
+import ballerina/http;
 import ballerinax/docker;
-
-// Employee type definition
-
-// sql:Client endpoint definition
 
 @docker:Config {
     registry:"ballerina.guides.io",
-    name:"employee_database_service",
+    name:"travel_agency_service",
     tag:"v1.0"
 }
 
-endpoint http:ServiceEndpoint listener {
+endpoint http:ServiceEndpoint travelAgencyEP {
     port:9090
 };
 
-@http:ServiceConfig {
-    basePath:"/records"
-}
-service<http:Service> employee_data_service bind listener {
+@http:ServiceConfig {basePath:"/travel"}
+service<http:Service> travelAgencyService bind travelAgencyEP {
    
 ``` 
 
@@ -345,15 +340,15 @@ service<http:Service> employee_data_service bind listener {
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
   
   ```
-  $ballerina build data_backed_service
+  $ballerina build TravelAgency
   
   Run following command to start docker container: 
-  docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
+  docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
   ```
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
     ```   
-    docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
+    docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
     ```
     Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
@@ -361,57 +356,56 @@ This will also create the corresponding docker image using the docker annotation
 - You can access the service using the same curl commands that we've used above. 
  
     ```
-   curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
-   "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+    curl -v -X POST -d \
+    '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
+    "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+    "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
     ```
 
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
+- You can run the services that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
 with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
 So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
+Let's see how we can deploy the travel_agency_service we developed above on kubernetes. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
 
 - We need to import `` import ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
-##### employee_db_service.bal
+##### travel_agency_service.bal
 
 ```ballerina
-package data_backed_service;
+package TravelAgency;
 
-// Other imports
+import ballerina/http;
 import ballerinax/kubernetes;
 
-// Employee type definition
-
-// sql:Client endpoint definition
-
 @kubernetes:Ingress {
-    hostname:"ballerina.guides.io",
-    name:"ballerina-guides-employee-database-service",
-    path:"/"
+  hostname:"ballerina.guides.io",
+  name:"ballerina-guides-travel-agency-service",
+  path:"/"
 }
 
 @kubernetes:Service {
-    serviceType:"NodePort",
-    name:"ballerina-guides-employee-database-service"
+  serviceType:"NodePort",
+  name:"ballerina-guides-travel-agency-service"
 }
 
 @kubernetes:Deployment {
-    image:"ballerina.guides.io/employee_database_service:v1.0",
-    name:"ballerina-guides-employee-database-service",
-    dockerHost:"tcp://192.168.99.100:2376",
-    dockerCertPath:"/home/pranavan/.minikube/certs"
+  image:"ballerina.guides.io/travel_agency_service:v1.0",
+  name:"ballerina-guides-travel-agency-service",
+  dockerHost:"tcp://192.168.99.100:2376",
+  dockerCertPath:"/home/pranavan/.minikube/certs"
 }
 
-endpoint http:ServiceEndpoint listener {
+endpoint http:ServiceEndpoint travelAgencyEP {
     port:9090
 };
 
-@http:ServiceConfig {
-    basePath:"/records"
-}
-service<http:Service> employee_data_service bind listener { 
+// Http client endpoint definitions
+
+@http:ServiceConfig {basePath:"/travel"}
+service<http:Service> travelAgencyService bind travelAgencyEP {
         
 ``` 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
@@ -422,22 +416,22 @@ service<http:Service> employee_data_service bind listener {
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
   ```
-  $ballerina build data_backed_service
+  $ballerina build TravelAgency
   
   Run following command to deploy kubernetes artifacts:  
-  kubectl apply -f ./target/data_backed_service/kubernetes
+  kubectl apply -f ./target/TravelAgency/kubernetes
  
   ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
-- Also the Kubernetes artifacts related our service, will be generated in `` ./target/data_backed_service/kubernetes``. 
+- Also the Kubernetes artifacts related our service, will be generated in `` ./target/TravelAgency/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
 ```
- $ kubectl apply -f ./target/data_backed_service/kubernetes 
-   deployment.extensions "ballerina-guides-employee-database-service" created
-   ingress.extensions "ballerina-guides-employee-database-service" created
-   service "ballerina-guides-employee-database-service" created
+ $ kubectl apply -f ./target/TravelAgency/kubernetes 
+   deployment.extensions "ballerina-guides-travel-agency-service" created
+   ingress.extensions "ballerina-guides-travel-agency-service" created
+   service "ballerina-guides-travel-agency-service" created
 
 ```
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
@@ -454,8 +448,10 @@ $kubectl get ingress
 Node Port:
  
 ```
- curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
- "http://<Minikube_host_IP>:<Node_Port>/records/employee" -H "Content-Type:application/json"  
+  curl -v -X POST -d \
+  '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
+  "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+  "http://<Minikube_host_IP>:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
 
 ```
 Ingress:
@@ -468,8 +464,10 @@ Add `/etc/hosts` entry to match hostname.
 Access the service 
 
 ``` 
- curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
- "http://ballerina.guides.io/records/employee" -H "Content-Type:application/json" 
+ curl -v -X POST -d \
+ '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
+ "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+ "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
     
 ```
 
