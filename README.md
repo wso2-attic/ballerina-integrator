@@ -309,6 +309,7 @@ Running
    ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
+
 You can run the services that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
 Let's see how we can deploy the travel_agency_service we developed above on docker. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
 
