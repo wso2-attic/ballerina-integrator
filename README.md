@@ -521,7 +521,7 @@ Follow the following steps to use tracing with Ballerina.
    ```
    $ballerina run <package_name>
    ```
-   NOTE: First start the `TravelAgency` package since it's the main orchastrator for other services(also we are going to trace from Traval Agancy service)
+   
 3) Observe the tracing using Jaeger UI using following URL
    ```
    http://localhost:16686
@@ -568,10 +568,11 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/tmp/prometheus.yml prom/prometheus
    ```
 
-4) Navigate to `restful-service/src/` and run the restful-service using following command 
+4) Navigate to `parallel-service-orchestration/src/` and start all services using following command 
    ```
-   $ballerina run restful_service/
+   $ballerina run <package_name>
    ```
+   NOTE: First start the `TravelAgency` package since it's the main orchastrator for other services(also we are going to trace from Traval Agancy service)
    
 5) You can access Prometheus at the following URL
    ```
@@ -591,7 +592,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 
 1) Start the Ballerina Service with the following command from `{SAMPLE_ROOT_DIRECTORY}/src`
    ```
-   nohup ballerina run restful_service/ &>> ballerina.log&
+   nohup ballerina run TravelAgency/ &>> ballerina.log&
    ```
    NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT_DIRECTORY}/src` directory
 2) Start Elasticsearch using the following command
@@ -642,7 +643,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
      
      ```
         docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
-        -v ~/{SAMPLE_ROOT_DIRECTIRY}/pipeline:/usr/share/logstash/pipeline/ 
+        -v {SAMPLE_ROOT_DIRECTIRY}/pipeline:/usr/share/logstash/pipeline/ 
         -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
      ```
   
