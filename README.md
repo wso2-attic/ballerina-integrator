@@ -577,6 +577,11 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    ```
    http://localhost:19090/
    ```
+   NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+   
+  		-  http_requests_total
+		-  http_response_time
+
 6) Promethues UI screenshot
    
    ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
