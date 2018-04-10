@@ -394,7 +394,7 @@ This will also create the corresponding docker image using the docker annotation
 with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
 So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
 
-- In our OrderMgtService, we need to import  `` import ballerinax/kubernetes; `` and use `` @kubernetes `` as shown below to enable docker image generation during the build time. 
+- We need to import `` import ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
 ##### order_mgt_service.bal
 
