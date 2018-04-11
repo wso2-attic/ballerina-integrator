@@ -2,7 +2,7 @@
 
 In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
 
-## <a name="what-you-build"></a> What you’ll build 
+## What you’ll build 
 To understanding how you can build a RESTful web service using Ballerina, let’s consider a real world use case of an order management scenario of an online retail application. 
 We can model the order management scenario as a RESTful web service; 'OrderMgtService',  which accepts different HTTP request for order management tasks such as order creation, retrieval, updating and deletion.
 The following figure illustrates all the required functionalities of the OrderMgt RESTful web service that we need to build. 
@@ -14,7 +14,7 @@ The following figure illustrates all the required functionalities of the OrderMg
 - **Update Order** : You can update an existing order by sending a HTTP PUT request with the content for the updated order. 
 - **Delete Order** : An existing order can be deleted by sending a HTTP DELETE request to the specific URL`http://xyz.retail.com/order/<orderId>`. 
 
-## <a name="pre-req"></a> Prerequisites
+## Prerequisites
  
 - JDK 1.8 or later
 - [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
@@ -24,7 +24,7 @@ The following figure illustrates all the required functionalities of the OrderMg
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 
-## <a name="developing-service"></a> Developing the RESTFul service 
+## Developing the RESTFul service 
 
 We can model the OrderMgt RESTful service using Ballerina services and resources constructs. 
 
@@ -226,9 +226,9 @@ service<http:Service> order_mgt bind listener {
 4. With that we've completed the development of OrderMgtService. 
 
 
-## <a name="testing"></a> Testing 
+## Testing 
 
-### <a name="invoking"></a> Invoking the RESTful service 
+### Invoking the RESTful service 
 
 You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
@@ -301,7 +301,7 @@ Output:
 "Order : 100500 removed."
 ```
 
-### <a name="unit-testing"></a> Writing unit tests 
+### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'. The naming convention should be as follows,
 
@@ -317,18 +317,18 @@ To run the unit tests, go to the sample src directory and run the following comm
 
 To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/src/restful_service/test/order_mgt_service_test.bal).
 
-## <a name="deploying-the-scenario"></a> Deployment
+## Deployment
 
 Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying locally
+### Deploying locally
 You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
 ```
 $ballerina run target/restful_service.balx
 ```
 
-### <a name="deploying-on-docker"></a> Deploying on Docker
+### Deploying on Docker
 
 
 You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on 
@@ -388,7 +388,7 @@ This will also create the corresponding docker image using the docker annotation
     ```
 
 
-### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
+### Deploying on Kubernetes
 
 - You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
 with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
@@ -494,7 +494,7 @@ curl -v -X POST -d \
     
 ```
 
-## <a name="observability"></a> Observability 
+## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
 However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/src/`.
 
@@ -512,7 +512,7 @@ enabled=true
 ```
 
 
-### <a name="tracing"></a> Tracing 
+### Tracing 
 You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 Follow the following steps to use tracing with Ballerina.
 1) Run Jaeger docker image using the following command
@@ -532,7 +532,7 @@ Follow the following steps to use tracing with Ballerina.
    ![Jaeger UI](images/tracing-screenshot.png "Tracing Screenshot")
  
 
-### <a name="metrics"></a> Metrics
+### Metrics
 Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
 Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
 
@@ -577,7 +577,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    
    ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
 
-### <a name="logging"></a> Logging
+### Logging
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 1) Start Elasticsearch using the following command
