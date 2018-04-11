@@ -635,7 +635,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 	      }  
       }  
       ```
-      NOTE: We have declared `store` as the index using `index => "store"` statement, you may need to add `store` keyword to kibana visualization tool to create a log visualization.
+      NOTE: We have declared `store` as the index using `index => "store"` statement.
       
      ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
      
@@ -673,7 +673,8 @@ Ballerina has a log package for logging to the console. You can import ballerina
     ```
      http://localhost:5601 
     ```
- 
+    NOTE: You may need to add `store` index pattern to kibana visualization tool to create a log visualization.
+    
  7) Screenshot of Kibana log visualization
  
      ![logging screenshot](images/logging-screenshot.png "Kibana UI")
