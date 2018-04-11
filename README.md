@@ -6,11 +6,11 @@ Parallel service orchestration is the process of integrating two or more service
 
 The following are the sections available in this guide.
 
-- [What you'll build](#what-you-build)
-- [Prerequisites](#pre-req)
-- [Developing the service](#developing-service)
+- [What you'll build](#what-youll-build)
+- [Prerequisites](#prerequisites)
+- [Developing the service](#developing-the-service)
 - [Testing](#testing)
-- [Deployment](#deploying-the-scenario)
+- [Deployment](#deployment)
 - [Observability](#observability)
 
 ## What you’ll build
