@@ -598,7 +598,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 2) Start Elasticsearch using the following command
 
    ```
-   docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name 
+   docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name  
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
    ```
    NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
