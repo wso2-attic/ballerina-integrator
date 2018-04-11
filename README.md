@@ -526,9 +526,7 @@ import ballerinax/kubernetes;
 
 @kubernetes:Deployment {
     image:"ballerina.guides.io/employee_database_service:v1.0",
-    name:"ballerina-guides-employee-database-service",
-    dockerHost:"tcp://192.168.99.100:2376",
-    dockerCertPath:"/home/pranavan/.minikube/certs"
+    name:"ballerina-guides-employee-database-service"
 }
 
 endpoint http:ServiceEndpoint listener {
