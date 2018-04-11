@@ -3,13 +3,13 @@ package restful_service;
 import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
-//
+
 //@docker:Config {
 //    registry:"ballerina.guides.io",
 //    name:"restful_service",
 //    tag:"v1.0"
 //}
-//
+
 //@kubernetes:Ingress {
 //    hostname:"ballerina.guides.io",
 //    name:"ballerina-guides-restful-service",
@@ -23,9 +23,7 @@ import ballerina/http;
 //
 //@kubernetes:Deployment {
 //    image:"ballerina.guides.io/restful_service:v1.0",
-//    name:"ballerina-guides-restful-service",
-//    dockerHost:"tcp://192.168.99.100:2376",
-//    dockerCertPath:"/home/pranavan/.minikube/certs"
+//    name:"ballerina-guides-restful-service"
 //}
 
 endpoint http:ServiceEndpoint listener {

@@ -394,7 +394,7 @@ This will also create the corresponding docker image using the docker annotation
 with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
 So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
 
-- In our OrderMgtService, we need to import  `` import ballerinax/kubernetes; `` and use `` @kubernetes `` as shown below to enable docker image generation during the build time. 
+- We need to import `` import ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
 ##### order_mgt_service.bal
 
@@ -417,9 +417,7 @@ import ballerinax/kubernetes;
 
 @kubernetes:Deployment {
     image:"ballerina.guides.io/restful_service:v1.0",
-    name:"ballerina-guides-restful-service",
-    dockerHost:"tcp://192.168.99.100:2376",
-    dockerCertPath:"/home/pranavan/.minikube/certs"
+    name:"ballerina-guides-restful-service"
 }
 
 endpoint http:ServiceEndpoint listener {
@@ -456,9 +454,10 @@ This will also create the corresponding docker image and the Kubernetes artifact
 
 ```
  $ kubectl apply -f ./target/restful_service/kubernetes 
-     deployment "OrderMgtService-deployment" created
-     ingress "OrderMgtService" created
-     service "OrderMgtService" created
+   deployment.extensions "ballerina-guides-restful-service" created
+   ingress.extensions "ballerina-guides-restful-service" created
+   service "ballerina-guides-restful-service" created
+
 ```
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 ```
