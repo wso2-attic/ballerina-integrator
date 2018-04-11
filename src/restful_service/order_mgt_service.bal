@@ -3,13 +3,13 @@ package restful_service;
 import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
-//
+
 //@docker:Config {
 //    registry:"ballerina.guides.io",
 //    name:"restful_service",
 //    tag:"v1.0"
 //}
-//
+
 //@kubernetes:Ingress {
 //    hostname:"ballerina.guides.io",
 //    name:"ballerina-guides-restful-service",
