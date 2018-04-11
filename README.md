@@ -394,9 +394,7 @@ import ballerinax/kubernetes;
 
 @kubernetes:Deployment {
   image:"ballerina.guides.io/travel_agency_service:v1.0",
-  name:"ballerina-guides-travel-agency-service",
-  dockerHost:"tcp://192.168.99.100:2376",
-  dockerCertPath:"/home/pranavan/.minikube/certs"
+  name:"ballerina-guides-travel-agency-service"
 }
 
 endpoint http:ServiceEndpoint travelAgencyEP {
