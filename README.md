@@ -417,9 +417,7 @@ import ballerinax/kubernetes;
 
 @kubernetes:Deployment {
     image:"ballerina.guides.io/restful_service:v1.0",
-    name:"ballerina-guides-restful-service",
-    dockerHost:"tcp://192.168.99.100:2376",
-    dockerCertPath:"/home/pranavan/.minikube/certs"
+    name:"ballerina-guides-restful-service"
 }
 
 endpoint http:ServiceEndpoint listener {
