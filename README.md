@@ -65,7 +65,6 @@ Package `HotelReservation` contains the service that provides online hotel room 
 The `travel_agency_service.bal` file provides travel agency service, which consumes the other three services, and arranges a complete tour for the requested user.
 
 
-
 Once you created your package structure, go to the sample src directory and run the following command to initialize your Ballerina project.
 
 ```bash
