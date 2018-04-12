@@ -132,7 +132,8 @@ The travel agency service checks if all three airlines available in parallel and
 
 ```ballerina
 // Airline reservation
-// Call Airline reservation service and consume different resources in parallel to check different airways
+// Call Airline reservation service and consume different resources in parallel to
+// check different airways
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with airline 'Qatar Airways'
@@ -220,7 +221,8 @@ Let's now look at how the travel agency service integrates with the hotel reserv
 
 ```ballerina
 // Hotel reservation
-// Call Hotel reservation service and consume different resources in parallel to check different hotels
+// Call Hotel reservation service and consume different resources in parallel to
+// check different hotels
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with hotel 'Miramar'
@@ -307,7 +309,8 @@ Let's next look at how the travel agency service integrates with the car rental 
 
 ```ballerina
 // Car rental
-// Call Car rental service and consume different resources in parallel to check different companies
+// Call Car rental service and consume different resources in parallel to
+// check different companies
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with Company 'DriveSg'
@@ -447,7 +450,8 @@ To see the complete implementation of the above file, refer to the [travel_agenc
 ```bash
     < HTTP/1.1 200 OK
     {
-      "Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
+      "Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018",
+      "ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
       "Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018",
       "DistanceToLocation":2},
       "Vehicle":{"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018",
@@ -466,6 +470,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 ```
   
 This guide contains unit test cases for each service implemented above. 
+
 
 To run the unit tests, go to the sample src directory and run the following command
 ```bash
@@ -536,7 +541,8 @@ This will also create the corresponding docker image using the docker annotation
 ```   
     docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
-    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+   
+   Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
