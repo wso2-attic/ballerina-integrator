@@ -2,6 +2,15 @@
 
 In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
 
+The following are the sections available in this guide.
+
+- [What you'll build](#what-youll-build)
+- [Prerequisites](#prerequisites)
+- [Developing the service](#developing-the-service)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Observability](#observability)
+
 ## What you’ll build 
 To understanding how you can build a RESTful web service using Ballerina, let’s consider a real world use case of an order management scenario of an online retail application. 
 We can model the order management scenario as a RESTful web service; 'OrderMgtService',  which accepts different HTTP request for order management tasks such as order creation, retrieval, updating and deletion.
