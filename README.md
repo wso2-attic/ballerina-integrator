@@ -737,7 +737,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
   		-  http_requests_total
 		-  http_response_time
 
-- Promethues UI screenshot
+- Promethues UI with metrics for parallel service orchestration
    
    ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
 
@@ -828,9 +828,10 @@ Ballerina has a log package for logging to the console. You can import ballerina
 ```
      http://localhost:5601 
 ```
-    NOTE: You may need to add `store` index pattern to kibana visualization tool to create a log visualization.
+
+NOTE: You may need to add `store` index pattern to kibana visualization tool to create a log visualization.
     
-- Screenshot of Kibana log visualization
+- Kibana log visualization for parallel service orchestration sample
  
      ![logging screenshot](images/logging-screenshot.png "Kibana UI")
      
