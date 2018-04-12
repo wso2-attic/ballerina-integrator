@@ -90,7 +90,8 @@ Sample request payload for the airline reservation service:
 Sample response payload from the airline reservation service:
 
 ```bash
-{"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018", "From":"Colombo", "To":"Changi", "Price":273}
+{"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
+"From":"Colombo", "To":"Changi", "Price":273}
 ```
 
 Sample request payload for the hotel reservation service:
@@ -102,7 +103,8 @@ Sample request payload for the hotel reservation service:
 Sample response payload from the hotel reservation service:
 
 ```bash
-{"HotelName":"Miramar", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "DistanceToLocation":6}
+{"HotelName":"Miramar", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
+"DistanceToLocation":6}
 ```
 
 Sample request payload for the car rental service:
@@ -114,7 +116,8 @@ Sample request payload for the car rental service:
 Sample response payload from the car rental service:
 
 ```bash
-{"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "PricePerDay":5}
+{"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018",
+"ToDate":"13-04-2018", "PricePerDay":5}
 ```
 
 When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to arrange an airline. The airline reservation service allows the client to check about three different airlines by providing a separate resource for each airline. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/AirlineReservation/airline_reservation_service.bal) file.
@@ -434,7 +437,8 @@ To see the complete implementation of the above file, refer to the [travel_agenc
 
 ```bash
     curl -v -X POST -d \
-    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", \ 
+    "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
 ```
 
@@ -444,8 +448,10 @@ To see the complete implementation of the above file, refer to the [travel_agenc
     < HTTP/1.1 200 OK
     {
       "Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
-      "Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
-      "Vehicle":{"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018","PricePerDay":5}
+      "Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018",
+      "DistanceToLocation":2},
+      "Vehicle":{"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018",
+      "ToDate":"13-04-2018","PricePerDay":5}
     }
 ``` 
    
@@ -537,7 +543,8 @@ This will also create the corresponding docker image using the docker annotation
  
 ```
     curl -v -X POST -d \
-    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
 ```
 
@@ -626,7 +633,8 @@ Node Port:
  
 ```
   curl -v -X POST -d \
-  '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+  '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", 
+  "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
   "http://<Minikube_host_IP>:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
 
 ```
@@ -641,7 +649,8 @@ Access the service
 
 ``` 
  curl -v -X POST -d \
-'{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+'{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", \
+"To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
  "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
     
 ```
@@ -669,7 +678,8 @@ You can monitor ballerina services using in built tracing capabilities of Baller
 Follow the following steps to use tracing with Ballerina.
 - Run Jaeger docker image using the following command
 ```bash
-   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
+   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp 
+   -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
 ```
 - Navigate to `parallel-service-orchestration/src/` and start all services using following command 
 ```
