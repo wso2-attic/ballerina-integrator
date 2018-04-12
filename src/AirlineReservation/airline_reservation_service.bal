@@ -39,30 +39,28 @@ import ballerina/http;
 //
 //@kubernetes:Deployment {
 //  image:"ballerina.guides.io/airline_reservation_service:v1.0",
-//  name:"ballerina-guides-airline-reservation-service",
-//  dockerHost:"tcp://192.168.99.100:2376",
-//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//  name:"ballerina-guides-airline-reservation-service"
 //}
 
 // Service endpoint
-endpoint http:ServiceEndpoint airlineEP {
+endpoint http:Listener airlineEP {
     port:9091
 };
 
 // Available flight classes
-const string ECONOMY = "Economy";
-const string BUSINESS = "Business";
-const string FIRST = "First";
+@final string ECONOMY = "Economy";
+@final string BUSINESS = "Business";
+@final string FIRST = "First";
 
 // Airline reservation service to reserve airline tickets
 @http:ServiceConfig {basePath:"/airline"}
 service<http:Service> airlineReservationService bind airlineEP {
 
-    // Resource to reserve a ticket
+// Resource to reserve a ticket
     @http:ResourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
         produces:["application/json"]}
-    reserveTicket (endpoint client, http:Request request) {
-        http:Response response = {};
+    reserveTicket(endpoint client, http:Request request) {
+        http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
@@ -70,11 +68,11 @@ service<http:Service> airlineReservationService bind airlineEP {
             // Valid JSON payload
             json payload => reqPayload = payload;
             // NOT a valid JSON payload
-            any | null => {
+            any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(response);
-                //return;
+                done;
             }
         }
 
@@ -88,12 +86,12 @@ service<http:Service> airlineReservationService bind airlineEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
-            //return;
+            done;
         }
 
         // Mock logic
         // If request is for an available flight class, send a reservation successful status
-        string preferredClassStr = preferredClass.toString().trim();
+        string preferredClassStr = preferredClass.toString() but { () => "" };
         if (preferredClassStr.equalsIgnoreCase(ECONOMY) || preferredClassStr.equalsIgnoreCase(BUSINESS) ||
             preferredClassStr.equalsIgnoreCase(FIRST)) {
             response.setJsonPayload({"Status":"Success"});

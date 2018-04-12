@@ -39,19 +39,17 @@ import ballerina/http;
 //
 //@kubernetes:Deployment {
 //  image:"ballerina.guides.io/hotel_reservation_service:v1.0",
-//  name:"ballerina-guides-hotel-reservation-service",
-//  dockerHost:"tcp://192.168.99.100:2376",
-//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//  name:"ballerina-guides-hotel-reservation-service"
 //}
 
 // Service endpoint
-endpoint http:ServiceEndpoint hotelEP {
+endpoint http:Listener hotelEP {
     port:9092
 };
 
 // Available room types
-const string AC = "Air Conditioned";
-const string NORMAL = "Normal";
+@final string AC = "Air Conditioned";
+@final string NORMAL = "Normal";
 
 // Hotel reservation service to reserve hotel rooms
 @http:ServiceConfig {basePath:"/hotel"}
@@ -61,7 +59,7 @@ service<http:Service> hotelReservationService bind hotelEP {
     @http:ResourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
         produces:["application/json"]}
     reserveRoom (endpoint client, http:Request request) {
-        http:Response response = {};
+        http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
@@ -69,11 +67,11 @@ service<http:Service> hotelReservationService bind hotelEP {
         // Valid JSON payload
             json payload => reqPayload = payload;
         // NOT a valid JSON payload
-            any | null => {
+            any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(response);
-                //return;
+                done;
             }
         }
 
@@ -87,12 +85,12 @@ service<http:Service> hotelReservationService bind hotelEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
-            //return;
+            done;
         }
 
         // Mock logic
         // If request is for an available room type, send a reservation successful status
-        string preferredTypeStr = preferredRoomType.toString().trim();
+        string preferredTypeStr = preferredRoomType.toString() but { () => "" };
         if (preferredTypeStr.equalsIgnoreCase(AC) || preferredTypeStr.equalsIgnoreCase(NORMAL)) {
             response.setJsonPayload({"Status":"Success"});
         }

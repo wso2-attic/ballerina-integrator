@@ -39,19 +39,17 @@ import ballerina/http;
 //
 //@kubernetes:Deployment {
 //  image:"ballerina.guides.io/car_rental_service:v1.0",
-//  name:"ballerina-guides-car-rental-service",
-//  dockerHost:"tcp://192.168.99.100:2376",
-//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//  name:"ballerina-guides-car-rental-service"
 //}
 
 // Service endpoint
-endpoint http:ServiceEndpoint carEP {
+endpoint http:Listener carEP {
     port:9093
 };
 
 // Available car types
-const string AC = "Air Conditioned";
-const string NORMAL = "Normal";
+@final string AC = "Air Conditioned";
+@final string NORMAL = "Normal";
 
 // Car rental service to rent cars
 @http:ServiceConfig {basePath:"/car"}
@@ -60,7 +58,7 @@ service<http:Service> carRentalService bind carEP {
     // Resource to rent a car
     @http:ResourceConfig {methods:["POST"], path:"/rent", consumes:["application/json"], produces:["application/json"]}
     rentCar (endpoint client, http:Request request) {
-        http:Response response = {};
+        http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
@@ -68,11 +66,11 @@ service<http:Service> carRentalService bind carEP {
         // Valid JSON payload
             json payload => reqPayload = payload;
         // NOT a valid JSON payload
-            any | null => {
+            any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(response);
-                //return;
+                done;
             }
         }
 
@@ -86,12 +84,12 @@ service<http:Service> carRentalService bind carEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
-            //return;
+            done;
         }
 
         // Mock logic
         // If request is for an available car type, send a rental successful status
-        string preferredTypeStr = preferredType.toString().trim();
+        string preferredTypeStr = preferredType.toString() but { () => "" };
         if (preferredTypeStr.equalsIgnoreCase(AC) || preferredTypeStr.equalsIgnoreCase(NORMAL)) {
             response.setJsonPayload({"Status":"Success"});
         }
