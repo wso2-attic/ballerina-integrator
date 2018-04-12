@@ -73,14 +73,14 @@ Arranging a complete tour travel agency service requires communicating with thre
 
 Sample request payload:
 
-```bash
+```
 {"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", 
  "Preference":<service_dependent_preference>};
 ```
 
 Sample response payload:
 
-```bash
+```
 {"Status":"Success"}
 ```
 
@@ -240,22 +240,22 @@ As shown above, the travel agency service rents a car for the requested user by 
 
 1. Start all four HTTP services by entering the following commands in separate terminals. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run AirlineReservation/
    ```
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run HotelReservation/
    ```
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run CarRental/
    ```
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run TravelAgency/
    ```
    
 2. Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
 
-   ```bash
+   ```
     curl -v -X POST -d \
     '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
      "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
@@ -264,7 +264,7 @@ As shown above, the travel agency service rents a car for the requested user by 
 
     The `travelAgencyService` sends a response similar to the following:
     
-    ```bash
+    ```
      < HTTP/1.1 200 OK
     {"Message":"Congratulations! Your journey is ready!!"}
     ``` 
@@ -282,7 +282,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 This guide contains unit test cases for each service implemented above. 
 
 To run the unit tests, go to the sample src directory and run the following command
-   ```bash
+   ```
    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina test
    ```
 
@@ -297,12 +297,12 @@ Once you are done with the development, you can deploy the services using any of
 You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
 
 Building 
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina build <Package_Name>
    ```
 
 Running
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run target/<Exec_Archive_File_Name>
    ```
 
