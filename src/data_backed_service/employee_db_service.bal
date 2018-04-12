@@ -30,7 +30,7 @@ struct Employee {
     int ssn;
     int employeeId;
 }
-int PORT = 1;
+
 // Create SQL endpoint to MySQL database
 endpoint sql:Client employeeDB {
     database:sql:DB.MYSQL,
@@ -43,27 +43,25 @@ endpoint sql:Client employeeDB {
 };
 
 //@docker:Config {
-//  registry:"ballerina.guides.io",
-//  name:"employee_database_service",
-//  tag:"v1.0"
+//    registry:"ballerina.guides.io",
+//    name:"employee_database_service",
+//    tag:"v1.0"
 //}
 
 //@kubernetes:Ingress {
-//  hostname:"ballerina.guides.io",
-//  name:"ballerina-guides-employee-database-service",
-//  path:"/"
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-employee-database-service",
+//    path:"/"
 //}
 //
 //@kubernetes:Service {
-//  serviceType:"NodePort",
-//  name:"ballerina-guides-employee-database-service"
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-employee-database-service"
 //}
 //
 //@kubernetes:Deployment {
-//  image:"ballerina.guides.io/employee_database_service:v1.0",
-//  name:"ballerina-guides-employee-database-service",
-//  dockerHost:"tcp://192.168.99.100:2376",
-//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//    image:"ballerina.guides.io/employee_database_service:v1.0",
+//    name:"ballerina-guides-employee-database-service"
 //}
 
 endpoint http:ServiceEndpoint listener {
