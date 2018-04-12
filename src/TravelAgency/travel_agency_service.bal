@@ -117,9 +117,9 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // Get the reservation status
         var airlineResPayload = check inResAirline.getJsonPayload();
-        string airlineReservationStatus = airlineResPayload.Status.toString() but { () => "Failed" };
+        string airlineStatus = airlineResPayload.Status.toString() but { () => "Failed" };
         // If reservation status is negative, send a failure response to user
-        if (airlineReservationStatus.equalsIgnoreCase("Failed")) {
+        if (airlineStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
                     "Provide a valid 'Preference' for 'Airline' and try again"});
             _ = client -> respond(outResponse);
@@ -140,9 +140,9 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // Get the reservation status
         var hotelResPayload = check inResHotel.getJsonPayload();
-        string hotelReservationStatus = hotelResPayload.Status.toString() but { () => "Failed" };
+        string hotelStatus = hotelResPayload.Status.toString() but { () => "Failed" };
         // If reservation status is negative, send a failure response to user
-        if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
+        if (hotelStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
                     "Provide a valid 'Preference' for 'Accommodation' and try again"});
             _ = client -> respond(outResponse);
