@@ -74,7 +74,8 @@ Arranging a complete tour travel agency service requires communicating with thre
 Sample request payload:
 
 ```bash
-{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":<service_dependent_preference>};
+{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", 
+ "Preference":<service_dependent_preference>};
 ```
 
 Sample response payload:
