@@ -6,21 +6,20 @@ A service composition is an aggregate of services collectively composed to autom
 
 The following are the sections available in this guide.
 
-- [What you'll build](#what-you-build)
-- [Prerequisites](#pre-req)
-- [Developing the service](#developing-service)
+- [What you'll build](#what-youll-build)
+- [Prerequisites](#prerequisites)
+- [Developing the service](#developing-the-service)
 - [Testing](#testing)
-- [Deployment](#deploying-the-scenario)
-- [Observability](#observability)
+- [Deployment](#deployment)
 
-## <a name="what-you-build"></a>  What you’ll build
+## What you’ll build
 To understanding how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
 
 ![alt text](/images/service_composition.png)
 
 Travel agency is the service that acts as the composition initiator. The other three services are external services that the travel agency service calls to do airline ticket booking, hotel reservation and car rental. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
-## <a name="pre-req"></a> Prerequisites
+## Prerequisites
  
 - JDK 1.8 or later
 - [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
@@ -30,10 +29,10 @@ Travel agency is the service that acts as the composition initiator. The other t
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 
-## <a name="developing-service"></a> Developing the service
+## Developing the service
 
-### <a name="before-begin"></a> Before you begin
-##### Understand the package structure
+### Before you begin
+#### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
@@ -55,7 +54,6 @@ service-composition
           ├── test
           │   └── travel_agency_service_test.bal
           └── travel_agency_service.bal
-
 ```
 
 Package `AirlineReservation` contains the service that provides online flight ticket reservations.
@@ -67,7 +65,7 @@ Package `HotelReservation` contains the service that provides online hotel room 
 The `travel_agency_service.bal` file provides travel agency service, which consumes the other three services, and arranges a complete tour for the requested user.
 
 
-### <a name="Implementation"></a> Implementation
+### Implementation
 
 Let's look at the implementation of the travel agency service, which acts as the composition initiator.
 
@@ -75,13 +73,14 @@ Arranging a complete tour travel agency service requires communicating with thre
 
 Sample request payload:
 
-```bash
-{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Preference":<service_dependent_preference>};
+```
+{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", 
+ "Preference":<service_dependent_preference>};
 ```
 
 Sample response payload:
 
-```bash
+```
 {"Status":"Success"}
 ```
 
@@ -99,7 +98,7 @@ Refer to the [travel_agency_service.bal](https://github.com/ballerina-guides/ser
 ```ballerina
 package TravelAgency;
 
-import ballerina/net.http;
+import ballerina/http;
 
 // Service endpoint
 endpoint http:ServiceEndpoint travelAgencyEP {
@@ -125,31 +124,30 @@ endpoint http:ClientEndpoint carRentalEP {
 @http:ServiceConfig {basePath:"/travel"}
 service<http:Service> travelAgencyService bind travelAgencyEP {
 
-    // Resource to arrange a tour
-    @http:ResourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
-    arrangeTour (endpoint client, http:Request inRequest) {
+// Resource to arrange a tour
+    @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
+        produces:["application/json"]}
+    arrangeTour(endpoint client, http:Request inRequest) {
         http:Response outResponse = {};
 
         // JSON payload format for an HTTP OUT request
-        json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"", "Preference":""};
+        json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"",
+            "Preference":""};
 
         // Try parsing the JSON payload from the user request
-
-        // If payload parsing fails, send a "Bad Request" message as the response
 
         // Reserve airline ticket for the user by calling the airline reservation service
 
         // Reserve hotel room for the user by calling the hotel reservation service
 
         // Renting car for the user by calling the car rental service
-        
-        
-        // If all three services response positive status, send a successful message to the user
-        outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
+
+
+        // If all three response positive status, send a successful message to the user
+        outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!"});
         _ = client -> respond(outResponse);
     }
 }
-
 ```
 
 Let's now look at the code segment that is responsible for communicating with the airline reservation service. 
@@ -163,7 +161,7 @@ json outReqPayloadAirline = outReqPayload;
 outReqPayloadAirline.Preference = airlinePreference;
 outReqAirline.setJsonPayload(outReqPayloadAirline);
 
-// Send a post request to airlineReservationService with appropriate payload and get response
+// Send a post request to airline service with appropriate payload and get response
 inResAirline =? airlineReservationEP -> post("/reserve", outReqAirline);
 
 // Get the reservation status
@@ -172,7 +170,7 @@ string airlineReservationStatus = airlineResPayload.Status.toString();
 // If reservation status is negative, send a failure response to user
 if (airlineReservationStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
-                                          "Provide a valid 'Preference' for 'Airline' and try again"});
+        "Provide a valid 'Preference' for 'Airline' and try again"});
     _ = client -> respond(outResponse);
     return;
 }
@@ -192,7 +190,7 @@ json outReqPayloadHotel = outReqPayload;
 outReqPayloadHotel.Preference = hotelPreference;
 outReqHotel.setJsonPayload(outReqPayloadHotel);
 
-// Send a post request to hotelReservationService with appropriate payload and get response
+// Send a post request to hotel service with appropriate payload and get response
 inResHotel =? hotelReservationEP -> post("/reserve", outReqHotel);
 
 // Get the reservation status
@@ -201,7 +199,7 @@ string hotelReservationStatus = hotelResPayload.Status.toString();
 // If reservation status is negative, send a failure response to user
 if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
-                                          "Provide a valid 'Preference' for 'Accommodation' and try again"});
+        "Provide a valid 'Preference' for 'Accommodation' and try again"});
     _ = client -> respond(outResponse);
     return;
 }
@@ -219,7 +217,7 @@ json outReqPayloadCar = outReqPayload;
 outReqPayloadCar.Preference = carPreference;
 outReqCar.setJsonPayload(outReqPayloadCar);
 
-// Send a post request to carRentalService with appropriate payload and get response
+// Send a post request to car rental service with appropriate payload and get response
 inResCar =? carRentalEP -> post("/rent", outReqCar);
 
 // Get the rental status
@@ -228,7 +226,7 @@ string carRentalStatus = carResPayload.Status.toString();
 // If rental status is negative, send a failure response to user
 if (carRentalStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to rent car! " +
-                                          "Provide a valid 'Preference' for 'Car' and try again"});
+        "Provide a valid 'Preference' for 'Car' and try again"});
     _ = client -> respond(outResponse);
     return;
 }
@@ -236,28 +234,28 @@ if (carRentalStatus.equalsIgnoreCase("Failed")) {
 
 As shown above, the travel agency service rents a car for the requested user by calling the car rental service. `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
 
-## <a name="testing"></a> Testing 
+## Testing 
 
-### <a name="try-it"></a> Try it out
+### Try it out
 
 1. Start all four HTTP services by entering the following commands in separate terminals. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run AirlineReservation/
    ```
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run HotelReservation/
    ```
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run CarRental/
    ```
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run TravelAgency/
    ```
    
 2. Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
 
-   ```bash
+   ```
     curl -v -X POST -d \
     '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
      "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
@@ -266,13 +264,13 @@ As shown above, the travel agency service rents a car for the requested user by 
 
     The `travelAgencyService` sends a response similar to the following:
     
-    ```bash
+    ```
      < HTTP/1.1 200 OK
     {"Message":"Congratulations! Your journey is ready!!"}
     ``` 
    
    
-### <a name="unit-testing"></a> Writing unit tests 
+### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
 * Test functions should be annotated with `@test:Config`. See the below example.
@@ -284,31 +282,31 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 This guide contains unit test cases for each service implemented above. 
 
 To run the unit tests, go to the sample src directory and run the following command
-   ```bash
+   ```
    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina test
    ```
 
 To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/AirlineReservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/HotelReservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/CarRental/test/car_rental_service_test.bal) and [travel_agency_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/TravelAgency/test/travel_agency_service_test.bal).
 
 
-## <a name="deploying-the-scenario"></a> Deployment
+## Deployment
 
 Once you are done with the development, you can deploy the services using any of the methods that are listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying locally
+### Deploying locally
 You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
 
 Building 
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina build <Package_Name>
    ```
 
 Running
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run target/<Exec_Archive_File_Name>
    ```
 
-### <a name="deploying-on-docker"></a> Deploying on Docker
+### Deploying on Docker
 
 You can run the services that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
 Let's see how we can deploy the travel_agency_service we developed above on docker. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
@@ -333,8 +331,7 @@ endpoint http:ServiceEndpoint travelAgencyEP {
 };
 
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP {
-   
+service<http:Service> travelAgencyService bind travelAgencyEP { 
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
@@ -364,7 +361,7 @@ This will also create the corresponding docker image using the docker annotation
     ```
 
 
-### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
+### Deploying on Kubernetes
 
 - You can run the services that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
 with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
@@ -404,8 +401,7 @@ endpoint http:ServiceEndpoint travelAgencyEP {
 // Http client endpoint definitions
 
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP {
-        
+service<http:Service> travelAgencyService bind travelAgencyEP {    
 ``` 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
@@ -419,7 +415,6 @@ This will also create the corresponding docker image and the Kubernetes artifact
   
   Run following command to deploy kubernetes artifacts:  
   kubectl apply -f ./target/TravelAgency/kubernetes
- 
   ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
@@ -431,7 +426,6 @@ This will also create the corresponding docker image and the Kubernetes artifact
    deployment.extensions "ballerina-guides-travel-agency-service" created
    ingress.extensions "ballerina-guides-travel-agency-service" created
    service "ballerina-guides-travel-agency-service" created
-
 ```
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 ```
@@ -439,7 +433,6 @@ $kubectl get service
 $kubectl get deploy
 $kubectl get pods
 $kubectl get ingress
-
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
@@ -451,7 +444,6 @@ Node Port:
   '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
   "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
   "http://<Minikube_host_IP>:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
-
 ```
 Ingress:
 
@@ -467,17 +459,4 @@ Access the service
  '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
  "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
  "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
-    
 ```
-
-
-## <a name="observability"></a> Observability 
-
-### <a name="logging"></a> Logging
-(Work in progress) 
-
-### <a name="metrics"></a> Metrics
-(Work in progress) 
-
-### <a name="tracing"></a> Tracing 
-(Work in progress) 
