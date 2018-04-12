@@ -233,7 +233,7 @@ We created two user accounts for users 'Alice' and 'Bob'. Then initially we depo
 
 Let's now look at some important log statements we will get as the response for these three scenarios.
 
-1. For the `scenario 1` where 'Alice' transfers $300 to Bob's account, the transaction is expected to be successful
+- For the `scenario 1` where 'Alice' transfers $300 to Bob's account, the transaction is expected to be successful
 
 ```
 ----------------------------------------- Scenario 1--------------------------------------------- 
@@ -249,7 +249,7 @@ INFO  [BankingApplication] - Transaction committed
 INFO  [BankingApplication] - Successfully transferred $300 from account ID 1 to account ID 2 
 ```
 
-2. For the `scenario 2` where 'Alice' tries to transfer $500 to Bob's account, the transaction is expected to fail as 'Alice' has insufficient balance
+- For the `scenario 2` where 'Alice' tries to transfer $500 to Bob's account, the transaction is expected to fail as 'Alice' has insufficient balance
 
 ```
 ----------------------------------------- Scenario 2--------------------------------------------- 
@@ -263,7 +263,7 @@ INFO  [BankingApplication] - Available balance in account ID 1: 200
 ERROR [BankingApplication] - Error while withdrawing the money: Error: Not enough balance 
 ```
 
-2. For the `scenario 3` where 'Bob' tries to transfer $500 to account ID 1234, the transaction is expected to fail as account ID 1234 does not exist
+- For the `scenario 3` where 'Bob' tries to transfer $500 to account ID 1234, the transaction is expected to fail as account ID 1234 does not exist
 
 ```
 ----------------------------------------- Scenario 3--------------------------------------------- 
@@ -290,10 +290,10 @@ the TX failed and the withdraw operation rollbacked, which is in the same TX
 In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
 * Test functions should be annotated with `@test:Config`. See the below example.
-  ```ballerina
+```ballerina
     @test:Config
     function testCreateAccount() {
-  ```
+```
 
 This guide contains unit test cases for each method implemented in `account_manager.bal` file.
 
