@@ -409,7 +409,7 @@ Output:
 {"Status":"Data Deleted Successfully"}
 ```
 
-### <a name="unit-testing"></a> Writing unit tests 
+### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a file named as `test`. The naming convention should be as follows.
 * Test files should contain _test.bal suffix.
