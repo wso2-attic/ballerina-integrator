@@ -56,7 +56,7 @@ endpoint http:Listener airlineEP {
 @http:ServiceConfig {basePath:"/airline"}
 service<http:Service> airlineReservationService bind airlineEP {
 
-// Resource to reserve a ticket
+    // Resource to reserve a ticket
     @http:ResourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
         produces:["application/json"]}
     reserveTicket(endpoint client, http:Request request) {

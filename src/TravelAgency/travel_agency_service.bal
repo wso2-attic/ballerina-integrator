@@ -68,7 +68,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
     // Resource to arrange a tour
     @http:ResourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
-    arrangeTour (endpoint client, http:Request inRequest) {
+    arrangeTour(endpoint client, http:Request inRequest) {
         http:Response outResponse;
         json inReqPayload;
         // Json payload format for an http out request
@@ -117,11 +117,11 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // Get the reservation status
         var airlineResPayload = check inResAirline.getJsonPayload();
-        string airlineReservationStatus = airlineResPayload.Status.toString() but { () => "Failed"};
+        string airlineReservationStatus = airlineResPayload.Status.toString() but { () => "Failed" };
         // If reservation status is negative, send a failure response to user
         if (airlineReservationStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
-                                                  "Provide a valid 'Preference' for 'Airline' and try again"});
+                    "Provide a valid 'Preference' for 'Airline' and try again"});
             _ = client -> respond(outResponse);
             done;
         }
@@ -140,11 +140,11 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // Get the reservation status
         var hotelResPayload = check inResHotel.getJsonPayload();
-        string hotelReservationStatus = hotelResPayload.Status.toString() but { () => "Failed"};
+        string hotelReservationStatus = hotelResPayload.Status.toString() but { () => "Failed" };
         // If reservation status is negative, send a failure response to user
         if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
-                                                  "Provide a valid 'Preference' for 'Accommodation' and try again"});
+                    "Provide a valid 'Preference' for 'Accommodation' and try again"});
             _ = client -> respond(outResponse);
             done;
         }
@@ -163,11 +163,11 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // Get the rental status
         var carResPayload = check inResCar.getJsonPayload();
-        string carRentalStatus = carResPayload.Status.toString() but { () => "Failed"};
+        string carRentalStatus = carResPayload.Status.toString() but { () => "Failed" };
         // If rental status is negative, send a failure response to user
         if (carRentalStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to rent car! " +
-                                                  "Provide a valid 'Preference' for 'Car' and try again"});
+                    "Provide a valid 'Preference' for 'Car' and try again"});
             _ = client -> respond(outResponse);
             done;
         }

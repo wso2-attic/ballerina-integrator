@@ -20,7 +20,7 @@ import ballerina/test;
 import ballerina/http;
 
 @test:BeforeSuite
-function beforeFunc () {
+function beforeFunc() {
     // Start the 'carRentalService' before running the test
     _ = test:startServices("CarRental");
 }
@@ -32,18 +32,18 @@ endpoint http:Client clientEP {
 
 // Function to test Car rental service
 @test:Config
-function testCarRentalService () {
+function testCarRentalService() {
     // Initialize the empty http requests and responses
     http:Request request;
 
     // Test the 'rentCar' resource
     // Construct a request payload
     json payload = {
-                       "Name":"Alice",
-                       "ArrivalDate":"12-03-2018",
-                       "DepartureDate":"13-04-2018",
-                       "Preference":"Air Conditioned"
-                   };
+        "Name":"Alice",
+        "ArrivalDate":"12-03-2018",
+        "DepartureDate":"13-04-2018",
+        "Preference":"Air Conditioned"
+    };
 
     request.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
@@ -57,7 +57,7 @@ function testCarRentalService () {
 }
 
 @test:AfterSuite
-function afterFunc () {
+function afterFunc() {
     // Stop the 'carRentalService' after running the test
     test:stopServices("CarRental");
 }

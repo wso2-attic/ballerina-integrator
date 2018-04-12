@@ -57,15 +57,15 @@ service<http:Service> carRentalService bind carEP {
 
     // Resource to rent a car
     @http:ResourceConfig {methods:["POST"], path:"/rent", consumes:["application/json"], produces:["application/json"]}
-    rentCar (endpoint client, http:Request request) {
+    rentCar(endpoint client, http:Request request) {
         http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
         match request.getJsonPayload() {
-        // Valid JSON payload
+            // Valid JSON payload
             json payload => reqPayload = payload;
-        // NOT a valid JSON payload
+            // NOT a valid JSON payload
             any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});

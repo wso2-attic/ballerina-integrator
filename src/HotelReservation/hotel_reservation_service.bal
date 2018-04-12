@@ -58,15 +58,15 @@ service<http:Service> hotelReservationService bind hotelEP {
     // Resource to reserve a room
     @http:ResourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
         produces:["application/json"]}
-    reserveRoom (endpoint client, http:Request request) {
+    reserveRoom(endpoint client, http:Request request) {
         http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
         match request.getJsonPayload() {
-        // Valid JSON payload
+            // Valid JSON payload
             json payload => reqPayload = payload;
-        // NOT a valid JSON payload
+            // NOT a valid JSON payload
             any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});

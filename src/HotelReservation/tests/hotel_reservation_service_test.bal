@@ -20,7 +20,7 @@ import ballerina/test;
 import ballerina/http;
 
 @test:BeforeSuite
-function beforeFunc () {
+function beforeFunc() {
     // Start the 'hotelReservationService' before running the test
     _ = test:startServices("HotelReservation");
 }
@@ -32,18 +32,18 @@ endpoint http:Client clientEP {
 
 // Function to test Hotel reservation service
 @test:Config
-function testHotelReservationService () {
+function testHotelReservationService() {
     // Initialize the empty http requests and responses
     http:Request request;
 
     // Test the 'reserveRoom' resource
     // Construct a request payload
     json payload = {
-                       "Name":"Alice",
-                       "ArrivalDate":"12-03-2018",
-                       "DepartureDate":"13-04-2018",
-                       "Preference":"Air Conditioned"
-                   };
+        "Name":"Alice",
+        "ArrivalDate":"12-03-2018",
+        "DepartureDate":"13-04-2018",
+        "Preference":"Air Conditioned"
+    };
 
     request.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
@@ -57,7 +57,7 @@ function testHotelReservationService () {
 }
 
 @test:AfterSuite
-function afterFunc () {
+function afterFunc() {
     // Stop the 'hotelReservationService' after running the test
     test:stopServices("HotelReservation");
 }
