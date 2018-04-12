@@ -20,44 +20,44 @@ import ballerina/test;
 import ballerina/http;
 
 @test:BeforeSuite
-function beforeFunc () {
+function beforeFunc() {
     // Start the 'hotelReservationService' before running the test
     _ = test:startServices("HotelReservation");
 }
 
 // Client endpoint
-endpoint http:ClientEndpoint clientEP {
+endpoint http:Client clientEP {
     targets:[{url:"http://localhost:9092/hotel"}]
 };
 
 // Function to test Hotel reservation service
 @test:Config
-function testHotelReservationService () {
+function testHotelReservationService() {
     // Initialize the empty http requests and responses
-    http:Request request = {};
+    http:Request request;
 
     // Test the 'reserveRoom' resource
     // Construct a request payload
     json payload = {
-                       "Name":"Alice",
-                       "ArrivalDate":"12-03-2018",
-                       "DepartureDate":"13-04-2018",
-                       "Preference":"Air Conditioned"
-                   };
+        "Name":"Alice",
+        "ArrivalDate":"12-03-2018",
+        "DepartureDate":"13-04-2018",
+        "Preference":"Air Conditioned"
+    };
 
     request.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response =? clientEP -> post("/reserve", request);
+    http:Response response = check clientEP -> post("/reserve", request);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Hotel reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    json resPayload =? response.getJsonPayload();
+    json resPayload = check response.getJsonPayload();
     json expected = {"Status":"Success"};
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
 }
 
 @test:AfterSuite
-function afterFunc () {
+function afterFunc() {
     // Stop the 'hotelReservationService' after running the test
     test:stopServices("HotelReservation");
 }

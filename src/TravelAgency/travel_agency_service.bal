@@ -39,28 +39,26 @@ import ballerina/http;
 //
 //@kubernetes:Deployment {
 //  image:"ballerina.guides.io/travel_agency_service:v1.0",
-//  name:"ballerina-guides-travel-agency-service",
-//  dockerHost:"tcp://192.168.99.100:2376",
-//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//  name:"ballerina-guides-travel-agency-service"
 //}
 
 // Service endpoint
-endpoint http:ServiceEndpoint travelAgencyEP {
+endpoint http:Listener travelAgencyEP {
     port:9090
 };
 
 // Client endpoint to communicate with Airline reservation service
-endpoint http:ClientEndpoint airlineReservationEP {
+endpoint http:Client airlineReservationEP {
     targets:[{url:"http://localhost:9091/airline"}]
 };
 
 // Client endpoint to communicate with Hotel reservation service
-endpoint http:ClientEndpoint hotelReservationEP {
+endpoint http:Client hotelReservationEP {
     targets:[{url:"http://localhost:9092/hotel"}]
 };
 
 // Client endpoint to communicate with Car rental service
-endpoint http:ClientEndpoint carRentalEP {
+endpoint http:Client carRentalEP {
     targets:[{url:"http://localhost:9093/car"}]
 };
 
@@ -70,8 +68,8 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
     // Resource to arrange a tour
     @http:ResourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
-    arrangeTour (endpoint client, http:Request inRequest) {
-        http:Response outResponse = {};
+    arrangeTour(endpoint client, http:Request inRequest) {
+        http:Response outResponse;
         json inReqPayload;
         // Json payload format for an http out request
         json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"", "Preference":""};
@@ -81,11 +79,11 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Valid JSON payload
             json payload => inReqPayload = payload;
             // NOT a valid JSON payload
-            any | null => {
+            any => {
                 outResponse.statusCode = 400;
                 outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(outResponse);
-                //return;
+                done;
             }
         }
 
@@ -102,76 +100,76 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(outResponse);
-            //return;
+            done;
         }
 
 
         // Reserve airline ticket for the user by calling Airline reservation service
-        http:Request outReqAirline = {};
-        http:Response inResAirline = {};
+        http:Request outReqAirline;
+        http:Response inResAirline;
         // construct the payload
         json outReqPayloadAirline = outReqPayload;
         outReqPayloadAirline.Preference = airlinePreference;
         outReqAirline.setJsonPayload(outReqPayloadAirline);
 
         // Send a post request to airlineReservationService with appropriate payload and get response
-        inResAirline =? airlineReservationEP -> post("/reserve", outReqAirline);
+        inResAirline = check airlineReservationEP -> post("/reserve", outReqAirline);
 
         // Get the reservation status
-        var airlineResPayload =? inResAirline.getJsonPayload();
-        string airlineReservationStatus = airlineResPayload.Status.toString();
+        var airlineResPayload = check inResAirline.getJsonPayload();
+        string airlineStatus = airlineResPayload.Status.toString() but { () => "Failed" };
         // If reservation status is negative, send a failure response to user
-        if (airlineReservationStatus.equalsIgnoreCase("Failed")) {
+        if (airlineStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
-                                                  "Provide a valid 'Preference' for 'Airline' and try again"});
+                    "Provide a valid 'Preference' for 'Airline' and try again"});
             _ = client -> respond(outResponse);
-            //return;
+            done;
         }
 
 
         // Reserve hotel room for the user by calling Hotel reservation service
-        http:Request outReqHotel = {};
-        http:Response inResHotel = {};
+        http:Request outReqHotel;
+        http:Response inResHotel;
         // construct the payload
         json outReqPayloadHotel = outReqPayload;
         outReqPayloadHotel.Preference = hotelPreference;
         outReqHotel.setJsonPayload(outReqPayloadHotel);
 
         // Send a post request to hotelReservationService with appropriate payload and get response
-        inResHotel =? hotelReservationEP -> post("/reserve", outReqHotel);
+        inResHotel = check hotelReservationEP -> post("/reserve", outReqHotel);
 
         // Get the reservation status
-        var hotelResPayload =? inResHotel.getJsonPayload();
-        string hotelReservationStatus = hotelResPayload.Status.toString();
+        var hotelResPayload = check inResHotel.getJsonPayload();
+        string hotelStatus = hotelResPayload.Status.toString() but { () => "Failed" };
         // If reservation status is negative, send a failure response to user
-        if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
+        if (hotelStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
-                                                  "Provide a valid 'Preference' for 'Accommodation' and try again"});
+                    "Provide a valid 'Preference' for 'Accommodation' and try again"});
             _ = client -> respond(outResponse);
-            //return;
+            done;
         }
 
 
         // Renting car for the user by calling Car rental service
-        http:Request outReqCar = {};
-        http:Response inResCar = {};
+        http:Request outReqCar;
+        http:Response inResCar;
         // construct the payload
         json outReqPayloadCar = outReqPayload;
         outReqPayloadCar.Preference = carPreference;
         outReqCar.setJsonPayload(outReqPayloadCar);
 
         // Send a post request to carRentalService with appropriate payload and get response
-        inResCar =? carRentalEP -> post("/rent", outReqCar);
+        inResCar = check carRentalEP -> post("/rent", outReqCar);
 
         // Get the rental status
-        var carResPayload =? inResCar.getJsonPayload();
-        string carRentalStatus = carResPayload.Status.toString();
+        var carResPayload = check inResCar.getJsonPayload();
+        string carRentalStatus = carResPayload.Status.toString() but { () => "Failed" };
         // If rental status is negative, send a failure response to user
         if (carRentalStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to rent car! " +
-                                                  "Provide a valid 'Preference' for 'Car' and try again"});
+                    "Provide a valid 'Preference' for 'Car' and try again"});
             _ = client -> respond(outResponse);
-            //return;
+            done;
         }
 
 
