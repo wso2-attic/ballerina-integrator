@@ -37,8 +37,9 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 We can model the OrderMgt RESTful service using Ballerina services and resources constructs. 
 
-1. We can get started with a Ballerina service; 'OrderMgtService', which is the RESTful service that serves the order management request. OrderMgtService can have multiple resources and each resource is dedicated for a specific order management functionality.
-2. You can decide the package structure for the service and then create the service in the corresponding directory structure. For example, suppose that you are going to use the package name 'restful_service', then you need to create the following directory structure and create the service file using the text editor or IDE that you use. 
+- We can get started with a Ballerina service; 'OrderMgtService', which is the RESTful service that serves the order management request. OrderMgtService can have multiple resources and each resource is dedicated for a specific order management functionality.
+
+- You can decide the package structure for the service and then create the service in the corresponding directory structure. For example, suppose that you are going to use the package name 'restful_service', then you need to create the following directory structure and create the service file using the text editor or IDE that you use. 
 
 ```
 restful-service
@@ -48,7 +49,16 @@ restful-service
           └── test
               └── order_mgt_service_test.bal          
 ```
-2. You can add the content to your Ballerina service as shown below. In that code segment you can find the implementation of the service and resource skeletons of 'OrderMgtService'. 
+
+- Once you created your package structure, go to the sample src directory and run the following command to initialize your Ballerina project.
+
+```bash
+   $ballerina init
+```
+
+  The above command will initialize the project with a `Ballerina.toml` file and `.ballerina` implementation directory that contain a list of packages in the current directory.
+
+- You can add the content to your Ballerina service as shown below. In that code segment you can find the implementation of the service and resource skeletons of 'OrderMgtService'. 
 For each order management operation, there is a dedicated resource and inside each resource we can implement the order management operation logic. 
 
 ##### order_mgt_service.bal
@@ -57,13 +67,13 @@ ppackage restful_service;
 
 import ballerina/http;
 
-endpoint http:ServiceEndpoint listener {
+endpoint http:Listener listener {
     port:9090
 };
 
 // Order management is done using an in memory map.
 // Add some sample orders to 'orderMap' at startup.
-map<json> ordersMap = {};
+map<json> ordersMap;
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
@@ -111,7 +121,7 @@ service<http:Service> order_mgt bind listener {
 }
 ```
 
-3. You can implement the business logic of each resources as per your requirements. For simplicity we have used an in-memory map to keep all the order details. You can find the full source code of the OrderMgtService below. In addition to the order processing logic, we have also manipulated some HTTP status codes and headers whenever required.  
+- You can implement the business logic of each resources as per your requirements. For simplicity we have used an in-memory map to keep all the order details. You can find the full source code of the OrderMgtService below. In addition to the order processing logic, we have also manipulated some HTTP status codes and headers whenever required.  
 
 
 ##### order_mgt_service.bal
@@ -120,13 +130,13 @@ package restful_service;
 
 import ballerina/http;
 
-endpoint http:ServiceEndpoint listener {
+endpoint http:Listener listener {
     port:9090
 };
 
 // Order management is done using an in memory map.
 // Add some sample orders to 'orderMap' at startup.
-map<json> ordersMap = {};
+map<json> ordersMap;
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
@@ -140,11 +150,10 @@ service<http:Service> order_mgt bind listener {
     }
     findOrder(endpoint client, http:Request req, string orderId) {
         // Find the requested order from the map and retrieve it in JSON format.
-        json payload = ordersMap[orderId];
-        http:Response response = {};
+        json? payload = ordersMap[orderId];
+        http:Response response;
         if (payload == null) {
-            payload = "Order : " + orderId +
-            " cannot be found.";
+            payload = "Order : " + orderId + " cannot be found.";
         }
 
         // Set the JSON payload in the outgoing response message.
@@ -161,13 +170,13 @@ service<http:Service> order_mgt bind listener {
         path:"/order"
     }
     addOrder(endpoint client, http:Request req) {
-        json orderReq =? req.getJsonPayload();
-        string orderId = orderReq.Order.ID.toString();
+        json orderReq = check req.getJsonPayload();
+        string orderId = orderReq.Order.ID.toString() but { () => "" };
         ordersMap[orderId] = orderReq;
 
         // Create response message.
         json payload = {status:"Order Created.", orderId:orderId};
-        http:Response response = {};
+        http:Response response;
         response.setJsonPayload(payload);
 
         // Set 201 Created status code in the response message.
@@ -187,7 +196,7 @@ service<http:Service> order_mgt bind listener {
         path:"/order/{orderId}"
     }
     updateOrder(endpoint client, http:Request req, string orderId) {
-        json updatedOrder =? req.getJsonPayload();
+        json updatedOrder = check req.getJsonPayload();
 
         // Find the order that needs to be updated and retrieve in JSON format.
         json existingOrder = ordersMap[orderId];
@@ -201,11 +210,11 @@ service<http:Service> order_mgt bind listener {
             existingOrder = "Order : " + orderId + " cannot be found.";
         }
 
-        http:Response response = {};
+        http:Response response;
         // Set the JSON payload to the outgoing response message to the client.
         response.setJsonPayload(existingOrder);
         // Send response to the client.
-        _ = client -> forward(response);
+        _ = client -> respond(response);
     }
 
     @Description {value:"Resource that handles the HTTP DELETE requests, which are
@@ -215,7 +224,7 @@ service<http:Service> order_mgt bind listener {
         path:"/order/{orderId}"
     }
     cancelOrder(endpoint client, http:Request req, string orderId) {
-        http:Response response = {};
+        http:Response response;
         // Remove the requested order from the map.
         _ = ordersMap.remove(orderId);
 
@@ -229,7 +238,7 @@ service<http:Service> order_mgt bind listener {
 }
 ```
 
-4. With that we've completed the development of OrderMgtService. 
+- With that we've completed the development of OrderMgtService. 
 
 
 ## Testing 
@@ -253,6 +262,7 @@ $ballerina run target/restful_service.balx
 3. The successful execution of the service should show us the following output. 
 ```
 $ ballerina run target/restful_service.balx 
+
 ballerina: deploying service(s) in 'target/restful_service.balx'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
 ```
@@ -282,10 +292,11 @@ curl "http://localhost:9090/ordermgt/order/100500"
 Output : 
 {"Order":{"ID":"100500","Name":"XYZ","Description":"Sample order."}}
 ```
+
 **Update Order** 
 ```
 curl -X PUT -d '{ "Order": {"Name": "XYZ", "Description": "Updated order."}}' \
- "http://localhost:9090/ordermgt/order/100500" -H "Content-Type:application/json"
+"http://localhost:9090/ordermgt/order/100500" -H "Content-Type:application/json"
 
 Output: 
 {"Order":{"ID":"100500","Name":"XYZ","Description":"Updated order."}}
@@ -309,11 +320,12 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 This guide contains unit test cases for each resource available in the 'order_mgt_service.bal'.
 
 To run the unit tests, go to the sample src directory and run the following command.
-   ```bash
+```bash
    $ballerina test
-   ```
+```
 
 To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/src/restful_service/test/order_mgt_service_test.bal).
+
 
 ## Deployment
 
@@ -347,13 +359,13 @@ import ballerinax/docker;
     tag:"v1.0"
 }
 
-endpoint http:ServiceEndpoint listener {
+endpoint http:Listener listener {
     port:9090
 };
 
 // Order management is done using an in memory map.
 // Add some sample orders to 'orderMap' at startup.
-map<json> ordersMap = {};
+map<json> ordersMap;
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
@@ -363,26 +375,28 @@ service<http:Service> order_mgt bind listener {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
   
-  ```
-  $ballerina build restful_service
-  
-  Run following command to start docker container: 
-  docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
-  ```
+```
+   $ballerina build restful_service
+
+   Run following command to start docker container: 
+   docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
+```
+
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-    ```   
-    docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
-    ```
-    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+```   
+   docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
+```
+
+  Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-    ```
-    curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-     "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
-    ```
+```
+   curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+   "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
+```
 
 
 ### Deploying on Kubernetes
@@ -417,18 +431,19 @@ import ballerinax/kubernetes;
     name:"ballerina-guides-restful-service"
 }
 
-endpoint http:ServiceEndpoint listener {
+endpoint http:Listener listener {
     port:9090
 };
 
 // Order management is done using an in memory map.
 // Add some sample orders to 'orderMap' at startup.
-map<json> ordersMap = {};
+map<json> ordersMap;
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
 service<http:Service> order_mgt bind listener {    
 ``` 
+
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
@@ -436,29 +451,32 @@ service<http:Service> order_mgt bind listener {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-  ```
-  $ballerina build restful_service
+```
+   $ballerina build restful_service
   
-  Run following command to deploy kubernetes artifacts:  
-  kubectl apply -f ./target/restful_service/kubernetes
-  ```
+   Run following command to deploy kubernetes artifacts:  
+   kubectl apply -f ./target/restful_service/kubernetes
+```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/restful_service/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
 ```
- $ kubectl apply -f ./target/restful_service/kubernetes 
+   $ kubectl apply -f ./target/restful_service/kubernetes 
+ 
    deployment.extensions "ballerina-guides-restful-service" created
    ingress.extensions "ballerina-guides-restful-service" created
    service "ballerina-guides-restful-service" created
 ```
-- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
+
+- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands.
+
 ```
-$kubectl get service
-$kubectl get deploy
-$kubectl get pods
-$kubectl get ingress
+   $kubectl get service
+   $kubectl get deploy
+   $kubectl get pods
+   $kubectl get ingress
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
@@ -470,6 +488,7 @@ curl -v -X POST -d \
 '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
 "http://<Minikube_host_IP>:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"  
 ```
+
 Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
@@ -504,20 +523,24 @@ enabled=true
 ### Tracing 
 You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 Follow the following steps to use tracing with Ballerina.
-1) Run Jaeger docker image using the following command
-   ```bash
+
+- Run Jaeger docker image using the following command
+```bash
    docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686
    -p14268:14268 jaegertracing/all- in-one:latest
-   ```
-2) Navigate to `restful-service/src/` and run the restful-service using following command 
-   ```
+```
+
+- Navigate to `restful-service/src/` and run the restful-service using following command 
+```
    $ballerina run restful_service/
-   ```
-3) Observe the tracing using Jaeger UI using following URL
-   ```
+```
+
+- Observe the tracing using Jaeger UI using following URL
+```
    http://localhost:16686
-   ```
-4) You should see the Jaeger UI as follows
+```
+
+- You should see the Jaeger UI as follows
 
    ![Jaeger UI](images/tracing-screenshot.png "Tracing Screenshot")
  
@@ -526,8 +549,8 @@ Follow the following steps to use tracing with Ballerina.
 Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
 Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
 
-1) Set the below configurations in the `ballerina.conf` file in the project root.
-   ```ballerina
+- Set the below configurations in the `ballerina.conf` file in the project root.
+```ballerina
    [observability.metrics.prometheus]
    # Flag to enable Prometheus HTTP endpoint
    enabled=true
@@ -538,10 +561,10 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    descriptions=false
    # The step size to use in computing windowed statistics like max. The default is 1 minute.
    step="PT1M"
+```
 
-   ```
-2) Create a file `prometheus.yml` inside `/etc/` location. Add the below configurations to the `prometheus.yml` file.
-   ```
+- Create a file `prometheus.yml` inside `/etc/` location. Add the below configurations to the `prometheus.yml` file.
+```
    global:
    scrape_interval:     15s
    evaluation_interval: 15s
@@ -551,41 +574,44 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    
    static_configs:
         - targets: ['172.17.0.1:9797']
-   ```
+```
+
    NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
    
-3) Run the Prometheus docker image using the following command
-   ```
+- Run the Prometheus docker image using the following command
+```
    docker run -p 19090:9090 -v /tmp/prometheus.yml prom/prometheus
-   ```
+```
    
-4) You can access Prometheus at the following URL
-   ```
+- You can access Prometheus at the following URL
+```
    http://localhost:19090/
-   ```
-5) Promethues UI screenshot
+```
+
+- Promethues UI with metrics for restful_service
    
    ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
 
 ### Logging
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-1) Start Elasticsearch using the following command
-
-   ```
+- Start Elasticsearch using the following command
+```
    docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name 
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
-   ```
+```
+
    NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
    
-2) Start Kibana plugin for data visualization with Elasticsearch
-   ```
+- Start Kibana plugin for data visualization with Elasticsearch
+```
    docker run -p 5601:5601 -h kibana --name kibana --link elasticsearch:elasticsearch 
    docker.elastic.co/kibana/kibana:6.2.2     
-   ```
-3) Configure logstash to format the ballerina logs
+```
+
+- Configure logstash to format the ballerina logs
    i) Create a file named `logstash.conf` with the following content
-      ```
+ ```
       input {  
        beats { 
 	       port => 5044 
@@ -608,45 +634,45 @@ Ballerina has a log package for logging to the console. You can import ballerina
         document_type => "store_logs"  
 	      }  
       }  
-      ```
+```
      ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
      
      iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
-     ```
+```
         docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
         -v ~/{SAMPLE_ROOT_DIRECTIRY}/pipeline:/usr/share/logstash/pipeline/ 
         -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
-     ```
+```
   
- 4) Configure filebeat to ship the ballerina logs
+ - Configure filebeat to ship the ballerina logs
     
      i) Create a file named `filebeat.yml` with the following content
-      ```
+ ```
        filebeat.prospectors:
           - type: log
        paths:
           - /usr/share/filebeat/ballerina.log
        output.logstash:
             hosts: ["logstash:5044"]
-      ```
+ ```
      ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
         
      
      iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
-     ```
+ ```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
         -v {SAMPLE_ROOT_DIRECTORY}/src/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
 	--link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
-     ```
+ ```
  
- 5) Access Kibana to visualize the logs using following URL
-    ```
+ - Access Kibana to visualize the logs using following URL
+ ```
      http://localhost:5601 
-    ```
+ ```
  
- 6) Screenshot of Kibana log visualization
+ - Kibana log visualization for the restful service sample
  
      ![logging screenshot](images/logging-screenshot.png "Kibana UI")
  
