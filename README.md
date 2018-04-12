@@ -8,14 +8,13 @@ Data inside a database can be exposed to the outside world by using a database b
 
 The following are the sections available in this guide.
 
-- [What you'll build](#what-you-build)
-- [Prerequisites](#pre-req)
-- [Developing the RESTFul service with circuit breaker](#develop-app)
-- [Testing](#testing)
-- [Deployment](#deploying-the-scenario)
-- [Observability](#observability)
+- [What you'll build](#what-youll-build)
+- [Prerequisites](#Prerequisites)
+- [Developing the RESTFul service with circuit breaker](#Developing-the-SQL-data-backed-web-service)
+- [Testing](#Testing)
+- [Deployment](#Invoking-the-RESTful-service)
 
-## <a name="what-you-build"></a>  What you'll build
+## What you'll build
 
 You'll build an employee data management REST service that performs CRUD Operations (Create, Read, Update, Delete) on the MySQL database.  Also, this guide walks you through the process of accessing relational data via the Ballerina language. The service will have following functionalities.
 
@@ -30,7 +29,7 @@ Basically, this service will deal with a MySQL database and expose the data oper
 ![alt text](/images/data-backed-service.png)
 
 
-## <a name="pre-req"></a> Prerequisites
+## Prerequisites
  
 * JDK 1.8 or later
 * [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
@@ -39,12 +38,11 @@ Basically, this service will deal with a MySQL database and expose the data oper
   * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
 * A Text Editor or an IDE
 
-
 **Optional requirements**
 - [Docker](https://docs.docker.com/engine/installation/)
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 
-## <a name="develop-app"></a> Developing the SQL data backed web service
+## Developing the SQL data backed web service
 ### Before you begin
 #### Create the database
 Navigate to the command line and open the MySQL client by entering the following command.**
@@ -69,8 +67,6 @@ Ballerina is a complete programming language that can have any custom project st
     ├── employee_db_service.bal
     └── test
         └── employee_db_service_test.bal
-
-
 ```
 #### Add database configurations to the `ballerina.conf` file
 You can use `ballerina.conf` file to provide external configurations to Ballerina programs. Since this guide has MySQL database integration, you need to provide the database connection properties to the Ballerina program via the `ballerina.conf` file.
@@ -342,9 +338,9 @@ You can implement custom functions in Ballerina that do specific tasks. For this
 
 The `endpoint` keyword in Ballerina refers to a connection with a remote service. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the SQL endpoint. The endpoint is initialized with an SQL connection. The rest of the code is just preparing SQL queries and executing them by calling the `update` action in the `ballerina/data.sql` package. Finally, the status of the SQL operation is returned as a JSON file.
 
-## <a name="testing"></a> Testing 
+## Testing 
 
-### <a name="invoking"></a> Invoking the RESTful service 
+### Invoking the RESTful service 
 
 You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation on your local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
