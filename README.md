@@ -54,7 +54,6 @@ service-composition
           ├── test
           │   └── travel_agency_service_test.bal
           └── travel_agency_service.bal
-
 ```
 
 Package `AirlineReservation` contains the service that provides online flight ticket reservations.
@@ -98,7 +97,7 @@ Refer to the [travel_agency_service.bal](https://github.com/ballerina-guides/ser
 ```ballerina
 package TravelAgency;
 
-import ballerina/net.http;
+import ballerina/http;
 
 // Service endpoint
 endpoint http:ServiceEndpoint travelAgencyEP {
@@ -124,31 +123,30 @@ endpoint http:ClientEndpoint carRentalEP {
 @http:ServiceConfig {basePath:"/travel"}
 service<http:Service> travelAgencyService bind travelAgencyEP {
 
-    // Resource to arrange a tour
-    @http:ResourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
-    arrangeTour (endpoint client, http:Request inRequest) {
+// Resource to arrange a tour
+    @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
+        produces:["application/json"]}
+    arrangeTour(endpoint client, http:Request inRequest) {
         http:Response outResponse = {};
 
         // JSON payload format for an HTTP OUT request
-        json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"", "Preference":""};
+        json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"",
+            "Preference":""};
 
         // Try parsing the JSON payload from the user request
-
-        // If payload parsing fails, send a "Bad Request" message as the response
 
         // Reserve airline ticket for the user by calling the airline reservation service
 
         // Reserve hotel room for the user by calling the hotel reservation service
 
         // Renting car for the user by calling the car rental service
-        
-        
-        // If all three services response positive status, send a successful message to the user
-        outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
+
+
+        // If all three response positive status, send a successful message to the user
+        outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!"});
         _ = client -> respond(outResponse);
     }
 }
-
 ```
 
 Let's now look at the code segment that is responsible for communicating with the airline reservation service. 
@@ -162,7 +160,7 @@ json outReqPayloadAirline = outReqPayload;
 outReqPayloadAirline.Preference = airlinePreference;
 outReqAirline.setJsonPayload(outReqPayloadAirline);
 
-// Send a post request to airlineReservationService with appropriate payload and get response
+// Send a post request to airline service with appropriate payload and get response
 inResAirline =? airlineReservationEP -> post("/reserve", outReqAirline);
 
 // Get the reservation status
@@ -171,7 +169,7 @@ string airlineReservationStatus = airlineResPayload.Status.toString();
 // If reservation status is negative, send a failure response to user
 if (airlineReservationStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
-                                          "Provide a valid 'Preference' for 'Airline' and try again"});
+        "Provide a valid 'Preference' for 'Airline' and try again"});
     _ = client -> respond(outResponse);
     return;
 }
@@ -191,7 +189,7 @@ json outReqPayloadHotel = outReqPayload;
 outReqPayloadHotel.Preference = hotelPreference;
 outReqHotel.setJsonPayload(outReqPayloadHotel);
 
-// Send a post request to hotelReservationService with appropriate payload and get response
+// Send a post request to hotel service with appropriate payload and get response
 inResHotel =? hotelReservationEP -> post("/reserve", outReqHotel);
 
 // Get the reservation status
@@ -200,7 +198,7 @@ string hotelReservationStatus = hotelResPayload.Status.toString();
 // If reservation status is negative, send a failure response to user
 if (hotelReservationStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
-                                          "Provide a valid 'Preference' for 'Accommodation' and try again"});
+        "Provide a valid 'Preference' for 'Accommodation' and try again"});
     _ = client -> respond(outResponse);
     return;
 }
@@ -218,7 +216,7 @@ json outReqPayloadCar = outReqPayload;
 outReqPayloadCar.Preference = carPreference;
 outReqCar.setJsonPayload(outReqPayloadCar);
 
-// Send a post request to carRentalService with appropriate payload and get response
+// Send a post request to car rental service with appropriate payload and get response
 inResCar =? carRentalEP -> post("/rent", outReqCar);
 
 // Get the rental status
@@ -227,7 +225,7 @@ string carRentalStatus = carResPayload.Status.toString();
 // If rental status is negative, send a failure response to user
 if (carRentalStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to rent car! " +
-                                          "Provide a valid 'Preference' for 'Car' and try again"});
+        "Provide a valid 'Preference' for 'Car' and try again"});
     _ = client -> respond(outResponse);
     return;
 }
@@ -332,8 +330,7 @@ endpoint http:ServiceEndpoint travelAgencyEP {
 };
 
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP {
-   
+service<http:Service> travelAgencyService bind travelAgencyEP { 
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
@@ -403,8 +400,7 @@ endpoint http:ServiceEndpoint travelAgencyEP {
 // Http client endpoint definitions
 
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP {
-        
+service<http:Service> travelAgencyService bind travelAgencyEP {    
 ``` 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
@@ -418,7 +414,6 @@ This will also create the corresponding docker image and the Kubernetes artifact
   
   Run following command to deploy kubernetes artifacts:  
   kubectl apply -f ./target/TravelAgency/kubernetes
- 
   ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
@@ -430,7 +425,6 @@ This will also create the corresponding docker image and the Kubernetes artifact
    deployment.extensions "ballerina-guides-travel-agency-service" created
    ingress.extensions "ballerina-guides-travel-agency-service" created
    service "ballerina-guides-travel-agency-service" created
-
 ```
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 ```
@@ -438,7 +432,6 @@ $kubectl get service
 $kubectl get deploy
 $kubectl get pods
 $kubectl get ingress
-
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
@@ -450,7 +443,6 @@ Node Port:
   '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
   "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
   "http://<Minikube_host_IP>:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
-
 ```
 Ingress:
 
@@ -466,5 +458,4 @@ Access the service
  '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
  "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
  "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
-    
 ```
