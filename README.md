@@ -6,21 +6,20 @@ A service composition is an aggregate of services collectively composed to autom
 
 The following are the sections available in this guide.
 
-- [What you'll build](#what-you-build)
-- [Prerequisites](#pre-req)
-- [Developing the service](#developing-service)
+- [What you'll build](#what-youll-build)
+- [Prerequisites](#prerequisites)
+- [Developing the service](#developing-the-service)
 - [Testing](#testing)
-- [Deployment](#deploying-the-scenario)
-- [Observability](#observability)
+- [Deployment](#deployment)
 
-## <a name="what-you-build"></a>  What you’ll build
+## What you’ll build
 To understanding how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
 
 ![alt text](/images/service_composition.png)
 
 Travel agency is the service that acts as the composition initiator. The other three services are external services that the travel agency service calls to do airline ticket booking, hotel reservation and car rental. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
-## <a name="pre-req"></a> Prerequisites
+## Prerequisites
  
 - JDK 1.8 or later
 - [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
@@ -30,10 +29,10 @@ Travel agency is the service that acts as the composition initiator. The other t
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 
-## <a name="developing-service"></a> Developing the service
+## Developing the service
 
-### <a name="before-begin"></a> Before you begin
-##### Understand the package structure
+### Before you begin
+#### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
@@ -67,7 +66,7 @@ Package `HotelReservation` contains the service that provides online hotel room 
 The `travel_agency_service.bal` file provides travel agency service, which consumes the other three services, and arranges a complete tour for the requested user.
 
 
-### <a name="Implementation"></a> Implementation
+### Implementation
 
 Let's look at the implementation of the travel agency service, which acts as the composition initiator.
 
@@ -236,9 +235,9 @@ if (carRentalStatus.equalsIgnoreCase("Failed")) {
 
 As shown above, the travel agency service rents a car for the requested user by calling the car rental service. `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
 
-## <a name="testing"></a> Testing 
+## Testing 
 
-### <a name="try-it"></a> Try it out
+### Try it out
 
 1. Start all four HTTP services by entering the following commands in separate terminals. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
@@ -272,7 +271,7 @@ As shown above, the travel agency service rents a car for the requested user by 
     ``` 
    
    
-### <a name="unit-testing"></a> Writing unit tests 
+### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
 * Test functions should be annotated with `@test:Config`. See the below example.
@@ -291,11 +290,11 @@ To run the unit tests, go to the sample src directory and run the following comm
 To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/AirlineReservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/HotelReservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/CarRental/test/car_rental_service_test.bal) and [travel_agency_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/TravelAgency/test/travel_agency_service_test.bal).
 
 
-## <a name="deploying-the-scenario"></a> Deployment
+## Deployment
 
 Once you are done with the development, you can deploy the services using any of the methods that are listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying locally
+### Deploying locally
 You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
 
 Building 
@@ -308,7 +307,7 @@ Running
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run target/<Exec_Archive_File_Name>
    ```
 
-### <a name="deploying-on-docker"></a> Deploying on Docker
+### Deploying on Docker
 
 You can run the services that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
 Let's see how we can deploy the travel_agency_service we developed above on docker. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
@@ -364,7 +363,7 @@ This will also create the corresponding docker image using the docker annotation
     ```
 
 
-### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
+### Deploying on Kubernetes
 
 - You can run the services that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
 with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
@@ -469,15 +468,3 @@ Access the service
  "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
     
 ```
-
-
-## <a name="observability"></a> Observability 
-
-### <a name="logging"></a> Logging
-(Work in progress) 
-
-### <a name="metrics"></a> Metrics
-(Work in progress) 
-
-### <a name="tracing"></a> Tracing 
-(Work in progress) 
