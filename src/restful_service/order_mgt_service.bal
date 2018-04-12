@@ -46,11 +46,10 @@ service<http:Service> order_mgt bind listener {
     }
     findOrder(endpoint client, http:Request req, string orderId) {
         // Find the requested order from the map and retrieve it in JSON format.
-        json payload = ordersMap[orderId];
+        json? payload = ordersMap[orderId];
         http:Response response;
         if (payload == null) {
-            payload = "Order : " + orderId +
-                " cannot be found.";
+            payload = "Order : " + orderId + " cannot be found.";
         }
 
         // Set the JSON payload in the outgoing response message.
