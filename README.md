@@ -238,53 +238,53 @@ As shown above, the travel agency service rents a car for the requested user by 
 
 ### Try it out
 
-1. Start all four HTTP services by entering the following commands in separate terminals. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
+- Start all four HTTP services by entering the following commands in separate terminals. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
-   ```
+```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run AirlineReservation/
-   ```
-   ```
+```
+```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run HotelReservation/
-   ```
-   ```
+```
+```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run CarRental/
-   ```
-   ```
+```
+```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run TravelAgency/
-   ```
+```
    
-2. Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
+- Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
 
-   ```
+```
     curl -v -X POST -d \
     '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
      "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
      "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
-    ```
+```
 
     The `travelAgencyService` sends a response similar to the following:
     
-    ```
+```
      < HTTP/1.1 200 OK
     {"Message":"Congratulations! Your journey is ready!!"}
-    ``` 
+``` 
    
    
 ### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
 * Test functions should be annotated with `@test:Config`. See the below example.
-  ```ballerina
+```ballerina
     @test:Config
     function testTravelAgencyService () {
-  ```
+```
   
 This guide contains unit test cases for each service implemented above. 
 
 To run the unit tests, go to the sample src directory and run the following command
-   ```
+```
    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina test
-   ```
+```
 
 To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/AirlineReservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/HotelReservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/CarRental/test/car_rental_service_test.bal) and [travel_agency_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/src/TravelAgency/test/travel_agency_service_test.bal).
 
@@ -297,14 +297,14 @@ Once you are done with the development, you can deploy the services using any of
 You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
 
 Building 
-   ```
+```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina build <Package_Name>
-   ```
+```
 
 Running
-   ```
+```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run target/<Exec_Archive_File_Name>
-   ```
+```
 
 ### Deploying on Docker
 
@@ -337,28 +337,28 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
   
-  ```
+```
   $ballerina build TravelAgency
   
   Run following command to start docker container: 
   docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
-  ```
+```
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-    ```   
+```   
     docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
-    ```
-    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+```
+   Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-    ```
+```
     curl -v -X POST -d \
     '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
     "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
-    ```
+```
 
 
 ### Deploying on Kubernetes
@@ -410,12 +410,12 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-  ```
+```
   $ballerina build TravelAgency
   
   Run following command to deploy kubernetes artifacts:  
   kubectl apply -f ./target/TravelAgency/kubernetes
-  ```
+```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/TravelAgency/kubernetes``. 
