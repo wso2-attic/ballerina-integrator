@@ -344,25 +344,25 @@ The `endpoint` keyword in Ballerina refers to a connection with a remote service
 
 You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation on your local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
-- As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
+1. As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
 $ ballerina build  /data_backed_service
 ```
 
-- Once the data_backed_service.balx is created, you can run that with the following command. 
+2. Once the data_backed_service.balx is created, you can run that with the following command. 
 
 ```
 $ ballerina run data_backed_service.balx 
 ```
 
-- The successful execution of the service should show us the following output. 
+3. The successful execution of the service should show us the following output. 
 ```
 ballerina: deploying service(s) in 'data_backed_service'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
 ```
 
-- You can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of employeeService as follows. 
+4. You can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of employeeService as follows. 
 
 **Add new employee** 
 ```
