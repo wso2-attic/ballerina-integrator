@@ -434,7 +434,7 @@ To see the complete implementation of the above file, refer to the [travel_agenc
 
 1. Start all four HTTP services by entering the following command in a separate terminal for each service. This command starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093, and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file is located.
 
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run <Package_Name>
    ```
    
@@ -442,21 +442,27 @@ To see the complete implementation of the above file, refer to the [travel_agenc
 
    ```bash
     curl -v -X POST -d \
-    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi",
+      "VehicleType":"Car", "Location":"Changi"}' \
     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
    ```
 
    The `travelAgencyService` sends a response similar to the following:
     
    ```bash
-    < HTTP/1.1 200 OK
+    HTTP/1.1 200 OK
+    
     {
       "Flight":
-      {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
+      {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018",
+       "From":"Colombo","To":"Changi","Price":273},
+      
       "Hotel":
       {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
+      
       "Vehicle":
-      {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018","PricePerDay":5}
+      {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018",
+       "PricePerDay":5}
     }
    ``` 
    
@@ -473,7 +479,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 This guide contains unit test cases for each service implemented above. 
 
 To run the unit tests, go to the sample src directory and run the following command
-   ```bash
+   ```
    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina test
    ```
 
@@ -489,12 +495,12 @@ Once you are done with the development, you can deploy the services using any of
 You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
 
 **Building** 
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY/src>$ ballerina build <Package_Name>
    ```
 
 **Running**
-   ```bash
+   ```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run target/<Exec_Archive_File_Name>
    ```
 
@@ -548,7 +554,8 @@ This will also create the corresponding docker image using the docker annotation
  
     ```
     curl -v -X POST -d \
-    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+      "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
     ```
 
@@ -637,7 +644,8 @@ Node Port:
  
 ```
   curl -v -X POST -d \
-  '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+  '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
   "http://<Minikube_host_IP>:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
 
 ```
@@ -652,7 +660,8 @@ Access the service
 
 ``` 
  curl -v -X POST -d \
-'{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+'{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+  "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
  "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
     
 ```
@@ -680,7 +689,8 @@ You can monitor ballerina services using in built tracing capabilities of Baller
 Follow the following steps to use tracing with Ballerina.
 1) Run Jaeger docker image using the following command
    ```bash
-   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
+   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686
+   -p14268:14268 jaegertracing/all- in-one:latest
    ```
 2) Navigate to `parallel-service-orchestration/src/` and start all services using following command 
    ```
