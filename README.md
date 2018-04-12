@@ -10,7 +10,7 @@ The following are the sections available in this guide.
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
-- [Developing the RESTFul service with circuit breaker](#developing-the-sql-data-backed-web-service)
+- [Developing the SQL data backed web service](#developing-the-sql-data-backed-web-service)
 - [Testing](#testing)
 - [Deployment](#deployment)
 
