@@ -9,7 +9,7 @@ Data inside a database can be exposed to the outside world by using a database b
 The following are the sections available in this guide.
 
 - [What you'll build](#what-youll-build)
-- [Prerequisites](#Prerequisites)
+- [Prerequisites](#prerequisites)
 - [Developing the RESTFul service with circuit breaker](#Developing-the-SQL-data-backed-web-service)
 - [Testing](#Testing)
 - [Deployment](#Invoking-the-RESTful-service)
