@@ -22,6 +22,7 @@ import ballerina/mime;
 import ballerina/http;
 import ballerina/config;
 //import ballerinax/docker;
+//import ballerinax/kubernetes;
 
 struct Employee {
     string name;
@@ -29,7 +30,7 @@ struct Employee {
     int ssn;
     int employeeId;
 }
-int PORT = 1;
+
 // Create SQL endpoint to MySQL database
 endpoint sql:Client employeeDB {
     database:sql:DB.MYSQL,
@@ -41,14 +42,31 @@ endpoint sql:Client employeeDB {
     options:{maximumPoolSize:5}
 };
 
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"employee_database_service",
+//    tag:"v1.0"
+//}
+
+//@kubernetes:Ingress {
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-employee-database-service",
+//    path:"/"
+//}
+//
+//@kubernetes:Service {
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-employee-database-service"
+//}
+//
+//@kubernetes:Deployment {
+//    image:"ballerina.guides.io/employee_database_service:v1.0",
+//    name:"ballerina-guides-employee-database-service"
+//}
+
 endpoint http:ServiceEndpoint listener {
     port:9090
 };
-
-//@docker:Config {
-//    name:"employee-database-service",
-//    tag:"v1.0"
-//}
 
 @http:ServiceConfig {
     basePath:"/records"
