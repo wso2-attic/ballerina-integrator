@@ -41,7 +41,7 @@ Travel agency is the service that acts as the service orchestration initiator. T
 ## Developing the service
 
 ### Before you begin
-##### Understand the package structure
+#### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
@@ -90,7 +90,8 @@ Sample request payload for the airline reservation service:
 Sample response payload from the airline reservation service:
 
 ```bash
-{"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018", "From":"Colombo", "To":"Changi", "Price":273}
+{"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018", 
+ "From":"Colombo", "To":"Changi", "Price":273}
 ```
 
 Sample request payload for the hotel reservation service:
@@ -114,7 +115,8 @@ Sample request payload for the car rental service:
 Sample response payload from the car rental service:
 
 ```bash
-{"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "PricePerDay":5}
+{"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
+ "PricePerDay":5}
 ```
 
 When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to arrange an airline. The airline reservation service allows the client to check about three different airlines by providing a separate resource for each airline. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/AirlineReservation/airline_reservation_service.bal) file.
@@ -129,7 +131,8 @@ The travel agency service checks if all three airlines available in parallel and
 
 ```ballerina
 // Airline reservation
-// Call Airline reservation service and consume different resources in parallel to check different airways
+// Call Airline reservation service and consume different resources in parallel to
+// check different airways
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with airline 'Qatar Airways'
@@ -138,8 +141,9 @@ fork {
         // Out request payload
         outRequest.setJsonPayload(flightPayload);
         // Send a POST request to 'Qatar Airways' and get the results
-        http:Response respWorkerQatar =? airlineReservationEP -> post("/qatarAirways", outRequest);
-        // Reply to the join block from this worker - Send the response from 'Qatar Airways'
+        http:Response respWorkerQatar =? airlineReservationEP -> post("/qatarAirways",
+            outRequest);
+        // Reply to the join block - Send the response from 'Qatar Airways'
         respWorkerQatar -> fork;
     }
 
@@ -149,8 +153,9 @@ fork {
         // Out request payload
         outRequest.setJsonPayload(flightPayload);
         // Send a POST request to 'Asiana' and get the results
-        http:Response respWorkerAsiana =? airlineReservationEP -> post("/asiana", outRequest);
-        // Reply to the join block from this worker - Send the response from 'Asiana'
+        http:Response respWorkerAsiana =? airlineReservationEP -> post("/asiana",
+            outRequest);
+        // Reply to the join block - Send the response from 'Asiana'
         respWorkerAsiana -> fork;
     }
 
@@ -160,8 +165,9 @@ fork {
         // Out request payload
         outRequest.setJsonPayload(flightPayload);
         // Send a POST request to 'Emirates' and get the results
-        http:Response respWorkerEmirates =? airlineReservationEP -> post("/emirates", outRequest);
-        // Reply to the join block from this worker - Send the response from 'Emirates'
+        http:Response respWorkerEmirates =? airlineReservationEP -> post("/emirates",
+            outRequest);
+        // Reply to the join block - Send the response from 'Emirates'
         respWorkerEmirates -> fork;
     }
 } join (all) (map airlineResponses) {
@@ -208,7 +214,6 @@ fork {
         }
     }
 }
-
 ```
 
 As shown in the above code, we used `fork-join` to run parallel workers and join their responses. The fork-join allows developers to spawn (fork) multiple workers within a Ballerina program and join the results from those workers. Here we used "all" as the join condition, which means the program waits for all the workers to respond.
@@ -217,7 +222,8 @@ Let's now look at how the travel agency service integrates with the hotel reserv
 
 ```ballerina
 // Hotel reservation
-// Call Hotel reservation service and consume different resources in parallel to check different hotels
+// Call Hotel reservation service and consume different resources in parallel to
+// check different hotels
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with hotel 'Miramar'
@@ -226,8 +232,9 @@ fork {
         // Out request payload
         outRequest.setJsonPayload(hotelPayload);
         // Send a POST request to 'Asiana' and get the results
-        http:Response respWorkerMiramar =? hotelReservationEP -> post("/miramar", outRequest);
-        // Reply to the join block from this worker - Send the response from 'Asiana'
+        http:Response respWorkerMiramar =? hotelReservationEP -> post("/miramar",
+            outRequest);
+        // Reply to the join block - Send the response from 'Asiana'
         respWorkerMiramar -> fork;
     }
 
@@ -237,8 +244,9 @@ fork {
         // Out request payload
         outRequest.setJsonPayload(hotelPayload);
         // Send a POST request to 'Aqueen' and get the results
-        http:Response respWorkerAqueen =? hotelReservationEP -> post("/aqueen", outRequest);
-        // Reply to the join block from this worker - Send the response from 'Aqueen'
+        http:Response respWorkerAqueen =? hotelReservationEP -> post("/aqueen",
+            outRequest);
+        // Reply to the join block - Send the response from 'Aqueen'
         respWorkerAqueen -> fork;
     }
 
@@ -248,8 +256,9 @@ fork {
         // Out request payload
         outRequest.setJsonPayload(hotelPayload);
         // Send a POST request to 'Elizabeth' and get the results
-        http:Response respWorkerElizabeth =? hotelReservationEP -> post("/elizabeth", outRequest);
-        // Reply to the join block from this worker - Send the response from 'Elizabeth'
+        http:Response respWorkerElizabeth =? hotelReservationEP -> post("/elizabeth",
+            outRequest);
+        // Reply to the join block - Send the response from 'Elizabeth'
         respWorkerElizabeth -> fork;
     }
 } join (all) (map hotelResponses) {
@@ -297,14 +306,14 @@ fork {
         }
     }
 }
-
 ```
 
 Let's next look at how the travel agency service integrates with the car rental service. The travel agency service sends requests to all three car rental providers in parallel and gets only the first one to respond. Refer to the following code snippet.
 
 ```ballerina
 // Car rental
-// Call Car rental service and consume different resources in parallel to check different companies
+// Call Car rental service and consume different resources in parallel to
+// check different companies
 // Fork - Join to run parallel workers and join the results
 fork {
     // Worker to communicate with Company 'DriveSg'
@@ -314,7 +323,7 @@ fork {
         outRequest.setJsonPayload(vehiclePayload);
         // Send a POST request to 'DriveSg' and get the results
         http:Response respWorkerDriveSg =? carRentalEP -> post("/driveSg", outRequest);
-        // Reply to the join block from this worker - Send the response from 'DriveSg'
+        // Reply to the join block - Send the response from 'DriveSg'
         respWorkerDriveSg -> fork;
     }
 
@@ -325,7 +334,7 @@ fork {
         outRequest.setJsonPayload(vehiclePayload);
         // Send a POST request to 'DreamCar' and get the results
         http:Response respWorkerDreamCar =? carRentalEP -> post("/dreamCar", outRequest);
-        // Reply to the join block from this worker - Send the response from 'DreamCar'
+        // Reply to the join block - Send the response from 'DreamCar'
         respWorkerDreamCar -> fork;
     }
 
@@ -336,7 +345,7 @@ fork {
         outRequest.setJsonPayload(vehiclePayload);
         // Send a POST request to 'Sixt' and get the results
         http:Response respWorkerSixt =? carRentalEP -> post("/sixt", outRequest);
-        // Reply to the join block from this worker - Send the response from 'Sixt'
+        // Reply to the join block - Send the response from 'Sixt'
         respWorkerSixt -> fork;
     }
 } join (some 1) (map vehicleResponses) {
@@ -359,7 +368,6 @@ fork {
         jsonVehicleResponse =? responseSixt.getJsonPayload();
     }
 }
-
 ```
 
 Here we used "some 1" as the join condition, which means the program gets results from only one worker, which responds first. Therefore, the travel agency service gets the car rental provider that responds first.
@@ -371,7 +379,7 @@ Finally, let's look at the structure of the `travel_agency_service_parallel.bal`
 ```ballerina
 package TravelAgency;
 
-import ballerina/net.http;
+import ballerina/http;
 
 // Service endpoint
 endpoint http:ServiceEndpoint travelAgencyEP {
@@ -397,10 +405,11 @@ endpoint http:ClientEndpoint carRentalEP {
 @http:ServiceConfig {basePath:"/travel"}
 service<http:Service> travelAgencyService bind travelAgencyEP {
 
-    // Resource to arrange a tour
-    @http:ResourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
-    arrangeTour (endpoint client, http:Request inRequest) {
-      
+// Resource to arrange a tour
+    @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
+        produces:["application/json"]}
+    arrangeTour(endpoint client, http:Request inRequest) {
+
         // Try parsing the JSON payload from the user request
 
         // Integration with Airline reservation service to reserve an airline
@@ -408,11 +417,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         // Integration with the hotel reservation service to reserve a hotel
 
         // Integration with the car rental service to rent a vehicle
-        
+
         // Respond back to the client
     }
 }
-
 ```
 
 In the above code, `airlineReservationEP` is the client endpoint defined through which the Ballerina service communicates with the external airline reservation service. The client endpoint defined to communicate with the external hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
@@ -443,9 +451,12 @@ To see the complete implementation of the above file, refer to the [travel_agenc
    ```bash
     < HTTP/1.1 200 OK
     {
-      "Flight":{"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
-      "Hotel":{"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
-      "Vehicle":{"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018","PricePerDay":5}
+      "Flight":
+      {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo","To":"Changi","Price":273},
+      "Hotel":
+      {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
+      "Vehicle":
+      {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018","PricePerDay":5}
     }
    ``` 
    
