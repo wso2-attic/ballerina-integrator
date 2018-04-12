@@ -126,7 +126,7 @@ service<http:Service> employee_data_service bind listener {
         methods:["POST"],
         path:"/employee/"
     }
-    addEmployeeResource (endpoint httpConnection, http:Request request) {
+    addEmployeeResource(endpoint httpConnection, http:Request request) {
         // Initialize an empty http response message
         http:Response response = {};
         Employee employeeData = {};
@@ -135,13 +135,14 @@ service<http:Service> employee_data_service bind listener {
 
         match requestPayload {
             json payloadJson => {
-                employeeData =? <Employee>payloadJson;
+                employeeData =? <Employee > payloadJson;
             }
             mime:EntityError err => {
                 log:printError(err.message);
             }
         }
-        if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 || employeeData.employeeId == 0) {
+        if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0
+            || employeeData.employeeId == 0) {
             response.setStringPayload("Error : json payload should contain
              {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
             response.statusCode = 400;
@@ -150,7 +151,8 @@ service<http:Service> employee_data_service bind listener {
         }
 
         // Invoke insertData function to save data in the MySQL database
-        json ret = insertData(employeeData.name, employeeData.age, employeeData.ssn, employeeData.employeeId);
+        json ret = insertData(employeeData.name, employeeData.age, employeeData.ssn,
+            employeeData.employeeId);
         // Send the response back to the client with the employee data
         response.setJsonPayload(ret);
         _ = httpConnection -> respond(response);
@@ -160,21 +162,22 @@ service<http:Service> employee_data_service bind listener {
         methods:["GET"],
         path:"/employee/{employeeId}"
     }
-    retrieveEmployeeResource (endpoint httpConnection, http:Request request, string employeeId) {
+    retrieveEmployeeResource(endpoint httpConnection, http:Request request,
+    string employeeId) {
         // Initialize an empty http response message
         http:Response response = {};
         // Convert the employeeId string to integer
         var castVal = <int>employeeId;
         match castVal {
             int empID => {
-            // Invoke retrieveById function to retrieve data from MySQL database
+                // Invoke retrieveById function to retrieve data from MySQL database
                 var employeeData = retrieveById(empID);
                 // Send the response back to the client with the employee data
                 response.setJsonPayload(employeeData);
                 _ = httpConnection -> respond(response);
             }
             error err => {
-            //Check path parameter errors and send bad request message to client
+                //Check path parameter errors and send bad request message to client
                 response.setStringPayload("Error : Please enter a valid employee ID ");
                 response.statusCode = 400;
                 _ = httpConnection -> respond(response);
@@ -186,7 +189,7 @@ service<http:Service> employee_data_service bind listener {
         methods:["PUT"],
         path:"/employee/"
     }
-    updateEmployeeResource (endpoint httpConnection, http:Request request) {
+    updateEmployeeResource(endpoint httpConnection, http:Request request) {
         // Initialize an empty http response message
         http:Response response = {};
         Employee employeeData = {};
@@ -194,13 +197,14 @@ service<http:Service> employee_data_service bind listener {
 
         match requestPayload {
             json payloadJson => {
-                employeeData =? <Employee>payloadJson;
+                employeeData =? <Employee > payloadJson;
             }
             mime:EntityError err => {
                 log:printError(err.message);
             }
         }
-        if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 || employeeData.employeeId == 0) {
+        if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0
+            || employeeData.employeeId == 0) {
             response.setStringPayload("Error : json payload should contain
              {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
             response.statusCode = 400;
@@ -209,7 +213,8 @@ service<http:Service> employee_data_service bind listener {
         }
 
         // Invoke updateData function to update data in MySQL database
-        json ret = updateData(employeeData.name, employeeData.age, employeeData.ssn, employeeData.employeeId);
+        json ret = updateData(employeeData.name, employeeData.age, employeeData.ssn,
+            employeeData.employeeId);
         // Send the response back to the client with the employee data
         response.setJsonPayload(ret);
         _ = httpConnection -> respond(response);
@@ -219,21 +224,22 @@ service<http:Service> employee_data_service bind listener {
         methods:["DELETE"],
         path:"/employee/{employeeId}"
     }
-    deleteEmployeeResource (endpoint httpConnection, http:Request request, string employeeId) {
+    deleteEmployeeResource(endpoint httpConnection, http:Request request,
+    string employeeId) {
         // Initialize an empty http response message
         http:Response response = {};
         // Convert the employeeId string to integer
         var castVal = <int>employeeId;
         match castVal {
             int empID => {
-            // Invoke deleteData function to delete the data from MySQL database
+                // Invoke deleteData function to delete the data from MySQL database
                 var deleteStatus = deleteData(empID);
                 // Send the response back to the client with the employee data
                 response.setJsonPayload(deleteStatus);
                 _ = httpConnection -> respond(response);
             }
             error err => {
-            //Check path parameter errors and send bad request message to client
+                //Check path parameter errors and send bad request message to client
                 response.setStringPayload("Error : Please enter a valid employee ID ");
                 response.statusCode = 400;
                 _ = httpConnection -> respond(response);
@@ -242,7 +248,7 @@ service<http:Service> employee_data_service bind listener {
     }
 }
 
-public function insertData (string name, int age, int ssn, int employeeId) returns (json) {
+public function insertData(string name, int age, int ssn, int employeeId) returns (json) {
 
     json updateStatus;
     // Prepare the sql string with employee data as parameters
@@ -251,9 +257,9 @@ public function insertData (string name, int age, int ssn, int employeeId) retur
     sql:Parameter para3 = {sqlType:sql:Type.INTEGER, value:ssn};
     sql:Parameter para4 = {sqlType:sql:Type.INTEGER, value:employeeId};
     sql:Parameter[] params = [para1, para2, para3, para4];
-    string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
-    // Insert data to SQL database by invoking update action defined in ballerina sql connector
-    var ret = employeeDB -> update(sqlString, params);
+    string sqlStr = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
+    // Insert data to SQL database by invoking update action
+    var ret = employeeDB -> update(sqlStr, params);
     match ret {
         int updateRowCount => {
             updateStatus = {"Status":"Data Inserted Successfully"};
@@ -265,20 +271,20 @@ public function insertData (string name, int age, int ssn, int employeeId) retur
     return updateStatus;
 }
 
-public function retrieveById (int employeeID) returns (json) {
+public function retrieveById(int employeeID) returns (json) {
 
-    // Prepare the sql string with employee data as parameters
-    sql:Parameter para1 = {sqlType:sql:Type.INTEGER, value:employeeID};
-    sql:Parameter[] params = [para1];
-    string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
-    // Retrieve employee data by invoking select action defined in ballerina sql connector
-    table dataTable =? employeeDB -> select(sqlString, params, null);
-    // Convert the sql data table into JSON using type conversion
-    var jsonReturnValue =? <json>dataTable;
-    return jsonReturnValue;
+// Prepare the sql string with employee data as parameters
+sql:Parameter para1 = {sqlType:sql:Type.INTEGER, value:employeeID};
+sql:Parameter[] params = [para1];
+string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
+// Retrieve employee data by invoking select action defined in ballerina sql connector
+table dataTable = ? employeeDB -> select(sqlString, params, null);
+// Convert the sql data table into JSON using type conversion
+var jsonReturnValue = ? <json >dataTable;
+return jsonReturnValue;
 }
 
-public function updateData (string name, int age, int ssn, int employeeId) returns (json) {
+public function updateData(string name, int age, int ssn, int employeeId) returns (json) {
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {};
 
@@ -288,9 +294,9 @@ public function updateData (string name, int age, int ssn, int employeeId) retur
     sql:Parameter para3 = {sqlType:sql:Type.INTEGER, value:ssn};
     sql:Parameter para4 = {sqlType:sql:Type.INTEGER, value:employeeId};
     sql:Parameter[] params = [para1, para2, para3, para4];
-    string sqlString = "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
+    string quer = "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
     // Update existing data by invoking update action defined in ballerina sql connector
-    var ret = employeeDB -> update(sqlString, params);
+    var ret = employeeDB -> update(quer, params);
     match ret {
         int updateRowCount => {
             if (updateRowCount > 0) {
@@ -307,7 +313,7 @@ public function updateData (string name, int age, int ssn, int employeeId) retur
     return updateStatus;
 }
 
-public function deleteData (int employeeID) returns (json) {
+public function deleteData(int employeeID) returns (json) {
     // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {};
 
@@ -329,7 +335,7 @@ public function deleteData (int employeeID) returns (json) {
 }
 ```
 
-Please refer to the `ballerina-guides/data-backed-service/src/data_backed_service/employee_db_service.bal` file for the complete implementaion of the employee management web service.
+Please refer to the `src/data_backed_service/employee_db_service.bal` file for the complete implementaion of the employee management web service.
 
 
 You can implement custom functions in Ballerina that do specific tasks. For this scenario, you need to have functions to deal with the MySQL database.
@@ -358,7 +364,6 @@ $ ballerina run data_backed_service.balx
 ```
 ballerina: deploying service(s) in 'data_backed_service'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
- 
 ```
 
 4. You can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of employeeService as follows. 
@@ -434,22 +439,8 @@ You can deploy the RESTful service that you developed above in your local enviro
 ballerina run employee_db_service.balx 
 ```
 
-
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 (Work in progress) 
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
-(Work in progress) 
-
-
-## <a name="observability"></a> Observability 
-
-### <a name="logging"></a> Logging
-(Work in progress) 
-
-### <a name="metrics"></a> Metrics
-(Work in progress) 
-
-
-### <a name="tracing"></a> Tracing 
 (Work in progress) 
