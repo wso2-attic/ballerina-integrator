@@ -213,7 +213,6 @@ function main (string[] args) {
     // Account ID 1234 does not exist
     _ = transferMoney(accIdUser2, 1234, 500);
 }
-
 ```
 
 To see the complete implementation of the above, refer [application.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/src/BankingApplication/application.bal). 
@@ -248,7 +247,6 @@ INFO  [BankingApplication] - Depositing money to account ID: 2
 INFO  [BankingApplication] - $300 has been deposited to account ID 2 
 INFO  [BankingApplication] - Transaction committed 
 INFO  [BankingApplication] - Successfully transferred $300 from account ID 1 to account ID 2 
-
 ```
 
 2. For the `scenario 2` where 'Alice' tries to transfer $500 to Bob's account, the transaction is expected to fail as 'Alice' has insufficient balance
