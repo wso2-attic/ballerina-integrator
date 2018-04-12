@@ -37,15 +37,14 @@ restful-service
       └── restful_service
           ├── order_mgt_service.bal
           └── test
-              └── order_mgt_service_test.bal
-          
+              └── order_mgt_service_test.bal          
 ```
 2. You can add the content to your Ballerina service as shown below. In that code segment you can find the implementation of the service and resource skeletons of 'OrderMgtService'. 
 For each order management operation, there is a dedicated resource and inside each resource we can implement the order management operation logic. 
 
 ##### order_mgt_service.bal
 ```ballerina
-package restful_service;
+ppackage restful_service;
 
 import ballerina/http;
 
@@ -61,47 +60,46 @@ map<json> ordersMap = {};
 @http:ServiceConfig {basePath:"/ordermgt"}
 service<http:Service> order_mgt bind listener {
 
-    @Description {value:"Resource that handles the HTTP GET requests that are directed to a
-    specific order using path '/orders/<orderID>'"}
+    @Description {value:"Resource that handles the HTTP GET requests that are directed
+    to a specific order using path '/orders/<orderID>'"}
     @http:ResourceConfig {
         methods:["GET"],
         path:"/order/{orderId}"
     }
     findOrder(endpoint client, http:Request req, string orderId) {
-        // Implementation 
+        // Implementation
     }
 
-     @Description {value:"Resource that handles the HTTP POST requests that are directed to
-    the path '/orders' to create a new Order."}
+    @Description {value:"Resource that handles the HTTP POST requests that are directed
+     to the path '/orders' to create a new Order."}
     @http:ResourceConfig {
         methods:["POST"],
         path:"/order"
     }
     addOrder(endpoint client, http:Request req) {
-        // Implementation 
+        // Implementation
     }
 
-     @Description {value:"Resource that handles the HTTP PUT requests that are directed to
-    the path '/orders' to update an existing Order."}
+    @Description {value:"Resource that handles the HTTP PUT requests that are directed
+    to the path '/orders' to update an existing Order."}
     @http:ResourceConfig {
         methods:["PUT"],
         path:"/order/{orderId}"
     }
     updateOrder(endpoint client, http:Request req, string orderId) {
-        // Implementation 
+        // Implementation
     }
 
-    @Description {value:"Resource that handles the HTTP DELETE requests, which are directed
-     to the path '/orders/<orderId>' to delete an existing Order."}
+    @Description {value:"Resource that handles the HTTP DELETE requests, which are 
+    directed to the path '/orders/<orderId>' to delete an existing Order."}
     @http:ResourceConfig {
         methods:["DELETE"],
         path:"/order/{orderId}"
     }
     cancelOrder(endpoint client, http:Request req, string orderId) {
-        // Implementation    
+        // Implementation
     }
 }
-
 ```
 
 3. You can implement the business logic of each resources as per your requirements. For simplicity we have used an in-memory map to keep all the order details. You can find the full source code of the OrderMgtService below. In addition to the order processing logic, we have also manipulated some HTTP status codes and headers whenever required.  
@@ -125,8 +123,8 @@ map<json> ordersMap = {};
 @http:ServiceConfig {basePath:"/ordermgt"}
 service<http:Service> order_mgt bind listener {
 
-    @Description {value:"Resource that handles the HTTP GET requests that are directed to a
-    specific order using path '/orders/<orderID>'"}
+    @Description {value:"Resource that handles the HTTP GET requests that are directed
+    to a specific order using path '/orders/<orderID>'"}
     @http:ResourceConfig {
         methods:["GET"],
         path:"/order/{orderId}"
@@ -147,8 +145,8 @@ service<http:Service> order_mgt bind listener {
         _ = client -> respond(response);
     }
 
-    @Description {value:"Resource that handles the HTTP POST requests that are directed to
-    the path '/orders' to create a new Order."}
+    @Description {value:"Resource that handles the HTTP POST requests that are directed
+     to the path '/orders' to create a new Order."}
     @http:ResourceConfig {
         methods:["POST"],
         path:"/order"
@@ -173,8 +171,8 @@ service<http:Service> order_mgt bind listener {
         _ = client -> respond(response);
     }
 
-    @Description {value:"Resource that handles the HTTP PUT requests that are directed to
-    the path '/orders' to update an existing Order."}
+    @Description {value:"Resource that handles the HTTP PUT requests that are directed
+    to the path '/orders' to update an existing Order."}
     @http:ResourceConfig {
         methods:["PUT"],
         path:"/order/{orderId}"
@@ -182,7 +180,7 @@ service<http:Service> order_mgt bind listener {
     updateOrder(endpoint client, http:Request req, string orderId) {
         json updatedOrder =? req.getJsonPayload();
 
-        // Find the order that needs to be updated from the map and retrieve in JSON format.
+        // Find the order that needs to be updated and retrieve in JSON format.
         json existingOrder = ordersMap[orderId];
 
         // Updating existing order with the attributes of the updated order.
@@ -201,8 +199,8 @@ service<http:Service> order_mgt bind listener {
         _ = client -> forward(response);
     }
 
-    @Description {value:"Resource that handles the HTTP DELETE requests, which are directed
-     to the path '/orders/<orderId>' to delete an existing Order."}
+    @Description {value:"Resource that handles the HTTP DELETE requests, which are
+    directed to the path '/orders/<orderId>' to delete an existing Order."}
     @http:ResourceConfig {
         methods:["DELETE"],
         path:"/order/{orderId}"
@@ -220,7 +218,6 @@ service<http:Service> order_mgt bind listener {
         _ = client -> respond(response);
     }
 }
-
 ```
 
 4. With that we've completed the development of OrderMgtService. 
@@ -236,24 +233,19 @@ You can run the RESTful service that you developed above, in your local environm
 
 ```
 $ballerina build restful_service
-
 ```
 
 2. Once the restful_service.balx is created inside the target folder, you can run that with the following command. 
 
 ```
-
 $ballerina run target/restful_service.balx
-
 ```
 
 3. The successful execution of the service should show us the following output. 
 ```
-
 $ ballerina run target/restful_service.balx 
 ballerina: deploying service(s) in 'target/restful_service.balx'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
- 
 ```
 
 4. You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of OrderMgtService as follows. 
@@ -271,8 +263,7 @@ Output :
 < Transfer-Encoding: chunked
 < Server: wso2-http-transport
 
-{"status":"Order Created.","orderId":"100500"}
- 
+{"status":"Order Created.","orderId":"100500"} 
 ```
 
 **Retrieve Order** 
@@ -281,8 +272,6 @@ curl "http://localhost:9090/ordermgt/order/100500"
 
 Output : 
 {"Order":{"ID":"100500","Name":"XYZ","Description":"Sample order."}}
-
-
 ```
 **Update Order** 
 ```
@@ -360,7 +349,6 @@ map<json> ordersMap = {};
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
 service<http:Service> order_mgt bind listener {
-   
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
@@ -430,8 +418,7 @@ map<json> ordersMap = {};
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
-service<http:Service> order_mgt bind listener {
-        
+service<http:Service> order_mgt bind listener {    
 ``` 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
@@ -445,7 +432,6 @@ This will also create the corresponding docker image and the Kubernetes artifact
   
   Run following command to deploy kubernetes artifacts:  
   kubectl apply -f ./target/restful_service/kubernetes
- 
   ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
@@ -457,7 +443,6 @@ This will also create the corresponding docker image and the Kubernetes artifact
    deployment.extensions "ballerina-guides-restful-service" created
    ingress.extensions "ballerina-guides-restful-service" created
    service "ballerina-guides-restful-service" created
-
 ```
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 ```
@@ -465,7 +450,6 @@ $kubectl get service
 $kubectl get deploy
 $kubectl get pods
 $kubectl get ingress
-
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
@@ -476,7 +460,6 @@ Node Port:
 curl -v -X POST -d \
 '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
 "http://<Minikube_host_IP>:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"  
-
 ```
 Ingress:
 
@@ -491,7 +474,6 @@ Access the service
 curl -v -X POST -d \
 '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
 "http://ballerina.guides.io/ordermgt/order" -H "Content-Type:application/json" 
-    
 ```
 
 ## Observability 
@@ -508,9 +490,7 @@ enabled=true
 [observability.tracing]
 # Flag to enable Tracing
 enabled=true
-
 ```
-
 
 ### Tracing 
 You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
