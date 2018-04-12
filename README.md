@@ -12,7 +12,7 @@ The following are the sections available in this guide.
 - [Prerequisites](#prerequisites)
 - [Developing the RESTFul service with circuit breaker](#developing-the-sql-data-backed-web-service)
 - [Testing](#testing)
-- [Deployment](#invoking-the-restful-service)
+- [Deployment](#deployment)
 
 ## What you'll build
 
@@ -424,19 +424,19 @@ $ ballerina test data_backed_service
 ```
 
 
-## <a name="deploying-the-scenario"></a> Deployment
+## Deployment
 
 Once you are done with the development, you can deploy the service using any of the methods that are listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying locally
+### Deploying locally
 You can deploy the RESTful service that you developed above in your local environment. You can use the Ballerina executable archive (.balx) file that you created above and run it in your local environment as follows. 
 
 ```
 ballerina run employee_db_service.balx 
 ```
 
-### <a name="deploying-on-docker"></a> Deploying on Docker
+### Deploying on Docker
 (Work in progress) 
 
-### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
+### Deploying on Kubernetes
 (Work in progress) 
