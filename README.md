@@ -33,7 +33,7 @@ Travel agency is the service that acts as the composition initiator. The other t
 
 ### Before you begin
 #### Understand the package structure
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+- Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
 service-composition
@@ -64,10 +64,11 @@ Package `HotelReservation` contains the service that provides online hotel room 
 
 The `travel_agency_service.bal` file provides travel agency service, which consumes the other three services, and arranges a complete tour for the requested user.
 
+
 - Once you created your package structure, go to the sample src directory and run the following command to initialize your Ballerina project.
 
 ```bash
-$ballerina init
+  $ballerina init
 ```
 
 The above command will initialize the project with a `Ballerina.toml` file and `.ballerina` implementation directory that contain a list of packages in the current directory.
