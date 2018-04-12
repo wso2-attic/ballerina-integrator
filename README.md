@@ -237,7 +237,7 @@ Let's now look at some important log statements we will get as the response for 
 1. For the `scenario 1` where 'Alice' transfers $300 to Bob's account, the transaction is expected to be successful
 
 ```
------------------------------------------------- Scenario 1--------------------------------------------------- 
+----------------------------------------- Scenario 1--------------------------------------------- 
 INFO  [BankingApplication] - Transfer $300 from Alice's account to Bob's account 
 INFO  [BankingApplication] - Expected: Transaction to be successful 
 INFO  [BankingApplication] - Initiating transaction 
@@ -254,9 +254,9 @@ INFO  [BankingApplication] - Successfully transferred $300 from account ID 1 to 
 2. For the `scenario 2` where 'Alice' tries to transfer $500 to Bob's account, the transaction is expected to fail as 'Alice' has insufficient balance
 
 ```
------------------------------------------------- Scenario 2--------------------------------------------------- 
+----------------------------------------- Scenario 2--------------------------------------------- 
 INFO  [BankingApplication] - Again try to transfer $500 from Alice's account to Bob's account 
-INFO  [BankingApplication] - Expected: Transaction to fail as Alice now only has a balance of $200 in account 
+INFO  [BankingApplication] - Expected: Transaction to fail as Alice now only has a balance of $200
 INFO  [BankingApplication] - Initiating transaction 
 INFO  [BankingApplication] - Transfering money from account ID 1 to account ID 2 
 INFO  [BankingApplication] - Withdrawing money from account ID: 1 
@@ -268,7 +268,7 @@ ERROR [BankingApplication] - Error while withdrawing the money: Error: Not enoug
 2. For the `scenario 3` where 'Bob' tries to transfer $500 to account ID 1234, the transaction is expected to fail as account ID 1234 does not exist
 
 ```
------------------------------------------------- Scenario 3--------------------------------------------------- 
+----------------------------------------- Scenario 3--------------------------------------------- 
 [BankingApplication] - Try to transfer $500 from Bob's account to a non existing account ID 
 INFO  [BankingApplication] - Expected: Transaction to fail as account ID of recipient is invalid 
 INFO  [BankingApplication] - Initiating transaction 
