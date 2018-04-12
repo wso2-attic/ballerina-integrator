@@ -24,18 +24,13 @@ import ballerina/http;
 import ballerina/config;
 import ballerina/io;
 //import ballerinax/docker;
-//import ballerinax/kubernetes;
 
 type Employee {
     string name;
     int age;
     int ssn;
     int employeeId;
-<<<<<<< HEAD
 };
-=======
-}
->>>>>>> 705a07328106a5462d4f87e3c6889840681b6720
 
 // Create SQL endpoint to MySQL database
 endpoint mysql:Client employeeDB {
@@ -47,38 +42,14 @@ endpoint mysql:Client employeeDB {
     poolOptions:{maximumPoolSize:5}
 };
 
-<<<<<<< HEAD
 endpoint http:Listener listener {
     port:9090
 };
 
-=======
->>>>>>> 705a07328106a5462d4f87e3c6889840681b6720
 //@docker:Config {
-//    registry:"ballerina.guides.io",
-//    name:"employee_database_service",
+//    name:"employee-database-service",
 //    tag:"v1.0"
 //}
-
-//@kubernetes:Ingress {
-//    hostname:"ballerina.guides.io",
-//    name:"ballerina-guides-employee-database-service",
-//    path:"/"
-//}
-//
-//@kubernetes:Service {
-//    serviceType:"NodePort",
-//    name:"ballerina-guides-employee-database-service"
-//}
-//
-//@kubernetes:Deployment {
-//    image:"ballerina.guides.io/employee_database_service:v1.0",
-//    name:"ballerina-guides-employee-database-service"
-//}
-
-endpoint http:ServiceEndpoint listener {
-    port:9090
-};
 
 @http:ServiceConfig {
     basePath:"/records"
@@ -286,3 +257,4 @@ public function deleteData(int employeeID) returns (json) {
     }
     return updateStatus;
 }
+
