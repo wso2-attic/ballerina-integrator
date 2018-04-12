@@ -344,25 +344,26 @@ The `endpoint` keyword in Ballerina refers to a connection with a remote service
 
 You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation on your local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
-1. As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
+- As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
 $ ballerina build data_backed_service
 ```
 
-2. Once the data_backed_service.balx is created, you can run that with the following command. 
+- Once the data_backed_service.balx is created, you can run that with the following command. 
 
 ```
 $ ballerina run data_backed_service.balx 
 ```
 
-3. The successful execution of the service should show us the following output. 
+- The successful execution of the service should show us the following output. 
+
 ```
 ballerina: deploying service(s) in 'data_backed_service'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
 ```
 
-4. You can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of employeeService as follows. 
+- You can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of employeeService as follows. 
 
 **Add new employee** 
 ```
@@ -466,32 +467,33 @@ endpoint http:ServiceEndpoint listener {
     basePath:"/records"
 }
 service<http:Service> employee_data_service bind listener {
-   
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
   
-  ```
-  $ballerina build data_backed_service
-  
-  Run following command to start docker container: 
-  docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
-  ```
+```
+$ballerina build data_backed_service
+
+Run following command to start docker container: 
+docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
+```
+
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-    ```   
-    docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
-    ```
-    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+```   
+docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
+```
+
+  Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-    ```
-   curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
-   "http://localhost:9090/records/employee" -H "Content-Type:application/json"
-    ```
+```
+curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
+"http://localhost:9090/records/employee" -H "Content-Type:application/json"
+```
 
 
 ### Deploying on Kubernetes
@@ -537,8 +539,7 @@ endpoint http:ServiceEndpoint listener {
 @http:ServiceConfig {
     basePath:"/records"
 }
-service<http:Service> employee_data_service bind listener { 
-        
+service<http:Service> employee_data_service bind listener {      
 ``` 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
@@ -547,32 +548,32 @@ service<http:Service> employee_data_service bind listener {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-  ```
-  $ballerina build data_backed_service
-  
-  Run following command to deploy kubernetes artifacts:  
-  kubectl apply -f ./target/data_backed_service/kubernetes
- 
-  ```
+```
+$ballerina build data_backed_service
+
+Run following command to deploy kubernetes artifacts:  
+kubectl apply -f ./target/data_backed_service/kubernetes
+```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/data_backed_service/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
 ```
- $ kubectl apply -f ./target/data_backed_service/kubernetes 
-   deployment.extensions "ballerina-guides-employee-database-service" created
-   ingress.extensions "ballerina-guides-employee-database-service" created
-   service "ballerina-guides-employee-database-service" created
+$kubectl apply -f ./target/data_backed_service/kubernetes 
 
+deployment.extensions "ballerina-guides-employee-database-service" created
+ingress.extensions "ballerina-guides-employee-database-service" created
+service "ballerina-guides-employee-database-service" created
 ```
+
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
+
 ```
 $kubectl get service
 $kubectl get deploy
 $kubectl get pods
 $kubectl get ingress
-
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
@@ -580,13 +581,14 @@ $kubectl get ingress
 Node Port:
  
 ```
- curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
- "http://<Minikube_host_IP>:<Node_Port>/records/employee" -H "Content-Type:application/json"  
-
+curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
+"http://<Minikube_host_IP>:<Node_Port>/records/employee" -H "Content-Type:application/json"  
 ```
+
 Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
+
 ``` 
 127.0.0.1 ballerina.guides.io
 ```
@@ -594,7 +596,6 @@ Add `/etc/hosts` entry to match hostname.
 Access the service 
 
 ``` 
- curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
- "http://ballerina.guides.io/records/employee" -H "Content-Type:application/json" 
-    
+curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
+"http://ballerina.guides.io/records/employee" -H "Content-Type:application/json" 
 ```
