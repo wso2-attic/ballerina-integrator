@@ -10,9 +10,9 @@ The following are the sections available in this guide.
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
-- [Developing the RESTFul service with circuit breaker](#Developing-the-SQL-data-backed-web-service)
-- [Testing](#Testing)
-- [Deployment](#Invoking-the-RESTful-service)
+- [Developing the RESTFul service with circuit breaker](#developing-the-sql-data-backed-web-service)
+- [Testing](#testing)
+- [Deployment](#invoking-the-restful-service)
 
 ## What you'll build
 
