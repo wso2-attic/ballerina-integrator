@@ -22,7 +22,7 @@ import ballerina/http;
 @test:BeforeSuite
 function beforeFunc() {
     // Start the 'hotelReservationService' before running the test
-    _ = test:startServices("HotelReservation");
+    _ = test:startServices("hotel_reservation");
 }
 
 // Client endpoint
@@ -59,5 +59,5 @@ function testHotelReservationService() {
 @test:AfterSuite
 function afterFunc() {
     // Stop the 'hotelReservationService' after running the test
-    test:stopServices("HotelReservation");
+    test:stopServices("hotel_reservation");
 }
