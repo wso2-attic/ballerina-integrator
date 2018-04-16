@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package TravelAgency;
-
 import ballerina/http;
 import ballerina/test;
 

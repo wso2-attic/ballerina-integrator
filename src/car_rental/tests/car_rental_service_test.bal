@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package CarRental;
+package car_rental;
 
 import ballerina/test;
 import ballerina/http;

@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package AirlineReservation;
+package car_rental;
 
 import ballerina/http;
 //import ballerinax/docker;
@@ -22,90 +22,41 @@ import ballerina/http;
 
 //@docker:Config {
 //    registry:"ballerina.guides.io",
-//    name:"airline_reservation_service",
+//    name:"car_rental_service",
 //    tag:"v1.0"
 //}
 
 //@kubernetes:Ingress {
 //  hostname:"ballerina.guides.io",
-//  name:"ballerina-guides-airline-reservation-service",
+//  name:"ballerina-guides-car-rental-service",
 //  path:"/"
 //}
 //
 //@kubernetes:Service {
 //  serviceType:"NodePort",
-//  name:"ballerina-guides-airline-reservation-service"
+//  name:"ballerina-guides-car-rental-service"
 //}
 //
 //@kubernetes:Deployment {
-//  image:"ballerina.guides.io/airline_reservation_service:v1.0",
-//  name:"ballerina-guides-airline-reservation-service",
+//  image:"ballerina.guides.io/car_rental_service:v1.0",
+//  name:"ballerina-guides-car-rental-service",
 //  dockerHost:"tcp://192.168.99.100:2376",
 //  dockerCertPath:"/home/pranavan/.minikube/certs"
 //}
 
 // Service endpoint
-endpoint http:ServiceEndpoint airlineEP {
-    port:9091
+endpoint http:ServiceEndpoint carEP {
+    port:9093
 };
 
-// Airline reservation service
-@http:ServiceConfig {basePath:"/airline"}
-service<http:Service> airlineReservationService bind airlineEP {
+// Car rental service
+@http:ServiceConfig {basePath:"/car"}
+service<http:Service> carRentalService bind carEP {
 
-    // Resource 'flightConcord', which checks about airline 'Qatar Airways'
-    @http:ResourceConfig {methods:["POST"], path:"/qatarAirways", consumes:["application/json"],
-        produces:["application/json"]}
-    flightConcord (endpoint client, http:Request request) {
-        http:Response response = {};
-        json reqPayload;
-
-        // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any | null => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                //return;
-            }
-        }
-
-        json arrivalDate = reqPayload.ArrivalDate;
-        json departureDate = reqPayload.DepartureDate;
-        json fromPlace = reqPayload.From;
-        json toPlace = reqPayload.To;
-
-        // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || fromPlace == null || toPlace == null) {
-            response.statusCode = 400;
-            response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            //return;
-        }
-
-        // Mock logic
-        // Details of the airline
-        json flightDetails = {
-                                 "Airline":"Qatar Airways",
-                                 "ArrivalDate":arrivalDate,
-                                 "ReturnDate":departureDate,
-                                 "From":fromPlace,
-                                 "To":toPlace,
-                                 "Price":278
-                             };
-        // Response payload
-        response.setJsonPayload(flightDetails);
-        // Send the response to the client
-        _ = client -> respond(response);
-    }
-
-    // Resource 'flightAsiana', which checks about airline 'Asiana'
-    @http:ResourceConfig {methods:["POST"], path:"/asiana", consumes:["application/json"],
-        produces:["application/json"]}
-    flightAsiana (endpoint client, http:Request request) {
+    // Resource 'driveSg', which checks about hotel 'DriveSg'
+    @http:ResourceConfig {methods:["POST"], path:"/driveSg", consumes:["application/json"],
+                          produces:["application/json"]}
+    driveSg (endpoint client, http:Request request) {
         http:Response response = {};
         json reqPayload;
 
@@ -124,11 +75,10 @@ service<http:Service> airlineReservationService bind airlineEP {
 
         json arrivalDate = reqPayload.ArrivalDate;
         json departureDate = reqPayload.DepartureDate;
-        json fromPlace = reqPayload.From;
-        json toPlace = reqPayload.To;
+        json vehicleType = reqPayload.VehicleType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || arrivalDate == null || fromPlace == null || toPlace == null) {
+        if (arrivalDate == null || departureDate == null || vehicleType == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
@@ -136,25 +86,24 @@ service<http:Service> airlineReservationService bind airlineEP {
         }
 
         // Mock logic
-        // Details of the airline
-        json flightDetails = {
-                                 "Airline":"Asiana",
-                                 "ArrivalDate":arrivalDate,
-                                 "ReturnDate":departureDate,
-                                 "From":fromPlace,
-                                 "To":toPlace,
-                                 "Price":275
-                             };
+        // Details of the vehicle
+        json vehicleDetails = {
+                                  "Company":"DriveSG",
+                                  "VehicleType":vehicleType,
+                                  "FromDate":arrivalDate,
+                                  "ToDate":departureDate,
+                                  "PricePerDay":5
+                              };
         // Response payload
-        response.setJsonPayload(flightDetails);
+        response.setJsonPayload(vehicleDetails);
         // Send the response to the client
         _ = client -> respond(response);
     }
 
-    // Resource 'flightEmirates', which checks about airline 'Emirates'
-    @http:ResourceConfig {methods:["POST"], path:"/emirates", consumes:["application/json"],
-        produces:["application/json"]}
-    flightEmirates (endpoint client, http:Request request) {
+    // Resource 'dreamCar', which checks about hotel 'DreamCar'
+    @http:ResourceConfig {methods:["POST"], path:"/dreamCar", consumes:["application/json"],
+                          produces:["application/json"]}
+    dreamCar (endpoint client, http:Request request) {
         http:Response response = {};
         json reqPayload;
 
@@ -173,11 +122,10 @@ service<http:Service> airlineReservationService bind airlineEP {
 
         json arrivalDate = reqPayload.ArrivalDate;
         json departureDate = reqPayload.DepartureDate;
-        json fromPlace = reqPayload.From;
-        json toPlace = reqPayload.To;
+        json vehicleType = reqPayload.VehicleType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || fromPlace == null || toPlace == null) {
+        if (arrivalDate == null || departureDate == null || vehicleType == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
@@ -185,17 +133,62 @@ service<http:Service> airlineReservationService bind airlineEP {
         }
 
         // Mock logic
-        // Details of the airline
-        json flightDetails = {
-                                 "Airline":"Emirates",
-                                 "ArrivalDate":arrivalDate,
-                                 "ReturnDate":departureDate,
-                                 "From":fromPlace,
-                                 "To":toPlace,
-                                 "Price":273
-                             };
+        // Details of the vehicle
+        json vehicleDetails = {
+                                  "Company":"DreamCar",
+                                  "VehicleType":vehicleType,
+                                  "FromDate":arrivalDate,
+                                  "ToDate":departureDate,
+                                  "PricePerDay":6
+                              };
         // Response payload
-        response.setJsonPayload(flightDetails);
+        response.setJsonPayload(vehicleDetails);
+        // Send the response to the client
+        _ = client -> respond(response);
+    }
+
+    // Resource 'sixt', which checks about hotel 'Sixt'
+    @http:ResourceConfig {methods:["POST"], path:"/sixt", consumes:["application/json"], produces:["application/json"]}
+    sixt (endpoint client, http:Request request) {
+        http:Response response = {};
+        json reqPayload;
+
+        // Try parsing the JSON payload from the request
+        match request.getJsonPayload() {
+        // Valid JSON payload
+            json payload => reqPayload = payload;
+        // NOT a valid JSON payload
+            any | null => {
+                response.statusCode = 400;
+                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+                _ = client -> respond(response);
+                //return;
+            }
+        }
+
+        json arrivalDate = reqPayload.ArrivalDate;
+        json departureDate = reqPayload.DepartureDate;
+        json vehicleType = reqPayload.VehicleType;
+
+        // If payload parsing fails, send a "Bad Request" message as the response
+        if (arrivalDate == null || departureDate == null || vehicleType == null) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
+            _ = client -> respond(response);
+            //return;
+        }
+
+        // Mock logic
+        // Details of the vehicle
+        json vehicleDetails = {
+                                  "Company":"Sixt",
+                                  "VehicleType":vehicleType,
+                                  "FromDate":arrivalDate,
+                                  "ToDate":departureDate,
+                                  "PricePerDay":7
+                              };
+        // Response payload
+        response.setJsonPayload(vehicleDetails);
         // Send the response to the client
         _ = client -> respond(response);
     }
