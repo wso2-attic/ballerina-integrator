@@ -14,43 +14,42 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package AirlineReservation;
+package car_rental;
 
 import ballerina/test;
 import ballerina/http;
 
 @test:BeforeSuite
 function beforeFunc() {
-    // Start the 'airlineReservationService' before running the test
-    _ = test:startServices("AirlineReservation");
+    // Start the 'carRentalService' before running the test
+    _ = test:startServices("CarRental");
 }
 
 // Client endpoint
 endpoint http:Client clientEP {
-    targets:[{url:"http://localhost:9091/airline"}]
+    targets:[{url:"http://localhost:9093/car"}]
 };
 
-// Function to test Airline reservation service
+// Function to test Car rental service
 @test:Config
-function testAirlineReservationService() {
+function testCarRentalService() {
     // Initialize the empty http requests and responses
     http:Request request;
 
-    // Test the 'reserveTicket' resource
+    // Test the 'rentCar' resource
     // Construct a request payload
     json payload = {
         "Name":"Alice",
         "ArrivalDate":"12-03-2018",
         "DepartureDate":"13-04-2018",
-        "Preference":"Business"
+        "Preference":"Air Conditioned"
     };
 
     request.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/reserve", request);
+    http:Response response = check clientEP -> post("/rent", request);
     // Expected response code is 200
-    test:assertEquals(response.statusCode, 200,
-        msg = "Airline reservation service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     json resPayload = check response.getJsonPayload();
     json expected = {"Status":"Success"};
@@ -59,6 +58,6 @@ function testAirlineReservationService() {
 
 @test:AfterSuite
 function afterFunc() {
-    // Stop the 'airlineReservationService' after running the test
-    test:stopServices("AirlineReservation");
+    // Stop the 'carRentalService' after running the test
+    test:stopServices("CarRental");
 }

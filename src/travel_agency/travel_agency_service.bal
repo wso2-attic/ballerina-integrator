@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package TravelAgency;
+package travel_agency;
 
 import ballerina/http;
 //import ballerinax/docker;

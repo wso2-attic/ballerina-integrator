@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package AirlineReservation;
+package airline_reservation;
 
 import ballerina/http;
 //import ballerinax/docker;
