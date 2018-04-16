@@ -18,7 +18,7 @@ To understand how you can build a parallel service orchestration using Ballerina
 
 This scenario is similar to the scenario used in the [service-composition guide](https://github.com/ballerina-guides/service-composition) except, all three external services (airline reservation, hotel reservation and car rental) contain multiple resources. The travel agency service checks these resources in parallel to select the best-suited resource for each requirement. For example, the travel agency service checks three different airways in parallel and selects the airway with the lowest cost. Similarly, it checks several hotels in parallel and selects the closest one to the client's preferred location. The following diagram illustrates this use case.
 
-![alt text](/images/parallel_service_orchestration.svg)
+![alt text](/images/parallel-service-orchestration.svg)
 
 In the above image, 
 
