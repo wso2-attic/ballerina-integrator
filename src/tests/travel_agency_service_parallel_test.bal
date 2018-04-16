@@ -20,22 +20,22 @@ import ballerina/test;
 @test:BeforeSuite
 function beforeFunc () {
     // Start the 'travelAgencyService' before running the test
-    _ = test:startServices("TravelAgency");
+    _ = test:startServices("travel_agency");
 
     // 'travelAgencyService' needs to communicate with airline reservation, hotel reservation and car rental services
     // Therefore, start these three services before running the test
     // Start the 'airlineReservationService'
-    _ = test:startServices("AirlineReservation");
+    _ = test:startServices("airline_reservation");
 
     // Start the 'hotelReservationService'
-    _ = test:startServices("HotelReservation");
+    _ = test:startServices("hotel_reservation");
 
     // Start the 'carRentalService'
-    _ = test:startServices("CarRental");
+    _ = test:startServices("car_rental");
 }
 
 // Client endpoint
-endpoint http:ClientEndpoint clientEP {
+endpoint http:Client clientEP {
     targets:[{url:"http://localhost:9090/travel"}]
 };
 
@@ -43,7 +43,7 @@ endpoint http:ClientEndpoint clientEP {
 @test:Config
 function testTravelAgencyService () {
     // Initialize the empty http requests and responses
-    http:Request request = {};
+    http:Request request;
 
     // Request Payload
     json requestPayload = {
@@ -58,14 +58,14 @@ function testTravelAgencyService () {
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response =? clientEP -> post("/arrangeTour", request);
+    http:Response response = check clientEP -> post("/arrangeTour", request);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Travel agency service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     // Flight details
     string expectedFlight = "{\"Airline\":\"Emirates\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
                             "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":273}";
-    json resPayload =? response.getJsonPayload();
+    json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.Flight.toString(), expectedFlight, msg = "Response mismatch!");
     // Hotel details
     string expectedHotel = "{\"HotelName\":\"Elizabeth\",\"FromDate\":\"12-03-2018\"," +
@@ -76,14 +76,14 @@ function testTravelAgencyService () {
 @test:AfterSuite
 function afterFunc () {
     // Stop the 'travelAgencyService' after running the test
-    test:stopServices("TravelAgency");
+    test:stopServices("travel_agency");
 
     // Stop the 'airlineReservationService'
-    test:stopServices("AirlineReservation");
+    test:stopServices("airline_reservation");
 
     // Stop the 'hotelReservationService'
-    test:stopServices("HotelReservation");
+    test:stopServices("hotel_reservation");
 
     // Stop the 'carRentalService'
-    test:stopServices("CarRental");
+    test:stopServices("car_rental");
 }

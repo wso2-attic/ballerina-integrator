@@ -30,11 +30,11 @@ json requestPayload = {
 @test:BeforeSuite
 function beforeFunc () {
     // Start the 'airlineReservationService' before running the test
-    _ = test:startServices("AirlineReservation");
+    _ = test:startServices("airline_reservation");
 }
 
 // Client endpoint
-endpoint http:ClientEndpoint clientEP {
+endpoint http:Client clientEP {
     targets:[{url:"http://localhost:9091/airline"}]
 };
 
@@ -42,19 +42,19 @@ endpoint http:ClientEndpoint clientEP {
 @test:Config
 function testResourceFlightConcord () {
     // Initialize the empty http requests and responses
-    http:Request request = {};
+    http:Request request;
 
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response =? clientEP -> post("/qatarAirways", request);
+    http:Response response = check clientEP -> post("/qatarAirways", request);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
                       msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Airline\":\"Qatar Airways\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
                       "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":278}";
-    json resPayload =? response.getJsonPayload();
+    json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
@@ -62,19 +62,19 @@ function testResourceFlightConcord () {
 @test:Config
 function testResourceFlightAsiana () {
     // Initialize the empty http requests and responses
-    http:Request request = {};
+    http:Request request;
 
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response =? clientEP -> post("/asiana", request);
+    http:Response response = check clientEP -> post("/asiana", request);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
                       msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Airline\":\"Asiana\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
                       "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":275}";
-    json resPayload =? response.getJsonPayload();
+    json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
@@ -82,24 +82,24 @@ function testResourceFlightAsiana () {
 @test:Config
 function testResourceFlightEmirates () {
     // Initialize the empty http requests and responses
-    http:Request request = {};
+    http:Request request;
 
     // Set request payload
     request.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response =? clientEP -> post("/emirates", request);
+    http:Response response = check clientEP -> post("/emirates", request);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
                       msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Airline\":\"Emirates\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
                       "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":273}";
-    json resPayload =? response.getJsonPayload();
+    json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
 @test:AfterSuite
 function afterFunc () {
     // Stop the 'airlineReservationService' after running the test
-    test:stopServices("AirlineReservation");
+    test:stopServices("airline_reservation");
 }
