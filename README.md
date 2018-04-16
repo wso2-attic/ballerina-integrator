@@ -432,30 +432,30 @@ To see the complete implementation of the above file, refer to the [travel_agenc
 
 ### Try it out
 
-1. Start all four HTTP services by entering the following command in a separate terminal for each service. This command starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093, and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file is located.
+- Start all four HTTP services by entering the following command in a separate terminal for each service. This command starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093, and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file is located.
 
-   ```
-    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run <Package_Name>
-   ```
+```
+    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run <Package_Name
+```
    
-2. Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
+- Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
 
-   ```bash
+```bash
     curl -v -X POST -d \
     '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi",
       "VehicleType":"Car", "Location":"Changi"}' \
     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
-   ```
+```
 
    The `travelAgencyService` sends a response similar to the following:
     
-   ```bash
+```bash
     HTTP/1.1 200 OK
     
     {
       "Flight":
-      {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018",
-       "From":"Colombo","To":"Changi","Price":273},
+      {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo",
+      "To":"Changi","Price":273},
       
       "Hotel":
       {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
@@ -464,24 +464,25 @@ To see the complete implementation of the above file, refer to the [travel_agenc
       {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018",
        "PricePerDay":5}
     }
-   ``` 
+``` 
    
    
 ### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
 * Test functions should be annotated with `@test:Config`. See the below example.
-  ```ballerina
+```ballerina
     @test:Config
     function testTravelAgencyService () {
-  ```
+```
   
 This guide contains unit test cases for each service implemented above. 
 
+
 To run the unit tests, go to the sample src directory and run the following command
-   ```
+```
    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina test
-   ```
+```
 
 To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/AirlineReservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/HotelReservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/CarRental/test/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/TravelAgency/test/travel_agency_service_parallel_test.bal).
 
@@ -495,14 +496,14 @@ Once you are done with the development, you can deploy the services using any of
 You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
 
 **Building** 
-   ```
+```
     <SAMPLE_ROOT_DIRECTORY/src>$ ballerina build <Package_Name>
-   ```
+```
 
 **Running**
-   ```
+```
     <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run target/<Exec_Archive_File_Name>
-   ```
+```
 
 ### Deploying on Docker
 
@@ -536,28 +537,29 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
   
-  ```
+```
   $ballerina build TravelAgency
   
   Run following command to start docker container: 
   docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
-  ```
+```
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-    ```   
+```   
     docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
-    ```
-    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+```
+   
+   Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-    ```
+```
     curl -v -X POST -d \
     '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
-      "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
-    ```
+```
 
 
 ### Deploying on Kubernetes
@@ -610,13 +612,13 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-  ```
+```
   $ballerina build TravelAgency
   
   Run following command to deploy kubernetes artifacts:  
   kubectl apply -f ./target/TravelAgency/kubernetes
  
-  ```
+```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/TravelAgency/kubernetes``. 
@@ -644,8 +646,8 @@ Node Port:
  
 ```
   curl -v -X POST -d \
-  '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
-    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+  '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", 
+  "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
   "http://<Minikube_host_IP>:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
 
 ```
@@ -660,8 +662,8 @@ Access the service
 
 ``` 
  curl -v -X POST -d \
-'{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
-  "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+ '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+ "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
  "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
     
 ```
@@ -687,21 +689,21 @@ enabled=true
 ### Tracing 
 You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 Follow the following steps to use tracing with Ballerina.
-1) Run Jaeger docker image using the following command
-   ```bash
-   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686
-   -p14268:14268 jaegertracing/all- in-one:latest
-   ```
-2) Navigate to `parallel-service-orchestration/src/` and start all services using following command 
-   ```
+- Run Jaeger docker image using the following command
+```bash
+   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp 
+   -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
+```
+- Navigate to `parallel-service-orchestration/src/` and start all services using following command 
+```
    $ballerina run <package_name>
-   ```
+```
    
-3) Observe the tracing using Jaeger UI using following URL
-   ```
+- Observe the tracing using Jaeger UI using following URL
+```
    http://localhost:16686
-   ```
-4) You should see the Jaeger UI as follows
+```
+- You should see the Jaeger UI as follows
 
    ![Jaeger UI](images/tracing-screenshot.png "Tracing Screenshot")
  
@@ -710,8 +712,8 @@ Follow the following steps to use tracing with Ballerina.
 Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
 Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
 
-1) Set the below configurations in the `ballerina.conf` file in the project root.
-   ```ballerina
+- Set the below configurations in the `ballerina.conf` file in the project root.
+```ballerina
    [observability.metrics.prometheus]
    # Flag to enable Prometheus HTTP endpoint
    enabled=true
@@ -723,9 +725,9 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    # The step size to use in computing windowed statistics like max. The default is 1 minute.
    step="PT1M"
 
-   ```
-2) Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
-   ```
+```
+- Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
+```
    global:
    scrape_interval:     15s
    evaluation_interval: 15s
@@ -735,58 +737,58 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    
    static_configs:
         - targets: ['172.17.0.1:9797']
-   ```
+```
    NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
    
-3) Run the Prometheus docker image using the following command
-   ```
+- Run the Prometheus docker image using the following command
+```
    docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/tmp/prometheus.yml prom/prometheus
-   ```
+```
 
-4) Navigate to `parallel-service-orchestration/src/` and start all services using following command 
-   ```
+- Navigate to `parallel-service-orchestration/src/` and start all services using following command 
+```
    $ballerina run <package_name>
-   ```
+```
    NOTE: First start the `TravelAgency` package since it's the main orchastrator for other services(also we are going to trace from Traval Agancy service)
    
-5) You can access Prometheus at the following URL
-   ```
+- You can access Prometheus at the following URL
+```
    http://localhost:19090/
-   ```
+```
    NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
    
   		-  http_requests_total
 		-  http_response_time
 
-6) Promethues UI screenshot
+- Promethues UI with metrics for parallel service orchestration
    
    ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
 
 ### Logging
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-1) Start the Ballerina Service with the following command from `{SAMPLE_ROOT_DIRECTORY}/src`
-   ```
+- Start the Ballerina Service with the following command from `{SAMPLE_ROOT_DIRECTORY}/src`
+```
    nohup ballerina run TravelAgency/ &>> ballerina.log&
-   ```
+```
    NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT_DIRECTORY}/src` directory
-2) Start Elasticsearch using the following command
+- Start Elasticsearch using the following command
 
-   ```
+```
    docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name  
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
-   ```
+```
    NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
    
-3) Start Kibana plugin for data visualization with Elasticsearch
-   ```
+- Start Kibana plugin for data visualization with Elasticsearch
+```
    docker run -p 5601:5601 -h kibana --name kibana --link elasticsearch:elasticsearch 
    docker.elastic.co/kibana/kibana:6.2.2     
-   ```
-4) Configure logstash to format the ballerina logs
+```
+- Configure logstash to format the ballerina logs
    
    i) Create a file named `logstash.conf` with the following content
-      ```
+```
       input {  
        beats { 
 	       port => 5044 
@@ -809,48 +811,50 @@ Ballerina has a log package for logging to the console. You can import ballerina
            document_type => "store_logs"  
 	      }  
       }  
-      ```
+```
       NOTE: We have declared `store` as the index using `index => "store"` statement.
       
      ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
      
      iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
-     ```
+```
         docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
         -v {SAMPLE_ROOT_DIRECTIRY}/pipeline:/usr/share/logstash/pipeline/ 
         -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
-     ```
+```
   
- 5) Configure filebeat to ship the ballerina logs
+ - Configure filebeat to ship the ballerina logs
     
      i) Create a file named `filebeat.yml` with the following content
-      ```
+```
        filebeat.prospectors:
           - type: log
        paths:
           - /usr/share/filebeat/ballerina.log
        output.logstash:
             hosts: ["logstash:5044"]
-      ```
+```
      ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
         
      
      iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
-     ```
+```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
         -v {SAMPLE_ROOT_DIRECTORY}/src/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
 	    --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
-     ```
- 
- 6) Access Kibana to visualize the logs using following URL
-    ```
+```
+
+- Access Kibana to visualize the logs using following URL
+
+```
      http://localhost:5601 
-    ```
-    NOTE: You may need to add `store` index pattern to kibana visualization tool to create a log visualization.
+```
+
+NOTE: You may need to add `store` index pattern to kibana visualization tool to create a log visualization.
     
- 7) Screenshot of Kibana log visualization
+- Kibana log visualization for parallel service orchestration sample
  
      ![logging screenshot](images/logging-screenshot.png "Kibana UI")
      
