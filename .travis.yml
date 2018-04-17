@@ -13,9 +13,9 @@
 # limitations under the License.
 
 before_install:
-- sudo chmod +x install-dependencies.sh
+- sudo chmod +x install-ballerina.sh
 
-install: ./install-dependencies.sh
+install: ./install-ballerina.sh
 
 services:
   - mysql

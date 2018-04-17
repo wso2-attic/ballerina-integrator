@@ -19,31 +19,36 @@ package BankingApplication;
 import ballerina/config;
 import ballerina/log;
 import ballerina/sql;
+import ballerina/mysql;
 
-endpoint sql:Client bankDB {
-    database:sql:DB.MYSQL,
+endpoint mysql:Client bankDB {
     host:"localhost",
     port:3306,
     name:"bankDB?useSSL=false",
     username:"root",
-    password:"",
-    options:{maximumPoolSize:5}
+    password:"Mathematics",
+    poolOptions:{maximumPoolSize:5}
 };
 
 // Function to add users to 'ACCOUNT' table of 'bankDB' database
 public function createAccount (string name) returns (int) {
+    int accId;
     // SQL query parameters
-    sql:Parameter username = {sqlType:sql:Type.VARCHAR, value:name};
-    sql:Parameter initialBalance = {sqlType:sql:Type.INTEGER, value:0};
-    sql:Parameter[] parameters = [username, initialBalance];
+    sql:Parameter username = (sql:TYPE_VARCHAR, name, sql:DIRECTION_IN);
+    sql:Parameter initialBalance = (sql:TYPE_INTEGER, 0, sql:DIRECTION_IN);
     // Insert query
-    _ = bankDB -> update("INSERT INTO ACCOUNT (USERNAME, BALANCE) VALUES (?, ?)", parameters);
+    _ = bankDB -> update("INSERT INTO ACCOUNT (USERNAME, BALANCE) VALUES (?, ?)", username, initialBalance);
+
     // Get the primary key of the last insertion (Auto incremented value)
-    table dt =? bankDB -> select("SELECT LAST_INSERT_ID() AS ACCOUNT_ID", null, null);
+    sql:Parameter trueParam = (sql:TYPE_INTEGER, 1, sql:DIRECTION_IN);
+    table dt = check bankDB -> select("SELECT LAST_INSERT_ID() AS ACCOUNT_ID from ACCOUNT where ?", null, trueParam);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling
-    var jsonResult =? <json>dt;
+    var jsonResult = check <json>dt;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling
-    int accId =? <int>jsonResult[0]["ACCOUNT_ID"].toString();
+    match jsonResult[0]["ACCOUNT_ID"] {
+        int intVal => accId = intVal;
+        any otherVals => accId = 0;
+    }
     log:printInfo("Account ID for user: '" + name + "': " + accId);
     // Return the primary key, which will be the account number of the account
     return accId;
@@ -53,41 +58,45 @@ public function createAccount (string name) returns (int) {
 public function verifyAccount (int accId) returns (boolean) {
     log:printInfo("Verifying whether account ID " + accId + " exists");
     // SQL query parameters
-    sql:Parameter id = {sqlType:sql:Type.INTEGER, value:accId};
-    sql:Parameter[] parameters = [id];
+    sql:Parameter id = (sql:TYPE_INTEGER, accId, sql:DIRECTION_IN);
     // Select query to check whether account exists
-    table dt =? bankDB -> select("SELECT COUNT(*) AS COUNT FROM ACCOUNT WHERE ID = ?", parameters, null);
+    table dt = check bankDB -> select("SELECT COUNT(*) AS COUNT FROM ACCOUNT WHERE ID = ?", null, id);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling
-    var jsonResult =? <json>dt;
+    var jsonResult = check <json>dt;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling
-    var count =? <int>jsonResult[0]["COUNT"].toString();
-    // Return a boolean, which will be true if account exists; false otherwise
-    return <boolean>count;
+    match jsonResult[0]["COUNT"] {
+        // Return a boolean, which will be true if account exists; false otherwise
+        int count => return <boolean>count;
+        any otherVals => return false;
+    }
 }
 
 // Function to check balance in an account
 public function checkBalance (int accId) returns (int|error) {
+    int balance;
     // Verify account whether it exists and return an error if not
     if (!verifyAccount(accId)) {
         error err = {message:"Error: Account does not exist"};
         return err;
     }
     // SQL query parameters
-    sql:Parameter id = {sqlType:sql:Type.INTEGER, value:accId};
-    sql:Parameter[] parameters = [id];
+    sql:Parameter id = (sql:TYPE_INTEGER, accId, sql:DIRECTION_IN);
     // Select query to get balance
-    table dt =? bankDB -> select("SELECT BALANCE FROM ACCOUNT WHERE ID = ?", parameters, null);
+    table dt = check bankDB -> select("SELECT BALANCE FROM ACCOUNT WHERE ID = ?", null, id);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling
-    var jsonResult =? <json>dt;
+    var jsonResult = check <json>dt;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling
-    int balance =? <int>jsonResult[0]["BALANCE"].toString();
+    match jsonResult[0]["BALANCE"] {
+        int intVal => balance = intVal;
+        any otherVals => balance = 0;
+    }
     log:printInfo("Available balance in account ID " + accId + ": " + balance);
     // Return the balance
     return balance;
 }
 
 // Function to deposit money to an account
-public function depositMoney (int accId, int amount) returns (error|null) {
+public function depositMoney (int accId, int amount) returns (error|()) {
     // Check whether the amount specified is valid and return an error if not
     if (amount <= 0) {
         error err = {message:"Error: Invalid amount"};
@@ -100,17 +109,16 @@ public function depositMoney (int accId, int amount) returns (error|null) {
     }
     log:printInfo("Depositing money to account ID: " + accId);
     // SQL query parameters
-    sql:Parameter id = {sqlType:sql:Type.INTEGER, value:accId};
-    sql:Parameter depositAmount = {sqlType:sql:Type.INTEGER, value:amount};
-    sql:Parameter[] parameters = [depositAmount, id];
+    sql:Parameter id = (sql:TYPE_INTEGER, accId, sql:DIRECTION_IN);
+    sql:Parameter depositAmount = (sql:TYPE_INTEGER, amount, sql:DIRECTION_IN);
     // Update query to increase the current balance
-    _ = bankDB -> update("UPDATE ACCOUNT SET BALANCE = (BALANCE + ?) WHERE ID = ?", parameters);
+    _ = bankDB -> update("UPDATE ACCOUNT SET BALANCE = (BALANCE + ?) WHERE ID = ?", depositAmount, id);
     log:printInfo("$" + amount + " has been deposited to account ID " + accId);
-    return null;
+    return ();
 }
 
 // Function to withdraw money from an account
-public function withdrawMoney (int accId, int amount) returns (error|null) {
+public function withdrawMoney (int accId, int amount) returns (error|()) {
     // Check whether the amount specified is valid and return an error if not
     if (amount <= 0) {
         error err = {message:"Error: Invalid amount"};
@@ -129,13 +137,12 @@ public function withdrawMoney (int accId, int amount) returns (error|null) {
     }
     log:printInfo("Withdrawing money from account ID: " + accId);
     // SQL query parameters
-    sql:Parameter id = {sqlType:sql:Type.INTEGER, value:accId};
-    sql:Parameter withdrawAmount = {sqlType:sql:Type.INTEGER, value:amount};
-    sql:Parameter[] parameters = [withdrawAmount, id];
+    sql:Parameter id = (sql:TYPE_INTEGER, accId, sql:DIRECTION_IN);
+    sql:Parameter withdrawAmount = (sql:TYPE_INTEGER, amount, sql:DIRECTION_IN);
     // Update query to reduce the current balance
-    _ = bankDB -> update("UPDATE ACCOUNT SET BALANCE = (BALANCE - ?) WHERE ID = ?", parameters);
+    _ = bankDB -> update("UPDATE ACCOUNT SET BALANCE = (BALANCE - ?) WHERE ID = ?", withdrawAmount, id);
     log:printInfo("$" + amount + " has been withdrawn from account ID " + accId);
-    return null;
+    return ();
 }
 
 // Function to transfer money from one account to another
@@ -154,7 +161,7 @@ public function transferMoney (int fromAccId, int toAccId, int amount) returns (
                 log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " + toAccId);
                 abort;
             }
-            null => {
+            () => {
                 match depositMoney(toAccId, amount) {
                     error depositError => {
                         log:printError("Error while depositing the money: " + depositError.message);
@@ -164,7 +171,7 @@ public function transferMoney (int fromAccId, int toAccId, int amount) returns (
                                        toAccId);
                         abort;
                     }
-                    null => isSuccessful = true;
+                    () => isSuccessful = true;
                 }
             }
         }
