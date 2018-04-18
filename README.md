@@ -506,23 +506,44 @@ curl -v -X POST -d \
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/src/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/guide/`.
 
 ```ballerina
-[observability]
+[b7a.observability]
 
-[observability.metrics]
+[b7a.observability.metrics]
 # Flag to enable Metrics
 enabled=true
 
-[observability.tracing]
+[b7a.observability.tracing]
 # Flag to enable Tracing
 enabled=true
 ```
+NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
 
 ### Tracing 
+
 You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 Follow the following steps to use tracing with Ballerina.
+
+- You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+```
+[b7a.observability]
+
+[b7a.observability.tracing]
+enabled=true
+name="jaeger"
+
+[b7a.observability.tracing.jaeger]
+reporter.hostname="localhost"
+reporter.port=5775
+sampler.param=1.0
+sampler.type="const"
+reporter.flush.interval.ms=2000
+reporter.log.spans=true
+reporter.max.buffer.spans=1000
+
+```
 
 - Run Jaeger docker image using the following command
 ```bash
@@ -549,18 +570,22 @@ Follow the following steps to use tracing with Ballerina.
 Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
 Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
 
-- Set the below configurations in the `ballerina.conf` file in the project root.
+- You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
+
 ```ballerina
-   [observability.metrics.prometheus]
-   # Flag to enable Prometheus HTTP endpoint
-   enabled=true
-   # Prometheus HTTP endpoint port. Metrics will be exposed in /metrics context.
-   # Eg: http://localhost:9797/metrics
-   port=9797
-   # Flag to indicate whether meter descriptions should be sent to Prometheus.
-   descriptions=false
-   # The step size to use in computing windowed statistics like max. The default is 1 minute.
-   step="PT1M"
+[b7a.observability.metrics]
+enabled=true
+provider="micrometer"
+
+[b7a.observability.metrics.micrometer]
+registry.name="prometheus"
+
+[b7a.observability.metrics.prometheus]
+port=9700
+hostname="0.0.0.0"
+descriptions=false
+step="PT1M"
+
 ```
 
 - Create a file `prometheus.yml` inside `/etc/` location. Add the below configurations to the `prometheus.yml` file.
@@ -573,7 +598,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
     - job_name: 'prometheus'
    
    static_configs:
-        - targets: ['172.17.0.1:9797']
+        - targets: ['172.17.0.1:9700']
 ```
 
    NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
