@@ -43,14 +43,14 @@ We can model the OrderMgt RESTful service using Ballerina services and resources
 
 ```
 restful-service
-  └── src
+  └── guide
       └── restful_service
           ├── order_mgt_service.bal
           └── test
               └── order_mgt_service_test.bal          
 ```
 
-- Once you created your package structure, go to the sample src directory and run the following command to initialize your Ballerina project.
+- Once you created your package structure, go to the sample `guide` directory and run the following command to initialize your Ballerina project.
 
 ```bash
    $ballerina init
@@ -247,7 +247,7 @@ service<http:Service> order_mgt bind listener {
 
 You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
-1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command. 
+1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command. 
 
 ```
 $ballerina build restful_service
@@ -319,12 +319,12 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 
 This guide contains unit test cases for each resource available in the 'order_mgt_service.bal'.
 
-To run the unit tests, go to the sample src directory and run the following command.
+To run the unit tests, go to the sample `guide` directory and run the following command.
 ```bash
    $ballerina test
 ```
 
-To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/src/restful_service/test/order_mgt_service_test.bal).
+To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/test/order_mgt_service_test.bal).
 
 
 ## Deployment
@@ -373,7 +373,7 @@ service<http:Service> order_mgt bind listener {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
   
 ```
    $ballerina build restful_service
@@ -551,7 +551,7 @@ reporter.max.buffer.spans=1000
    -p14268:14268 jaegertracing/all- in-one:latest
 ```
 
-- Navigate to `restful-service/src/` and run the restful-service using following command 
+- Navigate to `restful-service/guide/` and run the restful-service using following command 
 ```
    $ballerina run restful_service/
 ```
@@ -691,7 +691,7 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your
      
  ```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
-        -v {SAMPLE_ROOT_DIRECTORY}/src/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
+        -v {SAMPLE_ROOT_DIRECTORY}/guide/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
 	--link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
  ```
  
