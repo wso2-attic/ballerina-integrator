@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package HotelReservation;
+package airline_reservation;
 
 import ballerina/http;
 //import ballerinax/docker;
@@ -22,43 +22,46 @@ import ballerina/http;
 
 //@docker:Config {
 //    registry:"ballerina.guides.io",
-//    name:"hotel_reservation_service",
+//    name:"airline_reservation_service",
 //    tag:"v1.0"
 //}
+//
+//@docker:Expose{}
 
 //@kubernetes:Ingress {
 //  hostname:"ballerina.guides.io",
-//  name:"ballerina-guides-hotel-reservation-service",
+//  name:"ballerina-guides-airline-reservation-service",
 //  path:"/"
 //}
 //
 //@kubernetes:Service {
 //  serviceType:"NodePort",
-//  name:"ballerina-guides-hotel-reservation-service"
+//  name:"ballerina-guides-airline-reservation-service"
 //}
 //
 //@kubernetes:Deployment {
-//  image:"ballerina.guides.io/hotel_reservation_service:v1.0",
-//  name:"ballerina-guides-hotel-reservation-service"
+//  image:"ballerina.guides.io/airline_reservation_service:v1.0",
+//  name:"ballerina-guides-airline-reservation-service"
 //}
 
 // Service endpoint
-endpoint http:Listener hotelEP {
-    port:9092
+endpoint http:Listener airlineEP {
+    port:9091
 };
 
-// Available room types
-@final string AC = "Air Conditioned";
-@final string NORMAL = "Normal";
+// Available flight classes
+@final string ECONOMY = "Economy";
+@final string BUSINESS = "Business";
+@final string FIRST = "First";
 
-// Hotel reservation service to reserve hotel rooms
-@http:ServiceConfig {basePath:"/hotel"}
-service<http:Service> hotelReservationService bind hotelEP {
+// Airline reservation service to reserve airline tickets
+@http:ServiceConfig {basePath:"/airline"}
+service<http:Service> airlineReservationService bind airlineEP {
 
-    // Resource to reserve a room
+    // Resource to reserve a ticket
     @http:ResourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
         produces:["application/json"]}
-    reserveRoom(endpoint client, http:Request request) {
+    reserveTicket(endpoint client, http:Request request) {
         http:Response response;
         json reqPayload;
 
@@ -78,10 +81,10 @@ service<http:Service> hotelReservationService bind hotelEP {
         json name = reqPayload.Name;
         json arrivalDate = reqPayload.ArrivalDate;
         json departDate = reqPayload.DepartureDate;
-        json preferredRoomType = reqPayload.Preference;
+        json preferredClass = reqPayload.Preference;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (name == null || arrivalDate == null || departDate == null || preferredRoomType == null) {
+        if (name == null || arrivalDate == null || departDate == null || preferredClass == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
@@ -89,13 +92,14 @@ service<http:Service> hotelReservationService bind hotelEP {
         }
 
         // Mock logic
-        // If request is for an available room type, send a reservation successful status
-        string preferredTypeStr = preferredRoomType.toString() but { () => "" };
-        if (preferredTypeStr.equalsIgnoreCase(AC) || preferredTypeStr.equalsIgnoreCase(NORMAL)) {
+        // If request is for an available flight class, send a reservation successful status
+        string preferredClassStr = preferredClass.toString() but { () => "" };
+        if (preferredClassStr.equalsIgnoreCase(ECONOMY) || preferredClassStr.equalsIgnoreCase(BUSINESS) ||
+            preferredClassStr.equalsIgnoreCase(FIRST)) {
             response.setJsonPayload({"Status":"Success"});
         }
         else {
-            // If request is not for an available room type, send a reservation failure status
+            // If request is not for an available flight class, send a reservation failure status
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response

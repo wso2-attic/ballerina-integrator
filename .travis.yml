@@ -13,13 +13,13 @@
 # limitations under the License.
 
 before_install:
-- sudo chmod +x install-dependencies.sh
+- sudo chmod +x install-ballerina.sh
 
-install: ./install-dependencies.sh
+install: ./install-ballerina.sh
   
 script:
 - export PATH=$PATH:$(pwd)/ballerina-tools-0.970.0-alpha1/bin
-- cd src/
+- cd guides/
 - ballerina init
 - ballerina test
 

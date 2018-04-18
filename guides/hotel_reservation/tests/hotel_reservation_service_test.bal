@@ -14,29 +14,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package CarRental;
+package hotel_reservation;
 
 import ballerina/test;
 import ballerina/http;
 
 @test:BeforeSuite
 function beforeFunc() {
-    // Start the 'carRentalService' before running the test
-    _ = test:startServices("CarRental");
+    // Start the 'hotelReservationService' before running the test
+    _ = test:startServices("hotel_reservation");
 }
 
 // Client endpoint
 endpoint http:Client clientEP {
-    targets:[{url:"http://localhost:9093/car"}]
+    targets:[{url:"http://localhost:9092/hotel"}]
 };
 
-// Function to test Car rental service
+// Function to test Hotel reservation service
 @test:Config
-function testCarRentalService() {
+function testHotelReservationService() {
     // Initialize the empty http requests and responses
     http:Request request;
 
-    // Test the 'rentCar' resource
+    // Test the 'reserveRoom' resource
     // Construct a request payload
     json payload = {
         "Name":"Alice",
@@ -47,9 +47,9 @@ function testCarRentalService() {
 
     request.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/rent", request);
+    http:Response response = check clientEP -> post("/reserve", request);
     // Expected response code is 200
-    test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Hotel reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     json resPayload = check response.getJsonPayload();
     json expected = {"Status":"Success"};
@@ -58,6 +58,6 @@ function testCarRentalService() {
 
 @test:AfterSuite
 function afterFunc() {
-    // Stop the 'carRentalService' after running the test
-    test:stopServices("CarRental");
+    // Stop the 'hotelReservationService' after running the test
+    test:stopServices("hotel_reservation");
 }

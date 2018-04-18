@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package CarRental;
+package car_rental;
 
 import ballerina/http;
 //import ballerinax/docker;
@@ -25,6 +25,8 @@ import ballerina/http;
 //    name:"car_rental_service",
 //    tag:"v1.0"
 //}
+//
+//@docker:Expose{}
 
 //@kubernetes:Ingress {
 //  hostname:"ballerina.guides.io",
