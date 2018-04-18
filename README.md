@@ -16,7 +16,7 @@ To understanding how you can build a RESTful web service using Ballerina, let’
 We can model the order management scenario as a RESTful web service; 'OrderMgtService',  which accepts different HTTP request for order management tasks such as order creation, retrieval, updating and deletion.
 The following figure illustrates all the required functionalities of the OrderMgt RESTful web service that we need to build. 
 
-![RESTful Service](images/restful_service.png "RESTful Service")
+![RESTful Service](images/restful-service.svg "RESTful Service")
 
 - **Create Order** : To place a new order you can use the HTTP POST message that contains the order details, which is sent to the URL `http://xyz.retail.com/order`.The response from the service contains an HTTP 201 Created message with the location header pointing to the newly created resource `http://xyz.retail.com/order/123456`. 
 - **Retrieve Order** : You can retrieve the order details by sending an HTTP GET request to the appropriate URL which includes the order ID.`http://xyz.retail.com/order/<orderId>` 
@@ -458,7 +458,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
    kubectl apply -f ./target/restful_service/kubernetes
 ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
+- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/restful_service/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
