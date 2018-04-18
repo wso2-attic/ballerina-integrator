@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package car_rental;
+package airline_reservation;
 
 import ballerina/http;
 //import ballerinax/docker;
@@ -22,42 +22,46 @@ import ballerina/http;
 
 //@docker:Config {
 //    registry:"ballerina.guides.io",
-//    name:"car_rental_service",
+//    name:"airline_reservation_service",
 //    tag:"v1.0"
 //}
+//
+//@docker:Expose{}
 
 //@kubernetes:Ingress {
 //  hostname:"ballerina.guides.io",
-//  name:"ballerina-guides-car-rental-service",
+//  name:"ballerina-guides-airline-reservation-service",
 //  path:"/"
 //}
 //
 //@kubernetes:Service {
 //  serviceType:"NodePort",
-//  name:"ballerina-guides-car-rental-service"
+//  name:"ballerina-guides-airline-reservation-service"
 //}
 //
 //@kubernetes:Deployment {
-//  image:"ballerina.guides.io/car_rental_service:v1.0",
-//  name:"ballerina-guides-car-rental-service"
+//  image:"ballerina.guides.io/airline_reservation_service:v1.0",
+//  name:"ballerina-guides-airline-reservation-service"
 //}
 
 // Service endpoint
-endpoint http:Listener carEP {
-    port:9093
+endpoint http:Listener airlineEP {
+    port:9091
 };
 
-// Available car types
-@final string AC = "Air Conditioned";
-@final string NORMAL = "Normal";
+// Available flight classes
+@final string ECONOMY = "Economy";
+@final string BUSINESS = "Business";
+@final string FIRST = "First";
 
-// Car rental service to rent cars
-@http:ServiceConfig {basePath:"/car"}
-service<http:Service> carRentalService bind carEP {
+// Airline reservation service to reserve airline tickets
+@http:ServiceConfig {basePath:"/airline"}
+service<http:Service> airlineReservationService bind airlineEP {
 
-    // Resource to rent a car
-    @http:ResourceConfig {methods:["POST"], path:"/rent", consumes:["application/json"], produces:["application/json"]}
-    rentCar(endpoint client, http:Request request) {
+    // Resource to reserve a ticket
+    @http:ResourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
+        produces:["application/json"]}
+    reserveTicket(endpoint client, http:Request request) {
         http:Response response;
         json reqPayload;
 
@@ -77,10 +81,10 @@ service<http:Service> carRentalService bind carEP {
         json name = reqPayload.Name;
         json arrivalDate = reqPayload.ArrivalDate;
         json departDate = reqPayload.DepartureDate;
-        json preferredType = reqPayload.Preference;
+        json preferredClass = reqPayload.Preference;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (name == null || arrivalDate == null || departDate == null || preferredType == null) {
+        if (name == null || arrivalDate == null || departDate == null || preferredClass == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
@@ -88,13 +92,14 @@ service<http:Service> carRentalService bind carEP {
         }
 
         // Mock logic
-        // If request is for an available car type, send a rental successful status
-        string preferredTypeStr = preferredType.toString() but { () => "" };
-        if (preferredTypeStr.equalsIgnoreCase(AC) || preferredTypeStr.equalsIgnoreCase(NORMAL)) {
+        // If request is for an available flight class, send a reservation successful status
+        string preferredClassStr = preferredClass.toString() but { () => "" };
+        if (preferredClassStr.equalsIgnoreCase(ECONOMY) || preferredClassStr.equalsIgnoreCase(BUSINESS) ||
+            preferredClassStr.equalsIgnoreCase(FIRST)) {
             response.setJsonPayload({"Status":"Success"});
         }
         else {
-            // If request is not for an available car type, send a rental failure status
+            // If request is not for an available flight class, send a reservation failure status
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
