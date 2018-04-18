@@ -443,7 +443,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
   kubectl apply -f ./target/restful_service/kubernetes
   ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
+- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/restful_service/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
