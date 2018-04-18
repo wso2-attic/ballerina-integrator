@@ -43,14 +43,14 @@ We can model the OrderMgt RESTful service using Ballerina services and resources
 
 ```
 restful-service
-  └── src
+  └── guide
       └── restful_service
           ├── order_mgt_service.bal
           └── test
               └── order_mgt_service_test.bal          
 ```
 
-- Once you created your package structure, go to the sample src directory and run the following command to initialize your Ballerina project.
+- Once you created your package structure, go to the sample `guide` directory and run the following command to initialize your Ballerina project.
 
 ```bash
    $ballerina init
@@ -247,7 +247,7 @@ service<http:Service> order_mgt bind listener {
 
 You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
-1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command. 
+1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command. 
 
 ```
 $ballerina build restful_service
@@ -319,12 +319,12 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 
 This guide contains unit test cases for each resource available in the 'order_mgt_service.bal'.
 
-To run the unit tests, go to the sample src directory and run the following command.
+To run the unit tests, go to the sample `guide` directory and run the following command.
 ```bash
    $ballerina test
 ```
 
-To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/src/restful_service/test/order_mgt_service_test.bal).
+To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/test/order_mgt_service_test.bal).
 
 
 ## Deployment
@@ -373,7 +373,7 @@ service<http:Service> order_mgt bind listener {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
   
 ```
    $ballerina build restful_service
@@ -506,23 +506,44 @@ curl -v -X POST -d \
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/src/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/guide/`.
 
 ```ballerina
-[observability]
+[b7a.observability]
 
-[observability.metrics]
+[b7a.observability.metrics]
 # Flag to enable Metrics
 enabled=true
 
-[observability.tracing]
+[b7a.observability.tracing]
 # Flag to enable Tracing
 enabled=true
 ```
+NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
 
 ### Tracing 
+
 You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 Follow the following steps to use tracing with Ballerina.
+
+- You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+```
+[b7a.observability]
+
+[b7a.observability.tracing]
+enabled=true
+name="jaeger"
+
+[b7a.observability.tracing.jaeger]
+reporter.hostname="localhost"
+reporter.port=5775
+sampler.param=1.0
+sampler.type="const"
+reporter.flush.interval.ms=2000
+reporter.log.spans=true
+reporter.max.buffer.spans=1000
+
+```
 
 - Run Jaeger docker image using the following command
 ```bash
@@ -530,7 +551,7 @@ Follow the following steps to use tracing with Ballerina.
    -p14268:14268 jaegertracing/all- in-one:latest
 ```
 
-- Navigate to `restful-service/src/` and run the restful-service using following command 
+- Navigate to `restful-service/guide/` and run the restful-service using following command 
 ```
    $ballerina run restful_service/
 ```
@@ -549,18 +570,22 @@ Follow the following steps to use tracing with Ballerina.
 Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
 Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
 
-- Set the below configurations in the `ballerina.conf` file in the project root.
+- You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
+
 ```ballerina
-   [observability.metrics.prometheus]
-   # Flag to enable Prometheus HTTP endpoint
-   enabled=true
-   # Prometheus HTTP endpoint port. Metrics will be exposed in /metrics context.
-   # Eg: http://localhost:9797/metrics
-   port=9797
-   # Flag to indicate whether meter descriptions should be sent to Prometheus.
-   descriptions=false
-   # The step size to use in computing windowed statistics like max. The default is 1 minute.
-   step="PT1M"
+[b7a.observability.metrics]
+enabled=true
+provider="micrometer"
+
+[b7a.observability.metrics.micrometer]
+registry.name="prometheus"
+
+[b7a.observability.metrics.prometheus]
+port=9700
+hostname="0.0.0.0"
+descriptions=false
+step="PT1M"
+
 ```
 
 - Create a file `prometheus.yml` inside `/etc/` location. Add the below configurations to the `prometheus.yml` file.
@@ -573,7 +598,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
     - job_name: 'prometheus'
    
    static_configs:
-        - targets: ['172.17.0.1:9797']
+        - targets: ['172.17.0.1:9700']
 ```
 
    NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
@@ -610,8 +635,9 @@ Ballerina has a log package for logging to the console. You can import ballerina
 ```
 
 - Configure logstash to format the ballerina logs
-   i) Create a file named `logstash.conf` with the following content
- ```
+
+i) Create a file named `logstash.conf` with the following content
+```
       input {  
        beats { 
 	       port => 5044 
@@ -635,9 +661,10 @@ Ballerina has a log package for logging to the console. You can import ballerina
 	      }  
       }  
 ```
-     ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
+
+ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
      
-     iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
+iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
 ```
         docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
@@ -647,7 +674,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
   
  - Configure filebeat to ship the ballerina logs
     
-     i) Create a file named `filebeat.yml` with the following content
+i) Create a file named `filebeat.yml` with the following content
  ```
        filebeat.prospectors:
           - type: log
@@ -656,14 +683,15 @@ Ballerina has a log package for logging to the console. You can import ballerina
        output.logstash:
             hosts: ["logstash:5044"]
  ```
-     ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
+ 
+ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
         
      
-     iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
+iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
  ```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
-        -v {SAMPLE_ROOT_DIRECTORY}/src/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
+        -v {SAMPLE_ROOT_DIRECTORY}/guide/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
 	--link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
  ```
  
