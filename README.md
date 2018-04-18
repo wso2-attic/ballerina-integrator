@@ -611,7 +611,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 
 - Configure logstash to format the ballerina logs
 
-  i) Create a file named `logstash.conf` with the following content
+i) Create a file named `logstash.conf` with the following content
 ```
       input {  
        beats { 
@@ -637,9 +637,9 @@ Ballerina has a log package for logging to the console. You can import ballerina
       }  
 ```
 
-  ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
+ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
      
-  iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
+iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
 ```
         docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
@@ -649,7 +649,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
   
  - Configure filebeat to ship the ballerina logs
     
-    i) Create a file named `filebeat.yml` with the following content
+i) Create a file named `filebeat.yml` with the following content
  ```
        filebeat.prospectors:
           - type: log
@@ -659,10 +659,10 @@ Ballerina has a log package for logging to the console. You can import ballerina
             hosts: ["logstash:5044"]
  ```
  
-   ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
+ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
         
      
-   iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
+iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
  ```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
