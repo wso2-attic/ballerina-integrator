@@ -49,8 +49,8 @@ restful-service
 ```
 You can create the above Ballerina project using Ballerina project initializing toolkit.
 
-- First, create a new directory in your local machine as `restful-service` and navigate inside the directory using terminal. 
-- Then enter the following for the Ballerina project initializing toolkit.
+- First, create a new directory in your local machine as `restful-service` and navigate to the directory using terminal. 
+- Then enter the following inputs to the Ballerina project initializing toolkit.
 ```bash
 restful-service$ ballerina init -i
 Create Ballerina.toml [yes/y, no/n]: (y) y
