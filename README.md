@@ -699,7 +699,8 @@ i) Create a file named `filebeat.yml` with the following content
        output.logstash:
             hosts: ["logstash:5044"]
 ```
- 
+NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
+
 ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
         
      
