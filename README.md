@@ -244,11 +244,11 @@ service<http:Service> order_mgt bind listener {
 
 ### Invoking the RESTful service 
 
-You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installed in you local machine.  
-
+You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `<SAMPLE_ROOT_DIRECTORY>/guide` and execute the following command.
 ```
 $ballerina run restful_service
 ```
+NOTE: You need to have the Ballerina installed in you local machine to run the Ballerina service.  
 
 You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of OrderMgtService as follows. 
 
