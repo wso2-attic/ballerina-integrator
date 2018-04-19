@@ -1,6 +1,6 @@
 # RESTful Service  
 
-In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
+> In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
 
 The following are the sections available in this guide.
 
