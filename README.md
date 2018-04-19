@@ -630,7 +630,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 
 - Start the Ballerina Service with the following command from `{SAMPLE_ROOT_DIRECTORY}/src`
 ```
-   nohup ballerina run TravelAgency/ &>> ballerina.log&
+   nohup ballerina run restful_service/ &>> ballerina.log&
 ```
    NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT_DIRECTORY}/src` directory
 
