@@ -675,30 +675,31 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your
  - Configure filebeat to ship the ballerina logs
     
 i) Create a file named `filebeat.yml` with the following content
- ```
+```
        filebeat.prospectors:
           - type: log
        paths:
           - /usr/share/filebeat/ballerina.log
        output.logstash:
             hosts: ["logstash:5044"]
- ```
+```
  
 ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
         
      
 iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
- ```
+```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
         -v {SAMPLE_ROOT_DIRECTORY}/guide/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
 	--link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
- ```
+```
  
  - Access Kibana to visualize the logs using following URL
- ```
+
+```
      http://localhost:5601 
- ```
+```
  
  - Kibana log visualization for the restful service sample
  
