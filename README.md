@@ -256,7 +256,7 @@ service<http:Service> order_mgt bind listener {
 
 ### Invoking the RESTful service 
 
-You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `<SAMPLE_ROOT_DIRECTORY>/guide` and execute the following command.
+You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `<SAMPLE_ROOT_DIRECTORY>/guide.restful_service` and execute the following command.
 ```
 $ballerina run restful_service
 ```
@@ -314,12 +314,12 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 
 This guide contains unit test cases for each resource available in the 'order_mgt_service.bal'.
 
-To run the unit tests, go to the sample `guide` directory and run the following command.
+To run the unit tests, go to the sample `guide.restful_service` directory and run the following command.
 ```bash
    $ballerina test
 ```
 
-To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/test/order_mgt_service_test.bal).
+To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide.restful_service/restful_service/test/order_mgt_service_test.bal).
 
 
 ## Deployment
@@ -328,7 +328,7 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying locally
 
-- As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command. 
+- As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/guide.restful_service/` folder and run the following command. 
 
 ```
 $ballerina build restful_service
@@ -383,7 +383,7 @@ service<http:Service> order_mgt bind listener {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide.restful_service/` folder and run the following command.  
   
 ```
    $ballerina build restful_service
@@ -515,7 +515,7 @@ curl -v -X POST -d \
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/guide/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/guide.restful_service/`.
 
 ```ballerina
 [b7a.observability]
@@ -560,7 +560,7 @@ reporter.max.buffer.spans=1000
    -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `restful-service/guide/` and run the restful-service using following command 
+- Navigate to `restful-service/guide.restful_service/` and run the restful-service using following command 
 ```
    $ballerina run restful_service/
 ```
@@ -717,7 +717,7 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your
      
 ```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
-        -v {SAMPLE_ROOT_DIRECTORY}/guide/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
+        -v {SAMPLE_ROOT_DIRECTORY}/guide.restful_service/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
 	--link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
