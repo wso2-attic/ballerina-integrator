@@ -613,9 +613,8 @@ scrape_configs:
 - You can access Prometheus at the following URL
 
 NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
-   
-  		-  http_requests_total
-		-  http_response_time
+-  http_requests_total
+-  http_response_time
 
 ```
    http://localhost:19090/
