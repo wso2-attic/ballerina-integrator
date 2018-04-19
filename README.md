@@ -34,19 +34,31 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 ## Developing the service 
 
-We can model the OrderMgt RESTful service using Ballerina services and resources constructs. 
+### Create the project structure
 
-- We can get started with a Ballerina service; 'OrderMgtService', which is the RESTful service that serves the order management request. OrderMgtService can have multiple resources and each resource is dedicated for a specific order management functionality.
-
-- You can decide the package structure for the service and then create the service in the corresponding directory structure. For example, suppose that you are going to use the package name 'restful_service', then you need to create the following directory structure and create the service file using the text editor or IDE that you use. 
+-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
 restful-service
-  └── guide
-      └── restful_service
-          ├── order_mgt_service.bal
-          └── test
-              └── order_mgt_service_test.bal          
+  └── guide.restful_service
+      ├── order_mgt_service.bal
+      └── test
+          └── order_mgt_service_test.bal          
+```
+You can create the above Ballerina project using Ballerina project initializing toolkit.
+
+- First, create a new directory in your local machine as `restful-service` and navigate inside the directory using terminal. 
+- Then enter the following for the Ballerina project initializing toolkit.
+```bash
+restful-service$ ballerina init -i
+Create Ballerina.toml [yes/y, no/n]: (y) y
+Organization name: (username) restful-service
+Version: (0.0.1) 
+Ballerina source [service/s, main/m]: (s) s
+Package for the service : (no package) guide.restful_service
+Ballerina source [service/s, main/m, finish/f]: (f) f
+
+Ballerina project initialized
 ```
 
 - Once you created your package structure, go to the sample `guide` directory and run the following command to initialize your Ballerina project.
@@ -56,11 +68,15 @@ restful-service
 ```
 
   The above command will initialize the project with a `Ballerina.toml` file and `.ballerina` implementation directory that contain a list of packages in the current directory.
+  
+### Implement the RESTful web service
+
+- We can get started with a Ballerina service; 'OrderMgtService', which is the RESTful service that serves the order management request. OrderMgtService can have multiple resources and each resource is dedicated for a specific order management functionality.
 
 - You can add the content to your Ballerina service as shown below. In that code segment you can find the implementation of the service and resource skeletons of 'OrderMgtService'. 
 For each order management operation, there is a dedicated resource and inside each resource we can implement the order management operation logic. 
 
-##### order_mgt_service.bal
+##### Skeleton code for order_mgt_service.bal
 ```ballerina
 ppackage restful_service;
 
