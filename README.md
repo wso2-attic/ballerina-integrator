@@ -33,8 +33,8 @@ The following figure illustrates all the required functionalities of the OrderMg
 - [Docker](https://docs.docker.com/engine/installation/)
 
 ## Developing the service 
-> To start from scratch follow the "Developing the service" section
-> If you want to skip the basics you can download the git repo and directly move to "Testing" section.
+
+> If you want to skip the basics, you can download the git repo and directly move to "Testing" section by skipping "Developing" section.
 
 ### Create the project structure
 
