@@ -590,15 +590,16 @@ step="PT1M"
 
 - Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
 ```
-   global:
-   scrape_interval:     15s
-   evaluation_interval: 15s
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
 
-   scrape_configs:
-    - job_name: 'prometheus'
-   
-   static_configs:
-        - targets: ['172.17.0.1:9700']
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ['172.17.0.1:9797']
+      
 ```
 
    NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
