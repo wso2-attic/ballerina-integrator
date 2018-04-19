@@ -395,10 +395,9 @@ This will also create the corresponding docker image using the docker annotation
 - You can access the service using the same curl commands that we've used above. 
  
 ```
-   curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-   "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
+   curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample \
+   order."}}' "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
 ```
-
 
 ### Deploying on Kubernetes
 
@@ -639,28 +638,28 @@ Ballerina has a log package for logging to the console. You can import ballerina
 
 i) Create a file named `logstash.conf` with the following content
 ```
-      input {  
-       beats { 
-	       port => 5044 
-	      }  
-      }
+     input {  
+         beats{ 
+	     port => 5044 
+	 }  
+     }
       
-      filter {  
-       grok  {  
-	       match => { 
-                  "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
-                  \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
-                 }  
-       }  
-      }   
+     filter {  
+         grok{  
+	     match => { 
+                 "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
+                 \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
+             }  
+         }  
+     }   
       
-      output {  
-       elasticsearch {  
-    	   hosts => "elasticsearch:9200"  
-    	   index => "store"  
-        document_type => "store_logs"  
-	      }  
-      }  
+     output {  
+         elasticsearch{  
+    	     hosts => "elasticsearch:9200"  
+    	     index => "store"  
+             document_type => "store_logs"  
+	 }  
+     }  
 ```
 
 ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
