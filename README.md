@@ -697,8 +697,7 @@ filebeat.prospectors:
   paths:
     - /usr/share/filebeat/ballerina.log
 output.logstash:
-  hosts: ["logstash:5044"]
-  
+  hosts: ["logstash:5044"]  
 ```
 NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
 
