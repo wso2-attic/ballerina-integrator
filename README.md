@@ -692,12 +692,13 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your
     
 i) Create a file named `filebeat.yml` with the following content
 ```
-       filebeat.prospectors:
-          - type: log
-       paths:
-          - /usr/share/filebeat/ballerina.log
-       output.logstash:
-            hosts: ["logstash:5044"]
+filebeat.prospectors:
+- type: log
+  paths:
+    - /usr/share/filebeat/ballerina.log
+output.logstash:
+  hosts: ["logstash:5044"]
+  
 ```
 NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
 
