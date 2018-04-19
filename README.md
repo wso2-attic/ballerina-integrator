@@ -36,7 +36,7 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 ### Create the project structure
 
--Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+- Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
 restful-service
