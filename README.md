@@ -1,5 +1,7 @@
 # RESTful Service  
 
+Representational State Transfer (REST) is an architectural style that defines set of constraints and properties based on HTTP.RESTful architecture includes uniform interface, that provides performance, scalability, and modifiability, that enable services to work best on the Web.
+
 > In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
 
 The following are the sections available in this guide.
