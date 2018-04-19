@@ -692,9 +692,9 @@ ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIR
 iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
 ```
-        docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
-        -v ~/{SAMPLE_ROOT_DIRECTIRY}/pipeline:/usr/share/logstash/pipeline/ 
-        -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
+docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
+-v ~/{SAMPLE_ROOT_DIRECTIRY}/pipeline:/usr/share/logstash/pipeline/ 
+-p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
   
  - Configure filebeat to ship the ballerina logs
