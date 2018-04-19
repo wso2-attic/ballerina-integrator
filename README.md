@@ -33,6 +33,8 @@ The following figure illustrates all the required functionalities of the OrderMg
 - [Docker](https://docs.docker.com/engine/installation/)
 
 ## Developing the service 
+> To start from scratch follow the "Developing the service" section
+> If you want to skip the basics you can download the git repo and directly move to "Testing" section.
 
 ### Create the project structure
 
@@ -61,13 +63,7 @@ Ballerina source [service/s, main/m, finish/f]: (f) f
 Ballerina project initialized
 ```
 
-- Once you created your package structure, go to the sample `guide` directory and run the following command to initialize your Ballerina project.
-
-```bash
-   $ballerina init
-```
-
-  The above command will initialize the project with a `Ballerina.toml` file and `.ballerina` implementation directory that contain a list of packages in the current directory.
+- Once you initialize your Ballerina project. You can change the names of the file to match with our guide project file names.
   
 ### Implement the RESTful web service
 
