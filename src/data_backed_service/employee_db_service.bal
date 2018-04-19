@@ -24,6 +24,7 @@ import ballerina/http;
 import ballerina/config;
 import ballerina/io;
 //import ballerinax/docker;
+//import ballerinax/kubernetes;
 
 type Employee {
     string name;
@@ -42,14 +43,40 @@ endpoint mysql:Client employeeDB {
     poolOptions:{maximumPoolSize:5}
 };
 
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"employee_database_service",
+//    tag:"v1.0"
+//}
+//
+//@docker:CopyFiles{
+//    files:[{source:<path_to_JDBC_jar>,
+//            target:"/ballerina/runtime/bre/lib"}]
+//}
+//
+//@docker:Expose{}
+
+//@kubernetes:Ingress {
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-employee-database-service",
+//    path:"/"
+//}
+//
+//@kubernetes:Service {
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-employee-database-service"
+//}
+//
+//@kubernetes:Deployment {
+//    image:"ballerina.guides.io/employee_database_service:v1.0",
+//    name:"ballerina-guides-employee-database-service",
+//    copyFiles:[{target:"/ballerina/runtime/bre/lib",
+//                source:<path_to_JDBC_jar>}]
+//}
+
 endpoint http:Listener listener {
     port:9090
 };
-
-//@docker:Config {
-//    name:"employee-database-service",
-//    tag:"v1.0"
-//}
 
 @http:ServiceConfig {
     basePath:"/records"
@@ -142,7 +169,7 @@ service<http:Service> employee_data_service bind listener {
             //return;
         }
 
-        // Invoke updateData function to update data in Mymysql database
+        // Invoke updateData function to update data in mysql database
         json ret = updateData(employeeData.name, employeeData.age, employeeData.ssn, employeeData.employeeId);
         // Send the response back to the client with the employee data
         response.setJsonPayload(ret);
@@ -257,4 +284,3 @@ public function deleteData(int employeeID) returns (json) {
     }
     return updateStatus;
 }
-

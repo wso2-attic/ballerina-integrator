@@ -24,7 +24,7 @@ You'll build an employee data management REST service that performs CRUD Operati
 Basically, this service will deal with a MySQL database and expose the data operations as a web service. Refer to the following scenario diagram to understand the complete end-to-end scenario.
 
 
-![alt text](/images/data-backed-service.png)
+![alt text](/images/data-backed-service.svg)
 
 
 ## Prerequisites
@@ -458,9 +458,36 @@ ballerina run employee_db_service.balx
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
+You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in docker container.   
 
-- In our employee_data_service, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
+- First let's see how to configure MySQL in docker container.
+
+  * Initially, you need to pull the MySQL docker image using the below command.
+```
+    $docker pull mysql
+```
+
+  * Then run the MySQL as root user with container name `docker_mysql` and password being `root` to easily follow this guide. 
+```
+    $docker run --name docker_mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+```
+
+  * Check whether the MySQL container is up and running using the following command.
+```
+    $docker ps
+```
+
+  * Navigate to the sample root directory and run the below command to copy the database script file to the MySQL Docker container, which will be used to create the required database.
+```
+    $docker cp ./resources/initializeDataBase.sql <CONTAINER_ID>:/
+```
+
+  * Run the SQL script file in the container to create the required database using the below command.
+```
+    $docker exec <CONTAINER_ID> /bin/sh -c 'mysql -u root -proot </initializeDataBase.sql'    
+```
+
+- Now let's add the required docker annotations in our employee_db_service. You need to import  `` ballerinax/docker; `` and add the docker annotations as shown below to enable docker image generation during the build time. 
 
 ##### employee_db_service.bal
 ```ballerina
@@ -471,7 +498,15 @@ import ballerinax/docker;
 
 // Employee type definition
 
-// sql:Client endpoint definition
+// Create SQL endpoint to MySQL database
+endpoint mysql:Client employeeDB {
+    host:<MySQL_Container_IP>,
+    port:3306,
+    name:"EMPLOYEE_RECORDS",
+    username:"root",
+    password:"root",
+    poolOptions:{maximumPoolSize:5}
+};
 
 @docker:Config {
     registry:"ballerina.guides.io",
@@ -479,7 +514,14 @@ import ballerinax/docker;
     tag:"v1.0"
 }
 
-endpoint http:ServiceEndpoint listener {
+@docker:CopyFiles {
+    files:[{source:<path_to_JDBC_jar>,
+            target:"/ballerina/runtime/bre/lib"}]
+}
+
+@docker:Expose {}
+
+endpoint http:Listener listener {
     port:9090
 };
 
@@ -488,6 +530,12 @@ endpoint http:ServiceEndpoint listener {
 }
 service<http:Service> employee_data_service bind listener {
 ``` 
+
+`@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:CopyFiles` is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path. `@docker:Expose {}` is used to expose the port. Finally you need to change the host field in the  `mysql:Client` endpoint definition to the IP address of the MySQL container. You can obtain this IP address using the below command.
+
+```
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <Container_ID>
+```
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
@@ -508,6 +556,7 @@ docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
   Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+
 - You can access the service using the same curl commands that we've used above. 
  
 ```
@@ -518,11 +567,23 @@ curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
 
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
-with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
-So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes with the use of annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. 
 
-- We need to import `` import ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
+Since this guide requires MySQL as a prerequisite, you need a couple of more steps to create a MySQL pod and use it with our sample.  
+
+- First let's look at how we can create a MySQL pod in kubernetes.
+    
+   * Navigate to the <sample_root>/resources directory and run the below command.
+```
+     docker build -t mysql-ballerina:1.0  .
+```
+
+   *  Then run the following command from the same directory to create the MySQL pod by creating a deployment and service for MySQL. You can find the deployment descriptor and service descriptor in the `./resources/kubernetes` folder.
+```
+      kubectl create -f ./kubernetes/
+```
+
+- Now we need to import `` ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
 ##### employee_db_service.bal
 
@@ -534,7 +595,15 @@ import ballerinax/kubernetes;
 
 // Employee type definition
 
-// sql:Client endpoint definition
+// Create SQL endpoint to MySQL database
+endpoint mysql:Client employeeDB {
+    host:"mysql-service",
+    port:3306,
+    name:"EMPLOYEE_RECORDS",
+    username:"root",
+    password:"root",
+    poolOptions:{maximumPoolSize:5}
+};
 
 @kubernetes:Ingress {
     hostname:"ballerina.guides.io",
@@ -549,10 +618,12 @@ import ballerinax/kubernetes;
 
 @kubernetes:Deployment {
     image:"ballerina.guides.io/employee_database_service:v1.0",
-    name:"ballerina-guides-employee-database-service"
+    name:"ballerina-guides-employee-database-service",
+    copyFiles:[{target:"/ballerina/runtime/bre/lib",
+                source:<path_to_JDBC_jar>}]
 }
 
-endpoint http:ServiceEndpoint listener {
+endpoint http:Listener listener {
     port:9090
 };
 
@@ -561,7 +632,8 @@ endpoint http:ServiceEndpoint listener {
 }
 service<http:Service> employee_data_service bind listener {      
 ``` 
-- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
+- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. CopyFiles field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
+
 - We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
@@ -575,7 +647,7 @@ Run following command to deploy kubernetes artifacts:
 kubectl apply -f ./target/data_backed_service/kubernetes
 ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
+- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/data_backed_service/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
@@ -602,7 +674,7 @@ Node Port:
  
 ```
 curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
-"http://<Minikube_host_IP>:<Node_Port>/records/employee" -H "Content-Type:application/json"  
+"http://localhost:<Node_Port>/records/employee" -H "Content-Type:application/json"  
 ```
 
 Ingress:
