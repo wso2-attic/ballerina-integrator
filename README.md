@@ -588,7 +588,7 @@ step="PT1M"
 
 ```
 
-- Create a file `prometheus.yml` inside `/etc/` location. Add the below configurations to the `prometheus.yml` file.
+- Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
 ```
    global:
    scrape_interval:     15s
@@ -605,7 +605,8 @@ step="PT1M"
    
 - Run the Prometheus docker image using the following command
 ```
-   docker run -p 19090:9090 -v /tmp/prometheus.yml prom/prometheus
+   docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml
+   prom/prometheus
 ```
    
 - You can access Prometheus at the following URL
