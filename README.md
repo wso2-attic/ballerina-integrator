@@ -359,6 +359,7 @@ import ballerinax/docker;
     tag:"v1.0"
 }
 
+@docker:Expose{}
 endpoint http:Listener listener {
     port:9090
 };
@@ -486,7 +487,7 @@ Node Port:
 ```
 curl -v -X POST -d \
 '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-"http://<Minikube_host_IP>:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"  
+"http://localhost:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"  
 ```
 
 Ingress:
