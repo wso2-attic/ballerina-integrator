@@ -359,6 +359,7 @@ import ballerinax/docker;
     tag:"v1.0"
 }
 
+@docker:Expose{}
 endpoint http:Listener listener {
     port:9090
 };
@@ -394,10 +395,9 @@ This will also create the corresponding docker image using the docker annotation
 - You can access the service using the same curl commands that we've used above. 
  
 ```
-   curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-   "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
+   curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample \
+   order."}}' "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
 ```
-
 
 ### Deploying on Kubernetes
 
@@ -486,7 +486,7 @@ Node Port:
 ```
 curl -v -X POST -d \
 '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-"http://<Minikube_host_IP>:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"  
+"http://localhost:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"  
 ```
 
 Ingress:
@@ -548,7 +548,7 @@ reporter.max.buffer.spans=1000
 - Run Jaeger docker image using the following command
 ```bash
    docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686
-   -p14268:14268 jaegertracing/all- in-one:latest
+   -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
 - Navigate to `restful-service/guide/` and run the restful-service using following command 
@@ -588,27 +588,34 @@ step="PT1M"
 
 ```
 
-- Create a file `prometheus.yml` inside `/etc/` location. Add the below configurations to the `prometheus.yml` file.
+- Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
 ```
-   global:
-   scrape_interval:     15s
-   evaluation_interval: 15s
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
 
-   scrape_configs:
-    - job_name: 'prometheus'
-   
-   static_configs:
-        - targets: ['172.17.0.1:9700']
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ['172.17.0.1:9797']
+      
 ```
 
    NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
    
 - Run the Prometheus docker image using the following command
 ```
-   docker run -p 19090:9090 -v /tmp/prometheus.yml prom/prometheus
+   docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml
+   prom/prometheus
 ```
    
 - You can access Prometheus at the following URL
+
+NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+-  http_requests_total
+-  http_response_time
+
 ```
    http://localhost:19090/
 ```
@@ -618,7 +625,16 @@ step="PT1M"
    ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
 
 ### Logging
+
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+
+- Start the Ballerina Service with the following command from `{SAMPLE_ROOT_DIRECTORY}/src`
+```
+   nohup ballerina run restful_service/ &>> ballerina.log&
+```
+   NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT_DIRECTORY}/src` directory
+
+- Start Elasticsearch using the following command
 
 - Start Elasticsearch using the following command
 ```
@@ -638,28 +654,28 @@ Ballerina has a log package for logging to the console. You can import ballerina
 
 i) Create a file named `logstash.conf` with the following content
 ```
-      input {  
-       beats { 
-	       port => 5044 
-	      }  
-      }
+     input {  
+         beats{ 
+	     port => 5044 
+	 }  
+     }
       
-      filter {  
-       grok  {  
-	       match => { 
-                  "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
-                  \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
-                 }  
-       }  
-      }   
+     filter {  
+         grok{  
+	     match => { 
+                 "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
+                 \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
+             }  
+         }  
+     }   
       
-      output {  
-       elasticsearch {  
-    	   hosts => "elasticsearch:9200"  
-    	   index => "store"  
-        document_type => "store_logs"  
-	      }  
-      }  
+     output {  
+         elasticsearch{  
+    	     hosts => "elasticsearch:9200"  
+    	     index => "store"  
+             document_type => "store_logs"  
+	 }  
+     }  
 ```
 
 ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
@@ -675,30 +691,32 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your
  - Configure filebeat to ship the ballerina logs
     
 i) Create a file named `filebeat.yml` with the following content
- ```
-       filebeat.prospectors:
-          - type: log
-       paths:
-          - /usr/share/filebeat/ballerina.log
-       output.logstash:
-            hosts: ["logstash:5044"]
- ```
- 
+```
+filebeat.prospectors:
+- type: log
+  paths:
+    - /usr/share/filebeat/ballerina.log
+output.logstash:
+  hosts: ["logstash:5044"]  
+```
+NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
+
 ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
         
      
 iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
      
- ```
+```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
         -v {SAMPLE_ROOT_DIRECTORY}/guide/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
 	--link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
- ```
+```
  
  - Access Kibana to visualize the logs using following URL
- ```
+
+```
      http://localhost:5601 
- ```
+```
  
  - Kibana log visualization for the restful service sample
  

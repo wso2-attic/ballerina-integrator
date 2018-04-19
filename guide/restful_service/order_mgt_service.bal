@@ -69,7 +69,7 @@ service<http:Service> order_mgt bind listener {
     }
     addOrder(endpoint client, http:Request req) {
         json orderReq = check req.getJsonPayload();
-        string orderId = orderReq.Order.ID.toString() but { () => "" };
+        string orderId = orderReq.Order.ID.toString();
         ordersMap[orderId] = orderReq;
 
         // Create response message.
