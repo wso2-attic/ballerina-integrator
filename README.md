@@ -556,6 +556,7 @@ docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
   Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+
 - You can access the service using the same curl commands that we've used above. 
  
 ```
