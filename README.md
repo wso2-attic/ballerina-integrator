@@ -245,29 +245,13 @@ service<http:Service> order_mgt bind listener {
 
 ### Invoking the RESTful service 
 
-You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
-
-1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command. 
+You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installed in you local machine.  
 
 ```
-$ballerina build restful_service
+$ballerina run restful_service
 ```
 
-2. Once the restful_service.balx is created inside the target folder, you can run that with the following command. 
-
-```
-$ballerina run target/restful_service.balx
-```
-
-3. The successful execution of the service should show us the following output. 
-```
-$ ballerina run target/restful_service.balx 
-
-ballerina: deploying service(s) in 'target/restful_service.balx'
-ballerina: started HTTP/WS server connector 0.0.0.0:9090
-```
-
-4. You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of OrderMgtService as follows. 
+You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of OrderMgtService as follows. 
 
 **Create Order** 
 ```
@@ -332,12 +316,26 @@ To check the implementation of the test file, refer to the [order_mgt_service_te
 Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
 
 ### Deploying locally
-You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
+
+- As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command. 
+
+```
+$ballerina build restful_service
+```
+
+- Once the restful_service.balx is created inside the target folder, you can run that with the following command. 
 
 ```
 $ballerina run target/restful_service.balx
 ```
 
+- The successful execution of the service should show us the following output. 
+```
+$ ballerina run target/restful_service.balx 
+
+ballerina: deploying service(s) in 'target/restful_service.balx'
+ballerina: started HTTP/WS server connector 0.0.0.0:9090
+```
 ### Deploying on Docker
 
 
