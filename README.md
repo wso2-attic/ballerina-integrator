@@ -1,6 +1,5 @@
 # RESTful Service  
-
-In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
+> In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
 
 The following are the sections available in this guide.
 
@@ -35,33 +34,45 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 ## Developing the service 
 
-We can model the OrderMgt RESTful service using Ballerina services and resources constructs. 
+> If you want to skip the basics, you can download the git repo and directly move to "Testing" section by skipping "Developing" section.
 
-- We can get started with a Ballerina service; 'OrderMgtService', which is the RESTful service that serves the order management request. OrderMgtService can have multiple resources and each resource is dedicated for a specific order management functionality.
+### Create the project structure
 
-- You can decide the package structure for the service and then create the service in the corresponding directory structure. For example, suppose that you are going to use the package name 'restful_service', then you need to create the following directory structure and create the service file using the text editor or IDE that you use. 
+Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
 restful-service
-  └── guide
-      └── restful_service
-          ├── order_mgt_service.bal
-          └── test
-              └── order_mgt_service_test.bal          
+  └── guide.restful_service
+      ├── order_mgt_service.bal
+      └── test
+          └── order_mgt_service_test.bal          
 ```
+You can create the above Ballerina project using Ballerina project initializing toolkit.
 
-- Once you created your package structure, go to the sample `guide` directory and run the following command to initialize your Ballerina project.
-
+- First, create a new directory in your local machine as `restful-service` and navigate to the directory using terminal. 
+- Then enter the following inputs to the Ballerina project initializing toolkit.
 ```bash
-   $ballerina init
+restful-service$ ballerina init -i
+Create Ballerina.toml [yes/y, no/n]: (y) y
+Organization name: (username) restful-service
+Version: (0.0.1) 
+Ballerina source [service/s, main/m]: (s) s
+Package for the service : (no package) guide.restful_service
+Ballerina source [service/s, main/m, finish/f]: (f) f
+
+Ballerina project initialized
 ```
 
-  The above command will initialize the project with a `Ballerina.toml` file and `.ballerina` implementation directory that contain a list of packages in the current directory.
+- Once you initialize your Ballerina project. You can change the names of the file to match with our guide project file names.
+  
+### Implement the RESTful web service
+
+- We can get started with a Ballerina service; 'OrderMgtService', which is the RESTful service that serves the order management request. OrderMgtService can have multiple resources and each resource is dedicated for a specific order management functionality.
 
 - You can add the content to your Ballerina service as shown below. In that code segment you can find the implementation of the service and resource skeletons of 'OrderMgtService'. 
 For each order management operation, there is a dedicated resource and inside each resource we can implement the order management operation logic. 
 
-##### order_mgt_service.bal
+##### Skeleton code for order_mgt_service.bal
 ```ballerina
 ppackage restful_service;
 
@@ -245,29 +256,13 @@ service<http:Service> order_mgt bind listener {
 
 ### Invoking the RESTful service 
 
-You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
-
-1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command. 
-
+You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `<SAMPLE_ROOT_DIRECTORY>/guide.restful_service` and execute the following command.
 ```
-$ballerina build restful_service
+$ballerina run restful_service
 ```
+NOTE: You need to have the Ballerina installed in you local machine to run the Ballerina service.  
 
-2. Once the restful_service.balx is created inside the target folder, you can run that with the following command. 
-
-```
-$ballerina run target/restful_service.balx
-```
-
-3. The successful execution of the service should show us the following output. 
-```
-$ ballerina run target/restful_service.balx 
-
-ballerina: deploying service(s) in 'target/restful_service.balx'
-ballerina: started HTTP/WS server connector 0.0.0.0:9090
-```
-
-4. You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of OrderMgtService as follows. 
+You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of OrderMgtService as follows. 
 
 **Create Order** 
 ```
@@ -319,12 +314,12 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 
 This guide contains unit test cases for each resource available in the 'order_mgt_service.bal'.
 
-To run the unit tests, go to the sample `guide` directory and run the following command.
+To run the unit tests, go to the sample `guide.restful_service` directory and run the following command.
 ```bash
    $ballerina test
 ```
 
-To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/test/order_mgt_service_test.bal).
+To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide.restful_service/restful_service/test/order_mgt_service_test.bal).
 
 
 ## Deployment
@@ -332,12 +327,26 @@ To check the implementation of the test file, refer to the [order_mgt_service_te
 Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
 
 ### Deploying locally
-You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
+
+- As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to the `<SAMPLE_ROOT>/guide.restful_service/` folder and run the following command. 
+
+```
+$ballerina build restful_service
+```
+
+- Once the restful_service.balx is created inside the target folder, you can run that with the following command. 
 
 ```
 $ballerina run target/restful_service.balx
 ```
 
+- The successful execution of the service should show us the following output. 
+```
+$ ballerina run target/restful_service.balx 
+
+ballerina: deploying service(s) in 'target/restful_service.balx'
+ballerina: started HTTP/WS server connector 0.0.0.0:9090
+```
 ### Deploying on Docker
 
 
@@ -374,7 +383,7 @@ service<http:Service> order_mgt bind listener {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide.restful_service/` folder and run the following command.  
   
 ```
    $ballerina build restful_service
@@ -506,7 +515,7 @@ curl -v -X POST -d \
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/guide/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/guide.restful_service/`.
 
 ```ballerina
 [b7a.observability]
@@ -551,7 +560,7 @@ reporter.max.buffer.spans=1000
    -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `restful-service/guide/` and run the restful-service using following command 
+- Navigate to `restful-service/guide.restful_service/` and run the restful-service using following command 
 ```
    $ballerina run restful_service/
 ```
@@ -708,7 +717,7 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your
      
 ```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
-        -v {SAMPLE_ROOT_DIRECTORY}/guide/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
+        -v {SAMPLE_ROOT_DIRECTORY}/guide.restful_service/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
 	--link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
