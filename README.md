@@ -45,18 +45,18 @@ Basically, this service will deal with a MySQL database and expose the data oper
 ## Before you begin
 * Run the SQL script `initializeDataBase.sql` provided in the resources folder, to initialize the database and the required table by entering the below command from the project root directory.
 ```
-  $ mysql -u username -p <./resources/initializeDataBase.sql 
+   $mysql -u username -p <./resources/initializeDataBase.sql 
 ``` 
 
 * Add database configurations to the `ballerina.conf` file
    * `ballerina.conf` file can be used to provide external configurations to the Ballerina programs. Since this guide needs MySQL database integration, a Ballerina coniguration file is used to provide the database connection properties to our Ballerina program.
    This configuration file has the following fields. Change these configurations with your connection properties accordingly.
 ```
-      DATABASE_HOST = localhost
-      DATABASE_PORT = 3306
-      DATABASE_USERNAME = username
-      DATABASE_PASSWORD = password
-      DATABASE_NAME = EMPLOYEE_RECORDS
+   DATABASE_HOST = localhost
+   DATABASE_PORT = 3306
+   DATABASE_USERNAME = username
+   DATABASE_PASSWORD = password
+   DATABASE_NAME = EMPLOYEE_RECORDS
 ```
 
 
@@ -85,7 +85,7 @@ You can create the above Ballerina project using Ballerina project initializing 
 - First, create a new directory in your local machine as `data-backed-service` and navigate to that directory using terminal. 
 - Then enter the following inputs to the Ballerina project initializing toolkit.
 ```bash
-$ ballerina init -i
+$ballerina init -i
 
 Create Ballerina.toml [yes/y, no/n]: (y) y
 Organization name: (username) data-backed-service
@@ -98,16 +98,6 @@ Ballerina project initialized
 ```
 
 - Once you initialize your Ballerina project, you can change the names of the generated files to match with our guide project filenames.
-
-#### Initialize the Ballerina project
-
-Once you created your package structure, go to the sample src directory and run the following command to initialize your Ballerina project.
-
-```bash
-  $ballerina init
-```
-
-The above command will initialize the project with a `Ballerina.toml` file and `.ballerina` implementation directory that contain a list of packages in the current directory.
 
 ### Implementation of the Ballerina web service
 Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntaxes. The following Ballerina code is the employee data service with resources to add, retrieve, update and delete employee data.
@@ -380,81 +370,83 @@ You can run the RESTful service that you developed above, in your local environm
 - As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
-$ ballerina build data_backed_service
+   $ballerina build data_backed_service
 ```
 
 - Once the data_backed_service.balx is created, you can run that with the following command. 
 
 ```
-$ ballerina run data_backed_service.balx 
+   $ballerina run data_backed_service.balx 
 ```
 
 - The successful execution of the service should show us the following output. 
 
 ```
-ballerina: deploying service(s) in 'data_backed_service'
-ballerina: started HTTP/WS server connector 0.0.0.0:9090
+   ballerina: deploying service(s) in 'data_backed_service'
+   ballerina: started HTTP/WS server connector 0.0.0.0:9090
 ```
 
 - You can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of employeeService as follows. 
 
 **Add new employee** 
 ```
-curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
-"http://localhost:9090/records/employee" -H "Content-Type:application/json"
+   curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
+   "http://localhost:9090/records/employee" -H "Content-Type:application/json"
 ```
 
 Output:  
 ```
-< HTTP/1.1 200 OK
-{"Status":"Data Inserted Successfully"}
+   < HTTP/1.1 200 OK
+   {"Status":"Data Inserted Successfully"}
 ```
 
 **Retrieve employee data** 
 ```
-curl -v  "http://localhost:9090/records/employee/1"
+   curl -v  "http://localhost:9090/records/employee/1"
 ```
 
 Output: 
 ```
-< HTTP/1.1 200 OK
-[{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
+   < HTTP/1.1 200 OK
+   [{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
 ```
 **Update an existing employee data** 
 ```
-curl -v -X PUT -d '{"name":"Alice Updated", "age":30,"ssn":123456789,"employeeId":1}' \
-"http://localhost:9090/records/employee" -H "Content-Type:application/json"
+   curl -v -X PUT -d '{"name":"Alice Updated", "age":30,"ssn":123456789,"employeeId":1}' \
+   "http://localhost:9090/records/employee" -H "Content-Type:application/json"
 ```
 
 Output: 
 ```
-< HTTP/1.1 200 OK
-{"Status":"Data Updated Successfully"}
+   < HTTP/1.1 200 OK
+   {"Status":"Data Updated Successfully"}
 ```
 
 **Delete employee data** 
 ```
-curl -v -X DELETE "http://localhost:9090/records/employee/1"
+   curl -v -X DELETE "http://localhost:9090/records/employee/1"
 ```
 
 Output:
 ```
-< HTTP/1.1 200 OK
-{"Status":"Data Deleted Successfully"}
+   < HTTP/1.1 200 OK
+   {"Status":"Data Deleted Successfully"}
 ```
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a file named as `test`. The naming convention should be as follows.
-* Test files should contain _test.bal suffix.
-* Test functions should contain test prefix.
-  * e.g., testAddEmployeeResource()
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
+* Test functions should be annotated with `@test:Config`. See the below example.
+```ballerina
+    @test:Config
+    function testAddEmployeeResource() {
+```
 
-This guide contains unit test cases in the respective folders. The two test cases are written to test the Employee Data Service and the Database utilities package.
+This guide contains unit test cases to test the resources available in the employee_data_service we implemented above.
 
-To run the unit tests, go to the sample root directory and run the following command.
+To run the unit tests, go to the guide directory and run the following command.
 ```bash
-$ ballerina test data_backed_service
+   $ballerina test
 ```
 
 
@@ -466,7 +458,7 @@ Once you are done with the development, you can deploy the service using any of 
 You can deploy the RESTful service that you developed above in your local environment. You can use the Ballerina executable archive (.balx) file that you created above and run it in your local environment as follows. 
 
 ```
-ballerina run employee_db_service.balx 
+   $ballerina run employee_db_service.balx 
 ```
 
 ### Deploying on Docker
