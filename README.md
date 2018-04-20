@@ -556,7 +556,7 @@ reporter.max.buffer.spans=1000
 
 - Run Jaeger docker image using the following command
 ```bash
-   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686
+   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 \
    -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
@@ -647,7 +647,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 
 - Start Elasticsearch using the following command
 ```
-   docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name 
+   docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
 
@@ -655,8 +655,8 @@ Ballerina has a log package for logging to the console. You can import ballerina
    
 - Start Kibana plugin for data visualization with Elasticsearch
 ```
-   docker run -p 5601:5601 -h kibana --name kibana --link elasticsearch:elasticsearch 
-   docker.elastic.co/kibana/kibana:6.2.2     
+   docker run -p 5601:5601 -h kibana --name kibana --link \
+   elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
 
 - Configure logstash to format the ballerina logs
@@ -692,8 +692,8 @@ ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pi
 iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
      
 ```
-docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
--v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ 
+docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
+-it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
   
@@ -716,8 +716,8 @@ ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\fil
 iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
      
 ```
-docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
--v {SAMPLE_ROOT}/guide.restful_service/restful_service/ballerina.log:/usr/share
+docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
+-v {SAMPLE_ROOT}/guide.restful_service/restful_service/ballerina.log:/usr/share \
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
