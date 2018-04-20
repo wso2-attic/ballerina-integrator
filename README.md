@@ -63,7 +63,7 @@ Ballerina source [service/s, main/m, finish/f]: (f) f
 Ballerina project initialized
 ```
 
-- Once you initialize your Ballerina project. You can change the names of the file to match with our guide project file names.
+- Once you initialize your Ballerina project, you can change the names of the file to match with our guide project file names.
   
 ### Implement the RESTful web service
 
