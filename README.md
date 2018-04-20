@@ -615,7 +615,7 @@ scrape_configs:
    
 - Run the Prometheus docker image using the following command
 ```
-   docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml
+   docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
    
