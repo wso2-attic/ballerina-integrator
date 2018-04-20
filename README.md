@@ -547,23 +547,23 @@ service<http:Service> employee_data_service bind listener {
  - `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:CopyFiles` is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path. `@docker:Expose {}` is used to expose the port. Finally you need to change the host field in the  `mysql:Client` endpoint definition to the IP address of the MySQL container. You can obtain this IP address using the below command.
 
 ```
-docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <Container_ID>
+   $docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <Container_ID>
 ```
 
  - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
   
 ```
-$ballerina build data_backed_service
+   $ballerina build data_backed_service
 
-Run following command to start docker container: 
-docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
+   Run following command to start docker container: 
+   docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
 ```
 
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
 ```   
-docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
+   $docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
 ```
 
 - Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
@@ -573,8 +573,8 @@ docker run -d -p 9090:9090 ballerina.guides.io/employee_database_service:v1.0
 - You can access the service using the same curl commands that we've used above. 
  
 ```
-curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
-"http://localhost:9090/records/employee" -H "Content-Type:application/json"
+   curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
+   "http://localhost:9090/records/employee" -H "Content-Type:application/json"
 ```
 
 NOTE: Refer to the [Ballerina_Docker_Extension](https://github.com/ballerinax/docker) GitHub page for more details and samples on Docker deployment with Ballerina.
@@ -589,12 +589,12 @@ First let's look at how we can create a MySQL pod in kubernetes.
     
    * Navigate to the <sample_root>/resources directory and run the below command.
 ```
-     docker build -t mysql-ballerina:1.0  .
+     $docker build -t mysql-ballerina:1.0  .
 ```
 
    *  Then run the following command from the same directory to create the MySQL pod by creating a deployment and service for MySQL. You can find the deployment descriptor and service descriptor in the `./resources/kubernetes` folder.
 ```
-      kubectl create -f ./kubernetes/
+      $kubectl create -f ./kubernetes/
 ```
 
 Now we need to import `` ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
@@ -656,10 +656,10 @@ service<http:Service> employee_data_service bind listener {
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
-$ballerina build data_backed_service
+   $ballerina build data_backed_service
 
-Run following command to deploy kubernetes artifacts:  
-kubectl apply -f ./target/data_backed_service/kubernetes
+   Run following command to deploy kubernetes artifacts:  
+   kubectl apply -f ./target/data_backed_service/kubernetes
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
@@ -667,20 +667,20 @@ kubectl apply -f ./target/data_backed_service/kubernetes
 - Now you can create the Kubernetes deployment using:
 
 ```
-$kubectl apply -f ./target/data_backed_service/kubernetes 
+   $kubectl apply -f ./target/data_backed_service/kubernetes 
 
-deployment.extensions "ballerina-guides-employee-database-service" created
-ingress.extensions "ballerina-guides-employee-database-service" created
-service "ballerina-guides-employee-database-service" created
+   deployment.extensions "ballerina-guides-employee-database-service" created
+   ingress.extensions "ballerina-guides-employee-database-service" created
+   service "ballerina-guides-employee-database-service" created
 ```
 
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 
 ```
-$kubectl get service
-$kubectl get deploy
-$kubectl get pods
-$kubectl get ingress
+   $kubectl get service
+   $kubectl get deploy
+   $kubectl get pods
+   $kubectl get ingress
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
@@ -688,8 +688,8 @@ $kubectl get ingress
 Node Port:
  
 ```
-curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
-"http://localhost:<Node_Port>/records/employee" -H "Content-Type:application/json"  
+   curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
+   "http://localhost:<Node_Port>/records/employee" -H "Content-Type:application/json"  
 ```
 
 Ingress:
@@ -697,14 +697,14 @@ Ingress:
 Add `/etc/hosts` entry to match hostname. 
 
 ``` 
-127.0.0.1 ballerina.guides.io
+   127.0.0.1 ballerina.guides.io
 ```
 
 Access the service 
 
 ``` 
-curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
-"http://ballerina.guides.io/records/employee" -H "Content-Type:application/json" 
+   curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
+   "http://ballerina.guides.io/records/employee" -H "Content-Type:application/json" 
 ```
 
 NOTE: Refer to the [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) GitHub page for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
