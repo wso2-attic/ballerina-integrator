@@ -8,20 +8,21 @@ The following are the sections available in this guide.
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
+- [Before you begin](#before-you-begin)
 - [Developing the SQL data backed web service](#developing-the-sql-data-backed-web-service)
 - [Testing](#testing)
 - [Deployment](#deployment)
 
 ## What you'll build
 
-You'll build an employee data management REST service that performs CRUD Operations (Create, Read, Update, Delete) on the MySQL database.  Also, this guide walks you through the process of accessing relational data via the Ballerina language. The service will have following functionalities.
+You'll build an employee data management REST service that performs CRUD Operations (Create, Read, Update, Delete) on the MySQL database. Also, this guide walks you through the process of accessing relational data via the Ballerina language. The service will have following functionalities.
 
 * Add new employees to the database via HTTP POST method
 * Retrieve an existing employee details from the database via HTTP GET method
 * Update an existing employee in the database via HTTP PUT method
 * Delete an existing employee from the database via HTTP DELETE method
 
-Basically, this service will deal with a MySQL database and expose the data operations as a web service. Refer to the following scenario diagram to understand the complete end-to-end scenario.
+Basically, this service will deal with a MySQL database and expose the data operations as a web service. Refer to the following diagram to understand the complete end-to-end scenario.
 
 
 ![alt text](/images/data-backed-service.svg)
@@ -40,37 +41,63 @@ Basically, this service will deal with a MySQL database and expose the data oper
 - [Docker](https://docs.docker.com/engine/installation/)
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 
+
+## Before you begin
+* Run the SQL script `initializeDataBase.sql` provided in the resources folder, to initialize the database and the required table by entering the below command from the project root directory.
+```
+  $ mysql -u username -p <./resources/initializeDataBase.sql 
+``` 
+
+* Add database configurations to the `ballerina.conf` file
+   * `ballerina.conf` file can be used to provide external configurations to the Ballerina programs. Since this guide needs MySQL database integration, a Ballerina coniguration file is used to provide the database connection properties to our Ballerina program.
+   This configuration file has the following fields. Change these configurations with your connection properties accordingly.
+```
+      DATABASE_HOST = localhost
+      DATABASE_PORT = 3306
+      DATABASE_USERNAME = username
+      DATABASE_PASSWORD = password
+      DATABASE_NAME = EMPLOYEE_RECORDS
+```
+
+
 ## Developing the SQL data backed web service
-### Before you begin
-#### Create the database
-Navigate to the command line and open the MySQL client by entering the following command.**
 
-```bash
-$ mysql -u root -p
-```
-#### Create the tables
+> If you want to skip the basics, you can download the git repo and directly move to "Testing" section by skipping "Developing" section.
 
-Then create a table named as `EMPLOYEES` by entering the following command in MySQL.
-```mysql
-mysql> CREATE TABLE IF NOT EXISTS EMPLOYEES (EmployeeID INT, Name VARCHAR
-                       (50), Age INT, SSN INT, PRIMARY KEY (EmployeeID))
-```
+### Create the project structure
 
-#### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
-
 ```
-├── resources
-│   └── initializeDataBase.sql
-└── src
-    ├── ballerina.conf
-    ├── Ballerina.toml
-    └── data_backed_service
-        ├── employee_db_service.bal
-        └── test
-            └── employee_db_service_test.bal
-
+data-backed-service
+  ├── resources
+  │   └── initializeDataBase.sql
+  └── src
+      ├── ballerina.conf
+      ├── Ballerina.toml
+      └── data_backed_service
+          ├── employee_db_service.bal
+          └── test
+              └── employee_db_service_test.bal
 ```
+
+You can create the above Ballerina project using Ballerina project initializing toolkit.
+
+- First, create a new directory in your local machine as `data-backed-service` and navigate to that directory using terminal. 
+- Then enter the following inputs to the Ballerina project initializing toolkit.
+```bash
+$ ballerina init -i
+
+Create Ballerina.toml [yes/y, no/n]: (y) y
+Organization name: (username) data-backed-service
+Version: (0.0.1) 
+Ballerina source [service/s, main/m]: (s) s
+Package for the service : (no package) guide.data_backed_service
+Ballerina source [service/s, main/m, finish/f]: (f) f
+
+Ballerina project initialized
+```
+
+- Once you initialize your Ballerina project, you can change the names of the generated files to match with our guide project filenames.
 
 #### Initialize the Ballerina project
 
@@ -81,20 +108,6 @@ Once you created your package structure, go to the sample src directory and run 
 ```
 
 The above command will initialize the project with a `Ballerina.toml` file and `.ballerina` implementation directory that contain a list of packages in the current directory.
-
-NOTE: This step is mandatory
-
-#### Add database configurations to the `ballerina.conf` file
-You can use `ballerina.conf` file to provide external configurations to Ballerina programs. Since this guide has MySQL database integration, you need to provide the database connection properties to the Ballerina program via the `ballerina.conf` file.
-This configuration file will have the following fields.
-```
-DATABASE_HOST = localhost
-DATABASE_PORT = 3306
-DATABASE_USERNAME = username
-DATABASE_PASSWORD = password
-DATABASE_NAME = EMPLOYEE_RECORDS
-```
-First, you need to replace `localhost`, `3306`, `username`, and `password`, which are the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you do not want to change the name explicitly.
 
 ### Implementation of the Ballerina web service
 Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntaxes. The following Ballerina code is the employee data service with resources to add, retrieve, update and delete employee data.
@@ -564,6 +577,7 @@ curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
 "http://localhost:9090/records/employee" -H "Content-Type:application/json"
 ```
 
+NOTE: Refer to the [Ballerina_Docker_Extension](https://github.com/ballerinax/docker) GitHub page for more details and samples on Docker deployment with Ballerina.
 
 ### Deploying on Kubernetes
 
@@ -691,3 +705,5 @@ Access the service
 curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
 "http://ballerina.guides.io/records/employee" -H "Content-Type:application/json" 
 ```
+
+NOTE: Refer to the [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) GitHub page for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
