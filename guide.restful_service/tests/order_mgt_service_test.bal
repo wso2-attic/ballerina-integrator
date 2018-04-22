@@ -4,7 +4,7 @@ import ballerina/http;
 @test:BeforeSuite
 function beforeFunc() {
     // Start the 'order_mgt' service before running the test.
-    _ = test:startServices("restful_service");
+    _ = test:startServices("guide.restful_service");
 }
 
 endpoint http:Client clientEP {
@@ -92,5 +92,5 @@ function testResourceCancelOrder() {
 @test:AfterSuite
 function afterFunc() {
     // Stop the 'order_mgt' service after running the test.
-    test:stopServices("restful_service");
+    test:stopServices("guide.restful_service");
 }
