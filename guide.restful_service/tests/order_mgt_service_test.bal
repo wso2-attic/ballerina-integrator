@@ -1,5 +1,3 @@
-package restful_service;
-
 import ballerina/test;
 import ballerina/http;
 
@@ -10,19 +8,19 @@ function beforeFunc() {
 }
 
 endpoint http:Client clientEP {
-    targets:[{url:"http://localhost:9090/ordermgt"}]
+    url:"http://localhost:9090/ordermgt"
 };
 
 @test:Config
 // Function to test POST resource 'addOrder'.
 function testResourceAddOrder() {
     // Initialize the empty http request.
-    http:Request request;
+    http:Request req = new;
     // Construct the request payload.
     json payload = {"Order":{"ID":"100500", "Name":"XYZ", "Description":"Sample order."}};
-    request.setJsonPayload(payload);
+    req.setJsonPayload(payload);
     // Send 'POST' request and obtain the response.
-    http:Response response = check clientEP -> post("/order", request);
+    http:Response response = check clientEP -> post("/order", request=req);
     // Expected response code is 201.
     test:assertEquals(response.statusCode, 201,
         msg = "addOrder resource did not respond with expected response code!");
@@ -38,12 +36,12 @@ function testResourceAddOrder() {
 // Function to test PUT resource 'updateOrder'.
 function testResourceUpdateOrder() {
     // Initialize empty http requests and responses.
-    http:Request request;
+    http:Request req = new;
     // Construct the request payload.
     json payload = {"Order":{"Name":"XYZ", "Description":"Updated order."}};
-    request.setJsonPayload(payload);
+    req.setJsonPayload(payload);
     // Send 'PUT' request and obtain the response.
-    http:Response response = check clientEP -> put("/order/100500", request);
+    http:Response response = check clientEP -> put("/order/100500", request=req);
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "updateOrder resource did not respond with expected response code!");
@@ -60,9 +58,9 @@ function testResourceUpdateOrder() {
 // Function to test GET resource 'findOrder'.
 function testResourceFindOrder() {
     // Initialize empty http requests and responses.
-    http:Request request;
+    http:Request req = new;
     // Send 'GET' request and obtain the response.
-    http:Response response = check clientEP -> get("/order/100500", request);
+    http:Response response = check clientEP -> get("/order/100500", request=req);
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "findOrder resource did not respond with expected response code!");
@@ -79,9 +77,9 @@ function testResourceFindOrder() {
 // Function to test DELETE resource 'cancelOrder'.
 function testResourceCancelOrder() {
     // Initialize empty http requests and responses.
-    http:Request request;
+    http:Request req = new;
     // Send 'DELETE' request and obtain the response.
-    http:Response response = check clientEP -> delete("/order/100500", request);
+    http:Response response = check clientEP -> delete("/order/100500", request=req);
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "cancelOrder resource did not respond with expected response code!");

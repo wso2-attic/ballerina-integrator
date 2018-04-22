@@ -44,7 +44,7 @@ Ballerina is a complete programming language that can have any custom project st
 restful-service
   └── guide.restful_service
       ├── order_mgt_service.bal
-      └── test
+      └── tests
           └── order_mgt_service_test.bal          
 ```
 You can create the above Ballerina project using Ballerina project initializing toolkit.
@@ -404,8 +404,9 @@ This will also create the corresponding docker image using the docker annotation
 - You can access the service using the same curl commands that we've used above. 
  
 ```
-   curl -v -X POST -d '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample \
-   order."}}' "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
+   curl -v -X POST -d \
+   '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+   "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
 ```
 
 ### Deploying on Kubernetes
