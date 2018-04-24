@@ -84,90 +84,91 @@ Ballerina project initialized
 
 - Once you initialize your Ballerina project, you can change the names of the file to match with our guide project file names.
   
-### Implement the Airline reservation web service with Ballerina message sender
+### Implement the stock quote summary service with asyncronous invocations
 
-- We can get started with the airline reservation service, which is the RESTful service that serves the flight booking request. This service will reveive the requests as HTTP POST method from the customers.
+- We can get started with the stock quote summary service, which is the RESTful service that serves the stock quote summary requests. This service will reveive the requests as HTTP GET method from the clients.
 
--  The service will extract the passenger details from the flight reservation request. The flight booking will then send to the flight booking system using messaging. 
+-  The stock quote summary service will call three separate resorces asynchronously.
+
+- Finally, the service will append all three responses and return the stock quote summary to the client.
 
 - Ballerina message broker will be used as the message broker for this process. `endpoint mb:SimpleQueueSender queueSenderBooking` is the endpoint of the message queue sender for new bookings of flight. You can give the preferred configuration of the message broker and queue name inside the endpoint definition. We have used the default configurations for the ballerina message broker. `endpoint mb:SimpleQueueSender queueSenderCancelling` is the endpoint to send the messages for cancelling the reservations.
 - We have maintained two seperate queues for manage the flight reservations and cancellations.
 
-##### airline_resrvation.bal
+##### async_service.bal
 ```ballerina
-import ballerina/mb;
-import ballerina/log;
 import ballerina/http;
 import ballerina/io;
+import ballerina/runtime;
 
-@Description {value:"Define the message queue endpoint for new bookings"}
-endpoint mb:SimpleQueueSender queueSenderBooking {
-    host:"localhost",
-    port:5672,
-    queueName:"NewBookingsQueue"
-};
-
-@Description {value:"Define the message queue endpoint for cancel bookings"}
-endpoint mb:SimpleQueueSender queueSenderCancelling {
-    host:"localhost",
-    port:5672,
-    queueName:"BookingCancellationQueue"
-};
-
-@Description {value:"Attributes associated with the service endpoint"}
-endpoint http:Listener airlineReservationEP {
+@Description {value:"Attributes associated with the service endpoint is defined here."}
+endpoint http:Listener asyncServiceEP {
     port:9090
 };
 
-@Description {value:"Airline reservation service exposed via HTTP/1.1."}
+@Description {value:"Service is to be exposed via HTTP/1.1."}
 @http:ServiceConfig {
-    basePath:"/airline"
+    basePath:"/quote-summary"
 }
-service<http:Service> airlineReservationService bind airlineReservationEP {
-    @Description {value:"Resource for reserving seats on a flight"}
+service<http:Service> AsyncInvoker bind asyncServiceEP {
+
+    @Description {value:"Resource for the GET requests of quote service"}
     @http:ResourceConfig {
-        methods:["POST"],
-        path:"/reservation"
+        methods:["GET"],
+        path:"/"
     }
-    bookFlight(endpoint conn, http:Request req) {
-        http:Response res = new;
-        // Get the booking details from the request
-        json requestMessage = check req.getJsonPayload();
-        string booking = requestMessage.toString();
+    getQuote(endpoint caller, http:Request req) {
+        // Endpoint for the stock quote backend service
+        endpoint http:Client nasdaqServiceEP {
+            url:"http://localhost:9095"
+        };
+        http:Request req = new;
+        http:Response resp = new;
+        string responseStr;
 
-        // Create a message to send to the flight reservation system
-        mb:Message message = check queueSenderBooking.createTextMessage(booking);
-        // Send the message to the message queue
-        var _ = queueSenderBooking -> send(message);
+        io:println(" >> Invoking services asynchrnounsly...");
 
-        // Set string payload as booking successful.
-        res.setStringPayload("Your booking was successful");
+        // 'start' allows you to invoke a functions  asynchronously. Following three
+        // remote invocation returns without waiting for response.
 
-        // Sends the response back to the client.
-        _ = conn -> respond(res);
-    }
+        // Calling the backend to get the stock quote for GOOG asynchronously
+        future <http:Response|http:HttpConnectorError> f1 = start nasdaqServiceEP
+        -> get("/nasdaq/quote/GOOG", request = req);
 
-    @Description {value:"Resource for cancelling already reserved seats on a flight"}
-    @http:ResourceConfig {
-        methods:["POST"],
-        path:"/cancellation"
-    }
-    cancelBooking(endpoint conn, http:Request req) {
-        http:Response res = new;
-        // Get the booking details from the request
-        json requestMessage = check req.getJsonPayload();
-        string cancelBooking = requestMessage.toString();
+        io:println(" >> Invocation completed for GOOG stock quote! Proceed without
+        blocking for a response.");
+        req = new;
 
-        // Create a message to send to the flight reservation system
-        mb:Message message = check queueSenderCancelling.createTextMessage(cancelBooking);
-        // Send the message to the message queue
-        var _ = queueSenderCancelling -> send(message);
+        // Calling the backend to get the stock quote for APPL asynchronously
+        future <http:Response|http:HttpConnectorError> f2 = start nasdaqServiceEP
+        -> get("/nasdaq/quote/APPL", request = req);
 
-        // Set string payload as booking successful.
-        res.setStringPayload("Your booking was successful");
+        io:println(" >> Invocation completed for APPL stock quote! Proceed without
+        blocking for a response.");
+        req = new;
 
-        // Sends the response back to the client.
-        _ = conn -> respond(res);
+        // Calling the backend to get the stock quote for MSFT asynchronously
+        future <http:Response|http:HttpConnectorError> f3 = start nasdaqServiceEP
+        -> get("/nasdaq/quote/MSFT", request = req);
+
+        io:println(" >> Invocation completed for MSFT stock quote! Proceed without
+        blocking for a response.");
+
+        // ‘await` blocks until the previously started async function returns.
+        // Append the results from all the responses of stock data backend
+        var response1 = check await f1;
+        responseStr = check response1.getStringPayload();
+
+        var response2 = check await f2;
+        responseStr = responseStr + " \n " + check response2.getStringPayload();
+
+        var response3 = check await f3;
+        responseStr = responseStr + " \n " + check response3.getStringPayload();
+
+        // Send the response back to the client
+        resp.setStringPayload(responseStr);
+        io:println(" >> Response : " + responseStr);
+        _ = caller -> respond(resp);
     }
 }
 ```
