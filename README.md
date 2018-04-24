@@ -1,8 +1,7 @@
-# Ballerina Message Broker  
-[Ballerina Message Broker](https://github.com/ballerina-platform/ballerina-message-broker) is a lightweight, easy-to-use, 100% open source message-brokering server.
-It uses AMQP 0-9-1 as the messaging protocol.
+# Asynchronous Invocations
+[Asynchronous invocations](https://en.wikipedia.org/wiki/Asynchronous_method_invocation) or the asynchronous pattern is a design pattern in which the call site is not blocked while waiting for the called code to finish. Instead, the calling thread can use the result when the reply arrives.
 
-> In this guide you will learn about building a RESTful Web Service which uses Ballerina message broker as the message broker. 
+> In this guide you will learn about building a web service with asynchronous RESTful calls. 
 
 The following are the sections available in this guide.
 
@@ -11,18 +10,17 @@ The following are the sections available in this guide.
 - [Developing the service](#developing-the-service)
 - [Testing](#testing)
 - [Deployment](#deployment)
-- [Observability](#observability)
 
 ## What you’ll build 
 
-To understanding how you can use messaging with Ballerina message broker, let’s consider a real world use case of an Airline reservation online application. You can simmulate the Airline Reservations sample to simulate the following tasks:
+To understanding how you can use asynchronous invocations with Ballerina, let’s consider an Stock Quote Summary service.
 
-- Reserving seats on a flight
-- Cancelling a reservation
+- The Stock Quote Summary service will call the backend to get the stock data
+- The Ballerina Stock Quote Summary service will call the backend 3 times asynchronously
+- Finally, the Summary servie will send all the details from 3 backend calls to the client.
+.
 
-For each task, you put a message on a particular Ballerina message queue. The appropriate message flow gets the message from the queue and processes the message.
-
-The following figure illustrates the scenario of the airline reservation service with Ballerina messaging. 
+The following figure illustrates the scenario of the Stock Quote Summary service with asynchronous invocations. 
 
 
 &nbsp;
@@ -30,7 +28,7 @@ The following figure illustrates the scenario of the airline reservation service
 &nbsp;
 &nbsp;
 
-![Ballerina Message Broker](images/messaging-with-ballerina.png "Ballerina Message Broker")
+![async invocation](images/asynchronous-invocation.png "Asynchronous Invocation")
 
 &nbsp;
 &nbsp;
@@ -39,14 +37,13 @@ The following figure illustrates the scenario of the airline reservation service
 
 
 
-- **Reserve Seat** : To reserve a seat you can use the HTTP POST message that contains the passanger details, which is sent to the URL `http://localhost:9090/airline/reservation`. 
-- **Cancel reservation** : You can cancel the existing booking by sending an HTTP POST request to the URL `http://localhost:9090/airline/cancellation`. 
+- **Request Stock Summary** : To reserve a seat you can use the HTTP POST message that contains the passanger details, which is sent to the URL `http://localhost:9090/airline/reservation`. 
+
 
 ## Prerequisites
  
 - JDK 1.8 or later
 - [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
-- [Ballerina Message Broker](https://github.com/ballerina-platform/ballerina-message-broker)
 - A Text Editor or an IDE 
 
 ### Optional requirements
