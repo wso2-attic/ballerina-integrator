@@ -71,15 +71,15 @@ Let's get started with the implementation of a Kafka service, which is subscribe
 ```ballerina
 // Kafka subscriber configurations
 @Description {value:"Service level annotation to provide Kafka consumer configuration"}
-@kafka:configuration {
-    bootstrapServers:"localhost:9092, localhost:9093",
+endpoint kafka:ConsumerEndpoint consumer {
+    bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
-    groupId:"inventorySystem",
+    groupId: "inventorySystemd",
     // Listen from topic 'product-price'
-    topics:["product-price"],
+    topics: ["product-price"],
     // Poll every 1 second
     pollingInterval:1000
-}
+};
 ```
 
 A Kafka subscriber in Ballerina should contain the `@kafka:configuration {}` block in which you specify the required configurations for a Kafka subscriber. 
@@ -96,36 +96,33 @@ Let's now see the complete implementation of the `inventory_control_system.bal` 
 
 ##### inventory_control_system.bal
 ```ballerina
-package ProductMgtSystem.Subscribers.InventoryControl;
+import ballerina/log;
+import wso2/kafka;
 
-import ballerina.net.kafka;
-import ballerina.log;
-
-// Kafka subscriber configurations
-@Description {value:"Service level annotation to provide Kafka consumer configuration"}
-@kafka:configuration {
-    bootstrapServers:"localhost:9092, localhost:9093",
+// Kafka consumer endpoint
+endpoint kafka:ConsumerEndpoint consumer {
+    bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
-    groupId:"inventorySystem",
+    groupId: "inventorySystemd",
     // Listen from topic 'product-price'
-    topics:["product-price"],
+    topics: ["product-price"],
     // Poll every 1 second
     pollingInterval:1000
-}
+};
+
 // Kafka service that listens from the topic 'product-price'
-// 'inventoryControlService' is subscribed to the new product price updates from the product admin and updates the database
-service<kafka> inventoryControlService {
-    // Triggered whenever a message is added to the subscribed topic
-    resource onMessage (kafka:Consumer consumer, kafka:ConsumerRecord[] records) {
-        // Dispatch a set of Kafka records to service and process one after another
+// 'inventoryControlService' subscribed to new product price updates from the product admin and updates the Database
+service<kafka:Consumer> kafkaService bind consumer {
+    // Triggered whenever a message added to the subscribed topic
+    onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
+        // Dispatched set of Kafka records to service, We process each one by one.
         int counter = 0;
         while (counter < lengthof records) {
-            // Get the serialized message
             blob serializedMsg = records[counter].value;
-            // Convert the serialized message to a string message
+            // Convert the serialized message to string message
             string msg = serializedMsg.toString("UTF-8");
             log:printInfo("New message received from the product admin");
-            // Log the retrieved Kafka record
+            // log the retrieved Kafka record
             log:printInfo("Topic: " + records[counter].topic + "; Received Message: " + msg);
             // Mock logic
             // Update the database with the new price for the specified product
@@ -149,78 +146,129 @@ In this example, you first serialized the message in `blob` format before publis
 
 ##### Kafka producer configurations
 ```ballerina
-// Kafka message publishing logic
-// Construct and serialize the message to be published to the Kafka topic
-json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPrice};
-blob serializedMsg = priceUpdateInfo.toString().toBlob("UTF-8");
-// Create the Kafka ProducerRecord and specify the destination topic - 'product-price' in this case
-// Set a valid partition number, which will be used when sending the record
-kafka:ProducerRecord record = {value:serializedMsg, topic:"product-price", partition:0};
-
-// Create a Kafka ProducerConfig with optional parameters 
-// 'clientID' is used for broker side logging,
-// acks refers to the number of acknowledgments for requests 
-// noRetries refers to the number of retries if the record fails to get sent
-kafka:ProducerConfig producerConfig = {clientID:"basic-producer", acks:"all", noRetries:3};
-// Produce the message and publish it to the Kafka topic
+endpoint kafka:ProducerEndpoint kafkaProducer {
+    bootstrapServers: "localhost:9092",
+    clientID:"basic-producer",
+    acks:"all",
+    noRetries:3
+};
 ```
 
 Let's now see the structure of the `product_admin_portal.bal` file. Inline comments are added for better understanding.
 
 ##### product_admin_portal.bal
 ```ballerina
-package ProductMgtSystem.Publisher;
+// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+//
+// WSO2 Inc. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
-// imports
+import ballerina/http;
+import wso2/kafka;
+import ballerina/log;
 
 // Constants to store admin credentials
-const string ADMIN_USERNAME = "Admin";
-const string ADMIN_PASSWORD = "Admin";
+@final
+string ADMIN_USERNAME = "Admin";
+@final
+string ADMIN_PASSWORD = "Admin";
 
-// Product admin service
-@http:configuration {basePath:"/product"}
-service<http> productAdminService {
-    // Resource that allows the admin to send a price update for a product
-    @http:resourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
-    resource updatePrice (http:Connection connection, http:InRequest request) {
-      
+// Kafka ProducerClient endpoint
+endpoint kafka:ProducerEndpoint kafkaProducer {
+    bootstrapServers: "localhost:9092",
+    clientID:"basic-producer",
+    acks:"all",
+    noRetries:3
+};
+
+endpoint http:Listener serviceEP {
+    port:9090
+};
+
+@http:ServiceConfig {
+    endpoints:[serviceEP],
+    basePath:"/product"
+}
+service<http:Service> productAdminService bind serviceEP {
+
+    @http:ResourceConfig {
+        methods:["POST"],
+        path:"/updatePrice",
+        consumes:["application/json"],
+        produces:["application/json"]
+    }
+
+    updatePrice (endpoint connection, http:Request request) {
+        http:Response response = new;
+
         // Try getting the JSON payload from the incoming request
+        json payload = check request.getJsonPayload();
+        json username = payload.Username;
+        json password = payload.Password;
+        json productName = payload.Product;
+        json newPrice = payload.Price;
 
-        // Check whether the specified value for 'Price' is appropriate
+        // If payload parsing fails, send a "Bad Request" message as the response
+        if (username == null || password == null || productName == null || newPrice == null) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Bad Request: Invalid payload"});
+            _ = connection->respond(response);
+        }
 
-        // Check whether the credentials provided are Admin credentials
+        float newPriceAmount;
 
-        // Kafka message publishing logic
+        // Convert the price value to float
+        var result = <float>newPrice.toString();
+        match result {
+            float value => {
+                newPriceAmount = value;
+            }
+
+            error err => {
+                response.statusCode = 400;
+                response.setJsonPayload({"Message":"Invalid amount specified for field 'Price'"});
+                connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
+            }
+        }
+
+        // If the credentials does not match with the admin credentials, send an "Access Forbidden" response message
+        if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
+            response.statusCode = 403;
+            response.setJsonPayload({"Message":"Access Forbidden"});
+            connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
+        }
+
         // Construct and serialize the message to be published to the Kafka topic
-        json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPrice};
+        json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPriceAmount};
         blob serializedMsg = priceUpdateInfo.toString().toBlob("UTF-8");
         // Create the Kafka ProducerRecord and specify the destination topic - 'product-price' in this case
         // Set a valid partition number, which will be used when sending the record
         kafka:ProducerRecord record = {value:serializedMsg, topic:"product-price", partition:0};
 
-        // Create a Kafka ProducerConfig with optional parameters 
-        // 'clientID' is used for broker side logging
-        // acks refers to the number of acknowledgments for requests 
-        // noRetries refers to the number of retries if a record fails to get sent
-        kafka:ProducerConfig producerConfig = {clientID:"basic-producer", acks:"all", noRetries:3};
         // Produce the message and publish it to the Kafka topic
-        kafkaProduce(record, producerConfig);
-        
+        kafkaProduce(record);
         // Send a success status to the admin request
+        response.setJsonPayload({"Status":"Success"});
+        connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
     }
 }
 
 // Function to produce and publish a given record to a Kafka topic
-function kafkaProduce (kafka:ProducerRecord record, kafka:ProducerConfig producerConfig) {
-    // Kafka ProducerClient endpoint
-    endpoint<kafka:ProducerClient> kafkaEP {
-        create kafka:ProducerClient(["localhost:9092, localhost:9093"], producerConfig);
-    }
+function kafkaProduce (kafka:ProducerRecord record) {
     // Publish the record to the specified topic
-    kafkaEP.sendAdvanced(record);
-    kafkaEP.flush();
-    // Close the endpoint
-    kafkaEP.close();
+    kafkaProducer->sendAdvanced(record);
+    kafkaProducer->flush();
 }
 
 ```
