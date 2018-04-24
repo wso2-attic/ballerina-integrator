@@ -15,10 +15,9 @@ The following are the sections available in this guide.
 
 To understanding how you can use asynchronous invocations with Ballerina, let’s consider an Stock Quote Summary service.
 
-- The Stock Quote Summary service will call the backend to get the stock data
-- The Ballerina Stock Quote Summary service will call the backend 3 times asynchronously
-- Finally, the Summary servie will send all the details from 3 backend calls to the client.
-.
+- The Stock Quote Summary service will call a remote backend to get the stock data
+- The Ballerina Stock Quote Summary service will call the remote backend for three separate endpoints asynchronously
+- Finally, the quote summary servie will append all the results from three backend and send the responses to the client.
 
 The following figure illustrates the scenario of the Stock Quote Summary service with asynchronous invocations. 
 
@@ -88,12 +87,14 @@ Ballerina project initialized
 
 - We can get started with the stock quote summary service, which is the RESTful service that serves the stock quote summary requests. This service will reveive the requests as HTTP GET method from the clients.
 
--  The stock quote summary service will call three separate resorces asynchronously.
+-  The stock quote summary service will call three separate remote resorces asynchronously.
 
-- Finally, the service will append all three responses and return the stock quote summary to the client.
+- The Ballerina language support function calls and client connector actions to execute asynchronously.`start` keyword allows you to invoke the function asychronously. The `future` type allows you to have the result in future. The program can proceed without any blocking after the asynchronous function invocation. The following statement will call the endpoint asynchronously.
 
-- Ballerina message broker will be used as the message broker for this process. `endpoint mb:SimpleQueueSender queueSenderBooking` is the endpoint of the message queue sender for new bookings of flight. You can give the preferred configuration of the message broker and queue name inside the endpoint definition. We have used the default configurations for the ballerina message broker. `endpoint mb:SimpleQueueSender queueSenderCancelling` is the endpoint to send the messages for cancelling the reservations.
-- We have maintained two seperate queues for manage the flight reservations and cancellations.
+  `future <http:Response|http:HttpConnectorError> f3 = start nasdaqServiceEP -> get("/nasdaq/quote/MSFT", request = req);`
+
+- Finally, the service will append all three responses and return the stock quote summary to the client. For get the results from a asynchronous call we need to use keywork `await`. `await` blocks until the previously started asynchronous invocation.
+
 
 ##### async_service.bal
 ```ballerina
