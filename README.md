@@ -187,7 +187,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
  - resource path `/APPL` with response `"APPL, Apple Inc., 165.22"` 
  - resource path `/MSFT` with response `"MSFT, Microsoft Corporation, 95.35"` 
 
-NOTE: You can find the complete implementaion of stock_quote_data_backend [here]()
+NOTE: You can find the complete implementaion of stock_quote_data_backend [here](stock_quote_data_backend/stock_backend.bal)
 
 - Then, you need to run flight booking sytem(which listen to the message queues)`guide.flight_booking_system`. Open your terminal and navigate to `<SAMPLE_ROOT_DIRECTORY>/` and execute the following command.
 ```
