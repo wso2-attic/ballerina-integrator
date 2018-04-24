@@ -178,19 +178,12 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
 
 ### Mock remote service: stock_quote_data_backend
 
-- You can use any third-party remote service for the remote backend service.
-
-- For ease of explanation we have developed the mock stock quote remote backend with Ballerina.
-
-- This mock stock data backend will have the following resources and respective responses
+You can use any third-party remote service for the remote backend service. For ease of explanation we have developed the mock stock quote remote backend with Ballerina. This mock stock data backend will have the following resources and respective responses
  - resource path `/GOOG` with response `"GOOG, Alphabet Inc., 1013.41"` 
  - resource path `/APPL` with response `"APPL, Apple Inc., 165.22"` 
  - resource path `/MSFT` with response `"MSFT, Microsoft Corporation, 95.35"` 
 
 NOTE: You can find the complete implementaion of stock_quote_data_backend [here](stock_quote_data_backend/stock_backend.bal)
-
-- With that we've completed the development of Ballerina asynchronous sample. 
-
 
 
 ## Testing 
