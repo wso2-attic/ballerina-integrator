@@ -37,8 +37,7 @@ The following figure illustrates the scenario of the Stock Quote Summary service
 
 
 
-- **Request Stock Summary** : To reserve a seat you can use the HTTP POST message that contains the passanger details, which is sent to the URL `http://localhost:9090/airline/reservation`. 
-
+- **Request Stock Summary** : You can send HTTP GET request to the URL `http://localhost:9090/quote-summary` and retrieve the stock quote summary.
 
 ## Prerequisites
  
@@ -59,27 +58,25 @@ The following figure illustrates the scenario of the Stock Quote Summary service
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
-messaging-with-ballerina
-├── Ballerina.toml
-├── guide.flight_booking_service
-│   └── airline_resrvation.bal
-└── guide.flight_booking_system
-    └── flight_booking_system.bal
-
+asynchronous-invocation
+  ├── asynchronous_invocation
+  │   └── async_service.bal
+  └── stock_quote_service
+    └── stock_backend.bal
 ```
 You can create the above Ballerina project using Ballerina project initializing toolkit.
 
-- First, create a new directory in your local machine as `restful-service` and navigate to the directory using terminal. 
+- First, create a new directory in your local machine as `asynchronous-invocation` and navigate to the directory using terminal. 
 - Then enter the following inputs to the Ballerina project initializing toolkit.
 ```bash
 restful-service$ ballerina init -i
 Create Ballerina.toml [yes/y, no/n]: (y) y
-Organization name: (username) messaging-with-ballerina
+Organization name: (username) asynchronous-invocation
 Version: (0.0.1) 
 Ballerina source [service/s, main/m]: (s) s
-Package for the service : (no package) guide.flight_booking_service
+Package for the service : (no package) asynchronous_invocation
 Ballerina source [service/s, main/m]: (s) s
-Package for the service : (no package) guide.flight_booking_system
+Package for the service : (no package) stock_quote_service
 Ballerina source [service/s, main/m, finish/f]: (f) f
 
 Ballerina project initialized
