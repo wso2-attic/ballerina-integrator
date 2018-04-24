@@ -90,11 +90,11 @@ Ballerina project initialized
 -  The stock quote summary service will call three separate remote resorces asynchronously.
 
 - The Ballerina language support function calls and client connector actions to execute asynchronously.`start` keyword allows you to invoke the function asychronously. The `future` type allows you to have the result in future. The program can proceed without any blocking after the asynchronous function invocation. The following statement will call the endpoint asynchronously.
+  `future <http:Response|http:HttpConnectorError> responseFuture = start nasdaqServiceEP -> get("/nasdaq/quote/MSFT", request = req);`
 
-  `future <http:Response|http:HttpConnectorError> f3 = start nasdaqServiceEP -> get("/nasdaq/quote/MSFT", request = req);`
-
-- Finally, the service will append all three responses and return the stock quote summary to the client. For get the results from a asynchronous call we need to use keywork `await`. `await` blocks until the previously started asynchronous invocation.
-
+- Finally, the service will append all three responses ard return the stock quote summary to the client. For get the results from a asynchronous call we need to use keywork `await`. `await` blocks until the previously started asynchronous invocation.
+The following statement will get the response from the future type.
+` var response1 = check await f1;`
 
 ##### async_service.bal
 ```ballerina
