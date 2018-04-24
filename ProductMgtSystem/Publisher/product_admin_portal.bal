@@ -19,13 +19,11 @@ import wso2/kafka;
 import ballerina/log;
 
 // Constants to store admin credentials
-@final
-string ADMIN_USERNAME = "Admin";
-@final
-string ADMIN_PASSWORD = "Admin";
+@final string ADMIN_USERNAME = "Admin";
+@final string ADMIN_PASSWORD = "Admin";
 
 // Kafka ProducerClient endpoint
-endpoint kafka:ProducerEndpoint kafkaProducer {
+endpoint kafka:SimpleProducer kafkaProducer {
     bootstrapServers: "localhost:9092",
     clientID:"basic-producer",
     acks:"all",
@@ -92,21 +90,11 @@ service<http:Service> productAdminService bind serviceEP {
         // Construct and serialize the message to be published to the Kafka topic
         json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPriceAmount};
         blob serializedMsg = priceUpdateInfo.toString().toBlob("UTF-8");
-        // Create the Kafka ProducerRecord and specify the destination topic - 'product-price' in this case
-        // Set a valid partition number, which will be used when sending the record
-        kafka:ProducerRecord record = {value:serializedMsg, topic:"product-price", partition:0};
 
         // Produce the message and publish it to the Kafka topic
-        kafkaProduce(record);
+        kafkaProducer->send(serializedMsg, "product-price", partition = 0);
         // Send a success status to the admin request
         response.setJsonPayload({"Status":"Success"});
         connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
     }
-}
-
-// Function to produce and publish a given record to a Kafka topic
-function kafkaProduce (kafka:ProducerRecord record) {
-    // Publish the record to the specified topic
-    kafkaProducer->sendAdvanced(record);
-    kafkaProducer->flush();
 }

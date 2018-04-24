@@ -18,7 +18,7 @@ import ballerina/log;
 import wso2/kafka;
 
 // Kafka consumer endpoint
-endpoint kafka:ConsumerEndpoint consumer {
+endpoint kafka:SimpleConsumer consumer {
     bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
     groupId: "franchisee2",
@@ -34,18 +34,15 @@ service<kafka:Consumer> franchiseeService2 bind consumer {
     // Triggered whenever a message added to the subscribed topic
     onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
-        int counter = 0;
-        while (counter < lengthof records) {
-            // Get the serialized message
-            blob serializedMsg = records[counter].value;
+        foreach record in records {
+            blob serializedMsg = record.value;
             // Convert the serialized message to string message
             string msg = serializedMsg.toString("UTF-8");
             log:printInfo("New message received from the product admin");
             // log the retrieved Kafka record
-            log:printInfo("Topic: " + records[counter].topic + "; Received Message: " + msg);
+            log:printInfo("Topic: " + record.topic + "; Received Message: " + msg);
             // Acknowledgement
             log:printInfo("Acknowledgement from Franchisee 2");
-            counter = counter + 1;
         }
     }
 }

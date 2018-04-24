@@ -88,7 +88,7 @@ Let's get started with the implementation of a Kafka service, which is subscribe
 ```ballerina
 // Kafka subscriber configurations
 @Description {value:"Service level annotation to provide Kafka consumer configuration"}
-endpoint kafka:ConsumerEndpoint consumer {
+endpoint kafka:SimpleConsumer consumer {
     bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
     groupId: "inventorySystemd",
@@ -117,7 +117,7 @@ import ballerina/log;
 import wso2/kafka;
 
 // Kafka consumer endpoint
-endpoint kafka:ConsumerEndpoint consumer {
+endpoint kafka:SimpleConsumer consumer {
     bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
     groupId: "inventorySystemd",
@@ -164,7 +164,7 @@ In this example, you first serialized the message in `blob` format before publis
 
 ##### Kafka producer configurations
 ```ballerina
-endpoint kafka:ProducerEndpoint kafkaProducer {
+endpoint kafka:SimpleProducer kafkaProducer {
     bootstrapServers: "localhost:9092",
     clientID:"basic-producer",
     acks:"all",
@@ -261,22 +261,13 @@ service<http:Service> productAdminService bind serviceEP {
         // Create the Kafka ProducerRecord and specify the destination topic 
         // - 'product-price' in this case
         // Set a valid partition number, which will be used when sending the record
-        kafka:ProducerRecord record = {value:serializedMsg, topic:"product-price", partition:0};
+        kafkaProducer->send(serializedMsg, "product-price", partition = 0);
 
-        // Produce the message and publish it to the Kafka topic
-        kafkaProduce(record);
         // Send a success status to the admin request
         response.setJsonPayload({"Status":"Success"});
         connection->respond(response) but 
               { error e => log:printError("Error in responding ", err = e) };
     }
-}
-
-// Function to produce and publish a given record to a Kafka topic
-function kafkaProduce (kafka:ProducerRecord record) {
-    // Publish the record to the specified topic
-    kafkaProducer->sendAdvanced(record);
-    kafkaProducer->flush();
 }
 ```
 
