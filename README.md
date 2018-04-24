@@ -83,7 +83,7 @@ Ballerina project initialized
 
 - Once you initialize your Ballerina project, you can change the names of the file to match with our guide project file names.
   
-### Implement the stock quote summary service with asyncronous invocations
+### Implement the stock quote summary service with asyncronous invocations** 
 
 - We can get started with the stock quote summary service, which is the RESTful service that serves the stock quote summary requests. This service will reveive the requests as HTTP GET method from the clients.
 
