@@ -61,6 +61,24 @@ Package `Publisher` contains the file that handles the Kafka message publishing 
 
 Package `Subscribers` contains three different subscribers who subscribed to Kafka topic 'product-price'.
 
+You can create the above Ballerina project using Ballerina project initializing toolkit.
+
+- First, create a new directory in your local machine as `messaging-with-kafka` and navigate to that directory using terminal. 
+- Then enter the following inputs to the Ballerina project initializing toolkit.
+```bash
+$ballerina init -i
+
+Create Ballerina.toml [yes/y, no/n]: (n)  
+Ballerina source [service/s, main/m]: (s)
+Package for the service : (no package) ProductMgtSystem.Publisher
+Ballerina source [service/s, main/m, finish/f]: (f) s
+Package for the service : (no package) ProductMgtSystem.Subscribers
+Ballerina source [service/s, main/m, finish/f]: (f)
+
+Ballerina project initialized
+```
+
+- Once you initialize your Ballerina project, you can change the names of the generated files to match with our guide project filenames.
 
 ### Implementation
 
