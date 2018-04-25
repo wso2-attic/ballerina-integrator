@@ -341,17 +341,19 @@ To see the complete implementation of the above, see the [product_admin_portal.b
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package and the naming convention should be as follows.
-* Test files should contain _test.bal suffix.
-* Test functions should contain test prefix.
-  * e.g., testProductAdminService()
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+* Test functions should be annotated with `@test:Config`. See the below example.
+```ballerina
+   @test:Config
+  function testProductAdminService () {
+```
+  
+This guide contains unit test cases for each method available in the 'order_mgt_service' implemented above. 
 
-This guide contains a unit test case for the HTTP service `productAdminService` from the `product_admin_portal.bal` file. The test file is in the same package that the above-mentioned file is located.
-
-To run the unit test, go to the sample root directory and run the following command.
-   ```bash
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina test ProductMgtSystem/Publisher/
-   ```
+To run the unit tests, navigate to the sample root directory and run the following command.
+```bash
+   $ballerina test ProductMgtSystem/Publisher/
+```
 
 To check the implementation of this test file, see the [product_admin_portal_test.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal_test.bal) file.
 
