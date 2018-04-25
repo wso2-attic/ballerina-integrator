@@ -26,6 +26,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         http:Request req = new;
         http:Response resp = new;
         string responseStr;
+        // Initialize empty json to add results from backed call
         json  responseJson = {};
 
         io:println(" >> Invoking services asynchrnounsly...");
@@ -59,10 +60,12 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         // ‘await` blocks until the previously started async function returns.
         // Append the results from all the responses of stock data backend
         var response1 = await f1;
+        // Use `match` to check the responses are available, if not available get error
         match response1 {
             http:Response resp => {
 
                 responseStr = check resp.getStringPayload();
+                // Add the response from /GOOG endpoint to responseJson file
                 responseJson["GOOG"] = responseStr;
             }
             http:HttpConnectorError err => {
@@ -75,6 +78,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         match response2 {
             http:Response resp => {
                 responseStr = check resp.getStringPayload();
+                // Add the response from /APPL endpoint to responseJson file
                 responseJson["APPL"] = responseStr;
             }
             http:HttpConnectorError err => {
@@ -86,6 +90,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         match response3 {
             http:Response resp => {
                 responseStr = check resp.getStringPayload();
+                // Add the response from /MSFT endpoint to responseJson file
                 responseJson["MSFT"] = responseStr;
 
             }
