@@ -6,14 +6,13 @@ Kafka is a distributed, partitioned, replicated commit log service. It provides 
 
 The following are the sections available in this guide.
 
-- [What you'll build](#what-you-build)
-- [Prerequisites](#pre-req)
-- [Developing the service](#developing-service)
+- [What you'll build](#what-youll-build)
+- [Prerequisites](#prerequisites)
+- [Developing the service](#developing-the-service)
 - [Testing](#testing)
-- [Deployment](#deploying-the-scenario)
-- [Observability](#observability)
+- [Deployment](#deployment)
 
-## <a name="what-you-build"></a>  What you’ll build
+## What you’ll build
 To understand how you can use Kafka for publish-subscribe messaging, let's consider a real-world use case of a product management system. This product management system consists of a product admin portal using which the product administrator can update the price for a product. This price update message should be consumed by a couple of franchisees and an inventory control system to take appropriate actions. Kafka is an ideal messaging system for this scenario. In this particular use case, once the admin updates the price of a product, the update message is published to a Kafka topic called 'product-price' to which the franchisees and the inventory control system subscribed to listen. The following diagram illustrates this use case clearly.
 
 
@@ -22,7 +21,7 @@ To understand how you can use Kafka for publish-subscribe messaging, let's consi
 
 In this example, the Ballerina Kafka Connector is used to connect Ballerina to Apache Kafka. With this Kafka Connector, Ballerina can act as both message publisher and subscriber.
 
-## <a name="pre-req"></a> Prerequisites
+## Prerequisites
 - JDK 1.8 or later
 - [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
 - [Apache Kafka 1.0.0](https://kafka.apache.org/downloads)
@@ -35,10 +34,10 @@ In this example, the Ballerina Kafka Connector is used to connect Ballerina to A
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 
-## <a name="developing-service"></a> Developing the service
+## Developing the service
 
-### <a name="before-begin"></a> Before you begin
-##### Understand the package structure
+### Before you begin
+#### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
@@ -62,8 +61,26 @@ Package `Publisher` contains the file that handles the Kafka message publishing 
 
 Package `Subscribers` contains three different subscribers who subscribed to Kafka topic 'product-price'.
 
+You can create the above Ballerina project using Ballerina project initializing toolkit.
 
-### <a name="Implementation"></a> Implementation
+- First, create a new directory in your local machine as `messaging-with-kafka` and navigate to that directory using terminal. 
+- Then enter the following inputs to the Ballerina project initializing toolkit.
+```bash
+$ballerina init -i
+
+Create Ballerina.toml [yes/y, no/n]: (n)  
+Ballerina source [service/s, main/m]: (s)
+Package for the service : (no package) ProductMgtSystem.Publisher
+Ballerina source [service/s, main/m, finish/f]: (f) s
+Package for the service : (no package) ProductMgtSystem.Subscribers
+Ballerina source [service/s, main/m, finish/f]: (f)
+
+Ballerina project initialized
+```
+
+- Once you initialize your Ballerina project, you can change the names of the generated files to match with our guide project filenames.
+
+### Implementation
 
 Let's get started with the implementation of a Kafka service, which is subscribed to the Kafka topic 'product-price'. Let's consider `inventory_control_system.bal` for example. Let's first see how to add the Kafka configurations for a Kafka subscriber written in Ballerina language. Refer to the code segment attached below.
 
@@ -71,15 +88,15 @@ Let's get started with the implementation of a Kafka service, which is subscribe
 ```ballerina
 // Kafka subscriber configurations
 @Description {value:"Service level annotation to provide Kafka consumer configuration"}
-@kafka:configuration {
-    bootstrapServers:"localhost:9092, localhost:9093",
+endpoint kafka:ConsumerEndpoint consumer {
+    bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
-    groupId:"inventorySystem",
+    groupId: "inventorySystemd",
     // Listen from topic 'product-price'
-    topics:["product-price"],
+    topics: ["product-price"],
     // Poll every 1 second
     pollingInterval:1000
-}
+};
 ```
 
 A Kafka subscriber in Ballerina should contain the `@kafka:configuration {}` block in which you specify the required configurations for a Kafka subscriber. 
@@ -96,36 +113,34 @@ Let's now see the complete implementation of the `inventory_control_system.bal` 
 
 ##### inventory_control_system.bal
 ```ballerina
-package ProductMgtSystem.Subscribers.InventoryControl;
+import ballerina/log;
+import wso2/kafka;
 
-import ballerina.net.kafka;
-import ballerina.log;
-
-// Kafka subscriber configurations
-@Description {value:"Service level annotation to provide Kafka consumer configuration"}
-@kafka:configuration {
-    bootstrapServers:"localhost:9092, localhost:9093",
+// Kafka consumer endpoint
+endpoint kafka:ConsumerEndpoint consumer {
+    bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
-    groupId:"inventorySystem",
+    groupId: "inventorySystemd",
     // Listen from topic 'product-price'
-    topics:["product-price"],
+    topics: ["product-price"],
     // Poll every 1 second
     pollingInterval:1000
-}
+};
+
 // Kafka service that listens from the topic 'product-price'
-// 'inventoryControlService' is subscribed to the new product price updates from the product admin and updates the database
-service<kafka> inventoryControlService {
-    // Triggered whenever a message is added to the subscribed topic
-    resource onMessage (kafka:Consumer consumer, kafka:ConsumerRecord[] records) {
-        // Dispatch a set of Kafka records to service and process one after another
+// 'inventoryControlService' subscribed to new product price updates from the product admin
+// and updates the Database
+service<kafka:Consumer> kafkaService bind consumer {
+    // Triggered whenever a message added to the subscribed topic
+    onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
+        // Dispatched set of Kafka records to service, We process each one by one.
         int counter = 0;
         while (counter < lengthof records) {
-            // Get the serialized message
             blob serializedMsg = records[counter].value;
-            // Convert the serialized message to a string message
+            // Convert the serialized message to string message
             string msg = serializedMsg.toString("UTF-8");
             log:printInfo("New message received from the product admin");
-            // Log the retrieved Kafka record
+            // log the retrieved Kafka record
             log:printInfo("Topic: " + records[counter].topic + "; Received Message: " + msg);
             // Mock logic
             // Update the database with the new price for the specified product
@@ -149,197 +164,214 @@ In this example, you first serialized the message in `blob` format before publis
 
 ##### Kafka producer configurations
 ```ballerina
-// Kafka message publishing logic
-// Construct and serialize the message to be published to the Kafka topic
-json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPrice};
-blob serializedMsg = priceUpdateInfo.toString().toBlob("UTF-8");
-// Create the Kafka ProducerRecord and specify the destination topic - 'product-price' in this case
-// Set a valid partition number, which will be used when sending the record
-kafka:ProducerRecord record = {value:serializedMsg, topic:"product-price", partition:0};
-
-// Create a Kafka ProducerConfig with optional parameters 
-// 'clientID' is used for broker side logging,
-// acks refers to the number of acknowledgments for requests 
-// noRetries refers to the number of retries if the record fails to get sent
-kafka:ProducerConfig producerConfig = {clientID:"basic-producer", acks:"all", noRetries:3};
-// Produce the message and publish it to the Kafka topic
+endpoint kafka:ProducerEndpoint kafkaProducer {
+    bootstrapServers: "localhost:9092",
+    clientID:"basic-producer",
+    acks:"all",
+    noRetries:3
+};
 ```
 
 Let's now see the structure of the `product_admin_portal.bal` file. Inline comments are added for better understanding.
 
 ##### product_admin_portal.bal
 ```ballerina
-package ProductMgtSystem.Publisher;
-
-// imports
+import ballerina/http;
+import wso2/kafka;
+import ballerina/log;
 
 // Constants to store admin credentials
-const string ADMIN_USERNAME = "Admin";
-const string ADMIN_PASSWORD = "Admin";
+@final
+string ADMIN_USERNAME = "Admin";
+@final
+string ADMIN_PASSWORD = "Admin";
 
-// Product admin service
-@http:configuration {basePath:"/product"}
-service<http> productAdminService {
-    // Resource that allows the admin to send a price update for a product
-    @http:resourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
-    resource updatePrice (http:Connection connection, http:InRequest request) {
-      
+// Kafka ProducerClient endpoint
+endpoint kafka:ProducerEndpoint kafkaProducer {
+    bootstrapServers: "localhost:9092",
+    clientID:"basic-producer",
+    acks:"all",
+    noRetries:3
+};
+
+// HTTP service endpoint
+endpoint http:Listener serviceEP {
+    port:9090
+};
+
+@http:ServiceConfig {
+    endpoints:[serviceEP],
+    basePath:"/product"
+}
+service<http:Service> productAdminService bind serviceEP {
+
+    @http:ResourceConfig {
+        methods:["POST"],
+        path:"/updatePrice",
+        consumes:["application/json"],
+        produces:["application/json"]
+    }
+    updatePrice (endpoint connection, http:Request request) {
+        http:Response response = new;
+
         // Try getting the JSON payload from the incoming request
+        json payload = check request.getJsonPayload();
+        json username = payload.Username;
+        json password = payload.Password;
+        json productName = payload.Product;
+        json newPrice = payload.Price;
 
-        // Check whether the specified value for 'Price' is appropriate
+        // If payload parsing fails, send a "Bad Request" message as the response
+        if (username == null || password == null || productName == null || newPrice == null) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Bad Request: Invalid payload"});
+            _ = connection->respond(response);
+        }
 
-        // Check whether the credentials provided are Admin credentials
+        float newPriceAmount;
 
-        // Kafka message publishing logic
+        // Convert the price value to float
+        var result = <float>newPrice.toString();
+        match result {
+            float value => {
+                newPriceAmount = value;
+            }
+
+            error err => {
+                response.statusCode = 400;
+                json payload = {"Message":"Invalid amount specified for field 'Price'"};
+                response.setJsonPayload(payload);
+                connection->respond(response) but 
+                          { error e => log:printError("Error in responding ", err = e) };
+            }
+        }
+
+        // If the credentials does not match with the admin credentials, send an 
+        // "Access Forbidden" response message
+        if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
+            response.statusCode = 403;
+            response.setJsonPayload({"Message":"Access Forbidden"});
+            connection->respond(response) but 
+                   { error e => log:printError("Error in responding ", err = e) };
+        }
+
         // Construct and serialize the message to be published to the Kafka topic
-        json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPrice};
+        json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPriceAmount};
         blob serializedMsg = priceUpdateInfo.toString().toBlob("UTF-8");
-        // Create the Kafka ProducerRecord and specify the destination topic - 'product-price' in this case
+        // Create the Kafka ProducerRecord and specify the destination topic 
+        // - 'product-price' in this case
         // Set a valid partition number, which will be used when sending the record
         kafka:ProducerRecord record = {value:serializedMsg, topic:"product-price", partition:0};
 
-        // Create a Kafka ProducerConfig with optional parameters 
-        // 'clientID' is used for broker side logging
-        // acks refers to the number of acknowledgments for requests 
-        // noRetries refers to the number of retries if a record fails to get sent
-        kafka:ProducerConfig producerConfig = {clientID:"basic-producer", acks:"all", noRetries:3};
         // Produce the message and publish it to the Kafka topic
-        kafkaProduce(record, producerConfig);
-        
+        kafkaProduce(record);
         // Send a success status to the admin request
+        response.setJsonPayload({"Status":"Success"});
+        connection->respond(response) but 
+              { error e => log:printError("Error in responding ", err = e) };
     }
 }
 
 // Function to produce and publish a given record to a Kafka topic
-function kafkaProduce (kafka:ProducerRecord record, kafka:ProducerConfig producerConfig) {
-    // Kafka ProducerClient endpoint
-    endpoint<kafka:ProducerClient> kafkaEP {
-        create kafka:ProducerClient(["localhost:9092, localhost:9093"], producerConfig);
-    }
+function kafkaProduce (kafka:ProducerRecord record) {
     // Publish the record to the specified topic
-    kafkaEP.sendAdvanced(record);
-    kafkaEP.flush();
-    // Close the endpoint
-    kafkaEP.close();
+    kafkaProducer->sendAdvanced(record);
+    kafkaProducer->flush();
 }
-
 ```
 
 To see the complete implementation of the above, see the [product_admin_portal.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal.bal) file. 
 
-## <a name="testing"></a> Testing 
+## Testing 
 
-### <a name="try-it"></a> Try it out
+### Try it out
 
-1. Start the `ZooKeeper` instance with default configurations by entering the following command in a terminal.
+- Start the `ZooKeeper` instance with default configurations by entering the following command in a terminal.
 
-   ```bash
-   <KAFKA_HOME_DIRECTORY>$ bin/zookeeper-server-start.sh config/zookeeper.properties
-   ```
+ ```bash
+    <KAFKA_HOME_DIRECTORY>$ bin/zookeeper-server-start.sh config/zookeeper.properties
+ ```
 
-2. Start a single `Kafka broker` instance with default configurations by entering the following command in a different terminal.
+- Start a single `Kafka broker` instance with default configurations by entering the following command in a different terminal.
 
-   ```bash
+```bash
    <KAFKA_HOME_DIRECTORY>$ bin/kafka-server-start.sh config/server.properties
-   ```
+```
    Here we started the Kafka server on host:localhost, port:9092. Now we have a working Kafka cluster.
 
-3. Create a new topic `product-price` on Kafka cluster by entering the following command in a different terminal.
+- Create a new topic `product-price` on Kafka cluster by entering the following command in a different terminal.
 
-   ```bash
-   <KAFKA_HOME_DIRECTORY>$ bin/kafka-topics.sh --create --topic product-price --zookeeper localhost:2181 --replication-factor 1 --partitions 2
-   ```
+```bash
+   <KAFKA_HOME_DIRECTORY>$ bin/kafka-topics.sh --create --topic product-price --zookeeper \
+   localhost:2181 --replication-factor 1 --partitions 2
+```
    Here we created a new topic that consists of two partitions with a single replication factor.
    
-4. Run the `productAdminService`, which is an HTTP service that publishes messages to the Kafka topic, and the Kafka services in the `Subscribers` package, which are subscribed to listen to the Kafka topic by entering the following commands in sperate terminals.
+- Run the `productAdminService`, which is an HTTP service that publishes messages to the Kafka topic, and the Kafka services in the `Subscribers` package, which are subscribed to listen to the Kafka topic by entering the following commands in sperate terminals.
 
-   ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run ProductMgtSystem/Publisher/
-   ```
+```bash
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina run ProductMgtSystem/Publisher/
+```
 
-   ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run ProductMgtSystem/Subscribers/<Subscriber_Package_Name>/
-   ```
+```bash
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina run ProductMgtSystem/Subscribers/<Subscriber_Package_Name>/
+```
    
-5.  Invoke the `productAdminService` by sending a POST request to update the price of a product with Admin credentials.
+- Invoke the `productAdminService` by sending a POST request to update the price of a product with Admin credentials.
 
-    ```bash
-    curl -v -X POST -d '{"Username":"Admin", "Password":"Admin", "Product":"ABC", "Price":100.00}' \
-     "http://localhost:9090/product/updatePrice" -H "Content-Type:application/json"
-    ```
+```bash
+   curl -v -X POST -d '{"Username":"Admin", "Password":"Admin", "Product":"ABC", "Price":100.00}' \
+   "http://localhost:9090/product/updatePrice" -H "Content-Type:application/json"
+```
 
-    The `productAdminService` sends a response similar to the following:
-    ```bash
-     < HTTP/1.1 200 OK
-    {"Status":"Success"}
-    ```
+- The `productAdminService` sends a response similar to the following:
+```bash
+   < HTTP/1.1 200 OK
+   {"Status":"Success"}
+```
 
-    Sample log messages in subscribed Kafka services:
-    ```bash
-     INFO  [ProductMgtSystem.Subscribers.<All>] - New message received from the product admin 
-     INFO  [ProductMgtSystem.Subscribers.<All>] - Topic: product-price; Received Message {"Product":"ABC","UpdatedPrice":100.0} 
-     INFO  [ProductMgtSystem.Subscribers.Franchisee1] - Acknowledgement from Franchisee 1 
-     INFO  [ProductMgtSystem.Subscribers.Franchisee2] - Acknowledgement from Franchisee 2 
-     INFO  [ProductMgtSystem.Subscribers.InventoryControl] - Database updated with the new price for the specified product
-    ```
+- Sample log messages in subscribed Kafka services:
+```bash
+     INFO  [<All>] - New message received from the product admin 
+     INFO  [<All>] - Topic: product-price; Received Message {"Product":"ABC","UpdatedPrice":100.0} 
+     INFO  [Franchisee1] - Acknowledgement from Franchisee 1 
+     INFO  [Franchisee2] - Acknowledgement from Franchisee 2 
+     INFO  [InventoryControl] - Database updated with the new price for the specified product
+```
 
-### <a name="unit-testing"></a> Writing unit tests 
+### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package and the naming convention should be as follows.
-* Test files should contain _test.bal suffix.
-* Test functions should contain test prefix.
-  * e.g., testProductAdminService()
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+* Test functions should be annotated with `@test:Config`. See the below example.
+```ballerina
+   @test:Config
+  function testProductAdminService () {
+```
+  
+This guide contains unit test cases for each method available in the 'order_mgt_service' implemented above. 
 
-This guide contains a unit test case for the HTTP service `productAdminService` from the `product_admin_portal.bal` file. The test file is in the same package that the above-mentioned file is located.
-
-To run the unit test, go to the sample root directory and run the following command.
-   ```bash
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina test ProductMgtSystem/Publisher/
-   ```
+To run the unit tests, navigate to the sample root directory and run the following command.
+```bash
+   $ballerina test ProductMgtSystem/Publisher/
+```
 
 To check the implementation of this test file, see the [product_admin_portal_test.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal_test.bal) file.
 
-## <a name="deploying-the-scenario"></a> Deployment
+## Deployment
 
 Once you are done with the development, you can deploy the service using any of the methods listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying locally
+### Deploying locally
 You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and run them in your local environment as follows.
 
 Building 
-   ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina build ProductMgtSystem/Publisher/
+```bash
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina build ProductMgtSystem/Publisher/
 
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina build ProductMgtSystem/Subscribers/<Subscriber_Package_Name>/
-
-   ```
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina build ProductMgtSystem/Subscribers/<Subscriber_Package_Name>/
+```
 
 Running
-   ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
-
-   ```
-
-### <a name="deploying-on-docker"></a> Deploying on Docker
-(Work in progress) 
-
-### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
-(Work in progress) 
-
-
-## <a name="observability"></a> Observability 
-
-### <a name="logging"></a> Logging
-(Work in progress) 
-
-### <a name="metrics"></a> Metrics
-(Work in progress) 
-
-
-### <a name="tracing"></a> Tracing 
-(Work in progress) 
-
-
-## P.S.
-
-Due to an [issue](https://github.com/wso2-ballerina/package-kafka/issues/2), Ballerina Kafka Connector does not work with Ballerina versions later than 0.96.0 (exclusive). Therefore, when trying this guide use Ballerina version 0.96.0.
+```bash
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
+```
