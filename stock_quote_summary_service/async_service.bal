@@ -26,6 +26,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         http:Request req = new;
         http:Response resp = new;
         string responseStr;
+        json  responseJson = {};
 
         io:println(" >> Invoking services asynchrnounsly...");
 
@@ -57,18 +58,45 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
 
         // ‘await` blocks until the previously started async function returns.
         // Append the results from all the responses of stock data backend
-        var response1 = check await f1;
-        responseStr = check response1.getStringPayload();
+        var response1 = await f1;
+        match response1 {
+            http:Response resp => {
 
-        var response2 = check await f2;
-        responseStr = responseStr + " \n " + check response2.getStringPayload();
+                responseStr = check resp.getStringPayload();
+                responseJson["GOOG"] = responseStr;
+            }
+            http:HttpConnectorError err => {
+                io:println(err.message);
+                responseStr = err.message;
+            }
+        }
 
-        var response3 = check await f3;
-        responseStr = responseStr + " \n " + check response3.getStringPayload();
+        var response2 = await f2;
+        match response2 {
+            http:Response resp => {
+                responseStr = check resp.getStringPayload();
+                responseJson["APPL"] = responseStr;
+            }
+            http:HttpConnectorError err => {
+                io:println(err.message);
+            }
+        }
+
+        var response3 = await f3;
+        match response3 {
+            http:Response resp => {
+                responseStr = check resp.getStringPayload();
+                responseJson["MSFT"] = responseStr;
+
+            }
+            http:HttpConnectorError err => {
+                io:println(err.message);
+            }
+        }
 
         // Send the response back to the client
-        resp.setStringPayload(responseStr);
-        io:println(" >> Response : " + responseStr);
+        resp.setJsonPayload(responseJson);
+        io:println(" >> Response : " + responseJson.toString());
         _ = caller -> respond(resp);
     }
 }
