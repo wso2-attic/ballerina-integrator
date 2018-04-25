@@ -27,7 +27,7 @@ The following figure illustrates the scenario of the Stock Quote Summary service
 &nbsp;
 &nbsp;
 
-![async invocation](images/asynchronous-invocation.png "Asynchronous Invocation")
+![async invocation](images/asynchronous-invocation.svg "Asynchronous Invocation")
 
 &nbsp;
 &nbsp;
