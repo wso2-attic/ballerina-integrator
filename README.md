@@ -110,7 +110,8 @@ endpoint kafka:ConsumerEndpoint consumer {
 };
 
 // Kafka service that listens from the topic 'product-price'
-// 'inventoryControlService' subscribed to new product price updates from the product admin and updates the Database
+// 'inventoryControlService' subscribed to new product price updates from the product admin
+// and updates the Database
 service<kafka:Consumer> kafkaService bind consumer {
     // Triggered whenever a message added to the subscribed topic
     onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
@@ -220,22 +221,27 @@ service<http:Service> productAdminService bind serviceEP {
 
             error err => {
                 response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid amount specified for field 'Price'"});
-                connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
+                json payload = {"Message":"Invalid amount specified for field 'Price'"};
+                response.setJsonPayload(payload);
+                connection->respond(response) but 
+                          { error e => log:printError("Error in responding ", err = e) };
             }
         }
 
-        // If the credentials does not match with the admin credentials, send an "Access Forbidden" response message
+        // If the credentials does not match with the admin credentials, send an 
+        // "Access Forbidden" response message
         if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
             response.statusCode = 403;
             response.setJsonPayload({"Message":"Access Forbidden"});
-            connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
+            connection->respond(response) but 
+                   { error e => log:printError("Error in responding ", err = e) };
         }
 
         // Construct and serialize the message to be published to the Kafka topic
         json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPriceAmount};
         blob serializedMsg = priceUpdateInfo.toString().toBlob("UTF-8");
-        // Create the Kafka ProducerRecord and specify the destination topic - 'product-price' in this case
+        // Create the Kafka ProducerRecord and specify the destination topic 
+        // - 'product-price' in this case
         // Set a valid partition number, which will be used when sending the record
         kafka:ProducerRecord record = {value:serializedMsg, topic:"product-price", partition:0};
 
@@ -243,7 +249,8 @@ service<http:Service> productAdminService bind serviceEP {
         kafkaProduce(record);
         // Send a success status to the admin request
         response.setJsonPayload({"Status":"Success"});
-        connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
+        connection->respond(response) but 
+              { error e => log:printError("Error in responding ", err = e) };
     }
 }
 
@@ -277,7 +284,8 @@ To see the complete implementation of the above, see the [product_admin_portal.b
 - Create a new topic `product-price` on Kafka cluster by entering the following command in a different terminal.
 
 ```bash
-   <KAFKA_HOME_DIRECTORY>$ bin/kafka-topics.sh --create --topic product-price --zookeeper localhost:2181 --replication-factor 1 --partitions 2
+   <KAFKA_HOME_DIRECTORY>$ bin/kafka-topics.sh --create --topic product-price --zookeeper \
+   localhost:2181 --replication-factor 1 --partitions 2
 ```
    Here we created a new topic that consists of two partitions with a single replication factor.
    
@@ -306,11 +314,11 @@ To see the complete implementation of the above, see the [product_admin_portal.b
 
 - Sample log messages in subscribed Kafka services:
 ```bash
-     INFO  [ProductMgtSystem.Subscribers.<All>] - New message received from the product admin 
-     INFO  [ProductMgtSystem.Subscribers.<All>] - Topic: product-price; Received Message {"Product":"ABC","UpdatedPrice":100.0} 
-     INFO  [ProductMgtSystem.Subscribers.Franchisee1] - Acknowledgement from Franchisee 1 
-     INFO  [ProductMgtSystem.Subscribers.Franchisee2] - Acknowledgement from Franchisee 2 
-     INFO  [ProductMgtSystem.Subscribers.InventoryControl] - Database updated with the new price for the specified product
+     INFO  [<All>] - New message received from the product admin 
+     INFO  [<All>] - Topic: product-price; Received Message {"Product":"ABC","UpdatedPrice":100.0} 
+     INFO  [Franchisee1] - Acknowledgement from Franchisee 1 
+     INFO  [Franchisee2] - Acknowledgement from Franchisee 2 
+     INFO  [InventoryControl] - Database updated with the new price for the specified product
 ```
 
 ### Writing unit tests 
