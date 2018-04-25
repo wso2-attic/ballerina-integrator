@@ -45,7 +45,7 @@ function testProductAdminService () {
                 }
             }
         }
-        http:HttpConnectorError err =>{
+        http:HttpConnectorError err => {
             self.err = err;
             io:println(err.message);
         }

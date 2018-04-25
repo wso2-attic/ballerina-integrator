@@ -32,6 +32,7 @@ endpoint kafka:ProducerEndpoint kafkaProducer {
     noRetries:3
 };
 
+// HTTP service endpoint
 endpoint http:Listener serviceEP {
     port:9090
 };
@@ -48,7 +49,6 @@ service<http:Service> productAdminService bind serviceEP {
         consumes:["application/json"],
         produces:["application/json"]
     }
-
     updatePrice (endpoint connection, http:Request request) {
         http:Response response = new;
 
