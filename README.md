@@ -16,7 +16,7 @@ The following are the sections available in this guide.
 
 ## What you’ll build 
 To understanding how you can build a RESTful web service using Ballerina, let’s consider a real world use case of an order management scenario of an online retail application. 
-We can model the order management scenario as a RESTful web service; 'OrderMgtService',  which accepts different HTTP request for order management tasks such as order creation, retrieval, updating and deletion.
+We can model the order management scenario as a RESTful web service; 'order_mgt_service',  which accepts different HTTP request for order management tasks such as order creation, retrieval, updating and deletion.
 The following figure illustrates all the required functionalities of the OrderMgt RESTful web service that we need to build. 
 
 ![RESTful Service](images/restful-service.svg "RESTful Service")
@@ -72,9 +72,9 @@ Ballerina project initialized
   
 ### Devoloping the RESTful web service
 
-- We can get started with a Ballerina service; 'OrderMgtService', which is the RESTful service that serves the order management request. OrderMgtService can have multiple resources and each resource is dedicated for a specific order management functionality.
+- We can get started with a Ballerina service; 'order_mgt_service', which is the RESTful service that serves the order management request. order_mgt_service can have multiple resources and each resource is dedicated for a specific order management functionality.
 
-- You can add the content to your Ballerina service as shown below. In that code segment you can find the implementation of the service and resource skeletons of 'OrderMgtService'. 
+- You can add the content to your Ballerina service as shown below. In that code segment you can find the implementation of the service and resource skeletons of 'order_mgt_service'. 
 For each order management operation, there is a dedicated resource and inside each resource we can implement the order management operation logic. 
 
 ##### Skeleton code for order_mgt_service.bal
@@ -137,7 +137,7 @@ service<http:Service> orderMgt bind listener {
 }
 ```
 
-- You can implement the business logic of each resources as per your requirements. For simplicity we have used an in-memory map to keep all the order details. You can find the full source code of the OrderMgtService below. In addition to the order processing logic, we have also manipulated some HTTP status codes and headers whenever required.  
+- You can implement the business logic of each resources as per your requirements. For simplicity we have used an in-memory map to keep all the order details. You can find the full source code of the order_mgt_service below. In addition to the order processing logic, we have also manipulated some HTTP status codes and headers whenever required.  
 
 
 ##### order_mgt_service.bal
@@ -254,7 +254,7 @@ service<http:Service> orderMgt bind listener {
 }
 ```
 
-- With that we've completed the development of OrderMgtService. 
+- With that we've completed the development of order_mgt_service. 
 
 
 ## Testing 
@@ -267,7 +267,7 @@ $ballerina run restful_service
 ```
 NOTE: You need to have the Ballerina installed in you local machine to run the Ballerina service.  
 
-You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of OrderMgtService as follows. 
+You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of order_mgt_service as follows. 
 
 **Create Order** 
 ```
@@ -358,7 +358,7 @@ ballerina: started HTTP/WS server connector 0.0.0.0:9090
 You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on 
 containers, you just need to put the corresponding docker annotations on your service code. 
 
-- In our OrderMgtService, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
+- In our order_mgt_service, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
 
 ##### order_mgt_service.bal
 ```ballerina
