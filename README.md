@@ -689,7 +689,7 @@ Follow the following steps to use tracing with Ballerina.
 
 ### Metrics
 Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
+Follow the below steps to set up Prometheus and view metrics for Ballerina database service.
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
 
@@ -794,7 +794,7 @@ output {
 
 ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`
      
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name
      
 ```
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
@@ -817,11 +817,11 @@ NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml
 
 ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
         
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name
      
 ```
 $ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
--v {SAMPLE_ROOT}/guide.restful_service/restful_service/ballerina.log:/usr/share\
+-v {SAMPLE_ROOT}/guide/data_backed_service/ballerina.log:/usr/share\
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
