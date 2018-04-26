@@ -35,10 +35,10 @@ Basically, this service will deal with a MySQL database and expose the data oper
   * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
 * A Text Editor or an IDE
 
-**Optional requirements**
+### Optional requirements
+- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
-- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 
 ## Implementation
 
@@ -51,12 +51,13 @@ Ballerina is a complete programming language that can have any custom project st
 data-backed-service
  └── guide
      └── data_backed_service
-         ├── employee_db_service.bal
-         └── test
-             └── employee_db_service_test.bal
+     |    ├── employee_db_service.bal
+     |    └── test
+     |        └── employee_db_service_test.bal
+     └──ballerina.conf
 ```
 
-- Create the above directories in your local machine and also create empty `.bal` files.
+- Create the above directories in your local machine and also create empty `.bal` and `.conf` files.
 
 - Then open the terminal and navigate to `data-backed-service/guide` and run Ballerina project initializing toolkit.
 ```bash
@@ -64,7 +65,20 @@ data-backed-service
 ```
 
 ### Developing the SQL data backed web service
-Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntaxes. The following Ballerina code is the employee data service with resources to add, retrieve, update and delete employee data.
+Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntaxes. 
+We can use the following database schema to store employee data.
+```
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| EmployeeID | int(11)     | NO   | PRI | NULL    |       |
+| Name       | varchar(50) | YES  |     | NULL    |       |
+| Age        | int(11)     | YES  |     | NULL    |       |
+| SSN        | int(11)     | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+
+```
+The following Ballerina code is the employee data service with resources to add, retrieve, update and delete employee data.
 
 ```ballerina
 import ballerina/sql;
@@ -81,11 +95,11 @@ type Employee {
 
 // Create SQL endpoint to MySQL database
 endpoint mysql:Client employeeDB {
-    host: <YOUR_DATABASE_HOST>,
-    port: <YOUR_DATABASE_PORT>,
-    name: "EMPLOYEE_RECORDS",
-    username: <YOUR_DATABASE_USERNAME>,
-    password: <YOUR_DATABASE_PASSWORD>,
+    host: config:getAsString("DATABASE_HOST", default = "localhost"),
+    port: config:getAsInt("DATABASE_PORT", default = 3306),
+    name: config:getAsString("DATABASE_NAME", default = "EMPLOYEE_RECORDS"),
+    username: config:getAsString("DATABASE_USERNAME", default = "root"),
+    password: config:getAsString("DATABASE_PASSWORD", default = "root"),
     dbOptions: { useSSL: false }
 };
 
