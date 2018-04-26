@@ -397,7 +397,7 @@ You can deploy the RESTful service that you developed above in your local enviro
 ```
 ### Deploying on Docker
 
-You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in docker container.   
+You can run the service that we developed above as a docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in docker container.   
 
 First let's see how to configure MySQL in docker container.
 
@@ -501,11 +501,9 @@ This will also create the corresponding docker image using the docker annotation
    "http://localhost:9090/records/employee" -H "Content-Type:application/json"
 ```
 
-NOTE: Refer to the [Ballerina_Docker_Extension](https://github.com/ballerinax/docker) GitHub page for more details and samples on Docker deployment with Ballerina.
-
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes with the use of annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. 
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
 Since this guide requires MySQL as a prerequisite, you need a couple of more steps to create a MySQL pod and use it with our sample.  
 
@@ -571,9 +569,9 @@ endpoint http:Listener listener {
 service<http:Service> EmployeeData bind listener {      
 ``` 
 
-- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. CopyFiles field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
+- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
 
-- We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
+- We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
@@ -631,4 +629,3 @@ Access the service
    "http://ballerina.guides.io/records/employee" -H "Content-Type:application/json" 
 ```
 
-NOTE: Refer to the [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) GitHub page for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
