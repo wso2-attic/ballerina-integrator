@@ -60,12 +60,7 @@ data-backed-service
 
 - Then open the terminal and navigate to `data-backed-service/guide` and run Ballerina project initializing toolkit.
 ```bash
-$ ballerina init
-```
-
-- Once you initialize your Ballerina project, you should see something similar to,
-```
-Ballerina project initialized
+   $ ballerina init
 ```
 
 ### Developing the SQL data backed web service
@@ -359,17 +354,15 @@ Output:
 ### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
-* Test functions should be annotated with `@test:Config`. See the below example.
+- Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
-    @test:Config
-    function testAddEmployeeResource() {
+   @test:Config
+   function testAddEmployeeResource() {
 ```
-
 This guide contains unit test cases to test the resources available in the employee_data_service we implemented above.
-
 To run the unit tests, go to the guide directory and run the following command.
 ```bash
-   $ballerina test
+$ ballerina test
 ```
 NOTE: To check the implementation of the test file, refer to the [employee_db_service_test.bal](guide/data_backed_service/test/employee_db_service_test.bal).
 
