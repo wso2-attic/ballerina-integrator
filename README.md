@@ -631,7 +631,7 @@ Access the service
 ```
 
 ## Observability 
-Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
+Ballerina is by default observable. Meaning you can easily observe your services, resources, etc. Refer to [how-to-observe-ballerina-code](https://ballerina.io/learn/how-to-observe-ballerina-code/) for more information.
 However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `data-backed-service/guide/`.
 
 ```ballerina
