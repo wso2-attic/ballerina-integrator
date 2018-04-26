@@ -169,7 +169,7 @@ service<http:Service> EmployeeData bind listener {
              {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
             response.statusCode = 400;
             _ = httpConnection->respond(response);
-            //return;
+            done;
         }
 
         // Invoke updateData function to update data in mysql database
@@ -272,7 +272,12 @@ public function deleteData(int employeeID) returns (json) {
 }
 ```
 
-You can implement custom functions in Ballerina that do specific tasks. For this scenario, we have included functions to interact with the MySQL database.
+You can implement custom functions in Ballerina that do specific tasks. For this scenario, we have included the following functions to interact with the MySQL database.
+
+- insertData
+- retrieveById
+- updateData
+- deleteData
 
 The `endpoint` keyword in Ballerina refers to a connection with a remote service. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the SQL endpoint. The rest of the code is for preparing SQL queries and executing them by calling the `update` action in the `ballerina/mysql` package.
 
@@ -299,7 +304,7 @@ endpoint mysql:Client employeeDB {
 
 ### Invoking the employee database service 
 
-- To run the developed employee database service you need to navigate to `/data-backed-service/guide` and execute the following command
+- To run the developed employee database service you need to navigate to `data-backed-service/guide` and execute the following command
 ```
 $ Ballerina run data_backed_service
 ```
@@ -366,6 +371,7 @@ To run the unit tests, go to the guide directory and run the following command.
 ```bash
    $ballerina test
 ```
+NOTE: To check the implementation of the test file, refer to the [employee_db_service_test.bal](guide/data_backed_service/test/employee_db_service_test.bal).
 
 
 ## Deployment
