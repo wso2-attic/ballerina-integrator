@@ -594,13 +594,14 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
 ```
    
 - You can access Prometheus at the following URL
+```
+   http://localhost:19090/
+```
 
 NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
 -  http_requests_total
 -  http_response_time
-```
-   http://localhost:19090/
-```
+
 
 ### Logging
 
@@ -690,7 +691,6 @@ $ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat
 ```
  
  - Access Kibana to visualize the logs using following URL
-
 ```
    http://localhost:5601 
 ```
