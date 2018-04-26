@@ -299,16 +299,16 @@ The `endpoint` keyword in Ballerina refers to a connection with a remote service
 ``` 
 NOTE : You can find the SQL script(`initializeDataBase.sql`) [here](resources/initializeDataBase.sql)
 
-* You need to add MySQL database configurations to the `data-backed-service/guide/data_backed_service/employee_db_service.bal` file. Change these configurations with your MySQL connection properties accordingly.
+- Add database configurations to the `ballerina.conf` file
+   - `ballerina.conf` file can be used to provide external configurations to the Ballerina programs. Since this guide needs MySQL database integration, a Ballerina coniguration file is used to provide the database connection properties to our Ballerina program.
+   This configuration file has the following fields. Change these configurations with your connection properties accordingly.
 ```
-endpoint mysql:Client employeeDB {
-    host: "localhost",
-    port: 3306,
-    name: "EMPLOYEE_RECORDS",
-    username: "root",
-    password: "qwe123",
-    dbOptions: { useSSL: false }
-};
+   DATABASE_HOST = localhost
+   DATABASE_PORT = 3306
+   DATABASE_USERNAME = username
+   DATABASE_PASSWORD = password
+   DATABASE_NAME = EMPLOYEE_RECORDS
+```
 ```
 
 ### Invoking the employee database service 
@@ -322,47 +322,43 @@ $ Ballerina run data_backed_service
 
 **Add new employee** 
 ```
-   curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
-   "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
+"http://localhost:9090/records/employee" -H "Content-Type:application/json"
 ```
 
 Output:  
 ```
-   < HTTP/1.1 200 OK
-   {"Status":"Data Inserted Successfully"}
+{"Status":"Data Inserted Successfully"}
 ```
 
 **Retrieve employee data** 
 ```
-   curl -v  "http://localhost:9090/records/employee/1"
+curl -v  "http://localhost:9090/records/employee/1"
 ```
 
 Output: 
 ```
-   < HTTP/1.1 200 OK
-   [{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
+[{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
 ```
 **Update an existing employee data** 
 ```
-   curl -v -X PUT -d '{"name":"Alice Updated", "age":30,"ssn":123456789,"employeeId":1}' \
-   "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+curl -v -X PUT -d '{"name":"Alice Updated", "age":30,"ssn":123456789,"employeeId":1}' \
+"http://localhost:9090/records/employee" -H "Content-Type:application/json"
 ```
 
 Output: 
 ```
-   < HTTP/1.1 200 OK
-   {"Status":"Data Updated Successfully"}
+{"Status":"Data Updated Successfully"}
 ```
 
 **Delete employee data** 
 ```
-   curl -v -X DELETE "http://localhost:9090/records/employee/1"
+curl -v -X DELETE "http://localhost:9090/records/employee/1"
 ```
 
 Output:
 ```
-   < HTTP/1.1 200 OK
-   {"Status":"Data Deleted Successfully"}
+{"Status":"Data Deleted Successfully"}
 ```
 
 ### Writing unit tests 
