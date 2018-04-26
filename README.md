@@ -1,11 +1,13 @@
 # RESTful Service  
+REST (REpresentational State Transfer) is an architectural style for developing web services. It defines a set of constraints and properties based on HTTP. 
+
 > In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
 
 The following are the sections available in this guide.
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
-- [Developing the service](#developing-the-service)
+- [Implementation](#implementation)
 - [Testing](#testing)
 - [Deployment](#deployment)
 - [Observability](#observability)
@@ -32,7 +34,7 @@ The following figure illustrates all the required functionalities of the OrderMg
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 
-## Developing the service 
+## Implementation
 
 > If you want to skip the basics, you can download the git repo and directly move to "Testing" section by skipping "Developing" section.
 
@@ -65,7 +67,7 @@ Ballerina project initialized
 
 - Once you initialize your Ballerina project, you can change the names of the file to match with our guide project file names.
   
-### Implement the RESTful web service
+### Devoloping the RESTful web service
 
 - We can get started with a Ballerina service; 'OrderMgtService', which is the RESTful service that serves the order management request. OrderMgtService can have multiple resources and each resource is dedicated for a specific order management functionality.
 
