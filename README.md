@@ -552,11 +552,6 @@ Follow the following steps to use tracing with Ballerina.
    http://localhost:16686
 ```
 
-- You should see the Jaeger UI as follows
-
-   ![Jaeger UI](images/tracing-screenshot.png "Tracing Screenshot")
- 
-
 ### Metrics
 Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
 Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
@@ -606,10 +601,6 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 ```
    http://localhost:19090/
 ```
-
-- Promethues UI with metrics for restful_service
-   
-   ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
 
 ### Logging
 
@@ -703,9 +694,5 @@ $ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat
 ```
    http://localhost:5601 
 ```
- 
- - Kibana log visualization for the restful service sample
- 
-     ![logging screenshot](images/logging-screenshot.png "Kibana UI")
- 
   
+ 
