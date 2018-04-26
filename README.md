@@ -28,28 +28,30 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 ## Prerequisites
  
-- [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
+- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - A Text Editor or an IDE 
 
 ### Optional requirements
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
+- [Kubernetes](https://kubernetes.io/docs/setup/)
 
 ## Implementation
 
-> If you want to skip the basics, you can download the git repo and directly move to "Testing" section by skipping "Developing" section.
+> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping  "Implementation" section.
 
 ### Create the project structure
 
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
-
 ```
 restful-service
-  └── guide.restful_service
-      ├── order_mgt_service.bal
-      └── tests
-          └── order_mgt_service_test.bal          
+ └── guide
+      └── restful_service
+           ├── order_mgt_service.bal
+  	   └── tests
+	        └── order_mgt_service_test.bal
 ```
+
 You can create the above Ballerina project using Ballerina project initializing toolkit.
 
 - First, create a new directory in your local machine as `restful-service` and navigate to the directory using terminal. 
