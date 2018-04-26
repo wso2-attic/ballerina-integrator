@@ -565,7 +565,7 @@ endpoint http:Listener listener {
 @http:ServiceConfig {
     basePath:"/records"
 }
-service<http:Service> employee_data_service bind listener {      
+service<http:Service> EmployeeData bind listener {      
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. CopyFiles field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
