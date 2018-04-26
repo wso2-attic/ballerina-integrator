@@ -12,13 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-before_install:
-- sudo chmod +x install-dependencies.sh
-
-install:
-- ./install-dependencies.sh
-- export PATH=$PATH:$(pwd)/ballerina-tools-0.970.0-alpha1/bin
-
 services:
   - mysql
 
@@ -26,6 +19,30 @@ before_script:
 - mysql -u root --password=""  < ./resources/initializeDataBase.sql
 
 script:
+
+# declare STRING variables
+- STRING="Downloading ballerina..."
+- BALLERINA_VERSION="ballerina-platform-0.970.0-beta17"
+- MYSQL_CONNECTOR_VERSION="mysql-connector-java-5.1.45"
+
+#print downloading string on a screen
+- echo $STRING
+
+#download ballerina distro
+- wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION.zip
+
+#unzip the zip file
+- unzip $BALLERINA_VERSION.zip
+
+#download JDBC driver
+- wget http://dev.mysql.com/get/Downloads/Connector-J/$MYSQL_CONNECTOR_VERSION.tar.gz
+
+#untar the tar file
+- tar xvzf $MYSQL_CONNECTOR_VERSION.tar.gz
+
+#move the JDBC driver jar into the Ballerina/bre/lib folder
+- mv $MYSQL_CONNECTOR_VERSION/$MYSQL_CONNECTOR_VERSION-bin.jar $BALLERINA_VERSION/bre/lib
+
 - cd src/
 - ballerina init
 - ballerina test
