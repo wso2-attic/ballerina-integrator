@@ -52,23 +52,17 @@ restful-service
 	        └── order_mgt_service_test.bal
 ```
 
-You can create the above Ballerina project using Ballerina project initializing toolkit.
+- Create the above directories in your local machine and also create empty `.bal` files.
 
-- First, create a new directory in your local machine as `restful-service` and navigate to the directory using terminal. 
-- Then enter the following inputs to the Ballerina project initializing toolkit.
+- Then open the terminal and navigate to `restful-service/guide` and run Ballerina project initializing toolkit.
 ```bash
-restful-service$ ballerina init -i
-Create Ballerina.toml [yes/y, no/n]: (y) y
-Organization name: (username) restful-service
-Version: (0.0.1) 
-Ballerina source [service/s, main/m]: (s) s
-Package for the service : (no package) guide.restful_service
-Ballerina source [service/s, main/m, finish/f]: (f) f
-
-Ballerina project initialized
+   $ ballerina init
 ```
 
-- Once you initialize your Ballerina project, you can change the names of the file to match with our guide project file names.
+- Once you initialize your Ballerina project, you should see something similar to,
+```
+   Ballerina project initialized
+```
   
 ### Devoloping the RESTful web service
 
@@ -79,8 +73,6 @@ For each order management operation, there is a dedicated resource and inside ea
 
 ##### Skeleton code for order_mgt_service.bal
 ```ballerina
-ppackage restful_service;
-
 import ballerina/http;
 
 endpoint http:Listener listener {
@@ -88,48 +80,48 @@ endpoint http:Listener listener {
 };
 
 // Order management is done using an in memory map.
-// Add some sample orders to 'orderMap' at startup.
+// Add some sample orders to 'ordersMap' at startup.
 map<json> ordersMap;
 
-@Description {value:"RESTful service."}
-@http:ServiceConfig {basePath:"/ordermgt"}
+documentation { value: "RESTful service." }
+@http:ServiceConfig { basePath: "/ordermgt" }
 service<http:Service> orderMgt bind listener {
 
-    @Description {value:"Resource that handles the HTTP GET requests that are directed
-    to a specific order using path '/orders/<orderID>'"}
+    documentation { value: "Resource that handles the HTTP GET requests that are
+    directed to a specific order using path '/orders/<orderID>'" }
     @http:ResourceConfig {
-        methods:["GET"],
-        path:"/order/{orderId}"
+        methods: ["GET"],
+        path: "/order/{orderId}"
     }
     findOrder(endpoint client, http:Request req, string orderId) {
         // Implementation
     }
 
-    @Description {value:"Resource that handles the HTTP POST requests that are directed
-     to the path '/orders' to create a new Order."}
+    documentation { value: "Resource that handles the HTTP POST requests that are
+    directed to the path '/orders' to create a new Order." }
     @http:ResourceConfig {
-        methods:["POST"],
-        path:"/order"
+        methods: ["POST"],
+        path: "/order"
     }
     addOrder(endpoint client, http:Request req) {
         // Implementation
     }
 
-    @Description {value:"Resource that handles the HTTP PUT requests that are directed
-    to the path '/orders' to update an existing Order."}
+    documentation { value: "Resource that handles the HTTP PUT requests that are
+    directed to the path '/orders' to update an existing Order." }
     @http:ResourceConfig {
-        methods:["PUT"],
-        path:"/order/{orderId}"
+        methods: ["PUT"],
+        path: "/order/{orderId}"
     }
     updateOrder(endpoint client, http:Request req, string orderId) {
         // Implementation
     }
 
-    @Description {value:"Resource that handles the HTTP DELETE requests, which are 
-    directed to the path '/orders/<orderId>' to delete an existing Order."}
+    documentation { value: "Resource that handles the HTTP DELETE requests, which are
+    directed to the path '/orders/<orderId>' to delete an existing Order." }
     @http:ResourceConfig {
-        methods:["DELETE"],
-        path:"/order/{orderId}"
+        methods: ["DELETE"],
+        path: "/order/{orderId}"
     }
     cancelOrder(endpoint client, http:Request req, string orderId) {
         // Implementation
@@ -142,8 +134,6 @@ service<http:Service> orderMgt bind listener {
 
 ##### order_mgt_service.bal
 ```ballerina
-package restful_service;
-
 import ballerina/http;
 
 endpoint http:Listener listener {
@@ -151,18 +141,18 @@ endpoint http:Listener listener {
 };
 
 // Order management is done using an in memory map.
-// Add some sample orders to 'orderMap' at startup.
+// Add some sample orders to 'ordersMap' at startup.
 map<json> ordersMap;
 
-@Description {value:"RESTful service."}
-@http:ServiceConfig {basePath:"/ordermgt"}
+documentation { value: "RESTful service." }
+@http:ServiceConfig { basePath: "/ordermgt" }
 service<http:Service> orderMgt bind listener {
 
-    @Description {value:"Resource that handles the HTTP GET requests that are directed
-    to a specific order using path '/orders/<orderID>'"}
+    documentation { value: "Resource that handles the HTTP GET requests that are
+    directed to a specific order using path '/orders/<orderID>'" }
     @http:ResourceConfig {
-        methods:["GET"],
-        path:"/order/{orderId}"
+        methods: ["GET"],
+        path: "/order/{orderId}"
     }
     findOrder(endpoint client, http:Request req, string orderId) {
         // Find the requested order from the map and retrieve it in JSON format.
@@ -176,22 +166,22 @@ service<http:Service> orderMgt bind listener {
         response.setJsonPayload(payload);
 
         // Send response to the client.
-        _ = client -> respond(response);
+        _ = client->respond(response);
     }
 
-    @Description {value:"Resource that handles the HTTP POST requests that are directed
-     to the path '/orders' to create a new Order."}
+    documentation { value: "Resource that handles the HTTP POST requests that are
+    directed to the path '/orders' to create a new Order." }
     @http:ResourceConfig {
-        methods:["POST"],
-        path:"/order"
+        methods: ["POST"],
+        path: "/order"
     }
     addOrder(endpoint client, http:Request req) {
         json orderReq = check req.getJsonPayload();
-        string orderId = orderReq.Order.ID.toString() but { () => "" };
+        string orderId = orderReq.Order.ID.toString();
         ordersMap[orderId] = orderReq;
 
         // Create response message.
-        json payload = {status:"Order Created.", orderId:orderId};
+        json payload = { status: "Order Created.", orderId: orderId };
         http:Response response;
         response.setJsonPayload(payload);
 
@@ -199,22 +189,23 @@ service<http:Service> orderMgt bind listener {
         response.statusCode = 201;
         // Set 'Location' header in the response message.
         // This can be used by the client to locate the newly added order.
-        response.setHeader("Location", "http://localhost:9090/ordermgt/order/" + orderId);
+        response.setHeader("Location", "http://localhost:9090/ordermgt/order/" +
+                orderId);
 
         // Send response to the client.
-        _ = client -> respond(response);
+        _ = client->respond(response);
     }
 
-    @Description {value:"Resource that handles the HTTP PUT requests that are directed
-    to the path '/orders' to update an existing Order."}
+    documentation { value: "Resource that handles the HTTP PUT requests that are
+    directed to the path '/orders' to update an existing Order." }
     @http:ResourceConfig {
-        methods:["PUT"],
-        path:"/order/{orderId}"
+        methods: ["PUT"],
+        path: "/order/{orderId}"
     }
     updateOrder(endpoint client, http:Request req, string orderId) {
         json updatedOrder = check req.getJsonPayload();
 
-        // Find the order that needs to be updated and retrieve in JSON format.
+        // Find the order that needs to be updated and retrieve it in JSON format.
         json existingOrder = ordersMap[orderId];
 
         // Updating existing order with the attributes of the updated order.
@@ -230,14 +221,14 @@ service<http:Service> orderMgt bind listener {
         // Set the JSON payload to the outgoing response message to the client.
         response.setJsonPayload(existingOrder);
         // Send response to the client.
-        _ = client -> respond(response);
+        _ = client->respond(response);
     }
 
-    @Description {value:"Resource that handles the HTTP DELETE requests, which are
-    directed to the path '/orders/<orderId>' to delete an existing Order."}
+    documentation { value: "Resource that handles the HTTP DELETE requests, which are
+    directed to the path '/orders/<orderId>' to delete an existing Order." }
     @http:ResourceConfig {
-        methods:["DELETE"],
-        path:"/order/{orderId}"
+        methods: ["DELETE"],
+        path: "/order/{orderId}"
     }
     cancelOrder(endpoint client, http:Request req, string orderId) {
         http:Response response;
@@ -249,7 +240,7 @@ service<http:Service> orderMgt bind listener {
         response.setJsonPayload(payload);
 
         // Send response to the client.
-        _ = client -> respond(response);
+        _ = client->respond(response);
     }
 }
 ```
