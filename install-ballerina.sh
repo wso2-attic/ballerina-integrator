@@ -14,19 +14,20 @@
 
 #!/bin/bash
 
-# declare STRING variable
+#declare STRING variable
 STRING="Downloading ballerina..."
-BALLERINA_VERSION="ballerina-tools-0.970.0-alpha1"
+BALLERINA_VERSION="ballerina-platform-0.970.0-beta17"
 
-#print downloading string on a screen
+#print downloading string
 echo $STRING
 
-#download ballerina distro
-wget https://transfer.sh/Dmk3i/$BALLERINA_VERSION.zip
+#download Ballerina dist
+wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION.zip
 
 #unzip the zip file
 unzip $BALLERINA_VERSION.zip
 
 export PATH=$PATH:$(pwd)/$BALLERINA_VERSION/bin
-echo $PATH
+
+#print Ballerina version
 ballerina version

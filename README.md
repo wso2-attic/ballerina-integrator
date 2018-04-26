@@ -88,7 +88,7 @@ map<json> ordersMap;
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
-service<http:Service> order_mgt bind listener {
+service<http:Service> orderMgt bind listener {
 
     @Description {value:"Resource that handles the HTTP GET requests that are directed
     to a specific order using path '/orders/<orderID>'"}
@@ -151,7 +151,7 @@ map<json> ordersMap;
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
-service<http:Service> order_mgt bind listener {
+service<http:Service> orderMgt bind listener {
 
     @Description {value:"Resource that handles the HTTP GET requests that are directed
     to a specific order using path '/orders/<orderID>'"}
@@ -379,7 +379,7 @@ map<json> ordersMap;
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
-service<http:Service> order_mgt bind listener {
+service<http:Service> orderMgt bind listener {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
@@ -451,7 +451,7 @@ map<json> ordersMap;
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
-service<http:Service> order_mgt bind listener {    
+service<http:Service> orderMgt bind listener {    
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
@@ -638,11 +638,11 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `{SAMPLE_ROOT}/src`
+- Start the Ballerina Service with the following command from `{SAMPLE_ROOT}/guide`
 ```
    nohup ballerina run restful_service/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT}/src` directory
+   NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT}/guide` directory
 
 - Start Elasticsearch using the following command
 

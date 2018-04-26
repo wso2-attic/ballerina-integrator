@@ -52,7 +52,7 @@ map<json> ordersMap;
 
 @Description {value:"RESTful service."}
 @http:ServiceConfig {basePath:"/ordermgt"}
-service<http:Service> order_mgt bind listener {
+service<http:Service> orderMgt bind listener {
 
     @Description {value:"Resource that handles the HTTP GET requests that are directed
     to a specific order using path '/orders/<orderID>'"}

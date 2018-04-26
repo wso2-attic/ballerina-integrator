@@ -18,10 +18,8 @@ before_install:
 install: ./install-ballerina.sh
   
 script:
-- export PATH=$PATH:$(pwd)/ballerina-tools-0.970.0-alpha1/bin
-- cd src/
+- export PATH=$PATH:$(pwd)/ballerina-platform-0.970.0-beta17/bin
+- cd guide/
 - ballerina init
 - ballerina test
 
-jdk:
- - oraclejdk8
