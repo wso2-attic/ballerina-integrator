@@ -427,8 +427,6 @@ Now let's add the required docker annotations in our employee_db_service. You ne
 
 ##### employee_db_service.bal
 ```ballerina
-package data_backed_service;
-
 // Other imports
 import ballerinax/docker;
 
@@ -464,7 +462,7 @@ endpoint http:Listener listener {
 @http:ServiceConfig {
     basePath:"/records"
 }
-service<http:Service> employee_data_service bind listener {
+service<http:Service> EmployeeData bind listener {
 ``` 
 
  - `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:CopyFiles` is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path. `@docker:Expose {}` is used to expose the port. Finally you need to change the host field in the  `mysql:Client` endpoint definition to the IP address of the MySQL container. You can obtain this IP address using the below command.
