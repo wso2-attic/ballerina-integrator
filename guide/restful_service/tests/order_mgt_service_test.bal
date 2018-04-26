@@ -1,28 +1,42 @@
-package restful_service;
+// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+//
+// WSO2 Inc. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 import ballerina/test;
 import ballerina/http;
 
 @test:BeforeSuite
 function beforeFunc() {
-    // Start the 'order_mgt' service before running the test.
+    // Start the 'orderMgt' service before running the test.
     _ = test:startServices("restful_service");
 }
 
 endpoint http:Client clientEP {
-    targets:[{url:"http://localhost:9090/ordermgt"}]
+    url:"http://localhost:9090/ordermgt"
 };
 
 @test:Config
 // Function to test POST resource 'addOrder'.
 function testResourceAddOrder() {
     // Initialize the empty http request.
-    http:Request request;
+    http:Request req = new;
     // Construct the request payload.
     json payload = {"Order":{"ID":"100500", "Name":"XYZ", "Description":"Sample order."}};
-    request.setJsonPayload(payload);
+    req.setJsonPayload(payload);
     // Send 'POST' request and obtain the response.
-    http:Response response = check clientEP -> post("/order", request);
+    http:Response response = check clientEP -> post("/order", request=req);
     // Expected response code is 201.
     test:assertEquals(response.statusCode, 201,
         msg = "addOrder resource did not respond with expected response code!");
@@ -38,12 +52,12 @@ function testResourceAddOrder() {
 // Function to test PUT resource 'updateOrder'.
 function testResourceUpdateOrder() {
     // Initialize empty http requests and responses.
-    http:Request request;
+    http:Request req = new;
     // Construct the request payload.
     json payload = {"Order":{"Name":"XYZ", "Description":"Updated order."}};
-    request.setJsonPayload(payload);
+    req.setJsonPayload(payload);
     // Send 'PUT' request and obtain the response.
-    http:Response response = check clientEP -> put("/order/100500", request);
+    http:Response response = check clientEP -> put("/order/100500", request=req);
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "updateOrder resource did not respond with expected response code!");
@@ -60,9 +74,9 @@ function testResourceUpdateOrder() {
 // Function to test GET resource 'findOrder'.
 function testResourceFindOrder() {
     // Initialize empty http requests and responses.
-    http:Request request;
+    http:Request req = new;
     // Send 'GET' request and obtain the response.
-    http:Response response = check clientEP -> get("/order/100500", request);
+    http:Response response = check clientEP -> get("/order/100500", request=req);
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "findOrder resource did not respond with expected response code!");
@@ -79,9 +93,9 @@ function testResourceFindOrder() {
 // Function to test DELETE resource 'cancelOrder'.
 function testResourceCancelOrder() {
     // Initialize empty http requests and responses.
-    http:Request request;
+    http:Request req = new;
     // Send 'DELETE' request and obtain the response.
-    http:Response response = check clientEP -> delete("/order/100500", request);
+    http:Response response = check clientEP -> delete("/order/100500", request=req);
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "cancelOrder resource did not respond with expected response code!");
@@ -93,6 +107,6 @@ function testResourceCancelOrder() {
 
 @test:AfterSuite
 function afterFunc() {
-    // Stop the 'order_mgt' service after running the test.
+    // Stop the 'orderMgt' service after running the test.
     test:stopServices("restful_service");
 }
