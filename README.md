@@ -59,7 +59,7 @@ restful-service
    $ ballerina init
 ```
 
-### Devoloping the RESTful web service
+### Developing the RESTful web service
 
 - We can get started with a Ballerina service; 'order_mgt_service', which is the RESTful service that serves the order management request. order_mgt_service can have multiple resources and each resource is dedicated for a specific order management functionality.
 
