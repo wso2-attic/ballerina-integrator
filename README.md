@@ -311,7 +311,6 @@ NOTE : You can find the SQL script(`initializeDataBase.sql`) [here](resources/in
    DATABASE_PASSWORD = password
    DATABASE_NAME = EMPLOYEE_RECORDS
 ```
-```
 
 ### Invoking the employee database service 
 
