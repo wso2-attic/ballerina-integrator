@@ -59,7 +59,7 @@ restful-service
    $ ballerina init
 ```
 
-### Devoloping the RESTful web service
+### Developing the RESTful web service
 
 - We can get started with a Ballerina service; 'order_mgt_service', which is the RESTful service that serves the order management request. order_mgt_service can have multiple resources and each resource is dedicated for a specific order management functionality.
 
@@ -338,9 +338,9 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
+You can run the service that we developed above as a docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
 
-- In our order_mgt_service, we need to import  `import ballerinax/docker;` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
+- In our order_mgt_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
 
 ##### order_mgt_service.bal
 ```ballerina
@@ -393,13 +393,13 @@ This will also create the corresponding docker image using the docker annotation
    "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
 ```
 
-NOTE: Refer to the [Ballerina_Docker_Extension](https://github.com/ballerinax/docker) GitHub page for more details and samples on Docker deployment with Ballerina.
-
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-- We need to import `import ballerinax/kubernetes;` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
+- Let's now see how we can deploy our `order_mgt_service` on Kubernetes.
+
+- First we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
 ##### order_mgt_service.bal
 
@@ -489,14 +489,11 @@ Add `/etc/hosts` entry to match hostname.
 ```
 
 Access the service 
-
 ``` 
 curl -v -X POST -d \
 '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
 "http://ballerina.guides.io/ordermgt/order" -H "Content-Type:application/json" 
 ```
-
-NOTE: Refer to the [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) GitHub page for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
@@ -555,11 +552,6 @@ Follow the following steps to use tracing with Ballerina.
    http://localhost:16686
 ```
 
-- You should see the Jaeger UI as follows
-
-   ![Jaeger UI](images/tracing-screenshot.png "Tracing Screenshot")
- 
-
 ### Metrics
 Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
 Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
@@ -602,17 +594,14 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
 ```
    
 - You can access Prometheus at the following URL
-
-NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
--  http_requests_total
--  http_response_time
 ```
    http://localhost:19090/
 ```
 
-- Promethues UI with metrics for restful_service
-   
-   ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
+NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+-  http_requests_total
+-  http_response_time
+
 
 ### Logging
 
@@ -702,13 +691,8 @@ $ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat
 ```
  
  - Access Kibana to visualize the logs using following URL
-
 ```
    http://localhost:5601 
 ```
- 
- - Kibana log visualization for the restful service sample
- 
-     ![logging screenshot](images/logging-screenshot.png "Kibana UI")
- 
   
+ 
