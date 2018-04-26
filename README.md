@@ -60,7 +60,7 @@ data-backed-service
 
 - Then open the terminal and navigate to `data-backed-service/guide` and run Ballerina project initializing toolkit.
 ```bash
-data-backed-service/guide$ ballerina init
+$ ballerina init
 ```
 
 - Once you initialize your Ballerina project, you should see something similar to,
@@ -86,12 +86,11 @@ type Employee {
 
 // Create SQL endpoint to MySQL database
 endpoint mysql:Client employeeDB {
-    host: "localhost",
-    port: 3306,
+    host: <YOUR_DATABASE_HOST>,
+    port: <YOUR_DATABASE_PORT>,
     name: "EMPLOYEE_RECORDS",
-    username: "root",
-    password: "qwe123",
-    poolOptions: { maximumPoolSize: 5 },
+    username: <YOUR_DATABASE_USERNAME>,
+    password: <YOUR_DATABASE_PASSWORD>,
     dbOptions: { useSSL: false }
 };
 
@@ -99,6 +98,7 @@ endpoint http:Listener listener {
     port: 9090
 };
 
+// Service for the employee data service
 @http:ServiceConfig {
     basePath: "/records"
 }
@@ -113,16 +113,10 @@ service<http:Service> EmployeeData bind listener {
         http:Response response;
         Employee employeeData;
         // Extract the data from the request payload
-        var requestPayload = request.getJsonPayload();
-        // check for errors with JSON payload using `match` keyword
-        match requestPayload {
-            json payloadJson => {
-                employeeData = check <Employee>payloadJson;
-            }
-            error err => {
-                log:printError(err.message);
-            }
-        }
+        var payloadJson = check request.getJsonPayload();
+        employeeData = check <Employee>payloadJson;
+
+        // Check for errors with JSON payload using
         if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 ||
             employeeData.employeeId == 0) {
             response.setTextPayload("Error : json payload should contain
@@ -149,22 +143,12 @@ service<http:Service> EmployeeData bind listener {
         // Initialize an empty http response message
         http:Response response;
         // Convert the employeeId string to integer
-        var castVal = <int>employeeId;
-        match castVal {
-            int empID => {
-                // Invoke retrieveById function to retrieve data from Mymysql database
-                var employeeData = retrieveById(empID);
-                // Send the response back to the client with the employee data
-                response.setJsonPayload(employeeData);
-                _ = httpConnection->respond(response);
-            }
-            error err => {
-                //Check path parameter errors and send bad request message to client
-                response.setTextPayload("Error : Please enter a valid employee ID ");
-                response.statusCode = 400;
-                _ = httpConnection->respond(response);
-            }
-        }
+        int empID = check <int>employeeId;
+        // Invoke retrieveById function to retrieve data from Mymysql database
+        var employeeData = retrieveById(empID);
+        // Send the response back to the client with the employee data
+        response.setJsonPayload(employeeData);
+        _ = httpConnection->respond(response);
     }
 
     @http:ResourceConfig {
@@ -175,16 +159,10 @@ service<http:Service> EmployeeData bind listener {
         // Initialize an empty http response message
         http:Response response;
         Employee employeeData;
-        var requestPayload = request.getJsonPayload();
+        // Extract the data from the request payload
+        var payloadJson = check request.getJsonPayload();
+        employeeData = check <Employee>payloadJson;
 
-        match requestPayload {
-            json payloadJson => {
-                employeeData = check <Employee>payloadJson;
-            }
-            error err => {
-                log:printError(err.message);
-            }
-        }
         if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 ||
             employeeData.employeeId == 0) {
             response.setTextPayload("Error : json payload should contain
@@ -211,22 +189,11 @@ service<http:Service> EmployeeData bind listener {
         // Initialize an empty http response message
         http:Response response;
         // Convert the employeeId string to integer
-        var castVal = <int>employeeId;
-        match castVal {
-            int empID => {
-                // Invoke deleteData function to delete the data from Mymysql database
-                var deleteStatus = deleteData(empID);
-                // Send the response back to the client with the employee data
-                response.setJsonPayload(deleteStatus);
-                _ = httpConnection->respond(response);
-            }
-            error err => {
-                //Check path parameter errors and send bad request message to client
-                response.setTextPayload("Error : Please enter a valid employee ID ");
-                response.statusCode = 400;
-                _ = httpConnection->respond(response);
-            }
-        }
+        var empID = check <int>employeeId;
+        var deleteStatus = deleteData(empID);
+        // Send the response back to the client with the employee data
+        response.setJsonPayload(deleteStatus);
+        _ = httpConnection->respond(response);
     }
 }
 
@@ -234,8 +201,9 @@ public function insertData(string name, int age, int ssn, int employeeId) return
     json updateStatus;
     string sqlString =
     "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
-    // Insert data to SQL database by invoking update action 
+    // Insert data to SQL database by invoking update action
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
+    // Use match operator to check the validity of the result from database
     match ret {
         int updateRowCount => {
             updateStatus = { "Status": "Data Inserted Successfully" };
@@ -248,11 +216,19 @@ public function insertData(string name, int age, int ssn, int employeeId) return
 }
 
 public function retrieveById(int employeeID) returns (json) {
+    json jsonReturnValue;
     string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
     // Retrieve employee data by invoking select action defined in ballerina sql connector
-    table dataTable = check employeeDB->select(sqlString, (), employeeID);
-    // Convert the sql data table into JSON using type conversion
-    var jsonReturnValue = check <json>dataTable;
+    var ret = employeeDB->select(sqlString, (), employeeID);
+    match ret {
+        table dataTable => {
+            // Convert the sql data table into JSON using type conversion
+            jsonReturnValue = check <json>dataTable;
+        }
+        error err => {
+            jsonReturnValue = { "Status": "Data Not Found", "Error": err.message };
+        }
+    }
     return jsonReturnValue;
 }
 
@@ -296,53 +272,36 @@ public function deleteData(int employeeID) returns (json) {
 }
 ```
 
-Please refer to the `src/data_backed_service/employee_db_service.bal` file for the complete implementaion of the employee management web service.
+You can implement custom functions in Ballerina that do specific tasks. For this scenario, we have included functions to interact with the MySQL database.
 
-
-You can implement custom functions in Ballerina that do specific tasks. For this scenario, you need to have functions to deal with the MySQL database.
-
-The `endpoint` keyword in Ballerina refers to a connection with a remote service. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the SQL endpoint. The endpoint is initialized with an SQL connection. The rest of the code is just preparing SQL queries and executing them by calling the `update` action in the `ballerina/mysql` package. Finally, the status of the SQL operation is returned as a JSON file.
+The `endpoint` keyword in Ballerina refers to a connection with a remote service. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the SQL endpoint. The rest of the code is for preparing SQL queries and executing them by calling the `update` action in the `ballerina/mysql` package.
 
 ## Testing 
 
 ### Before you begin
-* Run the SQL script `initializeDataBase.sql` provided in the resources folder, to initialize the database and the required table by entering the below command from the project root directory.
+* Run the SQL script `initializeDataBase.sql` provided in the resources folder, to initialize the database and to create the required table.
 ```
-   $mysql -u username -p <./resources/initializeDataBase.sql 
+   $mysql -u username -p <initializeDataBase.sql 
 ``` 
+NOTE : You can find the SQL script(`initializeDataBase.sql`) [here](resources/initializeDataBase.sql)
 
-* Add database configurations to the `ballerina.conf` file
-   * `ballerina.conf` file can be used to provide external configurations to the Ballerina programs. Since this guide needs MySQL database integration, a Ballerina coniguration file is used to provide the database connection properties to our Ballerina program.
-   This configuration file has the following fields. Change these configurations with your connection properties accordingly.
+* You need to add MySQL database configurations to the `data-backed-service/guide/data_backed_service/employee_db_service.bal` file. Change these configurations with your MySQL connection properties accordingly.
 ```
-   DATABASE_HOST = localhost
-   DATABASE_PORT = 3306
-   DATABASE_USERNAME = username
-   DATABASE_PASSWORD = password
-   DATABASE_NAME = EMPLOYEE_RECORDS
-```
-
-### Invoking the RESTful service 
-
-You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation on your local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
-
-- As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
-
-```
-   $ballerina build data_backed_service
+endpoint mysql:Client employeeDB {
+    host: "localhost",
+    port: 3306,
+    name: "EMPLOYEE_RECORDS",
+    username: "root",
+    password: "qwe123",
+    dbOptions: { useSSL: false }
+};
 ```
 
-- Once the data_backed_service.balx is created, you can run that with the following command. 
+### Invoking the employee database service 
 
+- To run the developed employee database service you need to navigate to `/data-backed-service/guide` and execute the following command
 ```
-   $ballerina run data_backed_service.balx 
-```
-
-- The successful execution of the service should show us the following output. 
-
-```
-   ballerina: deploying service(s) in 'data_backed_service'
-   ballerina: started HTTP/WS server connector 0.0.0.0:9090
+$ Ballerina run data_backed_service
 ```
 
 - You can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of employeeService as follows. 
@@ -414,12 +373,26 @@ To run the unit tests, go to the guide directory and run the following command.
 Once you are done with the development, you can deploy the service using any of the methods that are listed below. 
 
 ### Deploying locally
-You can deploy the RESTful service that you developed above in your local environment. You can use the Ballerina executable archive (.balx) file that you created above and run it in your local environment as follows. 
+You can deploy the RESTful service that you developed above in your local environment. You need to have the Ballerina installed on your local machine. To deploy simply execute all the following steps.  
+
+- As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
-   $ballerina run employee_db_service.balx 
+   $ballerina build data_backed_service
 ```
 
+- Once the data_backed_service.balx is created in the ./target folder, you can run that with the following command. 
+
+```
+   $ballerina run target/data_backed_service.balx 
+```
+
+- The successful execution of the service should show us the following output. 
+
+```
+   ballerina: deploying service(s) in 'data_backed_service'
+   ballerina: started HTTP/WS server connector 0.0.0.0:9090
+```
 ### Deploying on Docker
 
 You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in docker container.   
