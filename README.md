@@ -83,12 +83,12 @@ endpoint http:Listener listener {
 // Add some sample orders to 'ordersMap' at startup.
 map<json> ordersMap;
 
-documentation { value: "RESTful service." }
+// RESTful service.
 @http:ServiceConfig { basePath: "/ordermgt" }
 service<http:Service> orderMgt bind listener {
 
-    documentation { value: "Resource that handles the HTTP GET requests that are
-    directed to a specific order using path '/orders/<orderID>'" }
+    // Resource that handles the HTTP GET requests that are directed to a specific
+    // order using path '/orders/<orderID>
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/order/{orderId}"
@@ -97,8 +97,8 @@ service<http:Service> orderMgt bind listener {
         // Implementation
     }
 
-    documentation { value: "Resource that handles the HTTP POST requests that are
-    directed to the path '/orders' to create a new Order." }
+    // Resource that handles the HTTP POST requests that are directed to the path
+    // '/orders' to create a new Order.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/order"
@@ -107,8 +107,8 @@ service<http:Service> orderMgt bind listener {
         // Implementation
     }
 
-    documentation { value: "Resource that handles the HTTP PUT requests that are
-    directed to the path '/orders' to update an existing Order." }
+    // Resource that handles the HTTP PUT requests that are directed to the path
+    // '/orders' to update an existing Order.
     @http:ResourceConfig {
         methods: ["PUT"],
         path: "/order/{orderId}"
@@ -117,8 +117,8 @@ service<http:Service> orderMgt bind listener {
         // Implementation
     }
 
-    documentation { value: "Resource that handles the HTTP DELETE requests, which are
-    directed to the path '/orders/<orderId>' to delete an existing Order." }
+    // Resource that handles the HTTP DELETE requests, which are directed to the path
+    // '/orders/<orderId>' to delete an existing Order.
     @http:ResourceConfig {
         methods: ["DELETE"],
         path: "/order/{orderId}"
@@ -144,12 +144,12 @@ endpoint http:Listener listener {
 // Add some sample orders to 'ordersMap' at startup.
 map<json> ordersMap;
 
-documentation { value: "RESTful service." }
+// RESTful service.
 @http:ServiceConfig { basePath: "/ordermgt" }
 service<http:Service> orderMgt bind listener {
 
-    documentation { value: "Resource that handles the HTTP GET requests that are
-    directed to a specific order using path '/orders/<orderID>'" }
+    // Resource that handles the HTTP GET requests that are directed to a specific
+    // order using path '/orders/<orderID>
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/order/{orderId}"
@@ -169,8 +169,8 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    documentation { value: "Resource that handles the HTTP POST requests that are
-    directed to the path '/orders' to create a new Order." }
+    // Resource that handles the HTTP POST requests that are directed to the path
+    // '/orders' to create a new Order.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/order"
@@ -196,8 +196,8 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    documentation { value: "Resource that handles the HTTP PUT requests that are
-    directed to the path '/orders' to update an existing Order." }
+    // Resource that handles the HTTP PUT requests that are directed to the path
+    // '/orders' to update an existing Order.
     @http:ResourceConfig {
         methods: ["PUT"],
         path: "/order/{orderId}"
@@ -224,8 +224,8 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    documentation { value: "Resource that handles the HTTP DELETE requests, which are
-    directed to the path '/orders/<orderId>' to delete an existing Order." }
+    // Resource that handles the HTTP DELETE requests, which are directed to the path
+    // '/orders/<orderId>' to delete an existing Order.
     @http:ResourceConfig {
         methods: ["DELETE"],
         path: "/order/{orderId}"
@@ -252,11 +252,10 @@ service<http:Service> orderMgt bind listener {
 
 ### Invoking the RESTful service 
 
-You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `<SAMPLE_ROOT_DIRECTORY>/guide.restful_service` and execute the following command.
+You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `restful-service/guide`, and execute the following command.
 ```
-$ballerina run restful_service
+$ ballerina run restful_service
 ```
-NOTE: You need to have the Ballerina installed in you local machine to run the Ballerina service.  
 
 You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of order_mgt_service as follows. 
 
@@ -303,19 +302,21 @@ Output:
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'. The naming convention should be as follows,
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+* Test functions should be annotated with `@test:Config`. See the below example.
+```ballerina
+@test:Config
+function testResourceAddOrder() {
+```
+  
+This guide contains unit test cases for each method available in the 'order_mgt_service' implemented above. 
 
-* Test functions should contain test prefix.
-  * e.g.: testResourceAddOrder()
-
-This guide contains unit test cases for each resource available in the 'order_mgt_service.bal'.
-
-To run the unit tests, go to the sample `guide.restful_service` directory and run the following command.
+To run the unit tests, open your terminal and navigate to `restful-service/guide`, and run the following command.
 ```bash
-   $ballerina test
+ $ ballerina test
 ```
 
-To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide.restful_service/restful_service/test/order_mgt_service_test.bal).
+To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/tests/order_mgt_service_test.bal).
 
 
 ## Deployment
