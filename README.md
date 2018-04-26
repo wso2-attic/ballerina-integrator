@@ -325,40 +325,32 @@ $ Ballerina run data_backed_service
 ```
 curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
 "http://localhost:9090/records/employee" -H "Content-Type:application/json"
-```
 
 Output:  
-```
 {"Status":"Data Inserted Successfully"}
 ```
 
 **Retrieve employee data** 
 ```
 curl -v  "http://localhost:9090/records/employee/1"
-```
 
 Output: 
-```
 [{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
 ```
 **Update an existing employee data** 
 ```
 curl -v -X PUT -d '{"name":"Alice Updated", "age":30,"ssn":123456789,"employeeId":1}' \
 "http://localhost:9090/records/employee" -H "Content-Type:application/json"
-```
 
 Output: 
-```
 {"Status":"Data Updated Successfully"}
 ```
 
 **Delete employee data** 
 ```
 curl -v -X DELETE "http://localhost:9090/records/employee/1"
-```
 
-Output:
-```
+Output: 
 {"Status":"Data Deleted Successfully"}
 ```
 
