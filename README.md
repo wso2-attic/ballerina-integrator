@@ -56,23 +56,17 @@ guide
         └── employee_db_service_test.bal
 ```
 
-Create the above directory in your local machine and create empty `.bal` files.
-- First, create a new directory in your local machine as `data-backed-service` and navigate to that directory using terminal. 
-- Then enter the following inputs to the Ballerina project initializing toolkit.
+- Create the above directories in your local machine and also create empty `.bal` files.
+
+- Then open the terminal and navigate to the to the Ballerina project initializing toolkit.
 ```bash
-$ballerina init -i
-
-Create Ballerina.toml [yes/y, no/n]: (y) y
-Organization name: (username) data-backed-service
-Version: (0.0.1) 
-Ballerina source [service/s, main/m]: (s) s
-Package for the service : (no package) guide.data_backed_service
-Ballerina source [service/s, main/m, finish/f]: (f) f
-
-Ballerina project initialized
+/guide$ ballerina init
 ```
 
-- Once you initialize your Ballerina project, you can change the names of the generated files to match with our guide project filenames.
+- Once you initialize your Ballerina project, you should see something similar to,
+```
+Ballerina project initialized
+```
 
 ### Developing the SQL data backed web service
 Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntaxes. The following Ballerina code is the employee data service with resources to add, retrieve, update and delete employee data.
