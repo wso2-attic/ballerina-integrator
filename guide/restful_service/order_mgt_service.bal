@@ -47,15 +47,15 @@ endpoint http:Listener listener {
 };
 
 // Order management is done using an in memory map.
-// Add some sample orders to 'orderMap' at startup.
+// Add some sample orders to 'ordersMap' at startup.
 map<json> ordersMap;
 
-documentation { value: "RESTful service." }
+// RESTful service.
 @http:ServiceConfig { basePath: "/ordermgt" }
 service<http:Service> orderMgt bind listener {
 
-    documentation { value: "Resource that handles the HTTP GET requests that are
-    directed to a specific order using path '/orders/<orderID>'" }
+    // Resource that handles the HTTP GET requests that are directed to a specific
+    // order using path '/orders/<orderID>
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/order/{orderId}"
@@ -75,8 +75,8 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    documentation { value: "Resource that handles the HTTP POST requests that are
-    directed to the path '/orders' to create a new Order." }
+    // Resource that handles the HTTP POST requests that are directed to the path
+    // '/orders' to create a new Order.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/order"
@@ -102,8 +102,8 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    documentation { value: "Resource that handles the HTTP PUT requests that are
-    directed to the path '/orders' to update an existing Order." }
+    // Resource that handles the HTTP PUT requests that are directed to the path
+    // '/orders' to update an existing Order.
     @http:ResourceConfig {
         methods: ["PUT"],
         path: "/order/{orderId}"
@@ -130,8 +130,8 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    documentation { value: "Resource that handles the HTTP DELETE requests, which are
-    directed to the path '/orders/<orderId>' to delete an existing Order." }
+    // Resource that handles the HTTP DELETE requests, which are directed to the path
+    // '/orders/<orderId>' to delete an existing Order.
     @http:ResourceConfig {
         methods: ["DELETE"],
         path: "/order/{orderId}"
