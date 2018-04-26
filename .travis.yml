@@ -43,6 +43,6 @@ script:
 #move the JDBC driver jar into the Ballerina/bre/lib folder
 - mv $MYSQL_CONNECTOR_VERSION/$MYSQL_CONNECTOR_VERSION-bin.jar $BALLERINA_VERSION/bre/lib
 
-- cd src/
+- cd guide/
 - ballerina init
 - ballerina test
