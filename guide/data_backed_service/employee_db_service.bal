@@ -17,30 +17,10 @@
 import ballerina/sql;
 import ballerina/mysql;
 import ballerina/log;
-import ballerina/mime;
 import ballerina/http;
 import ballerina/config;
-import ballerina/io;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
-
-type Employee {
-    string name;
-    int age;
-    int ssn;
-    int employeeId;
-};
-
-// Create SQL endpoint to MySQL database
-endpoint mysql:Client employeeDB {
-    host: "localhost",
-    port: 3306,
-    name: "EMPLOYEE_RECORDS",
-    username: "root",
-    password: "qwe123",
-    poolOptions: { maximumPoolSize: 5 },
-    dbOptions: { useSSL: false }
-};
 
 //@docker:Config {
 //    registry:"ballerina.guides.io",
@@ -77,6 +57,24 @@ endpoint http:Listener listener {
     port: 9090
 };
 
+type Employee {
+    string name;
+    int age;
+    int ssn;
+    int employeeId;
+};
+
+// Create SQL endpoint to MySQL database
+endpoint mysql:Client employeeDB {
+    host: config:getAsString("DATABASE_HOST", default = "localhost"),
+    port: config:getAsInt("DATABASE_PORT", default = 3306),
+    name: config:getAsString("DATABASE_NAME", default = "EMPLOYEE_RECORDS"),
+    username: config:getAsString("DATABASE_USERNAME", default = "root"),
+    password: config:getAsString("DATABASE_PASSWORD", default = "root"),
+    dbOptions: { useSSL: false }
+};
+
+// Service for the employee data service
 @http:ServiceConfig {
     basePath: "/records"
 }
@@ -91,16 +89,10 @@ service<http:Service> EmployeeData bind listener {
         http:Response response;
         Employee employeeData;
         // Extract the data from the request payload
-        var requestPayload = request.getJsonPayload();
+        var payloadJson = check request.getJsonPayload();
+        employeeData = check <Employee>payloadJson;
 
-        match requestPayload {
-            json payloadJson => {
-                employeeData = check <Employee>payloadJson;
-            }
-            error err => {
-                log:printError(err.message);
-            }
-        }
+        // check for errors with JSON payload using
         if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 ||
             employeeData.employeeId == 0) {
             response.setTextPayload("Error : json payload should contain
@@ -127,22 +119,12 @@ service<http:Service> EmployeeData bind listener {
         // Initialize an empty http response message
         http:Response response;
         // Convert the employeeId string to integer
-        var castVal = <int>employeeId;
-        match castVal {
-            int empID => {
-                // Invoke retrieveById function to retrieve data from Mymysql database
-                var employeeData = retrieveById(empID);
-                // Send the response back to the client with the employee data
-                response.setJsonPayload(employeeData);
-                _ = httpConnection->respond(response);
-            }
-            error err => {
-                //Check path parameter errors and send bad request message to client
-                response.setTextPayload("Error : Please enter a valid employee ID ");
-                response.statusCode = 400;
-                _ = httpConnection->respond(response);
-            }
-        }
+        int empID = check <int>employeeId;
+        // Invoke retrieveById function to retrieve data from Mymysql database
+        var employeeData = retrieveById(empID);
+        // Send the response back to the client with the employee data
+        response.setJsonPayload(employeeData);
+        _ = httpConnection->respond(response);
     }
 
     @http:ResourceConfig {
@@ -153,23 +135,17 @@ service<http:Service> EmployeeData bind listener {
         // Initialize an empty http response message
         http:Response response;
         Employee employeeData;
-        var requestPayload = request.getJsonPayload();
+        // Extract the data from the request payload
+        var payloadJson = check request.getJsonPayload();
+        employeeData = check <Employee>payloadJson;
 
-        match requestPayload {
-            json payloadJson => {
-                employeeData = check <Employee>payloadJson;
-            }
-            error err => {
-                log:printError(err.message);
-            }
-        }
         if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 ||
             employeeData.employeeId == 0) {
             response.setTextPayload("Error : json payload should contain
              {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
             response.statusCode = 400;
             _ = httpConnection->respond(response);
-            //return;
+            done;
         }
 
         // Invoke updateData function to update data in mysql database
@@ -189,22 +165,11 @@ service<http:Service> EmployeeData bind listener {
         // Initialize an empty http response message
         http:Response response;
         // Convert the employeeId string to integer
-        var castVal = <int>employeeId;
-        match castVal {
-            int empID => {
-                // Invoke deleteData function to delete the data from Mymysql database
-                var deleteStatus = deleteData(empID);
-                // Send the response back to the client with the employee data
-                response.setJsonPayload(deleteStatus);
-                _ = httpConnection->respond(response);
-            }
-            error err => {
-                //Check path parameter errors and send bad request message to client
-                response.setTextPayload("Error : Please enter a valid employee ID ");
-                response.statusCode = 400;
-                _ = httpConnection->respond(response);
-            }
-        }
+        var empID = check <int>employeeId;
+        var deleteStatus = deleteData(empID);
+        // Send the response back to the client with the employee data
+        response.setJsonPayload(deleteStatus);
+        _ = httpConnection->respond(response);
     }
 }
 
@@ -212,8 +177,9 @@ public function insertData(string name, int age, int ssn, int employeeId) return
     json updateStatus;
     string sqlString =
     "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
-    // Insert data to SQL database by invoking update action defined in ballerina sql connector
+    // Insert data to SQL database by invoking update action
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
+    // Use match operator to check the validity of the result from database
     match ret {
         int updateRowCount => {
             updateStatus = { "Status": "Data Inserted Successfully" };
@@ -226,11 +192,19 @@ public function insertData(string name, int age, int ssn, int employeeId) return
 }
 
 public function retrieveById(int employeeID) returns (json) {
+    json jsonReturnValue;
     string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
     // Retrieve employee data by invoking select action defined in ballerina sql connector
-    table dataTable = check employeeDB->select(sqlString, (), employeeID);
-    // Convert the sql data table into JSON using type conversion
-    var jsonReturnValue = check <json>dataTable;
+    var ret = employeeDB->select(sqlString, (), employeeID);
+    match ret {
+        table dataTable => {
+            // Convert the sql data table into JSON using type conversion
+            jsonReturnValue = check <json>dataTable;
+        }
+        error err => {
+            jsonReturnValue = { "Status": "Data Not Found", "Error": err.message };
+        }
+    }
     return jsonReturnValue;
 }
 
