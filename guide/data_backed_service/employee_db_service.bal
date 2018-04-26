@@ -70,7 +70,7 @@ endpoint mysql:Client employeeDB {
     port: config:getAsInt("DATABASE_PORT", default = 3306),
     name: config:getAsString("DATABASE_NAME", default = "EMPLOYEE_RECORDS"),
     username: config:getAsString("DATABASE_USERNAME", default = "root"),
-    password: config:getAsString("DATABASE_PASSWORD", default = "root"),
+    password: config:getAsString("DATABASE_PASSWORD", default = ""),
     dbOptions: { useSSL: false }
 };
 
