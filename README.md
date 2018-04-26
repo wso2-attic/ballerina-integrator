@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pranavan15/restful-service.svg?branch=master)](https://travis-ci.org/pranavan15/restful-service)
+
 # RESTful Service  
 REST (REpresentational State Transfer) is an architectural style for developing web services. It defines a set of constraints and properties based on HTTP. 
 
@@ -26,7 +28,6 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 ## Prerequisites
  
-- JDK 1.8 or later
 - [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
 - A Text Editor or an IDE 
 
