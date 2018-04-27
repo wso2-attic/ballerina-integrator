@@ -46,12 +46,12 @@ endpoint http:Listener travelAgencyEP {
 };
 
 // Client endpoint to communicate with Airline reservation service
-endpoint http:Client airlineReservationEP {
+endpoint http:Client airlineEP {
     url:"http://localhost:9091/airline"
 };
 
 // Client endpoint to communicate with Hotel reservation service
-endpoint http:Client hotelReservationEP {
+endpoint http:Client hotelEP {
     url:"http://localhost:9092/hotel"
 };
 
@@ -126,7 +126,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(flightPayload);
                 // Send a POST request to 'Qatar Airways' and get the results
-                http:Response respWorkerQatar = check airlineReservationEP -> post("/qatarAirways", request = outReq);
+                http:Response respWorkerQatar = check airlineEP -> post("/qatarAirways", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Qatar Airways'
                 respWorkerQatar -> fork;
             }
@@ -137,7 +137,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(flightPayload);
                 // Send a POST request to 'Asiana' and get the results
-                http:Response respWorkerAsiana = check airlineReservationEP -> post("/asiana", request = outReq);
+                http:Response respWorkerAsiana = check airlineEP -> post("/asiana", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
                 respWorkerAsiana -> fork;
             }
@@ -148,7 +148,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(flightPayload);
                 // Send a POST request to 'Emirates' and get the results
-                http:Response respWorkerEmirates = check airlineReservationEP -> post("/emirates", request = outReq);
+                http:Response respWorkerEmirates = check airlineEP -> post("/emirates", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Emirates'
                 respWorkerEmirates -> fork;
             }
@@ -213,7 +213,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Asiana' and get the results
-                http:Response respWorkerMiramar = check hotelReservationEP -> post("/miramar", request = outReq);
+                http:Response respWorkerMiramar = check hotelEP -> post("/miramar", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
                 respWorkerMiramar -> fork;
             }
@@ -224,7 +224,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Aqueen' and get the results
-                http:Response respWorkerAqueen = check hotelReservationEP -> post("/aqueen", request = outReq);
+                http:Response respWorkerAqueen = check hotelEP -> post("/aqueen", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Aqueen'
                 respWorkerAqueen -> fork;
             }
@@ -235,7 +235,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Elizabeth' and get the results
-                http:Response respWorkerElizabeth = check hotelReservationEP -> post("/elizabeth", request = outReq);
+                http:Response respWorkerElizabeth = check hotelEP -> post("/elizabeth", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Elizabeth'
                 respWorkerElizabeth -> fork;
             }
