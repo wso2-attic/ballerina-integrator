@@ -371,7 +371,7 @@ service<http:Service> orderMgt bind listener {
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `restful-service/guide` and run the following command.  
-```bash
+```
    $ ballerina build restful_service
 
    Run following command to start docker container: 
@@ -443,7 +443,7 @@ service<http:Service> orderMgt bind listener {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-```bash
+```
    $ ballerina build restful_service
   
    Run following command to deploy kubernetes artifacts:  
