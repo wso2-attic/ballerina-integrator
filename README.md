@@ -432,7 +432,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 }
 ```
 
-In the above code, `airlineReservationEP` is the client endpoint defined through which the Ballerina service communicates with the external airline reservation service. The client endpoint defined to communicate with the external hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
+In the above code, `airlineEP` is the client endpoint defined through which the Ballerina service communicates with the external airline reservation service. The client endpoint defined to communicate with the external hotel reservation service is `hotelEP`. Similarly, `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
 
 To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/TravelAgency/travel_agency_service_parallel.bal) file.
 
