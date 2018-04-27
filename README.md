@@ -82,38 +82,38 @@ To arrange a complete tour travel agency service requires communicating with thr
 
 Sample request payload for the airline reservation service:
 
-```
+```bash
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi"} 
 ```
 
 Sample response payload from the airline reservation service:
 
-```
+```bash
 {"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018", 
  "From":"Colombo", "To":"Changi", "Price":273}
 ```
 
 Sample request payload for the hotel reservation service:
 
-```
+```bash
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Location":"Changi"}
 ```
 
 Sample response payload from the hotel reservation service:
 
-```
+```bash
 {"HotelName":"Miramar", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "DistanceToLocation":6}
 ```
 
 Sample request payload for the car rental service:
 
-```
+```bash
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "VehicleType":"Car"}
 ```
 
 Sample response payload from the car rental service:
 
-```
+```bash
 {"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
  "PricePerDay":5}
 ```
@@ -441,19 +441,28 @@ To see the complete implementation of the above file, refer to the [travel_agenc
 
 ### Try it out
 
-- Start all four HTTP services by entering the following command in a separate terminal for each service. This command starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093, and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file is located.
+- Navigate to `parallel-service-orchestration/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
+```bash 
+   $ ballerina run airline_reservation/
 ```
-    <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina run <Package_Name
+```bash
+   $ ballerina run hotel_reservation/
+```
+```bash
+   $ ballerina run car_rental/
+```
+```bash
+   $ ballerina run travel_agency/
 ```
    
-- Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
+- Invoke the travel agency service by sending a POST request to arrange a tour.
 
 ```bash
-    curl -v -X POST -d \
-    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
-    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
-    "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
+   curl -v -X POST -d \
+   '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+   "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+   "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
 ```
 
    The `travelAgencyService` sends a response similar to the following:
@@ -463,37 +472,37 @@ To see the complete implementation of the above file, refer to the [travel_agenc
     
     {
       "Flight":
-      {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo",
-      "To":"Changi","Price":273},
+      {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018",
+      "From":"Colombo","To":"Changi","Price":273},
       
       "Hotel":
-      {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
+      {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018",
+      "DistanceToLocation":2},
       
       "Vehicle":
-      {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018",
-       "PricePerDay":5}
+      {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018",
+      "ToDate":"13-04-2018","PricePerDay":5}
     }
 ``` 
    
    
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
-* Test functions should be annotated with `@test:Config`. See the below example.
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+- Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
-    @test:Config
-    function testTravelAgencyService () {
+   @test:Config
+   function testTravelAgencyService () {
 ```
   
 This guide contains unit test cases for each service implemented above. 
 
-
-To run the unit tests, go to the sample guide directory and run the following command
+To run the tests, open your terminal and navigate to `parallel-service-orchestration/guide`, and run the following command.
 ```
-   <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina test
+   $ ballerina test
 ```
 
-To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/airline_reservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/hotel_reservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/car_rental/test/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/travel_agency/test/travel_agency_service_parallel_test.bal).
+To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/airline_reservation/tests/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/hotel_reservation/tests/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/car_rental/tests/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/tests/travel_agency_service_parallel_test.bal).
 
 
 ## Deployment
