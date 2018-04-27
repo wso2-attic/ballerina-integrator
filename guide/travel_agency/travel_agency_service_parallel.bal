@@ -160,8 +160,8 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
             // Get the response and price for airline 'Qatar Airways'
             if (airlineResponses["qatarWorker"] != null) {
-                var responseQatar = check <http:Response>(airlineResponses["qatarWorker"]);
-                jsonFlightResponseQatar = check responseQatar.getJsonPayload();
+                var resQatar = check <http:Response>(airlineResponses["qatarWorker"]);
+                jsonFlightResponseQatar = check resQatar.getJsonPayload();
                 match jsonFlightResponseQatar.Price {
                     int intVal => qatarPrice = intVal;
                     any otherVals => qatarPrice = -1;
@@ -170,8 +170,8 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
             // Get the response and price for airline 'Asiana'
             if (airlineResponses["asianaWorker"] != null) {
-                var responseAsiana = check <http:Response>(airlineResponses["asianaWorker"]);
-                jsonFlightResponseAsiana = check responseAsiana.getJsonPayload();
+                var resAsiana = check <http:Response>(airlineResponses["asianaWorker"]);
+                jsonFlightResponseAsiana = check resAsiana.getJsonPayload();
                 match jsonFlightResponseAsiana.Price {
                     int intVal => asianaPrice = intVal;
                     any otherVals => asianaPrice = -1;
@@ -180,8 +180,8 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
             // Get the response and price for airline 'Emirates'
             if (airlineResponses["emiratesWorker"] != null) {
-                var responseEmirates = check <http:Response>(airlineResponses["emiratesWorker"]);
-                jsonFlightResponseEmirates = check responseEmirates.getJsonPayload();
+                var resEmirates = check <http:Response>(airlineResponses["emiratesWorker"]);
+                jsonFlightResponseEmirates = check resEmirates.getJsonPayload();
                 match jsonFlightResponseEmirates.Price {
                     int intVal => emiratesPrice = intVal;
                     any otherVals => emiratesPrice = -1;
