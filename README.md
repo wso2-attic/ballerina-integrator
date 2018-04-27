@@ -74,14 +74,14 @@ Let's look at the implementation of the travel agency service, which acts as the
 Arranging a complete tour travel agency service requires communicating with three other services: airline reservation, hotel reservation, and car rental. All these services accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. Request and response payloads are similar for all three backend services.
 
 Sample request payload:
-```
+```bash
 {"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", 
  "Preference":<service_dependent_preference>};
 ```
 
 Sample response payload:
 
-```
+```bash
 {"Status":"Success"}
 ```
 
@@ -239,22 +239,22 @@ As shown above, the travel agency service rents a car for the requested user by 
 
 - Navigate to `service-composition/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
-```
+```bash
    $ ballerina run airline_reservation/
 ```
-```
+```bash
    $ ballerina run hotel_reservation/
 ```
-```
+```bash
    $ ballerina run car_rental/
 ```
-```
+```bash
    $ ballerina run travel_agency/
 ```
    
 - Invoke the travel agency service by sending a POST request to arrange a tour.
 
-```
+```bash
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
@@ -263,7 +263,7 @@ As shown above, the travel agency service rents a car for the requested user by 
 
   Travel agency service will send a response similar to the following:
     
-```
+```bash
    < HTTP/1.1 200 OK
    {"Message":"Congratulations! Your journey is ready!!"}
 ``` 
@@ -281,7 +281,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 This guide contains unit test cases for each service implemented above. 
 
 To run the tests, open your terminal and navigate to `service-composition/guide`, and run the following command.
-```
+```bash
    $ ballerina test
 ```
 
@@ -294,12 +294,12 @@ Once you are done with the development, you can deploy the services using any of
 ### Deploying locally
 
 - As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `service-composition/guide` and run the following command in separate terminals for each package. 
-```
+```bash
    $ ballerina build <Package_Name>
 ```
 
 - Once the .balx files are created inside the target folder, you can run them with the following command. 
-```
+```bash
    $ ballerina run target/<Exec_Archive_File_Name>
 ```
 
@@ -351,8 +351,8 @@ This will also create the corresponding docker image using the docker annotation
 
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-```   
-   docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
+```   bash
+   $ docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
 
    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
@@ -360,7 +360,7 @@ This will also create the corresponding docker image using the docker annotation
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-```
+```bash
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
@@ -426,7 +426,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 - Also the Kubernetes artifacts related our service, will be generated under `` ./target/travel_agency/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
-```
+```bash
    $ kubectl apply -f ./target/travel_agency/kubernetes 
  
    deployment.extensions "ballerina-guides-travel-agency-service" created
@@ -436,7 +436,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 
-```
+```bash
    $ kubectl get service
    $ kubectl get deploy
    $ kubectl get pods
@@ -446,7 +446,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
 
 Node Port:
-```
+```bash
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
@@ -461,7 +461,7 @@ Add `/etc/hosts` entry to match hostname.
 ```
 
 Access the service 
-``` 
+``` bash
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
