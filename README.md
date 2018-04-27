@@ -67,7 +67,7 @@ service-composition
    $ ballerina init
 ```
 
-### Implementation
+### Developing the service
 
 Let's look at the implementation of the travel agency service, which acts as the composition initiator.
 
