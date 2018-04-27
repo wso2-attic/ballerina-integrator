@@ -74,7 +74,6 @@ Let's look at the implementation of the travel agency service, which acts as the
 Arranging a complete tour travel agency service requires communicating with three other services: airline reservation, hotel reservation, and car rental. All these services accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. Request and response payloads are similar for all three backend services.
 
 Sample request payload:
-
 ```
 {"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", 
  "Preference":<service_dependent_preference>};
@@ -86,20 +85,18 @@ Sample response payload:
 {"Status":"Success"}
 ```
 
-When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to book a flight ticket. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/guides/airline_reservation/airline_reservation_service.bal) file.
+When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to book a flight ticket. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/guide/airline_reservation/airline_reservation_service.bal) file.
 
-Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/guides/hotel_reservation/hotel_reservation_service.bal) file.
+Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/guide/hotel_reservation/hotel_reservation_service.bal) file.
 
-Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/guides/car_rental/car_rental_service.bal) file.
+Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/guide/car_rental/car_rental_service.bal) file.
 
 If all services work successfully, the travel agency service confirms and arrange the complete tour for the user. The skeleton of `travel_agency_service.bal` file is attached below. Inline comments are added for better understanding.
-Refer to the [travel_agency_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/guides/travel_agency/travel_agency_service.bal) to see the complete implementation of the travel agency service.
+Refer to the [travel_agency_service.bal](https://github.com/ballerina-guides/service-composition/blob/master/guide/travel_agency/travel_agency_service.bal) to see the complete implementation of the travel agency service.
 
 ##### travel_agency_service.bal
 
 ```ballerina
-package travel_agency;
-
 import ballerina/http;
 
 // Service endpoint
@@ -109,17 +106,17 @@ endpoint http:Listener travelAgencyEP {
 
 // Client endpoint to communicate with Airline reservation service
 endpoint http:Client airlineReservationEP {
-    targets:[{url:"http://localhost:9091/airline"}]
+    url:"http://localhost:9091/airline"
 };
 
 // Client endpoint to communicate with Hotel reservation service
 endpoint http:Client hotelReservationEP {
-    targets:[{url:"http://localhost:9092/hotel"}]
+    url:"http://localhost:9092/hotel"
 };
 
 // Client endpoint to communicate with Car rental service
 endpoint http:Client carRentalEP {
-    targets:[{url:"http://localhost:9093/car"}]
+    url:"http://localhost:9093/car"
 };
 
 // Travel agency service to arrange a complete tour for a user
@@ -130,7 +127,6 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
     @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
         produces:["application/json"]}
     arrangeTour(endpoint client, http:Request inRequest) {
-        http:Response outResponse;
 
         // JSON payload format for an HTTP OUT request
         json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"",
@@ -146,7 +142,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
 
         // If all three response positive status, send a successful message to the user
-        outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!"});
+        outResponse.setJsonPayload({"Message":"Congrats! Your journey is ready!"});
         _ = client -> respond(outResponse);
     }
 }
@@ -164,11 +160,11 @@ outReqPayloadAirline.Preference = airlinePreference;
 outReqAirline.setJsonPayload(outReqPayloadAirline);
 
 // Send a post request to airline service with appropriate payload and get response
-inResAirline = check airlineReservationEP -> post("/reserve", outReqAirline);
+inResAirline = check airlineReservationEP -> post("/reserve", request = outReqAirline);
 
 // Get the reservation status
 var airlineResPayload = check inResAirline.getJsonPayload();
-string airlineStatus = airlineResPayload.Status.toString() but { () => "Failed" };
+string airlineStatus = airlineResPayload.Status.toString();
 // If reservation status is negative, send a failure response to user
 if (airlineStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
@@ -193,11 +189,11 @@ outReqPayloadHotel.Preference = hotelPreference;
 outReqHotel.setJsonPayload(outReqPayloadHotel);
 
 // Send a post request to hotel service with appropriate payload and get response
-inResHotel = check hotelReservationEP -> post("/reserve", outReqHotel);
+inResHotel = check hotelReservationEP -> post("/reserve", request = outReqHotel);
 
 // Get the reservation status
 var hotelResPayload = check inResHotel.getJsonPayload();
-string hotelStatus = hotelResPayload.Status.toString() but { () => "Failed" };
+string hotelStatus = hotelResPayload.Status.toString();
 // If reservation status is negative, send a failure response to user
 if (hotelStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
@@ -206,6 +202,7 @@ if (hotelStatus.equalsIgnoreCase("Failed")) {
     done;
 }
 ```
+
 The travel agency service communicates with the hotel reservation service to book a room for the client as shown above. The client endpoint defined for this external service call is `hotelReservationEP`.
 
 Finally, let's look at the code segment that is responsible for communicating with the car rental service. 
@@ -220,11 +217,11 @@ outReqPayloadCar.Preference = carPreference;
 outReqCar.setJsonPayload(outReqPayloadCar);
 
 // Send a post request to car rental service with appropriate payload and get response
-inResCar = check carRentalEP -> post("/rent", outReqCar);
+inResCar = check carRentalEP -> post("/rent", request = outReqCar);
 
 // Get the rental status
 var carResPayload = check inResCar.getJsonPayload();
-string carRentalStatus = carResPayload.Status.toString() but { () => "Failed" };
+string carRentalStatus = carResPayload.Status.toString();
 // If rental status is negative, send a failure response to user
 if (carRentalStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to rent car! " +
@@ -240,85 +237,88 @@ As shown above, the travel agency service rents a car for the requested user by 
 
 ### Try it out
 
-- Start all four HTTP services by entering the following commands in separate terminals. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
+- Navigate to `service-composition/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
 ```
-    <SAMPLE_ROOT_DIRECTORY>/guides$ ballerina run airline_reservation/
+   $ ballerina run airline_reservation/
 ```
 ```
-    <SAMPLE_ROOT_DIRECTORY>/guides$ ballerina run hotel_reservation/
+   $ ballerina run hotel_reservation/
 ```
 ```
-    <SAMPLE_ROOT_DIRECTORY>/guides$ ballerina run car_rental/
+   $ ballerina run car_rental/
 ```
 ```
-    <SAMPLE_ROOT_DIRECTORY>/guides$ ballerina run travel_agency/
+   $ ballerina run travel_agency/
 ```
    
 - Invoke the travel agency service by sending a POST request to arrange a tour.
 
 ```
-    curl -v -X POST -d \
-    '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
-     "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
-     "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
+   curl -v -X POST -d \
+   '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
+   "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+   "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
 ```
 
   Travel agency service will send a response similar to the following:
     
 ```
-     < HTTP/1.1 200 OK
-    {"Message":"Congratulations! Your journey is ready!!"}
+   < HTTP/1.1 200 OK
+   {"Message":"Congratulations! Your journey is ready!!"}
 ``` 
    
    
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
-* Test functions should be annotated with `@test:Config`. See the below example.
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+- Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
-    @test:Config
-    function testTravelAgencyService () {
+   @test:Config
+   function testTravelAgencyService () {
 ```
   
 This guide contains unit test cases for each service implemented above. 
 
-To run the unit tests, go to the guides directory and run the following command
+To run the tests, open your terminal and navigate to `service-composition/guide`, and run the following command.
 ```
-   <SAMPLE_ROOT_DIRECTORY>/guides$ ballerina test
+   $ ballerina test
 ```
 
-To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/guides/airline_reservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/guides/hotel_reservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/guides/car_rental/test/car_rental_service_test.bal) and [travel_agency_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/guides/travel_agency/test/travel_agency_service_test.bal).
-
+To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/guide/airline_reservation/tests/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/guide/hotel_reservation/tests/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/guide/car_rental/tests/car_rental_service_test.bal) and [travel_agency_service_test.bal](https://github.com/ballerina-guides/service-composition/blob/master/guide/tests/travel_agency_service_test.bal).
 
 ## Deployment
 
 Once you are done with the development, you can deploy the services using any of the methods that are listed below. 
 
 ### Deploying locally
-You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
 
-Building 
+- As the first step you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `service-composition/guide` and run the following command. 
 ```
-    <SAMPLE_ROOT_DIRECTORY>/guides$ ballerina build <Package_Name>
+   $ ballerina build
 ```
 
-Running
+- Once the .balx files are created inside the target folder, you can run them with the following command. 
 ```
-    <SAMPLE_ROOT_DIRECTORY>/guides$ ballerina run target/<Exec_Archive_File_Name>
+   $ ballerina run target/<Exec_Archive_File_Name>
+```
+
+- The successful execution of a service will show us something similar to the following output. 
+```
+   ballerina: initiating service(s) in 'target/travel_agency.balx'
+   ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ### Deploying on Docker
 
-You can run the services that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
+You can run the service that we developed above as a docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
+
 Let's see how we can deploy the travel_agency_service we developed above on docker. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
 
-- In our travel_agency_service, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
+- In our travel_agency_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
 
 ##### travel_agency_service.bal
 ```ballerina
-package travel_agency;
-
 import ballerina/http;
 import ballerinax/docker;
 
@@ -336,23 +336,23 @@ endpoint http:Listener travelAgencyEP {
 // http:Client endpoint definitions to communicate with other services
 
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP { 
+service<http:Service> travelAgencyService bind travelAgencyEP {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guides/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. NNavigate to `service-composition/guide` and run the following command.  
   
 ```
-  $ballerina build travel_agency
+   $ballerina build travel_agency
   
-  Run following command to start docker container: 
-  docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
+   Run following command to start docker container: 
+   docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
 
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
 ```   
-    docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
+   docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
 
    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
@@ -361,27 +361,24 @@ This will also create the corresponding docker image using the docker annotation
 - You can access the service using the same curl commands that we've used above. 
  
 ```
-    curl -v -X POST -d \
-    '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
-    "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
-    "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
+   curl -v -X POST -d \
+   '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
+   "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+   "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
 ```
 
 
 ### Deploying on Kubernetes
 
-- You can run the services that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
-with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
-So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
-Let's see how we can deploy the travel_agency_service we developed above on kubernetes. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-- We need to import `` import ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
+- Let's now see how we can deploy our `travel_agency_service` on Kubernetes. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
+
+- First we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
 ##### travel_agency_service.bal
 
 ```ballerina
-package travel_agency;
-
 import ballerina/http;
 import ballerinax/kubernetes;
 
@@ -419,10 +416,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
-  $ballerina build travel_agency
+   $ ballerina build travel_agency
   
-  Run following command to deploy kubernetes artifacts:  
-  kubectl apply -f ./target/travel_agency/kubernetes
+   Run following command to deploy kubernetes artifacts:  
+   kubectl apply -f ./target/travel_agency/kubernetes
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
@@ -430,7 +427,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 - Now you can create the Kubernetes deployment using:
 
 ```
- $ kubectl apply -f ./target/travel_agency/kubernetes 
+   $ kubectl apply -f ./target/travel_agency/kubernetes 
  
    deployment.extensions "ballerina-guides-travel-agency-service" created
    ingress.extensions "ballerina-guides-travel-agency-service" created
@@ -440,33 +437,30 @@ This will also create the corresponding docker image and the Kubernetes artifact
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 
 ```
-  $kubectl get service
-  $kubectl get deploy
-  $kubectl get pods
-  $kubectl get ingress
+   $ kubectl get service
+   $ kubectl get deploy
+   $ kubectl get pods
+   $ kubectl get ingress
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
 
 Node Port:
- 
 ```
-  curl -v -X POST -d \
-  '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
-  "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
-  "http://localhost:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
+   curl -v -X POST -d \
+   '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
+   "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+   "http://localhost:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
 ```
 
 Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
-
 ``` 
   127.0.0.1 ballerina.guides.io
 ```
 
 Access the service 
-
 ``` 
   curl -v -X POST -d \
   '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
