@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pranavan15/restful-service.svg?branch=master)](https://travis-ci.org/pranavan15/restful-service)
+[![Build Status](https://travis-ci.org/ballerina-guides/restful-service.svg?branch=master)](https://travis-ci.org/ballerina-guides/restful-service)
 
 # RESTful Service  
 REST (REpresentational State Transfer) is an architectural style for developing web services. It defines a set of constraints and properties based on HTTP. 
@@ -320,7 +320,7 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying locally
 
-- As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to `restful-service/guide` and run the following command. 
+- As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above. Navigate to `restful-service/guide` and run the following command. 
 ```
    $ ballerina build restful_service
 ```
@@ -553,7 +553,7 @@ Follow the following steps to use tracing with Ballerina.
 ```
 
 ### Metrics
-Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
+Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool.
 Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
@@ -685,8 +685,8 @@ ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\fil
 iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
      
 ```
-$ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
--v {SAMPLE_ROOT}/guide.restful_service/restful_service/ballerina.log:/usr/share\
+$ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
+-v {SAMPLE_ROOT}/guide/restful_service/ballerina.log:/usr/share\
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
