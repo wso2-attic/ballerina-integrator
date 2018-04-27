@@ -434,7 +434,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
 In the above code, `airlineReservationEP` is the client endpoint defined through which the Ballerina service communicates with the external airline reservation service. The client endpoint defined to communicate with the external hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
 
-To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/TravelAgency/travel_agency_service_parallel.bal) file.
+To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/travel_agency/travel_agency_service_parallel.bal) file.
 
 
 ## Testing 
@@ -493,7 +493,7 @@ To run the unit tests, go to the sample guide directory and run the following co
    <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina test
 ```
 
-To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/airline_reservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/hotel_reservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/car_rental/test/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/TravelAgency/test/travel_agency_service_parallel_test.bal).
+To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/airline_reservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/hotel_reservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/car_rental/test/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/travel_agency/test/travel_agency_service_parallel_test.bal).
 
 
 ## Deployment
@@ -629,7 +629,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
-- Also the Kubernetes artifacts related our service, will be generated in `` ./target/TravelAgency/kubernetes``. 
+- Also the Kubernetes artifacts related our service, will be generated in `` ./target/travel_agency/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
 ```
@@ -760,7 +760,8 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    $ballerina run <package_name>
 ```
 
-   NOTE: First start the `TravelAgency` package since it's the main orchastrator for other services(also we are going to trace from Traval Agancy service)
+   NOTE: First start the `travel_agency` package since it's the main orchestrator for other services(also we are going
+    to trace from Traval Agancy service)
    
 - You can access Prometheus at the following URL
 ```
