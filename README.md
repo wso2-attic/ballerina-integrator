@@ -134,9 +134,9 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // Try parsing the JSON payload from the user request
 
-        // Reserve airline ticket for the user by calling the airline reservation service
+        // Reserve airline ticket for the user by calling airline reservation service
 
-        // Reserve hotel room for the user by calling the hotel reservation service
+        // Reserve hotel room for the user by calling hotel reservation service
 
         // Renting car for the user by calling the car rental service
 
@@ -255,9 +255,9 @@ As shown above, the travel agency service rents a car for the requested user by 
 - Invoke the travel agency service by sending a POST request to arrange a tour.
 
 ```
-   curl -v -X POST -d \
-   '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
-   "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+   curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
+   "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
+   "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
    "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
 ```
 
@@ -361,9 +361,9 @@ This will also create the corresponding docker image using the docker annotation
 - You can access the service using the same curl commands that we've used above. 
  
 ```
-   curl -v -X POST -d \
-   '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
-   "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+   curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
+   "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
+   "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
    "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
 ```
 
@@ -447,9 +447,9 @@ This will also create the corresponding docker image and the Kubernetes artifact
 
 Node Port:
 ```
-   curl -v -X POST -d \
-   '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
-   "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+   curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
+   "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
+   "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
    "http://localhost:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
 ```
 
@@ -462,9 +462,9 @@ Add `/etc/hosts` entry to match hostname.
 
 Access the service 
 ``` 
-  curl -v -X POST -d \
-  '{"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018",
-  "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
+   curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
+   "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
+   "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
   "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
 ```
 
