@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pranavan15/service-composition.svg?branch=master)](https://travis-ci.org/pranavan15/service-composition)
+
 # Service Composition
 
 A service composition is an aggregate of services collectively composed to automate a particular task or business process. 
@@ -8,9 +10,10 @@ The following are the sections available in this guide.
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
-- [Developing the service](#developing-the-service)
+- [Implementation](#implementation)
 - [Testing](#testing)
 - [Deployment](#deployment)
+- [Observability](#observability)
 
 ## What you’ll build
 To understanding how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
@@ -20,58 +23,49 @@ To understanding how you can build a service composition using Ballerina, let's 
 Travel agency is the service that acts as the composition initiator. The other three services are external services that the travel agency service calls to do airline ticket booking, hotel reservation and car rental. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
 ## Prerequisites
- 
-- JDK 1.8 or later
-- [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
+ - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - A Text Editor or an IDE 
 
 ### Optional requirements
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
+- [Kubernetes](https://kubernetes.io/docs/setup/)
 
-## Developing the service
+## Implementation
 
-### Before you begin
-#### Understand the package structure
+> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping  "Implementation" section.
+
+### Create the project structure
+
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
 service-composition
-  └── guides
+  └── guide
       ├── airline_reservation
       │   ├── airline_reservation_service.bal
-      │   └── test
+      │   └── tests
       │       └── airline_reservation_service_test.bal
       ├── car_rental
       │   ├── car_rental_service.bal
-      │   └── test
+      │   └── tests
       │       └── car_rental_service_test.bal
       ├── hotel_reservation
       │   ├── hotel_reservation_service.bal
-      │   └── test
+      │   └── tests
       │       └── hotel_reservation_service_test.bal
-      └── travel_agency
-          ├── test
-          │   └── travel_agency_service_test.bal
-          └── travel_agency_service.bal
+      ├── travel_agency
+      │   └── travel_agency_service.bal
+      └── tests
+          └── travel_agency_service_test.bal
 ```
 
-Package `airline_reservation` contains the service that provides online flight ticket reservations.
+- Create the above directories in your local machine and also create empty `.bal` files.
 
-Package `car_rental` contains the service that provides online car rentals.
-
-Package `hotel_reservation` contains the service that provides online hotel room reservations.
-
-The `travel_agency_service.bal` contains the travel agency service, which consumes the other three services, and arranges a complete tour for the requested user.
-
-
-Once you created your package structure, go to the guides directory and run the following command to initialize your Ballerina project.
-
+- Then open the terminal and navigate to `restful-service/guide` and run Ballerina project initializing toolkit.
 ```bash
-  $ballerina init
+   $ ballerina init
 ```
-
-The above command will initialize the project with a `Ballerina.toml` file and `.ballerina` implementation directory that contain a list of packages in the current directory.
 
 ### Implementation
 
