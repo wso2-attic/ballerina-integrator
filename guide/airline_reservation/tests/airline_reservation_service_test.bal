@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package airline_reservation;
-
 import ballerina/test;
 import ballerina/http;
 
@@ -27,14 +25,14 @@ function beforeFunc() {
 
 // Client endpoint
 endpoint http:Client clientEP {
-    targets:[{url:"http://localhost:9091/airline"}]
+    url:"http://localhost:9091/airline"
 };
 
 // Function to test Airline reservation service
 @test:Config
 function testAirlineReservationService() {
     // Initialize the empty http requests and responses
-    http:Request request;
+    http:Request req;
 
     // Test the 'reserveTicket' resource
     // Construct a request payload
@@ -45,9 +43,9 @@ function testAirlineReservationService() {
         "Preference":"Business"
     };
 
-    request.setJsonPayload(payload);
+    req.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/reserve", request);
+    http:Response response = check clientEP -> post("/reserve", request = req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
         msg = "Airline reservation service did not respond with 200 OK signal!");

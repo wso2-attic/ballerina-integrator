@@ -14,29 +14,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package hotel_reservation;
-
 import ballerina/test;
 import ballerina/http;
 
 @test:BeforeSuite
 function beforeFunc() {
-    // Start the 'hotelReservationService' before running the test
-    _ = test:startServices("hotel_reservation");
+    // Start the 'carRentalService' before running the test
+    _ = test:startServices("car_rental");
 }
 
 // Client endpoint
 endpoint http:Client clientEP {
-    targets:[{url:"http://localhost:9092/hotel"}]
+    url:"http://localhost:9093/car"
 };
 
-// Function to test Hotel reservation service
+// Function to test Car rental service
 @test:Config
-function testHotelReservationService() {
+function testCarRentalService() {
     // Initialize the empty http requests and responses
-    http:Request request;
+    http:Request req;
 
-    // Test the 'reserveRoom' resource
+    // Test the 'rentCar' resource
     // Construct a request payload
     json payload = {
         "Name":"Alice",
@@ -45,11 +43,11 @@ function testHotelReservationService() {
         "Preference":"Air Conditioned"
     };
 
-    request.setJsonPayload(payload);
+    req.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/reserve", request);
+    http:Response response = check clientEP -> post("/rent", request = req);
     // Expected response code is 200
-    test:assertEquals(response.statusCode, 200, msg = "Hotel reservation service did not respond with 200 OK signal!");
+    test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     json resPayload = check response.getJsonPayload();
     json expected = {"Status":"Success"};
@@ -58,6 +56,6 @@ function testHotelReservationService() {
 
 @test:AfterSuite
 function afterFunc() {
-    // Stop the 'hotelReservationService' after running the test
-    test:stopServices("hotel_reservation");
+    // Stop the 'carRentalService' after running the test
+    test:stopServices("car_rental");
 }
