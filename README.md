@@ -10,6 +10,7 @@ The following are the sections available in this guide.
 - [Implementation](#implementation)
 - [Testing](#testing)
 - [Deployment](#deployment)
+- [Observability](#observability)
 
 ## What you’ll build 
 
