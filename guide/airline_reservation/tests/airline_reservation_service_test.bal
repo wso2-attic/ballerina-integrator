@@ -14,91 +14,90 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package hotel_reservation;
-
 import ballerina/test;
 import ballerina/http;
 
 // Common request Payload
 json requestPayload = {
-                          "ArrivalDate":"12-03-2018",
-                          "DepartureDate":"13-04-2018",
-                          "Location":"Changi"
-                      };
+    "ArrivalDate":"12-03-2018",
+    "DepartureDate":"13-04-2018",
+    "From":"Colombo",
+    "To":"Changi"
+};
 
 @test:BeforeSuite
 function beforeFunc () {
-    // Start the 'hotelReservationService' before running the test
-    _ = test:startServices("hotel_reservation");
+    // Start the 'airlineReservationService' before running the test
+    _ = test:startServices("airline_reservation");
 }
 
 // Client endpoint
 endpoint http:Client clientEP {
-    targets:[{url:"http://localhost:9092/hotel"}]
+    url:"http://localhost:9091/airline"
 };
 
-// Function to test resource 'miramar'
+// Function to test resource 'flightConcord'
 @test:Config
-function testResourceMiramar () {
+function testResourceFlightConcord () {
     // Initialize the empty http requests and responses
-    http:Request request;
+    http:Request req;
 
     // Set request payload
-    request.setJsonPayload(requestPayload);
+    req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/miramar", request);
+    http:Response response = check clientEP -> post("/qatarAirways", request = req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
-                         msg = "Hotel reservation service did not respond with 200 OK signal!");
+        msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"HotelName\":\"Miramar\",\"FromDate\":\"12-03-2018\"," +
-                      "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":6}";
+    string expected = "{\"Airline\":\"Qatar Airways\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
+        "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":278}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
-// Function to test resource 'aqueen'
+// Function to test resource 'flightAsiana'
 @test:Config
-function testResourceAqueen () {
+function testResourceFlightAsiana () {
     // Initialize the empty http requests and responses
-    http:Request request;
+    http:Request req;
 
     // Set request payload
-    request.setJsonPayload(requestPayload);
+    req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/aqueen", request);
+    http:Response response = check clientEP -> post("/asiana", request = req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
-                         msg = "Hotel reservation service did not respond with 200 OK signal!");
+        msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"HotelName\":\"Aqueen\",\"FromDate\":\"12-03-2018\"," +
-                      "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":4}";
+    string expected = "{\"Airline\":\"Asiana\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
+        "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":275}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
-// Function to test resource 'elizabeth'
+// Function to test resource 'flightEmirates'
 @test:Config
-function testResourceElizabeth () {
+function testResourceFlightEmirates () {
     // Initialize the empty http requests and responses
-    http:Request request;
+    http:Request req;
 
     // Set request payload
-    request.setJsonPayload(requestPayload);
+    req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/elizabeth", request);
+    http:Response response = check clientEP -> post("/emirates", request = req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
-                         msg = "Hotel reservation service did not respond with 200 OK signal!");
+        msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"HotelName\":\"Elizabeth\",\"FromDate\":\"12-03-2018\"," +
-                      "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":2}";
+    string expected = "{\"Airline\":\"Emirates\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
+        "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":273}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
 
 @test:AfterSuite
 function afterFunc () {
-    // Stop the 'hotelReservationService' after running the test
-    test:stopServices("hotel_reservation");
+    // Stop the 'airlineReservationService' after running the test
+    test:stopServices("airline_reservation");
 }

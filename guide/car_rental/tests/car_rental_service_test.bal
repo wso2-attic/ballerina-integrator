@@ -14,17 +14,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package car_rental;
-
 import ballerina/test;
 import ballerina/http;
 
 // Common request Payload
 json requestPayload = {
-                          "ArrivalDate":"12-03-2018",
-                          "DepartureDate":"13-04-2018",
-                          "VehicleType":"Car"
-                      };
+    "ArrivalDate":"12-03-2018",
+    "DepartureDate":"13-04-2018",
+    "VehicleType":"Car"
+};
 
 @test:BeforeSuite
 function beforeFunc () {
@@ -34,24 +32,24 @@ function beforeFunc () {
 
 // Client endpoint
 endpoint http:Client clientEP {
-    targets:[{url:"http://localhost:9093/car"}]
+    url:"http://localhost:9093/car"
 };
 
 // Function to test resource 'driveSg'
 @test:Config
 function testResourceDriveSg () {
     // Initialize the empty http requests and responses
-    http:Request request;
+    http:Request req;
 
     // Set request payload
-    request.setJsonPayload(requestPayload);
+    req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/driveSg", request);
+    http:Response response = check clientEP -> post("/driveSg", request = req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Company\":\"DriveSG\",\"VehicleType\":\"Car\",\"FromDate\":\"12-03-2018\"," +
-                      "\"ToDate\":\"13-04-2018\",\"PricePerDay\":5}";
+        "\"ToDate\":\"13-04-2018\",\"PricePerDay\":5}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
@@ -60,17 +58,17 @@ function testResourceDriveSg () {
 @test:Config
 function testResourceDreamCar () {
     // Initialize the empty http requests and responses
-    http:Request request;
+    http:Request req;
 
     // Set request payload
-    request.setJsonPayload(requestPayload);
+    req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/dreamCar", request);
+    http:Response response = check clientEP -> post("/dreamCar", request = req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Company\":\"DreamCar\",\"VehicleType\":\"Car\",\"FromDate\":\"12-03-2018\"," +
-                      "\"ToDate\":\"13-04-2018\",\"PricePerDay\":6}";
+        "\"ToDate\":\"13-04-2018\",\"PricePerDay\":6}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
@@ -79,17 +77,17 @@ function testResourceDreamCar () {
 @test:Config
 function testResourceSixt () {
     // Initialize the empty http requests and responses
-    http:Request request;
+    http:Request req;
 
     // Set request payload
-    request.setJsonPayload(requestPayload);
+    req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/sixt", request);
+    http:Response response = check clientEP -> post("/sixt", request = req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     string expected = "{\"Company\":\"Sixt\",\"VehicleType\":\"Car\",\"FromDate\":\"12-03-2018\"," +
-                      "\"ToDate\":\"13-04-2018\",\"PricePerDay\":7}";
+        "\"ToDate\":\"13-04-2018\",\"PricePerDay\":7}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }

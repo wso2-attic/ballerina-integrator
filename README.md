@@ -8,7 +8,7 @@ The following are the sections available in this guide.
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
-- [Developing the service](#developing-the-service)
+- [Implementation](#implementation)
 - [Testing](#testing)
 - [Deployment](#deployment)
 - [Observability](#observability)
@@ -30,51 +30,51 @@ Travel agency is the service that acts as the service orchestration initiator. T
 
 ## Prerequisites
  
-- JDK 1.8 or later
-- [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
+- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - A Text Editor or an IDE 
 
 ### Optional requirements
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
+- [Kubernetes](https://kubernetes.io/docs/setup/)
 
-## Developing the service
+## Implementation
 
-### Before you begin
-#### Understand the package structure
+> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping  "Implementation" section.
+
+### Create the project structure
+
 Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
 
 ```
 parallel-service-orchestration
-   └── src
-       ├── AirlineReservation
+   └── guide
+       ├── airline_reservation
        │   ├── airline_reservation_service.bal
-       │   └── test
+       │   └── tests
        │       └── airline_reservation_service_test.bal
-       ├── CarRental
+       ├── car_rental
        │   ├── car_rental_service.bal
-       │   └── test
+       │   └── tests
        │       └── car_rental_service_test.bal
-       ├── HotelReservation
+       ├── hotel_reservation
        │   ├── hotel_reservation_service.bal
-       │   └── test
+       │   └── tests
        │       └── hotel_reservation_service_test.bal
-       └── TravelAgency
-           ├── test
-           │   └── travel_agency_service_parallel_test.bal
-           └── travel_agency_service_parallel.bal
+       ├── travel_agency
+       │   └── travel_agency_service_parallel.bal
+       └── tests
+           └── travel_agency_service_parallel_test.bal
 ```
 
-Package `AirlineReservation` contains the service that provides airline ticket reservation functionality.
+- Create the above directories in your local machine and also create empty `.bal` files.
 
-Package `CarRental` contains the service that provides car rental functionality.
+- Then open the terminal and navigate to `parallel-service-orchestration/guide` and run Ballerina project initializing toolkit.
+```bash
+   $ ballerina init
+```
 
-Package `HotelReservation` contains the service that provides hotel room reservation functionality.
-
-The `travel_agency_service_parallel.bal` file consists of the travel agency service, which communicates with the other three services, and arranges a complete tour for the client.
-
-
-### Implementation
+### Developing the service
 
 Let's look at the implementation of the travel agency service, which acts as the service orchestration initiator.
 
@@ -82,38 +82,38 @@ To arrange a complete tour travel agency service requires communicating with thr
 
 Sample request payload for the airline reservation service:
 
-```bash
+```
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi"} 
 ```
 
 Sample response payload from the airline reservation service:
 
-```bash
+```
 {"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018", 
  "From":"Colombo", "To":"Changi", "Price":273}
 ```
 
 Sample request payload for the hotel reservation service:
 
-```bash
+```
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Location":"Changi"}
 ```
 
 Sample response payload from the hotel reservation service:
 
-```bash
+```
 {"HotelName":"Miramar", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "DistanceToLocation":6}
 ```
 
 Sample request payload for the car rental service:
 
-```bash
+```
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "VehicleType":"Car"}
 ```
 
 Sample response payload from the car rental service:
 
-```bash
+```
 {"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
  "PricePerDay":5}
 ```
@@ -434,7 +434,7 @@ To see the complete implementation of the above file, refer to the [travel_agenc
 - Start all four HTTP services by entering the following command in a separate terminal for each service. This command starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093, and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file is located.
 
 ```
-    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run <Package_Name
+    <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina run <Package_Name
 ```
    
 - Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
@@ -478,9 +478,9 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 This guide contains unit test cases for each service implemented above. 
 
 
-To run the unit tests, go to the sample src directory and run the following command
+To run the unit tests, go to the sample guide directory and run the following command
 ```
-   <SAMPLE_ROOT_DIRECTORY>/src$ ballerina test
+   <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina test
 ```
 
 To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/AirlineReservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/HotelReservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/CarRental/test/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/TravelAgency/test/travel_agency_service_parallel_test.bal).
@@ -496,12 +496,12 @@ You can deploy the services that you developed above in your local environment. 
 
 **Building** 
 ```
-    <SAMPLE_ROOT_DIRECTORY/src>$ ballerina build <Package_Name>
+    <SAMPLE_ROOT_DIRECTORY/guide>$ ballerina build <Package_Name>
 ```
 
 **Running**
 ```
-    <SAMPLE_ROOT_DIRECTORY>/src$ ballerina run target/<Exec_Archive_File_Name>
+    <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina run target/<Exec_Archive_File_Name>
 ```
 
 ### Deploying on Docker
@@ -533,7 +533,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
   
 ```
   $ballerina build TravelAgency
@@ -669,7 +669,7 @@ Access the service
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `parallel-service-orchestration/src/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `parallel-service-orchestration/guide/`.
 
 ```ballerina
 [observability]
@@ -692,7 +692,7 @@ Follow the following steps to use tracing with Ballerina.
    -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
 ```
 
-- Navigate to `parallel-service-orchestration/src/` and start all services using following command 
+- Navigate to `parallel-service-orchestration/guide/` and start all services using following command 
 ```
    $ballerina run <package_name>
 ```
@@ -745,7 +745,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/tmp/prometheus.yml prom/prometheus
 ```
 
-- Navigate to `parallel-service-orchestration/src/` and start all services using following command 
+- Navigate to `parallel-service-orchestration/guide/` and start all services using following command 
 ```
    $ballerina run <package_name>
 ```
@@ -769,12 +769,12 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
 ### Logging
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `{SAMPLE_ROOT_DIRECTORY}/src`
+- Start the Ballerina Service with the following command from `{SAMPLE_ROOT_DIRECTORY}/guide`
 ```
    nohup ballerina run TravelAgency/ &>> ballerina.log&
 ```
 
-   NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT_DIRECTORY}/src` directory
+   NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT_DIRECTORY}/guide` directory
 - Start Elasticsearch using the following command
 ```
    docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name  
@@ -846,7 +846,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
   iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name  
 ```
         docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
-        -v {SAMPLE_ROOT_DIRECTORY}/src/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
+        -v {SAMPLE_ROOT_DIRECTORY}/guide/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
 	    --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
 

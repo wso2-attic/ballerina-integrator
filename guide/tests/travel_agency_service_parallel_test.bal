@@ -36,40 +36,40 @@ function beforeFunc () {
 
 // Client endpoint
 endpoint http:Client clientEP {
-    targets:[{url:"http://localhost:9090/travel"}]
+    url:"http://localhost:9090/travel"
 };
 
 // Function to test the Travel agency service
 @test:Config
 function testTravelAgencyService () {
     // Initialize the empty http requests and responses
-    http:Request request;
+    http:Request req;
 
     // Request Payload
     json requestPayload = {
-                              "ArrivalDate":"12-03-2018",
-                              "DepartureDate":"13-04-2018",
-                              "From":"Colombo",
-                              "To":"Changi",
-                              "VehicleType":"Car",
-                              "Location":"Changi"
-                          };
+        "ArrivalDate":"12-03-2018",
+        "DepartureDate":"13-04-2018",
+        "From":"Colombo",
+        "To":"Changi",
+        "VehicleType":"Car",
+        "Location":"Changi"
+    };
 
     // Set request payload
-    request.setJsonPayload(requestPayload);
+    req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/arrangeTour", request);
+    http:Response response = check clientEP -> post("/arrangeTour", request = req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Travel agency service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     // Flight details
     string expectedFlight = "{\"Airline\":\"Emirates\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
-                            "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":273}";
+        "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":273}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.Flight.toString(), expectedFlight, msg = "Response mismatch!");
     // Hotel details
     string expectedHotel = "{\"HotelName\":\"Elizabeth\",\"FromDate\":\"12-03-2018\"," +
-                           "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":2}";
+        "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":2}";
     test:assertEquals(resPayload.Hotel.toString(), expectedHotel, msg = "Response mismatch!");
 }
 

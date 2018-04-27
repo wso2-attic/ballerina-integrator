@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package travel_agency;
-
 import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
@@ -39,9 +37,7 @@ import ballerina/http;
 //
 //@kubernetes:Deployment {
 //  image:"ballerina.guides.io/travel_agency_service:v1.0",
-//  name:"ballerina-guides-travel-agency-service",
-//  dockerHost:"tcp://192.168.99.100:2376",
-//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//  name:"ballerina-guides-travel-agency-service"
 //}
 
 // Service endpoint
@@ -51,17 +47,17 @@ endpoint http:Listener travelAgencyEP {
 
 // Client endpoint to communicate with Airline reservation service
 endpoint http:Client airlineReservationEP {
-    targets:[{url:"http://localhost:9091/airline"}]
+    url:"http://localhost:9091/airline"
 };
 
 // Client endpoint to communicate with Hotel reservation service
 endpoint http:Client hotelReservationEP {
-    targets:[{url:"http://localhost:9092/hotel"}]
+    url:"http://localhost:9092/hotel"
 };
 
 // Client endpoint to communicate with Car rental service
 endpoint http:Client carRentalEP {
-    targets:[{url:"http://localhost:9093/car"}]
+    url:"http://localhost:9093/car"
 };
 
 // Travel agency service to arrange a complete tour for a user
@@ -76,9 +72,9 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // Try parsing the JSON payload from the request
         match inRequest.getJsonPayload() {
-        // Valid JSON payload
+            // Valid JSON payload
             json payload => inReqPayload = payload;
-        // NOT a valid JSON payload
+            // NOT a valid JSON payload
             any => {
                 outResponse.statusCode = 400;
                 outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
@@ -126,33 +122,33 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         fork {
             // Worker to communicate with airline 'Qatar Airways'
             worker qatarWorker {
-                http:Request outRequest;
+                http:Request outReq;
                 // Out request payload
-                outRequest.setJsonPayload(flightPayload);
+                outReq.setJsonPayload(flightPayload);
                 // Send a POST request to 'Qatar Airways' and get the results
-                http:Response respWorkerQatar = check airlineReservationEP -> post("/qatarAirways", outRequest);
+                http:Response respWorkerQatar = check airlineReservationEP -> post("/qatarAirways", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Qatar Airways'
                 respWorkerQatar -> fork;
             }
 
             // Worker to communicate with airline 'Asiana'
             worker asianaWorker {
-                http:Request outRequest;
+                http:Request outReq;
                 // Out request payload
-                outRequest.setJsonPayload(flightPayload);
+                outReq.setJsonPayload(flightPayload);
                 // Send a POST request to 'Asiana' and get the results
-                http:Response respWorkerAsiana = check airlineReservationEP -> post("/asiana", outRequest);
+                http:Response respWorkerAsiana = check airlineReservationEP -> post("/asiana", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
                 respWorkerAsiana -> fork;
             }
 
             // Worker to communicate with airline 'Emirates'
             worker emiratesWorker {
-                http:Request outRequest;
+                http:Request outReq;
                 // Out request payload
-                outRequest.setJsonPayload(flightPayload);
+                outReq.setJsonPayload(flightPayload);
                 // Send a POST request to 'Emirates' and get the results
-                http:Response respWorkerEmirates = check airlineReservationEP -> post("/emirates", outRequest);
+                http:Response respWorkerEmirates = check airlineReservationEP -> post("/emirates", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Emirates'
                 respWorkerEmirates -> fork;
             }
@@ -213,33 +209,33 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         fork {
             // Worker to communicate with hotel 'Miramar'
             worker miramar {
-                http:Request outRequest;
+                http:Request outReq;
                 // Out request payload
-                outRequest.setJsonPayload(hotelPayload);
+                outReq.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Asiana' and get the results
-                http:Response respWorkerMiramar = check hotelReservationEP -> post("/miramar", outRequest);
+                http:Response respWorkerMiramar = check hotelReservationEP -> post("/miramar", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
                 respWorkerMiramar -> fork;
             }
 
             // Worker to communicate with hotel 'Aqueen'
             worker aqueen {
-                http:Request outRequest;
+                http:Request outReq;
                 // Out request payload
-                outRequest.setJsonPayload(hotelPayload);
+                outReq.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Aqueen' and get the results
-                http:Response respWorkerAqueen = check hotelReservationEP -> post("/aqueen", outRequest);
+                http:Response respWorkerAqueen = check hotelReservationEP -> post("/aqueen", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Aqueen'
                 respWorkerAqueen -> fork;
             }
 
             // Worker to communicate with hotel 'Elizabeth'
             worker elizabeth {
-                http:Request outRequest;
+                http:Request outReq;
                 // Out request payload
-                outRequest.setJsonPayload(hotelPayload);
+                outReq.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Elizabeth' and get the results
-                http:Response respWorkerElizabeth = check hotelReservationEP -> post("/elizabeth", outRequest);
+                http:Response respWorkerElizabeth = check hotelReservationEP -> post("/elizabeth", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Elizabeth'
                 respWorkerElizabeth -> fork;
             }
@@ -301,33 +297,33 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         fork {
             // Worker to communicate with Company 'DriveSg'
             worker driveSg {
-                http:Request outRequest;
+                http:Request outReq;
                 // Out request payload
-                outRequest.setJsonPayload(vehiclePayload);
+                outReq.setJsonPayload(vehiclePayload);
                 // Send a POST request to 'DriveSg' and get the results
-                http:Response respWorkerDriveSg = check carRentalEP -> post("/driveSg", outRequest);
+                http:Response respWorkerDriveSg = check carRentalEP -> post("/driveSg", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'DriveSg'
                 respWorkerDriveSg -> fork;
             }
 
             // Worker to communicate with Company 'DreamCar'
             worker dreamCar {
-                http:Request outRequest;
+                http:Request outReq;
                 // Out request payload
-                outRequest.setJsonPayload(vehiclePayload);
+                outReq.setJsonPayload(vehiclePayload);
                 // Send a POST request to 'DreamCar' and get the results
-                http:Response respWorkerDreamCar = check carRentalEP -> post("/dreamCar", outRequest);
+                http:Response respWorkerDreamCar = check carRentalEP -> post("/dreamCar", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'DreamCar'
                 respWorkerDreamCar -> fork;
             }
 
             // Worker to communicate with Company 'Sixt'
             worker sixt {
-                http:Request outRequest;
+                http:Request outReq;
                 // Out request payload
-                outRequest.setJsonPayload(vehiclePayload);
+                outReq.setJsonPayload(vehiclePayload);
                 // Send a POST request to 'Sixt' and get the results
-                http:Response respWorkerSixt = check carRentalEP -> post("/sixt", outRequest);
+                http:Response respWorkerSixt = check carRentalEP -> post("/sixt", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Sixt'
                 respWorkerSixt -> fork;
             }
@@ -335,14 +331,14 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             // Get the first responding worker
 
             // Get the response from company 'DriveSg' if not null
-            if (vehicleResponses.keys()[0] == "driveSg") {
+            if (vehicleResponses["driveSg"] != null) {
                 var responseDriveSg = check <http:Response>(vehicleResponses["driveSg"]);
                 jsonVehicleResponse = check responseDriveSg.getJsonPayload();
-            } else if (vehicleResponses.keys()[0] == "dreamCar") {
+            } else if (vehicleResponses["dreamCar"] != null) {
                 // Get the response from company 'DreamCar' if not null
                 var responseDreamCar = check <http:Response>(vehicleResponses["dreamCar"]);
                 jsonVehicleResponse = check responseDreamCar.getJsonPayload();
-            } else if (vehicleResponses.keys()[0] == "sixt") {
+            } else if (vehicleResponses["sixt"] != null) {
                 // Get the response from company 'Sixt' if not null
                 var responseSixt = check <http:Response>(vehicleResponses["sixt"]);
                 jsonVehicleResponse = check responseSixt.getJsonPayload();
@@ -351,10 +347,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // Construct the client response
         json clientResponse = {
-                                  "Flight":jsonFlightResponse,
-                                  "Hotel":jsonHotelResponse,
-                                  "Vehicle":jsonVehicleResponse
-                              };
+            "Flight":jsonFlightResponse,
+            "Hotel":jsonHotelResponse,
+            "Vehicle":jsonVehicleResponse
+        };
 
         // Response payload
         outResponse.setJsonPayload(clientResponse);

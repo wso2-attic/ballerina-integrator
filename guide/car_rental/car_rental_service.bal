@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package car_rental;
-
 import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
@@ -39,9 +37,7 @@ import ballerina/http;
 //
 //@kubernetes:Deployment {
 //  image:"ballerina.guides.io/car_rental_service:v1.0",
-//  name:"ballerina-guides-car-rental-service",
-//  dockerHost:"tcp://192.168.99.100:2376",
-//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//  name:"ballerina-guides-car-rental-service"
 //}
 
 // Service endpoint
@@ -148,7 +144,8 @@ service<http:Service> carRentalService bind carEP {
     }
 
     // Resource 'sixt', which checks about hotel 'Sixt'
-    @http:ResourceConfig {methods:["POST"], path:"/sixt", consumes:["application/json"], produces:["application/json"]}
+    @http:ResourceConfig {methods:["POST"], path:"/sixt", consumes:["application/json"],
+        produces:["application/json"]}
     sixt(endpoint caller, http:Request request) {
         http:Response response;
         json reqPayload;
