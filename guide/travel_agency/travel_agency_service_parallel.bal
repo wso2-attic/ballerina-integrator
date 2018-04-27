@@ -23,6 +23,8 @@ import ballerina/http;
 //    name:"travel_agency_service",
 //    tag:"v1.0"
 //}
+//
+//@docker:Expose{}
 
 //@kubernetes:Ingress {
 //  hostname:"ballerina.guides.io",
