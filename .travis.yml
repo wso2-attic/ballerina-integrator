@@ -41,4 +41,7 @@ script:
 - ballerina init
 
 # Run tests
-- ballerina test
+- ballerina test airline_reservation
+- ballerina test hotel_reservation
+- ballerina test car_rental
+
