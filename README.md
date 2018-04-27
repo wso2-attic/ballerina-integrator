@@ -118,11 +118,11 @@ Sample response payload from the car rental service:
  "PricePerDay":5}
 ```
 
-When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to arrange an airline. The airline reservation service allows the client to check about three different airlines by providing a separate resource for each airline. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/AirlineReservation/airline_reservation_service.bal) file.
+When a client initiates a request to arrange a tour, the travel agency service first needs to communicate with the airline reservation service to arrange an airline. The airline reservation service allows the client to check about three different airlines by providing a separate resource for each airline. To check the implementation of airline reservation service, see the [airline_reservation_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/AirlineReservation/airline_reservation_service.bal) file.
 
-Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. The hotel reservation service allows the client to check about three different hotels by providing a separate resource for each hotel. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/HotelReservation/hotel_reservation_service.bal) file.
+Once the airline ticket reservation is successful, the travel agency service needs to communicate with the hotel reservation service to reserve hotel rooms. The hotel reservation service allows the client to check about three different hotels by providing a separate resource for each hotel. To check the implementation of hotel reservation service, see the [hotel_reservation_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/HotelReservation/hotel_reservation_service.bal) file.
 
-Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. The car rental service also provides three different resources for three car rental providing companies. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/CarRental/car_rental_service.bal) file.
+Finally, the travel agency service needs to connect with the car rental service to arrange internal transports. The car rental service also provides three different resources for three car rental providing companies. To check the implementation of car rental service, see the [car_rental_service.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/CarRental/car_rental_service.bal) file.
 
 When communicating with an external service, the travel agency service sends separate requests for all the available resources in parallel.
 
@@ -424,7 +424,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
 In the above code, `airlineReservationEP` is the client endpoint defined through which the Ballerina service communicates with the external airline reservation service. The client endpoint defined to communicate with the external hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
 
-To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/TravelAgency/travel_agency_service_parallel.bal) file.
+To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/TravelAgency/travel_agency_service_parallel.bal) file.
 
 
 ## Testing 
@@ -483,7 +483,7 @@ To run the unit tests, go to the sample guide directory and run the following co
    <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina test
 ```
 
-To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/AirlineReservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/HotelReservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/CarRental/test/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/src/TravelAgency/test/travel_agency_service_parallel_test.bal).
+To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/AirlineReservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/HotelReservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/CarRental/test/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/TravelAgency/test/travel_agency_service_parallel_test.bal).
 
 
 ## Deployment
