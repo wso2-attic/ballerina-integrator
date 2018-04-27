@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pranavan15/service-composition.svg?branch=master)](https://travis-ci.org/pranavan15/service-composition)
+[![Build Status](https://travis-ci.org/ballerina-guides/service-composition.svg?branch=master)](https://travis-ci.org/ballerina-guides/service-composition)
 
 # Service Composition
 
