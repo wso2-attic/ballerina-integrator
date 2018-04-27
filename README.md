@@ -403,7 +403,7 @@ import ballerinax/kubernetes;
 }
 
 @kubernetes:Deployment {
-    image:"ballerina.guides.io/restful_service:v1.0",
+    image:"ballerina.guides.io/asynchronous-invocation:v1.0",
     name:"ballerina-guides-asynchronous-invocation"
 }
 
@@ -520,7 +520,7 @@ Follow the following steps to use tracing with Ballerina.
    -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `asynchronous-invocation/guide` and run the restful-service using following command 
+- Navigate to `asynchronous-invocation/guide` and run the asynchronous-invocation using following command 
 ```
    $ ballerina run stock_quote_summary_service/
 ```
@@ -589,7 +589,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 ```
    $ nohup ballerina run stock_quote_summary_service/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `restful-service/guide` directory
+   NOTE: This will write the console log to the `ballerina.log` file in the `asynchronous-invocation/guide` directory
 
 - Start Elasticsearch using the following command
 
@@ -664,7 +664,7 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory
      
 ```
 $ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
--v {SAMPLE_ROOT}/guide.restful_service/restful_service/ballerina.log:/usr/share\
+-v {SAMPLE_ROOT}/guide/stock_quote_summary_service/ballerina.log:/usr/share\
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
