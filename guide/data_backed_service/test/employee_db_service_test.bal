@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package data_backed_service;
-
 import ballerina/http;
 import ballerina/test;
 
@@ -23,11 +21,7 @@ int TEST_EMPLOYEE_ID = 879796979;
 
 // Create an endpoint with employee db service
 endpoint http:Client httpEndpoint {
-    targets:[
-        {
-            url:"http://localhost:9090/records"
-        }
-    ]
+    url: "http://localhost:9090/records"
 };
 
 // Before suite function
@@ -44,7 +38,7 @@ function afterFunc() {
     test:stopServices("data_backed_service");
 }
 @test:Config {
-    dependsOn:["testAddEmployeeResource"]
+    dependsOn: ["testAddEmployeeResource"]
 }
 function testRetrieveByIdResource() {
     // Initialize the empty http request and response
@@ -55,12 +49,15 @@ function testRetrieveByIdResource() {
     // Prepare request with query parameter
     string url = "/employee/" + TEST_EMPLOYEE_ID;
     // Send the request to service and get the response
-    resp = check httpEndpoint -> get(url, req);
+    resp = check httpEndpoint->get(url, request = req);
     // Test the responses from the service with the original test data
-    test:assertEquals(resp.statusCode, 200, msg = "Retreive employee resource did not reespond with 200 OK signal");
+    test:assertEquals(resp.statusCode, 200, msg =
+        "Retreive employee resource did not reespond with 200 OK signal");
     var receivedPayload2 = check resp.getJsonPayload();
-    expectedJson = [{"EmployeeID":879796979, "Name":"Alice", "Age":30, "SSN":123456789}];
-    test:assertEquals(receivedPayload2[0], expectedJson[0], msg = "Name did not store in the database");
+    expectedJson = [{ "EmployeeID": 879796979, "Name": "Alice", "Age": 30, "SSN":
+    123456789 }];
+    test:assertEquals(receivedPayload2[0], expectedJson[0], msg =
+        "Name did not store in the database");
 }
 
 @test:Config
@@ -73,20 +70,23 @@ function testAddEmployeeResource() {
 
     // Testing add new employee resource
     // Prepare sample employee and set the json payload
-    json requestJson = {"name":"Alice", "age":30, "ssn":123456789, "employeeId":TEST_EMPLOYEE_ID};
+    json requestJson = { "name": "Alice", "age": 30, "ssn": 123456789, "employeeId":
+    TEST_EMPLOYEE_ID };
     req.setJsonPayload(requestJson);
     // Send the request to service and get the response
-    resp = check httpEndpoint -> post("/employee", req);
+    resp = check httpEndpoint->post("/employee", request = req);
     // Test the response status code is correct
-    test:assertEquals(resp.statusCode, 200, msg = "Add new employee resource did not reespond with 200 OK signal");
+    test:assertEquals(resp.statusCode, 200, msg =
+        "Add new employee resource did not reespond with 200 OK signal");
     // Test the responses from the service with the original test data
     var receivedPayload1 = check resp.getJsonPayload();
-    expectedJson = {"Status":"Data Inserted Successfully"};
-    test:assertEquals(receivedPayload1, expectedJson, msg = "Name did not store in the database");
+    expectedJson = { "Status": "Data Inserted Successfully" };
+    test:assertEquals(receivedPayload1, expectedJson, msg =
+        "Name did not store in the database");
 }
 
 @test:Config {
-    dependsOn:["testAddEmployeeResource"]
+    dependsOn: ["testAddEmployeeResource"]
 }
 function testUpdateEmployeeResource() {
     // Initialize the empty http request and response
@@ -96,20 +96,23 @@ function testUpdateEmployeeResource() {
 
     // Testing update employee resource
     // Prepare sample employee and set the json payload
-    json requestJson = {"name":"'Alice_Updated'", "age":35, "ssn":123456789, "employeeId":TEST_EMPLOYEE_ID};
+    json requestJson = { "name": "'Alice_Updated'", "age": 35, "ssn": 123456789,
+        "employeeId": TEST_EMPLOYEE_ID };
     req.setJsonPayload(requestJson);
     // Send the request to service and get the response
-    resp = check httpEndpoint -> put("/employee/", req);
+    resp = check httpEndpoint->put("/employee/", request = req);
     // Test the responses from the service with the updated test data
-    test:assertEquals(resp.statusCode, 200, msg = "Add new employee resource did not reespond with 200 OK signal");
+    test:assertEquals(resp.statusCode, 200, msg =
+        "Add new employee resource did not reespond with 200 OK signal");
 
     var receivedPayload3 = check resp.getJsonPayload();
-    expectedJson = {"Status":"Data Updated Successfully"};
-    test:assertEquals(receivedPayload3, expectedJson, msg = "Name did not updated in the database");
+    expectedJson = { "Status": "Data Updated Successfully" };
+    test:assertEquals(receivedPayload3, expectedJson, msg =
+        "Name did not updated in the database");
 }
 
 @test:Config {
-    dependsOn:["testUpdateEmployeeResource", "testRetrieveByIdResource"]
+    dependsOn: ["testUpdateEmployeeResource", "testRetrieveByIdResource"]
 }
 function testDeleteEmployeeResource() {
     // Initialize the empty http request and response
@@ -120,12 +123,14 @@ function testDeleteEmployeeResource() {
     // Testing delete employee resource
     // Send the request to service and get the response
     string url = "/employee/" + TEST_EMPLOYEE_ID;
-    resp = check httpEndpoint -> delete(url, req);
+    resp = check httpEndpoint->delete(url, request = req);
     // Test whether the delete operation succeed
-    test:assertEquals(resp.statusCode, 200, msg = "Delete employee resource did not reespond with 200 OK signal");
+    test:assertEquals(resp.statusCode, 200, msg =
+        "Delete employee resource did not reespond with 200 OK signal");
 
     var receivedPayload3 = check resp.getJsonPayload();
-    expectedJson = {"Status":"Data Deleted Successfully"};
-    test:assertEquals(receivedPayload3, expectedJson, msg = "Delete data resource failed");
+    expectedJson = { "Status": "Data Deleted Successfully" };
+    test:assertEquals(receivedPayload3, expectedJson, msg = "Delete data resource failed")
+    ;
 
 }
