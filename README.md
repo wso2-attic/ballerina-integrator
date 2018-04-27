@@ -320,7 +320,7 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying locally
 
-- As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above. Navigate to `restful-service/guide` and run the following command. 
+- As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above. Navigate to `restful-service/guide` and run the following command. 
 ```
    $ ballerina build restful_service
 ```
