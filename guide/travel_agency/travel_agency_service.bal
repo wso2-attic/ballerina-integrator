@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package travel_agency;
-
 import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
@@ -51,17 +49,17 @@ endpoint http:Listener travelAgencyEP {
 
 // Client endpoint to communicate with Airline reservation service
 endpoint http:Client airlineReservationEP {
-    targets:[{url:"http://localhost:9091/airline"}]
+    url:"http://localhost:9091/airline"
 };
 
 // Client endpoint to communicate with Hotel reservation service
 endpoint http:Client hotelReservationEP {
-    targets:[{url:"http://localhost:9092/hotel"}]
+    url:"http://localhost:9092/hotel"
 };
 
 // Client endpoint to communicate with Car rental service
 endpoint http:Client carRentalEP {
-    targets:[{url:"http://localhost:9093/car"}]
+    url:"http://localhost:9093/car"
 };
 
 // Travel agency service to arrange a complete tour for a user
@@ -115,11 +113,11 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqAirline.setJsonPayload(outReqPayloadAirline);
 
         // Send a post request to airlineReservationService with appropriate payload and get response
-        inResAirline = check airlineReservationEP -> post("/reserve", outReqAirline);
+        inResAirline = check airlineReservationEP -> post("/reserve", request = outReqAirline);
 
         // Get the reservation status
         var airlineResPayload = check inResAirline.getJsonPayload();
-        string airlineStatus = airlineResPayload.Status.toString() but { () => "Failed" };
+        string airlineStatus = airlineResPayload.Status.toString();
         // If reservation status is negative, send a failure response to user
         if (airlineStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
@@ -138,11 +136,11 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqHotel.setJsonPayload(outReqPayloadHotel);
 
         // Send a post request to hotelReservationService with appropriate payload and get response
-        inResHotel = check hotelReservationEP -> post("/reserve", outReqHotel);
+        inResHotel = check hotelReservationEP -> post("/reserve", request = outReqHotel);
 
         // Get the reservation status
         var hotelResPayload = check inResHotel.getJsonPayload();
-        string hotelStatus = hotelResPayload.Status.toString() but { () => "Failed" };
+        string hotelStatus = hotelResPayload.Status.toString();
         // If reservation status is negative, send a failure response to user
         if (hotelStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
@@ -161,11 +159,11 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqCar.setJsonPayload(outReqPayloadCar);
 
         // Send a post request to carRentalService with appropriate payload and get response
-        inResCar = check carRentalEP -> post("/rent", outReqCar);
+        inResCar = check carRentalEP -> post("/rent", request = outReqCar);
 
         // Get the rental status
         var carResPayload = check inResCar.getJsonPayload();
-        string carRentalStatus = carResPayload.Status.toString() but { () => "Failed" };
+        string carRentalStatus = carResPayload.Status.toString();
         // If rental status is negative, send a failure response to user
         if (carRentalStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to rent car! " +
