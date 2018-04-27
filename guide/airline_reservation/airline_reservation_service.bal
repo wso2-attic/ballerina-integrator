@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package AirlineReservation;
-
 import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
@@ -39,13 +37,11 @@ import ballerina/http;
 //
 //@kubernetes:Deployment {
 //  image:"ballerina.guides.io/airline_reservation_service:v1.0",
-//  name:"ballerina-guides-airline-reservation-service",
-//  dockerHost:"tcp://192.168.99.100:2376",
-//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//  name:"ballerina-guides-airline-reservation-service"
 //}
 
 // Service endpoint
-endpoint http:ServiceEndpoint airlineEP {
+endpoint http:Listener airlineEP {
     port:9091
 };
 
@@ -56,8 +52,8 @@ service<http:Service> airlineReservationService bind airlineEP {
     // Resource 'flightConcord', which checks about airline 'Qatar Airways'
     @http:ResourceConfig {methods:["POST"], path:"/qatarAirways", consumes:["application/json"],
         produces:["application/json"]}
-    flightConcord (endpoint client, http:Request request) {
-        http:Response response = {};
+    flightConcord (endpoint caller, http:Request request) {
+        http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
@@ -65,11 +61,11 @@ service<http:Service> airlineReservationService bind airlineEP {
             // Valid JSON payload
             json payload => reqPayload = payload;
             // NOT a valid JSON payload
-            any | null => {
+            any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                //return;
+                _ = caller -> respond(response);
+                done;
             }
         }
 
@@ -82,43 +78,43 @@ service<http:Service> airlineReservationService bind airlineEP {
         if (arrivalDate == null || departureDate == null || fromPlace == null || toPlace == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            //return;
+            _ = caller -> respond(response);
+            done;
         }
 
         // Mock logic
         // Details of the airline
         json flightDetails = {
-                                 "Airline":"Qatar Airways",
-                                 "ArrivalDate":arrivalDate,
-                                 "ReturnDate":departureDate,
-                                 "From":fromPlace,
-                                 "To":toPlace,
-                                 "Price":278
-                             };
+            "Airline":"Qatar Airways",
+            "ArrivalDate":arrivalDate,
+            "ReturnDate":departureDate,
+            "From":fromPlace,
+            "To":toPlace,
+            "Price":278
+        };
         // Response payload
         response.setJsonPayload(flightDetails);
-        // Send the response to the client
-        _ = client -> respond(response);
+        // Send the response to the caller
+        _ = caller -> respond(response);
     }
 
     // Resource 'flightAsiana', which checks about airline 'Asiana'
     @http:ResourceConfig {methods:["POST"], path:"/asiana", consumes:["application/json"],
         produces:["application/json"]}
-    flightAsiana (endpoint client, http:Request request) {
-        http:Response response = {};
+    flightAsiana (endpoint caller, http:Request request) {
+        http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
         match request.getJsonPayload() {
-        // Valid JSON payload
+            // Valid JSON payload
             json payload => reqPayload = payload;
-        // NOT a valid JSON payload
-            any | null => {
+            // NOT a valid JSON payload
+            any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                //return;
+                _ = caller -> respond(response);
+                done;
             }
         }
 
@@ -131,43 +127,43 @@ service<http:Service> airlineReservationService bind airlineEP {
         if (arrivalDate == null || arrivalDate == null || fromPlace == null || toPlace == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            //return;
+            _ = caller -> respond(response);
+            done;
         }
 
         // Mock logic
         // Details of the airline
         json flightDetails = {
-                                 "Airline":"Asiana",
-                                 "ArrivalDate":arrivalDate,
-                                 "ReturnDate":departureDate,
-                                 "From":fromPlace,
-                                 "To":toPlace,
-                                 "Price":275
-                             };
+            "Airline":"Asiana",
+            "ArrivalDate":arrivalDate,
+            "ReturnDate":departureDate,
+            "From":fromPlace,
+            "To":toPlace,
+            "Price":275
+        };
         // Response payload
         response.setJsonPayload(flightDetails);
-        // Send the response to the client
-        _ = client -> respond(response);
+        // Send the response to the caller
+        _ = caller -> respond(response);
     }
 
     // Resource 'flightEmirates', which checks about airline 'Emirates'
     @http:ResourceConfig {methods:["POST"], path:"/emirates", consumes:["application/json"],
         produces:["application/json"]}
-    flightEmirates (endpoint client, http:Request request) {
-        http:Response response = {};
+    flightEmirates (endpoint caller, http:Request request) {
+        http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
         match request.getJsonPayload() {
-        // Valid JSON payload
+            // Valid JSON payload
             json payload => reqPayload = payload;
-        // NOT a valid JSON payload
-            any | null => {
+            // NOT a valid JSON payload
+            any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                //return;
+                _ = caller -> respond(response);
+                done;
             }
         }
 
@@ -180,23 +176,23 @@ service<http:Service> airlineReservationService bind airlineEP {
         if (arrivalDate == null || departureDate == null || fromPlace == null || toPlace == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            //return;
+            _ = caller -> respond(response);
+            done;
         }
 
         // Mock logic
         // Details of the airline
         json flightDetails = {
-                                 "Airline":"Emirates",
-                                 "ArrivalDate":arrivalDate,
-                                 "ReturnDate":departureDate,
-                                 "From":fromPlace,
-                                 "To":toPlace,
-                                 "Price":273
-                             };
+            "Airline":"Emirates",
+            "ArrivalDate":arrivalDate,
+            "ReturnDate":departureDate,
+            "From":fromPlace,
+            "To":toPlace,
+            "Price":273
+        };
         // Response payload
         response.setJsonPayload(flightDetails);
-        // Send the response to the client
-        _ = client -> respond(response);
+        // Send the response to the caller
+        _ = caller -> respond(response);
     }
 }

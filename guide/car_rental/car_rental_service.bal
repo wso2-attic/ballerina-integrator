@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package CarRental;
-
 import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
@@ -39,13 +37,11 @@ import ballerina/http;
 //
 //@kubernetes:Deployment {
 //  image:"ballerina.guides.io/car_rental_service:v1.0",
-//  name:"ballerina-guides-car-rental-service",
-//  dockerHost:"tcp://192.168.99.100:2376",
-//  dockerCertPath:"/home/pranavan/.minikube/certs"
+//  name:"ballerina-guides-car-rental-service"
 //}
 
 // Service endpoint
-endpoint http:ServiceEndpoint carEP {
+endpoint http:Listener carEP {
     port:9093
 };
 
@@ -55,21 +51,21 @@ service<http:Service> carRentalService bind carEP {
 
     // Resource 'driveSg', which checks about hotel 'DriveSg'
     @http:ResourceConfig {methods:["POST"], path:"/driveSg", consumes:["application/json"],
-                          produces:["application/json"]}
-    driveSg (endpoint client, http:Request request) {
-        http:Response response = {};
+        produces:["application/json"]}
+    driveSg(endpoint caller, http:Request request) {
+        http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
         match request.getJsonPayload() {
-        // Valid JSON payload
+            // Valid JSON payload
             json payload => reqPayload = payload;
-        // NOT a valid JSON payload
-            any | null => {
+            // NOT a valid JSON payload
+            any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                //return;
+                _ = caller -> respond(response);
+                done;
             }
         }
 
@@ -81,42 +77,42 @@ service<http:Service> carRentalService bind carEP {
         if (arrivalDate == null || departureDate == null || vehicleType == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            //return;
+            _ = caller -> respond(response);
+            done;
         }
 
         // Mock logic
         // Details of the vehicle
         json vehicleDetails = {
-                                  "Company":"DriveSG",
-                                  "VehicleType":vehicleType,
-                                  "FromDate":arrivalDate,
-                                  "ToDate":departureDate,
-                                  "PricePerDay":5
-                              };
+            "Company":"DriveSG",
+            "VehicleType":vehicleType,
+            "FromDate":arrivalDate,
+            "ToDate":departureDate,
+            "PricePerDay":5
+        };
         // Response payload
         response.setJsonPayload(vehicleDetails);
-        // Send the response to the client
-        _ = client -> respond(response);
+        // Send the response to the caller
+        _ = caller -> respond(response);
     }
 
     // Resource 'dreamCar', which checks about hotel 'DreamCar'
     @http:ResourceConfig {methods:["POST"], path:"/dreamCar", consumes:["application/json"],
-                          produces:["application/json"]}
-    dreamCar (endpoint client, http:Request request) {
-        http:Response response = {};
+        produces:["application/json"]}
+    dreamCar(endpoint caller, http:Request request) {
+        http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
         match request.getJsonPayload() {
-        // Valid JSON payload
+            // Valid JSON payload
             json payload => reqPayload = payload;
-        // NOT a valid JSON payload
-            any | null => {
+            // NOT a valid JSON payload
+            any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                //return;
+                _ = caller -> respond(response);
+                done;
             }
         }
 
@@ -128,41 +124,42 @@ service<http:Service> carRentalService bind carEP {
         if (arrivalDate == null || departureDate == null || vehicleType == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            //return;
+            _ = caller -> respond(response);
+            done;
         }
 
         // Mock logic
         // Details of the vehicle
         json vehicleDetails = {
-                                  "Company":"DreamCar",
-                                  "VehicleType":vehicleType,
-                                  "FromDate":arrivalDate,
-                                  "ToDate":departureDate,
-                                  "PricePerDay":6
-                              };
+            "Company":"DreamCar",
+            "VehicleType":vehicleType,
+            "FromDate":arrivalDate,
+            "ToDate":departureDate,
+            "PricePerDay":6
+        };
         // Response payload
         response.setJsonPayload(vehicleDetails);
-        // Send the response to the client
-        _ = client -> respond(response);
+        // Send the response to the caller
+        _ = caller -> respond(response);
     }
 
     // Resource 'sixt', which checks about hotel 'Sixt'
-    @http:ResourceConfig {methods:["POST"], path:"/sixt", consumes:["application/json"], produces:["application/json"]}
-    sixt (endpoint client, http:Request request) {
-        http:Response response = {};
+    @http:ResourceConfig {methods:["POST"], path:"/sixt", consumes:["application/json"],
+        produces:["application/json"]}
+    sixt(endpoint caller, http:Request request) {
+        http:Response response;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
         match request.getJsonPayload() {
-        // Valid JSON payload
+            // Valid JSON payload
             json payload => reqPayload = payload;
-        // NOT a valid JSON payload
-            any | null => {
+            // NOT a valid JSON payload
+            any => {
                 response.statusCode = 400;
                 response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                //return;
+                _ = caller -> respond(response);
+                done;
             }
         }
 
@@ -174,22 +171,22 @@ service<http:Service> carRentalService bind carEP {
         if (arrivalDate == null || departureDate == null || vehicleType == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            //return;
+            _ = caller -> respond(response);
+            done;
         }
 
         // Mock logic
         // Details of the vehicle
         json vehicleDetails = {
-                                  "Company":"Sixt",
-                                  "VehicleType":vehicleType,
-                                  "FromDate":arrivalDate,
-                                  "ToDate":departureDate,
-                                  "PricePerDay":7
-                              };
+            "Company":"Sixt",
+            "VehicleType":vehicleType,
+            "FromDate":arrivalDate,
+            "ToDate":departureDate,
+            "PricePerDay":7
+        };
         // Response payload
         response.setJsonPayload(vehicleDetails);
-        // Send the response to the client
-        _ = client -> respond(response);
+        // Send the response to the caller
+        _ = caller -> respond(response);
     }
 }
