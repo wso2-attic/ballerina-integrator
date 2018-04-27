@@ -255,7 +255,7 @@ $ ballerina run restful_service
 You can test the functionality of the OrderMgt RESTFul service by sending HTTP request for each order management operation. For example, we have used the curl commands to test each operation of order_mgt_service as follows. 
 
 **Create Order** 
-```
+```bash
 curl -v -X POST -d \
 '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
 "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"
@@ -271,7 +271,7 @@ Output :
 ```
 
 **Retrieve Order** 
-```
+```bash
 curl "http://localhost:9090/ordermgt/order/100500" 
 
 Output : 
@@ -279,7 +279,7 @@ Output :
 ```
 
 **Update Order** 
-```
+```bash
 curl -X PUT -d '{ "Order": {"Name": "XYZ", "Description": "Updated order."}}' \
 "http://localhost:9090/ordermgt/order/100500" -H "Content-Type:application/json"
 
@@ -288,7 +288,7 @@ Output:
 ```
 
 **Cancel Order** 
-```
+```bash
 curl -X DELETE "http://localhost:9090/ordermgt/order/100500"
 
 Output:
@@ -308,7 +308,7 @@ This guide contains unit test cases for each method available in the 'order_mgt_
 
 To run the unit tests, open your terminal and navigate to `restful-service/guide`, and run the following command.
 ```bash
-$ ballerina test
+   $ ballerina test
 ```
 
 To check the implementation of the test file, refer to the [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/tests/order_mgt_service_test.bal).
@@ -321,12 +321,12 @@ Once you are done with the development, you can deploy the service using any of 
 ### Deploying locally
 
 - As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above. Navigate to `restful-service/guide` and run the following command. 
-```
+```bash
    $ ballerina build restful_service
 ```
 
 - Once the restful_service.balx is created inside the target folder, you can run that with the following command. 
-```
+```bash
    $ ballerina run target/restful_service.balx
 ```
 
@@ -371,7 +371,7 @@ service<http:Service> orderMgt bind listener {
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `restful-service/guide` and run the following command.  
-```
+```bash
    $ ballerina build restful_service
 
    Run following command to start docker container: 
@@ -379,7 +379,7 @@ This will also create the corresponding docker image using the docker annotation
 ```
 
 - Once you successfully build the docker image, you can run it with the `docker run` command that is shown in the previous step.  
-```   
+```bash   
    $ docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
 ```
 
@@ -387,7 +387,7 @@ This will also create the corresponding docker image using the docker annotation
 
 - Verify docker container is running with the use of `$ docker ps`. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
-```
+```bash
    curl -v -X POST -d \
    '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
    "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
@@ -443,7 +443,7 @@ service<http:Service> orderMgt bind listener {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-```
+```bash
    $ ballerina build restful_service
   
    Run following command to deploy kubernetes artifacts:  
@@ -454,7 +454,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 - Also the Kubernetes artifacts related our service, will be generated in `./target/restful_service/kubernetes`. 
 - Now you can create the Kubernetes deployment using:
 
-```
+```bash
    $ kubectl apply -f ./target/restful_service/kubernetes 
  
    deployment.extensions "ballerina-guides-restful-service" created
@@ -464,7 +464,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands.
 
-```
+```bash
    $ kubectl get service
    $ kubectl get deploy
    $ kubectl get pods
@@ -475,7 +475,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 
 Node Port:
  
-```
+```bash
    curl -v -X POST -d \
    '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
    "http://localhost:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"  
@@ -489,7 +489,7 @@ Add `/etc/hosts` entry to match hostname.
 ```
 
 Access the service 
-``` 
+```bash 
 curl -v -X POST -d \
 '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
 "http://ballerina.guides.io/ordermgt/order" -H "Content-Type:application/json" 
