@@ -42,7 +42,8 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 ### Create the project structure
 
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
+
 ```
 restful-service
  └── guide
@@ -124,7 +125,7 @@ service<http:Service> orderMgt bind listener {
 }
 ```
 
-- You can implement the business logic of each resources as per your requirements. For simplicity we have used an in-memory map to keep all the order details. You can find the full source code of the order_mgt_service below. In addition to the order processing logic, we have also manipulated some HTTP status codes and headers whenever required.  
+- You can implement the business logic of each resource as per your requirements. For simplicity, we have used an in-memory map to keep all the order details. You can find the full source code of the order_mgt_service below. In addition to the order processing logic, we have also manipulated some HTTP status codes and headers whenever required.  
 
 
 ##### order_mgt_service.bal
