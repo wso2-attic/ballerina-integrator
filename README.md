@@ -46,7 +46,7 @@ Travel agency is the service that acts as the service orchestration initiator. T
 
 ### Create the project structure
 
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
 
 ```
 parallel-service-orchestration
@@ -467,24 +467,24 @@ To see the complete implementation of the above file, refer to the [travel_agenc
    "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
 ```
 
-  Travel agency service will send a response similar to the following:
+- Travel agency service will send a response similar to the following:
     
 ```bash
-    HTTP/1.1 200 OK
+   HTTP/1.1 200 OK
     
-    {
-      "Flight":
-      {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018",
-      "From":"Colombo","To":"Changi","Price":273},
-      
-      "Hotel":
-      {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018",
-      "DistanceToLocation":2},
-      
-      "Vehicle":
-      {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018",
-      "ToDate":"13-04-2018","PricePerDay":5}
-    }
+   {
+     "Flight":
+     {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018",
+     "From":"Colombo","To":"Changi","Price":273},
+     
+     "Hotel":
+     {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018",
+     "DistanceToLocation":2},
+     
+     "Vehicle":
+     {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018",
+     "ToDate":"13-04-2018","PricePerDay":5}
+   }
 ``` 
    
    
@@ -559,8 +559,7 @@ endpoint http:Listener travelAgencyEP {
 service<http:Service> travelAgencyService bind travelAgencyEP {
 ``` 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. NNavigate to `parallel-service-orchestration/guide` and run the following command.  
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. NNavigate to `parallel-service-orchestration/guide` and run the following command.  
   
 ```
    $ballerina build travel_agency
@@ -571,7 +570,7 @@ This will also create the corresponding docker image using the docker annotation
 
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-```   bash
+```bash
    $ docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
 
@@ -580,11 +579,11 @@ This will also create the corresponding docker image using the docker annotation
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-```
-    curl -v -X POST -d \
-    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
-    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
-    "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
+```bash
+   curl -v -X POST -d \
+   '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+   "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+   "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
 ```
 
 
@@ -633,8 +632,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ ballerina build travel_agency
@@ -667,12 +665,11 @@ This will also create the corresponding docker image and the Kubernetes artifact
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
 
 Node Port:
-```
-  curl -v -X POST -d \
-  '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", 
-  "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
-  "http://localhost:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
-
+```bash
+   curl -v -X POST -d \
+   '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", 
+   "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+   "http://localhost:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
 ```
 
 Ingress:
@@ -683,12 +680,11 @@ Add `/etc/hosts` entry to match hostname.
 ```
 
 Access the service 
-``` 
- curl -v -X POST -d \
- '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
- "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
- "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
-    
+```bash 
+   curl -v -X POST -d \
+   '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+   "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+   "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json"  
 ```
 
 
