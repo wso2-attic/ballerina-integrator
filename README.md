@@ -676,7 +676,7 @@ Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
 ``` 
-127.0.0.1 ballerina.guides.io
+   127.0.0.1 ballerina.guides.io
 ```
 
 Access the service 
