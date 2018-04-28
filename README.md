@@ -37,7 +37,7 @@ Travel agency is the service that acts as the composition initiator. The other t
 
 ### Create the project structure
 
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
 
 ```
 service-composition
