@@ -484,14 +484,14 @@ Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
 ``` 
-127.0.0.1 ballerina.guides.io
+   127.0.0.1 ballerina.guides.io
 ```
 
 Access the service 
 ```bash 
-curl -v -X POST -d \
-'{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-"http://ballerina.guides.io/ordermgt/order" -H "Content-Type:application/json" 
+   curl -v -X POST -d \
+   '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+   "http://ballerina.guides.io/ordermgt/order" -H "Content-Type:application/json" 
 ```
 
 ## Observability 
