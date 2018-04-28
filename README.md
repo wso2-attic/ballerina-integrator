@@ -455,7 +455,7 @@ Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
 ``` 
-  127.0.0.1 ballerina.guides.io
+   127.0.0.1 ballerina.guides.io
 ```
 
 Access the service 
@@ -463,7 +463,7 @@ Access the service
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
-  "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
+   "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
 ```
 
 ## Observability 
