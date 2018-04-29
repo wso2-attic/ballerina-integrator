@@ -292,7 +292,7 @@ Once you are done with the development, you can deploy the services using any of
 
 ### Deploying locally
 
-- As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `service-composition/guide` and run the following command in separate terminals for each package. 
+- As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `service-composition/guide` and run the following command. 
 ```bash
    $ ballerina build <Package_Name>
 ```
