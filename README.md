@@ -305,7 +305,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
    function testResourceAddOrder() {
 ```
   
-This guide contains unit test cases for each method available in the 'order_mgt_service' implemented above. 
+This guide contains unit test cases for each resource available in the 'order_mgt_service' implemented above. 
 
 To run the unit tests, open your terminal and navigate to `restful-service/guide`, and run the following command.
 ```bash
