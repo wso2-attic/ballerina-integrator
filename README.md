@@ -441,7 +441,7 @@ To see the complete implementation of the above file, refer to the [travel_agenc
 
 ## Testing 
 
-### Try it out
+### Invoking the service
 
 - Navigate to `parallel-service-orchestration/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
@@ -485,8 +485,7 @@ To see the complete implementation of the above file, refer to the [travel_agenc
      {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018",
      "ToDate":"13-04-2018","PricePerDay":5}
    }
-``` 
-   
+```    
    
 ### Writing unit tests 
 
