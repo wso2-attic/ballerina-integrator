@@ -349,7 +349,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-```   bash
+```bash
    $ docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
 
