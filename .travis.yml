@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-before_install:
-- sudo apt-get install gnome-terminal
-
 script:
 # Declare STRING variables
 - STRING="Downloading Ballerina..."
@@ -52,10 +49,10 @@ script:
 - tar xvzf $KAFKA_VERSION.tgz
 
 # Start ZooKeeper
-- gnome-terminal -e "./kafka_2.11-1.1.0/bin/zookeeper-server-start.sh ./kafka_2.11-1.1.0/config/zookeeper.properties"
+- ./$KAFKA_VERSION/bin/zookeeper-server-start.sh -daemon ./$KAFKA_VERSION/config/zookeeper.properties
 
 # Start Kafka
-- gnome-terminal -e "./kafka_2.11-1.1.0/bin/kafka-server-start.sh ./kafka_2.11-1.1.0/config/server.properties"
+- ./$KAFKA_VERSION/bin/kafka-server-start.sh -daemon ./$KAFKA_VERSION/config/server.properties
 
 # Create a new topic named "product-price"
 - $KAFKA_VERSION/bin/kafka-topics.sh --create --topic product-price --zookeeper localhost:2181 --replication-factor 1 --partitions 2
