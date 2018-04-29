@@ -517,7 +517,7 @@ Once you are done with the development, you can deploy the services using any of
    $ ballerina build <Package_Name>
 ```
 
-- Once the .balx files are created inside the target folder, you can run them with the following command. 
+- Once the .balx files are created inside the target folder, you can run them using the following command. 
 ```bash
    $ ballerina run target/<Exec_Archive_File_Name>
 ```
