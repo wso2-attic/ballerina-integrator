@@ -235,7 +235,7 @@ As shown above, the travel agency service rents a car for the requested user by 
 
 ## Testing 
 
-### Try it out
+### Invoking the service
 
 - Navigate to `service-composition/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
@@ -267,8 +267,7 @@ As shown above, the travel agency service rents a car for the requested user by 
    < HTTP/1.1 200 OK
    {"Message":"Congratulations! Your journey is ready!!"}
 ``` 
-   
-   
+      
 ### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
