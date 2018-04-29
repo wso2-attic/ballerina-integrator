@@ -31,40 +31,48 @@ endpoint kafka:SimpleProducer kafkaProducer {
 };
 
 // HTTP service endpoint
-endpoint http:Listener serviceEP {
+endpoint http:Listener listener {
     port:9090
 };
 
 @http:ServiceConfig {
-    endpoints:[serviceEP],
+    endpoints:[listener],
     basePath:"/product"
 }
-service<http:Service> productAdminService bind serviceEP {
+service<http:Service> productAdminService bind listener {
 
-    @http:ResourceConfig {
-        methods:["POST"],
-        path:"/updatePrice",
-        consumes:["application/json"],
-        produces:["application/json"]
-    }
-    updatePrice (endpoint connection, http:Request request) {
-        http:Response response = new;
+    @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
+        produces:["application/json"]}
+    updatePrice (endpoint client, http:Request request) {
+        http:Response response;
+        json reqPayload;
+        float newPriceAmount;
 
-        // Try getting the JSON payload from the incoming request
-        json payload = check request.getJsonPayload();
-        json username = payload.Username;
-        json password = payload.Password;
-        json productName = payload.Product;
-        json newPrice = payload.Price;
+        // Try parsing the JSON payload from the request
+        match request.getJsonPayload() {
+            // Valid JSON payload
+            json payload => reqPayload = payload;
+            // NOT a valid JSON payload
+            any => {
+                response.statusCode = 400;
+                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+                _ = client -> respond(response);
+                done;
+            }
+        }
+
+        json username = reqPayload.Username;
+        json password = reqPayload.Password;
+        json productName = reqPayload.Product;
+        json newPrice = reqPayload.Price;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (username == null || password == null || productName == null || newPrice == null) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request: Invalid payload"});
-            _ = connection->respond(response);
+            _ = client->respond(response);
+            done;
         }
-
-        float newPriceAmount;
 
         // Convert the price value to float
         var result = <float>newPrice.toString();
@@ -72,19 +80,21 @@ service<http:Service> productAdminService bind serviceEP {
             float value => {
                 newPriceAmount = value;
             }
-
             error err => {
                 response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid amount specified for field 'Price'"});
-                connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
+                response.setJsonPayload({"Message":"Invalid amount specified"});
+                _ = client->respond(response);
+                done;
             }
         }
 
-        // If the credentials does not match with the admin credentials, send an "Access Forbidden" response message
+        // If the credentials does not match with the admin credentials,
+        // send an "Access Forbidden" response message
         if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
             response.statusCode = 403;
             response.setJsonPayload({"Message":"Access Forbidden"});
-            connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
+            _ = client->respond(response);
+            done;
         }
 
         // Construct and serialize the message to be published to the Kafka topic
@@ -95,6 +105,6 @@ service<http:Service> productAdminService bind serviceEP {
         kafkaProducer->send(serializedMsg, "product-price", partition = 0);
         // Send a success status to the admin request
         response.setJsonPayload({"Status":"Success"});
-        connection->respond(response) but { error e => log:printError("Error in responding ", err = e) };
+        _ = client->respond(response);
     }
 }

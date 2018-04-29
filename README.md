@@ -42,7 +42,7 @@ Ballerina is a complete programming language that can have any custom project st
 
 ```
 messaging-with-kafka
-├── ProductMgtSystem
+├── guide
 │   ├── Publisher
 │   │   ├── product_admin_portal.bal
 │   │   └── product_admin_portal_test.bal
@@ -70,9 +70,9 @@ $ballerina init -i
 
 Create Ballerina.toml [yes/y, no/n]: (n)  
 Ballerina source [service/s, main/m]: (s)
-Package for the service : (no package) ProductMgtSystem.Publisher
+Package for the service : (no package) guide.product_admin_portal
 Ballerina source [service/s, main/m, finish/f]: (f) s
-Package for the service : (no package) ProductMgtSystem.Subscribers
+Package for the service : (no package) guide.Subscribers
 Ballerina source [service/s, main/m, finish/f]: (f)
 
 Ballerina project initialized
@@ -301,11 +301,11 @@ To see the complete implementation of the above, see the [product_admin_portal.b
 - Run the `productAdminService`, which is an HTTP service that publishes messages to the Kafka topic, and the Kafka services in the `Subscribers` package, which are subscribed to listen to the Kafka topic by entering the following commands in sperate terminals.
 
 ```bash
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina run ProductMgtSystem/Publisher/
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina run guide/Publisher/
 ```
 
 ```bash
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina run ProductMgtSystem/Subscribers/<Subscriber_Package_Name>/
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina run guide/Subscribers/<Subscriber_Package_Name>/
 ```
    
 - Invoke the `productAdminService` by sending a POST request to update the price of a product with Admin credentials.
@@ -343,7 +343,7 @@ This guide contains unit test cases for each method available in the 'order_mgt_
 
 To run the unit tests, navigate to the sample root directory and run the following command.
 ```bash
-   $ballerina test ProductMgtSystem/Publisher/
+   $ballerina test guide/Publisher/
 ```
 
 To check the implementation of this test file, see the [product_admin_portal_test.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/ProductMgtSystem/Publisher/product_admin_portal_test.bal) file.
@@ -357,9 +357,9 @@ You can deploy the services that you developed above in your local environment. 
 
 Building 
 ```bash
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina build ProductMgtSystem/Publisher/
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina build guide/Publisher/
 
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina build ProductMgtSystem/Subscribers/<Subscriber_Package_Name>/
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina build guide/Subscribers/<Subscriber_Package_Name>/
 ```
 
 Running

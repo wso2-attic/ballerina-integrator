@@ -29,7 +29,8 @@ endpoint kafka:SimpleConsumer consumer {
 };
 
 // Kafka service that listens from the topic 'product-price'
-// 'inventoryControlService' subscribed to new product price updates from the product admin and updates the Database
+// 'inventoryControlService' subscribed to new product price updates from
+// the product admin and updates the Database.
 service<kafka:Consumer> kafkaService bind consumer {
     // Triggered whenever a message added to the subscribed topic
     onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
