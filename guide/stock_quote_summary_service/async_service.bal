@@ -35,7 +35,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         // remote invocation returns without waiting for response.
 
         // Calling the backend to get the stock quote for GOOG asynchronously
-        future <http:Response|http:HttpConnectorError> f1 = start nasdaqServiceEP
+        future <http:Response|error> f1 = start nasdaqServiceEP
         -> get("/nasdaq/quote/GOOG", request = req);
 
         io:println(" >> Invocation completed for GOOG stock quote! Proceed without
@@ -43,7 +43,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         req = new;
 
         // Calling the backend to get the stock quote for APPL asynchronously
-        future <http:Response|http:HttpConnectorError> f2 = start nasdaqServiceEP
+        future <http:Response|error> f2 = start nasdaqServiceEP
         -> get("/nasdaq/quote/APPL", request = req);
 
         io:println(" >> Invocation completed for APPL stock quote! Proceed without
@@ -51,7 +51,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         req = new;
 
         // Calling the backend to get the stock quote for MSFT asynchronously
-        future <http:Response|http:HttpConnectorError> f3 = start nasdaqServiceEP
+        future <http:Response|error> f3 = start nasdaqServiceEP
         -> get("/nasdaq/quote/MSFT", request = req);
 
         io:println(" >> Invocation completed for MSFT stock quote! Proceed without
@@ -64,38 +64,40 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         match response1 {
             http:Response resp => {
 
-                responseStr = check resp.getStringPayload();
+                responseStr = check resp.getTextPayload();
                 // Add the response from /GOOG endpoint to responseJson file
                 responseJson["GOOG"] = responseStr;
             }
-            http:HttpConnectorError err => {
+            error err => {
                 io:println(err.message);
-                responseStr = err.message;
+                responseJson["GOOG"] = err.message;
             }
         }
 
         var response2 = await f2;
         match response2 {
             http:Response resp => {
-                responseStr = check resp.getStringPayload();
+                responseStr = check resp.getTextPayload();
                 // Add the response from /APPL endpoint to responseJson file
                 responseJson["APPL"] = responseStr;
             }
-            http:HttpConnectorError err => {
+            error err => {
                 io:println(err.message);
+                responseJson["APPL"] = err.message;
             }
         }
 
         var response3 = await f3;
         match response3 {
             http:Response resp => {
-                responseStr = check resp.getStringPayload();
+                responseStr = check resp.getTextPayload();
                 // Add the response from /MSFT endpoint to responseJson file
                 responseJson["MSFT"] = responseStr;
 
             }
-            http:HttpConnectorError err => {
+            error err => {
                 io:println(err.message);
+                responseJson["MSFT"] = err.message;
             }
         }
 

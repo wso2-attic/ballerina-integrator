@@ -22,10 +22,10 @@ function testGoogResource() {
     var response = httpEndpoint -> get("/GOOG", request = req);
     match response {
         http:Response resp => {
-            var res = check resp.getStringPayload();
+            var res = check resp.getTextPayload();
             test:assertEquals(res, response1);
         }
-        http:HttpConnectorError err => test:assertFail(msg = "Failed to call the endpoint:");
+        error err => test:assertFail(msg = "Failed to call the endpoint:");
     }
 }
 
@@ -42,10 +42,10 @@ function testApplResource() {
     var response = httpEndpoint -> get("/APPL", request = req);
     match response {
         http:Response resp => {
-            var res = check resp.getStringPayload();
+            var res = check resp.getTextPayload();
             test:assertEquals(res, response2);
         }
-        http:HttpConnectorError err => test:assertFail(msg = "Failed to call the endpoint:");
+        error err => test:assertFail(msg = "Failed to call the endpoint:");
     }
 }
 
@@ -62,10 +62,10 @@ function testMsftResource() {
     var response = httpEndpoint -> get("/MSFT", request = req);
     match response {
         http:Response resp => {
-            var res = check resp.getStringPayload();
+            var res = check resp.getTextPayload();
             test:assertEquals(res, response2);
         }
-        http:HttpConnectorError err => test:assertFail(msg = "Failed to call the endpoint:");
+        error err => test:assertFail(msg = "Failed to call the endpoint:");
     }
 }
 

@@ -18,7 +18,7 @@ service<http:Service> StockDataService bind listener {
     googleStockQuote(endpoint caller, http:Request request) {
         http:Response response = new;
         string googQuote = "GOOG, Alphabet Inc., 1013.41";
-        response.setStringPayload(googQuote);
+        response.setTextPayload(googQuote);
         _ = caller -> respond(response);
     }
 
@@ -29,7 +29,7 @@ service<http:Service> StockDataService bind listener {
     appleStockQuote(endpoint caller, http:Request request) {
         http:Response response = new;
         string applQuote = "APPL, Apple Inc., 165.22";
-        response.setStringPayload(applQuote);
+        response.setTextPayload(applQuote);
         _ = caller -> respond(response);
     }
 
@@ -40,7 +40,7 @@ service<http:Service> StockDataService bind listener {
     msftStockQuote(endpoint caller, http:Request request) {
         http:Response response = new;
         string msftQuote = "MSFT, Microsoft Corporation, 95.35";
-        response.setStringPayload(msftQuote);
+        response.setTextPayload(msftQuote);
         _ = caller -> respond(response);
     }
 }
