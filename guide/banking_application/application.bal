@@ -14,11 +14,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package BankingApplication;
-
 import ballerina/log;
 
-function main (string[] args) {
+function main (string... args) {
     log:printInfo("----------------------------------------------------------------------------------");
     // Create two new accounts
     log:printInfo("Create two new accounts for users 'Alice' and 'Bob'");

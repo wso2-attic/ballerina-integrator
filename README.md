@@ -1,4 +1,4 @@
-# Transactions
+# Database Transactions
 
 In this guide, you will learn about managing database transactions using Ballerina.
 
@@ -49,7 +49,7 @@ Ballerina is a complete programming language that can have any custom project st
 managing-database-transactions
   ├── resources
   │   └── DatabaseInitializer.sql
-  └── src
+  └── guide
       └── BankingApplication
           ├── account_manager.bal
           ├── application.bal
@@ -224,7 +224,7 @@ To see the complete implementation of the above, refer [application.bal](https:/
 Run this sample by entering the following command in a terminal,
 
 ```
-<SAMPLE_ROOT_DIRECTORY>/src$ ballerina run BankingApplication/
+<SAMPLE_ROOT_DIRECTORY>/guide$ ballerina run BankingApplication/
 ```
 
 #### Response you'll get
@@ -297,10 +297,10 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 
 This guide contains unit test cases for each method implemented in `account_manager.bal` file.
 
-To run the unit tests, go to the sample src directory and run the following command,
+To run the unit tests, go to the sample guide directory and run the following command,
 
 ```
-$ <SAMPLE_ROOT_DIRECTORY>/src$ ballerina test
+$ <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina test
 ```
 
 To check the implementations of this test file, refer [database_utilities_test.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/src/BankingApplication/test/account_manager_test.bal).
