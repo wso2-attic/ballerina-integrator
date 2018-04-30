@@ -80,11 +80,7 @@ asynchronous-invocation
 ```bash
    $ ballerina init
 ```
-  
-### Implement the Stock Quote Summary service with asyncronous invocations
 
-- Once you initialize your Ballerina project, you can change the names of the files to match the project file names in this guide.
-  
 ### Implement the Stock Quote Summary service with asyncronous invocations
 
 
@@ -289,18 +285,6 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
   
 This guide contains unit test cases for every all the packages inside the `asynchronous-invocation/guide` directory. 
 
-To run all the tests, open your terminal and navigate to `asynchronous-invocation/guide`, and run the following command.
-
-In Ballerina, the unit test cases should be in the same package inside a directory named  `test`. The naming convention should be as follows:
-
-* Test functions should contain the test prefix.
-  * e.g., testResourceAddOrder()
-
-To run the unit tests, run the following command.
-
-```bash
-$ ballerina test
-```
 
 To check the implementation of the test file, refer tests folder in the [git repository](https://github.com/ballerina-guides/asynchronous-invocation).
 
