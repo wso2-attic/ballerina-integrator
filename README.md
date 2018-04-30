@@ -37,7 +37,7 @@ Travel agency is the service that acts as the composition initiator. The other t
 
 ### Create the project structure
 
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
 
 ```
 service-composition
@@ -74,14 +74,14 @@ Let's look at the implementation of the travel agency service, which acts as the
 Arranging a complete tour travel agency service requires communicating with three other services: airline reservation, hotel reservation, and car rental. All these services accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. Request and response payloads are similar for all three backend services.
 
 Sample request payload:
-```
+```bash
 {"Name":"Bob", "ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", 
  "Preference":<service_dependent_preference>};
 ```
 
 Sample response payload:
 
-```
+```bash
 {"Status":"Success"}
 ```
 
@@ -235,26 +235,26 @@ As shown above, the travel agency service rents a car for the requested user by 
 
 ## Testing 
 
-### Try it out
+### Invoking the service
 
 - Navigate to `service-composition/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
-```
+```bash
    $ ballerina run airline_reservation/
 ```
-```
+```bash
    $ ballerina run hotel_reservation/
 ```
-```
+```bash
    $ ballerina run car_rental/
 ```
-```
+```bash
    $ ballerina run travel_agency/
 ```
    
 - Invoke the travel agency service by sending a POST request to arrange a tour.
 
-```
+```bash
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
@@ -263,12 +263,11 @@ As shown above, the travel agency service rents a car for the requested user by 
 
   Travel agency service will send a response similar to the following:
     
-```
+```bash
    < HTTP/1.1 200 OK
    {"Message":"Congratulations! Your journey is ready!!"}
 ``` 
-   
-   
+      
 ### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
@@ -281,7 +280,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 This guide contains unit test cases for each service implemented above. 
 
 To run the tests, open your terminal and navigate to `service-composition/guide`, and run the following command.
-```
+```bash
    $ ballerina test
 ```
 
@@ -293,13 +292,13 @@ Once you are done with the development, you can deploy the services using any of
 
 ### Deploying locally
 
-- As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `service-composition/guide` and run the following command in separate terminals for each package. 
-```
+- As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `service-composition/guide` and run the following command. 
+```bash
    $ ballerina build <Package_Name>
 ```
 
-- Once the .balx files are created inside the target folder, you can run them with the following command. 
-```
+- Once the .balx files are created inside the target folder, you can run them using the following command. 
+```bash
    $ ballerina run target/<Exec_Archive_File_Name>
 ```
 
@@ -339,8 +338,7 @@ endpoint http:Listener travelAgencyEP {
 service<http:Service> travelAgencyService bind travelAgencyEP {
 ``` 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. NNavigate to `service-composition/guide` and run the following command.  
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `service-composition/guide` and run the following command.  
   
 ```
    $ballerina build travel_agency
@@ -351,8 +349,8 @@ This will also create the corresponding docker image using the docker annotation
 
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-```   
-   docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
+```bash
+   $ docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
 
    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
@@ -360,7 +358,7 @@ This will also create the corresponding docker image using the docker annotation
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-```
+```bash
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
@@ -412,8 +410,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ ballerina build travel_agency
@@ -426,7 +423,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 - Also the Kubernetes artifacts related our service, will be generated under `` ./target/travel_agency/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
-```
+```bash
    $ kubectl apply -f ./target/travel_agency/kubernetes 
  
    deployment.extensions "ballerina-guides-travel-agency-service" created
@@ -436,7 +433,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 
-```
+```bash
    $ kubectl get service
    $ kubectl get deploy
    $ kubectl get pods
@@ -446,7 +443,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
 
 Node Port:
-```
+```bash
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
@@ -457,15 +454,15 @@ Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
 ``` 
-  127.0.0.1 ballerina.guides.io
+   127.0.0.1 ballerina.guides.io
 ```
 
 Access the service 
-``` 
+```bash
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
-  "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
+   "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
 ```
 
 ## Observability 
@@ -511,8 +508,8 @@ Follow the following steps to use tracing with Ballerina.
 
 - Run Jaeger docker image using the following command
 ```bash
-   $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 \
-   -p14268:14268 jaegertracing/all-in-one:latest
+   $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
+   -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
 
 - Navigate to `service-composition/guide` and run the `travel_agency_service` using following command 
