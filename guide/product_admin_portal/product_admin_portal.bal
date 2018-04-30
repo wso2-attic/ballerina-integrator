@@ -16,13 +16,12 @@
 
 import ballerina/http;
 import wso2/kafka;
-import ballerina/log;
 
 // Constants to store admin credentials
 @final string ADMIN_USERNAME = "Admin";
 @final string ADMIN_PASSWORD = "Admin";
 
-// Kafka ProducerClient endpoint
+// Kafka producer endpoint
 endpoint kafka:SimpleProducer kafkaProducer {
     bootstrapServers: "localhost:9092",
     clientID:"basic-producer",
@@ -35,10 +34,7 @@ endpoint http:Listener listener {
     port:9090
 };
 
-@http:ServiceConfig {
-    endpoints:[listener],
-    basePath:"/product"
-}
+@http:ServiceConfig {basePath:"/product"}
 service<http:Service> productAdminService bind listener {
 
     @http:ResourceConfig {methods:["POST"], consumes:["application/json"],

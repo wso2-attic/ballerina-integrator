@@ -44,7 +44,7 @@ service<kafka:Consumer> kafkaService bind consumer {
             log:printInfo("Topic: " + record.topic + "; Received Message: " + msg);
             // Mock logic
             // Update the database with the new price for the specified product
-            log:printInfo("Database updated with the new price for the specified product");
+            log:printInfo("Database updated with the new price of the product");
         }
     }
 }
