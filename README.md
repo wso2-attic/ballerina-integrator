@@ -708,8 +708,8 @@ You can monitor ballerina services using in built tracing capabilities of Baller
 Follow the following steps to use tracing with Ballerina.
 - Run Jaeger docker image using the following command
 ```bash
-   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp \
-   -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
+   $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
+   -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
 
 - Navigate to `parallel-service-orchestration/guide/` and start all services using following command 
