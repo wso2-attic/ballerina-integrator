@@ -458,7 +458,7 @@ Add `/etc/hosts` entry to match hostname.
 ```
 
 Access the service 
-``` bash
+```bash
    curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2018",
    "DepartureDate":"13-04-2018", "Preference":{"Airline":"Business", 
    "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
