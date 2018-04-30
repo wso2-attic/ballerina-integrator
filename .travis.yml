@@ -12,16 +12,68 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-before_install:
-- sudo chmod +x install-dependencies.sh
-
-install: ./install-dependencies.sh
-  
 script:
-- export PATH=$PATH:$(pwd)/ballerina-tools-0.970.0-alpha1/bin
-- cd src/
-- ballerina init
-- ballerina test
+# Declare STRING variables
+- STRING="Downloading Ballerina..."
+- STRING1="Downloading Kafka..."
+- STRING2="Downloading Ballerina-Kafka connector jars..."
 
-jdk:
- - oraclejdk8
+# Declare variable for Ballerina version
+- BALLERINA_VERSION="ballerina-platform-0.970.0"
+
+# Declare variable for Kafka version
+- KAFKA_VERSION="kafka_2.11-1.1.0"
+
+# Print STRING variable
+- echo $STRING
+
+# Download Ballerina dist
+- wget https://product-dist.ballerina.io/downloads/0.970.0/$BALLERINA_VERSION.zip
+
+# Unzip the .zip file
+- unzip $BALLERINA_VERSION.zip
+
+# Add Ballerina to the path variable
+- export PATH=$PATH:$(pwd)/$BALLERINA_VERSION/bin
+
+# Print Ballerina version
+- ballerina version
+
+# Print STRING1 variable
+- echo $STRING1
+
+# Download Kafka
+- wget http://www-us.apache.org/dist/kafka/1.1.0/$KAFKA_VERSION.tgz
+
+# Untar the .tgz file
+- tar xvzf $KAFKA_VERSION.tgz
+
+# Start ZooKeeper
+- ./$KAFKA_VERSION/bin/zookeeper-server-start.sh -daemon ./$KAFKA_VERSION/config/zookeeper.properties
+
+# Start Kafka
+- ./$KAFKA_VERSION/bin/kafka-server-start.sh -daemon ./$KAFKA_VERSION/config/server.properties
+
+# Print STRING2 variable
+- echo $STRING2
+
+# Download required Ballerina-Kafka connector jars
+- wget https://transfer.sh/lCM40/kafka-connector-jars.zip
+
+# Move the zip file into Ballerina lib folder
+- mv kafka-connector-jars.zip $BALLERINA_VERSION/bre/lib
+
+# Unzip the .zip file
+- unzip $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip -d $BALLERINA_VERSION/bre/lib
+
+# Delete the .zip file
+- rm $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip
+
+# Change the directory
+- cd guide/
+
+# Initialize the Ballerina project
+- ballerina init
+
+# Run tests
+- ballerina test
