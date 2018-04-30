@@ -23,6 +23,8 @@ import ballerina/http;
 //    name:"car_rental_service",
 //    tag:"v1.0"
 //}
+//
+//@docker:Expose{}
 
 //@kubernetes:Ingress {
 //  hostname:"ballerina.guides.io",

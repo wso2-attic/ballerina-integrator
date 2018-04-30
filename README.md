@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ballerina-guides/parallel-service-orchestration.svg?branch=master)](https://travis-ci.org/ballerina-guides/parallel-service-orchestration)
+
 # Parallel Service Orchestration
 
 Parallel service orchestration is the process of integrating two or more services together to automate a particular task or business process where the service orchestrator consumes the resources available in services in a parallel manner. 
@@ -44,7 +46,7 @@ Travel agency is the service that acts as the service orchestration initiator. T
 
 ### Create the project structure
 
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
 
 ```
 parallel-service-orchestration
@@ -82,38 +84,38 @@ To arrange a complete tour travel agency service requires communicating with thr
 
 Sample request payload for the airline reservation service:
 
-```
+```bash
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", "To":"Changi"} 
 ```
 
 Sample response payload from the airline reservation service:
 
-```
+```bash
 {"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018", 
  "From":"Colombo", "To":"Changi", "Price":273}
 ```
 
 Sample request payload for the hotel reservation service:
 
-```
+```bash
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "Location":"Changi"}
 ```
 
 Sample response payload from the hotel reservation service:
 
-```
+```bash
 {"HotelName":"Miramar", "FromDate":"12-03-2018", "ToDate":"13-04-2018", "DistanceToLocation":6}
 ```
 
 Sample request payload for the car rental service:
 
-```
+```bash
 {"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "VehicleType":"Car"}
 ```
 
 Sample response payload from the car rental service:
 
-```
+```bash
 {"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
  "PricePerDay":5}
 ```
@@ -432,68 +434,76 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 }
 ```
 
-In the above code, `airlineReservationEP` is the client endpoint defined through which the Ballerina service communicates with the external airline reservation service. The client endpoint defined to communicate with the external hotel reservation service is `hotelReservationEP`. Similarly, `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
+In the above code, `airlineEP` is the client endpoint defined through which the Ballerina service communicates with the external airline reservation service. The client endpoint defined to communicate with the external hotel reservation service is `hotelEP`. Similarly, `carRentalEP` is the client endpoint defined to communicate with the external car rental service.
 
-To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/TravelAgency/travel_agency_service_parallel.bal) file.
+To see the complete implementation of the above file, refer to the [travel_agency_service_parallel.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/travel_agency/travel_agency_service_parallel.bal) file.
 
 
 ## Testing 
 
-### Try it out
+### Invoking the service
 
-- Start all four HTTP services by entering the following command in a separate terminal for each service. This command starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093, and 9090 respectively.  Here `<Package_Name>` is the corresponding package name in which each service file is located.
+- Navigate to `parallel-service-orchestration/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
 
+```bash 
+   $ ballerina run airline_reservation/
 ```
-    <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina run <Package_Name
+```bash
+   $ ballerina run hotel_reservation/
+```
+```bash
+   $ ballerina run car_rental/
+```
+```bash
+   $ ballerina run travel_agency/
 ```
    
-- Invoke the `travelAgencyService` by sending a POST request to arrange a tour.
+- Invoke the travel agency service by sending a POST request to arrange a tour.
 
 ```bash
-    curl -v -X POST -d \
-    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
-    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
-    "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
+   curl -v -X POST -d \
+   '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+   "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+   "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
 ```
 
-   The `travelAgencyService` sends a response similar to the following:
+- Travel agency service will send a response similar to the following:
     
 ```bash
-    HTTP/1.1 200 OK
+   HTTP/1.1 200 OK
     
-    {
-      "Flight":
-      {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018","From":"Colombo",
-      "To":"Changi","Price":273},
-      
-      "Hotel":
-      {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018","DistanceToLocation":2},
-      
-      "Vehicle":
-      {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018","ToDate":"13-04-2018",
-       "PricePerDay":5}
-    }
-``` 
-   
+   {
+     "Flight":
+     {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018",
+     "From":"Colombo","To":"Changi","Price":273},
+     
+     "Hotel":
+     {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018",
+     "DistanceToLocation":2},
+     
+     "Vehicle":
+     {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018",
+     "ToDate":"13-04-2018","PricePerDay":5}
+   }
+```    
    
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
-* Test functions should be annotated with `@test:Config`. See the below example.
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+- Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
-    @test:Config
-    function testTravelAgencyService () {
+   @test:Config
+   function testTravelAgencyService () {
 ```
   
 This guide contains unit test cases for each service implemented above. 
 
-
-To run the unit tests, go to the sample guide directory and run the following command
+To run the tests, open your terminal and navigate to `parallel-service-orchestration/guide`, and run the following command.
+```bash
+   $ ballerina test
 ```
-   <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina test
-```
 
-To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/airline_reservation/test/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/hotel_reservation/test/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/car_rental/test/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/TravelAgency/test/travel_agency_service_parallel_test.bal).
+To check the implementations of these test files, refer to the [airline_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/airline_reservation/tests/airline_reservation_service_test.bal), [hotel_reservation_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/hotel_reservation/tests/hotel_reservation_service_test.bal), [car_rental_service_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/car_rental/tests/car_rental_service_test.bal), and [travel_agency_service_parallel_test.bal](https://github.com/ballerina-guides/parallel-service-orchestration/blob/master/guide/tests/travel_agency_service_parallel_test.bal).
 
 
 ## Deployment
@@ -502,29 +512,32 @@ Once you are done with the development, you can deploy the services using any of
 
 ### Deploying locally
 
-You can deploy the services that you developed above in your local environment. You can create the Ballerina executable archives (.balx) first and then run them in your local environment as follows.
-
-**Building** 
-```
-    <SAMPLE_ROOT_DIRECTORY/guide>$ ballerina build <Package_Name>
+- As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `parallel-service-orchestration/guide` and run the following command. 
+```bash
+   $ ballerina build <Package_Name>
 ```
 
-**Running**
+- Once the .balx files are created inside the target folder, you can run them using the following command. 
+```bash
+   $ ballerina run target/<Exec_Archive_File_Name>
 ```
-    <SAMPLE_ROOT_DIRECTORY>/guide$ ballerina run target/<Exec_Archive_File_Name>
+
+- The successful execution of a service will show us something similar to the following output. 
+```
+   ballerina: initiating service(s) in 'target/travel_agency.balx'
+   ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ### Deploying on Docker
 
-You can run the services that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
-Let's see how we can deploy the travel_agency_service_parallel we developed above on docker. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
+You can run the service that we developed above as a docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
 
-- In our travel_agency_service_parallel, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
+Let's see how we can deploy the travel_agency_service we developed above on docker. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
+
+- In our travel_agency_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
 
 ##### travel_agency_service_parallel.bal
 ```ballerina
-package TravelAgency;
-
 import ballerina/http;
 import ballerinax/docker;
 
@@ -534,56 +547,56 @@ import ballerinax/docker;
     tag:"v1.0"
 }
 
-endpoint http:ServiceEndpoint travelAgencyEP {
+@docker:Expose{}
+endpoint http:Listener travelAgencyEP {
     port:9090
 };
+
+// http:Client endpoint definitions to communicate with other services
 
 @http:ServiceConfig {basePath:"/travel"}
 service<http:Service> travelAgencyService bind travelAgencyEP {
 ``` 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `parallel-service-orchestration/guide` and run the following command.  
   
 ```
-  $ballerina build TravelAgency
+   $ ballerina build travel_agency
   
-  Run following command to start docker container: 
-  docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
+   Run following command to start docker container: 
+   docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
+
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-```   
-    docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
+```bash
+   $ docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
-   
+
    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-```
-    curl -v -X POST -d \
-    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
-    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
-    "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
+```bash
+   curl -v -X POST -d \
+   '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+   "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+   "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
 ```
 
 
 ### Deploying on Kubernetes
 
-- You can run the services that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
-with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
-So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
-Let's see how we can deploy the travel_agency_service_parallel we developed above on kubernetes. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-- We need to import `` import ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
+- Let's now see how we can deploy our `travel_agency_service` on Kubernetes. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
+
+- First we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
 ##### travel_agency_service_parallel.bal
 
 ```ballerina
-package TravelAgency;
-
 import ballerina/http;
 import ballerinax/kubernetes;
 
@@ -603,77 +616,74 @@ import ballerinax/kubernetes;
   name:"ballerina-guides-travel-agency-service"
 }
 
-endpoint http:ServiceEndpoint travelAgencyEP {
+// Service endpoint
+endpoint http:Listener travelAgencyEP {
     port:9090
 };
 
-// Http client endpoint definitions
+// http:Client endpoint definitions to communicate with other services
 
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP {       
+service<http:Service> travelAgencyService bind travelAgencyEP {     
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
-- We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
+- We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
-  $ballerina build TravelAgency
+   $ ballerina build travel_agency
   
-  Run following command to deploy kubernetes artifacts:  
-  kubectl apply -f ./target/TravelAgency/kubernetes
- 
+   Run following command to deploy kubernetes artifacts:  
+   kubectl apply -f ./target/travel_agency/kubernetes
 ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
-- Also the Kubernetes artifacts related our service, will be generated in `` ./target/TravelAgency/kubernetes``. 
+- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
+- Also the Kubernetes artifacts related our service, will be generated under `` ./target/travel_agency/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
-```
- $kubectl apply -f ./target/TravelAgency/kubernetes 
+```bash
+   $ kubectl apply -f ./target/travel_agency/kubernetes 
  
- deployment.extensions "ballerina-guides-travel-agency-service" created
- ingress.extensions "ballerina-guides-travel-agency-service" created
- service "ballerina-guides-travel-agency-service" created
+   deployment.extensions "ballerina-guides-travel-agency-service" created
+   ingress.extensions "ballerina-guides-travel-agency-service" created
+   service "ballerina-guides-travel-agency-service" created
 ```
 
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
 
-```
- $kubectl get service
- $kubectl get deploy
- $kubectl get pods
- $kubectl get ingress
+```bash
+   $ kubectl get service
+   $ kubectl get deploy
+   $ kubectl get pods
+   $ kubectl get ingress
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
 
 Node Port:
-```
-  curl -v -X POST -d \
-  '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", 
-  "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
-  "http://<Minikube_host_IP>:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
-
+```bash
+   curl -v -X POST -d \
+   '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo", 
+   "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+   "http://localhost:<Node_Port>/travel/arrangeTour" -H "Content-Type:application/json"  
 ```
 
 Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
 ``` 
-127.0.0.1 ballerina.guides.io
+   127.0.0.1 ballerina.guides.io
 ```
 
 Access the service 
-``` 
- curl -v -X POST -d \
- '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
- "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
- "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json" 
-    
+```bash 
+   curl -v -X POST -d \
+   '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
+   "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
+   "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json"  
 ```
 
 
@@ -698,13 +708,13 @@ You can monitor ballerina services using in built tracing capabilities of Baller
 Follow the following steps to use tracing with Ballerina.
 - Run Jaeger docker image using the following command
 ```bash
-   docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp 
-   -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all- in-one:latest
+   $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
+   -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
 
 - Navigate to `parallel-service-orchestration/guide/` and start all services using following command 
 ```
-   $ballerina run <package_name>
+   $ ballerina run <package_name>
 ```
    
 - Observe the tracing using Jaeger UI using following URL
@@ -718,8 +728,8 @@ Follow the following steps to use tracing with Ballerina.
  
 
 ### Metrics
-Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
+Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool.
+Follow the below steps to set up Prometheus and view metrics for travel_agency service.
 
 - Set the below configurations in the `ballerina.conf` file in the project root.
 ```ballerina
@@ -731,7 +741,8 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    port=9797
    # Flag to indicate whether meter descriptions should be sent to Prometheus.
    descriptions=false
-   # The step size to use in computing windowed statistics like max. The default is 1 minute.
+   # The step size to use in computing windowed statistics like max.
+   # The default is 1 minute.
    step="PT1M"
 ```
 
@@ -760,7 +771,8 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    $ballerina run <package_name>
 ```
 
-   NOTE: First start the `TravelAgency` package since it's the main orchastrator for other services(also we are going to trace from Traval Agancy service)
+   NOTE: First start the `travel_agency` package since it's the main orchestrator for other services(also we are going
+    to trace from traval agency service)
    
 - You can access Prometheus at the following URL
 ```
@@ -779,85 +791,86 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
 ### Logging
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `{SAMPLE_ROOT_DIRECTORY}/guide`
+- Start the Ballerina Service with the following command from `parallel-service-orchestration/guide`
 ```
-   nohup ballerina run TravelAgency/ &>> ballerina.log&
+   nohup ballerina run travel_agency/ &>> ballerina.log&
 ```
 
-   NOTE: This will write the console log to the `ballerina.log` file in the `{SAMPLE_ROOT_DIRECTORY}/guide` directory
+NOTE: This will write the console log to the `ballerina.log` file in the `parallel-service-orchestration/guide` directory
+
 - Start Elasticsearch using the following command
 ```
-   docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name  
+   docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
 
-   NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
+NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
    
 - Start Kibana plugin for data visualization with Elasticsearch
 ```
-   docker run -p 5601:5601 -h kibana --name kibana --link elasticsearch:elasticsearch 
+   docker run -p 5601:5601 -h kibana --name kibana --link elasticsearch:elasticsearch \
    docker.elastic.co/kibana/kibana:6.2.2     
 ```
 
 - Configure logstash to format the ballerina logs
    
-   i) Create a file named `logstash.conf` with the following content
+i) Create a file named `logstash.conf` with the following content
 ```
-      input {  
-       beats { 
-	       port => 5044 
-	      }  
-      }
-      
-      filter {  
-       grok  {  
-	       match => { 
-                  "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
-                  \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
-                 }  
-       }  
-      }   
-      
-      output {  
-       elasticsearch {  
-    	   hosts => "elasticsearch:9200"  
-    	   index => "store"  
-           document_type => "store_logs"  
-	      }  
+input {  
+beats { 
+       port => 5044 
       }  
+}
+
+filter {  
+grok  {  
+       match => { 
+	  "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
+	  \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
+	 }  
+}  
+}   
+
+output {  
+elasticsearch {  
+   hosts => "elasticsearch:9200"  
+   index => "store"  
+   document_type => "store_logs"  
+      }  
+}  
 ```
 
-   NOTE: We have declared `store` as the index using `index => "store"` statement.
+NOTE: We have declared `store` as the index using `index => "store"` statement.
+
       
-   ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\pipeline`
+ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`
      
-  iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
+iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name
 ```
-        docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm 
-        -v {SAMPLE_ROOT_DIRECTIRY}/pipeline:/usr/share/logstash/pipeline/ 
-        -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
+   docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm \
+   -v {SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
+   -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
   
  - Configure filebeat to ship the ballerina logs
     
    i) Create a file named `filebeat.yml` with the following content
 ```
-       filebeat.prospectors:
-          - type: log
-       paths:
-          - /usr/share/filebeat/ballerina.log
-       output.logstash:
-            hosts: ["logstash:5044"]
+   filebeat.prospectors:
+       - type: log
+   paths:
+       - /usr/share/filebeat/ballerina.log
+   output.logstash:
+         hosts: ["logstash:5044"]
 ```
 
    ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT_DIRECTORY}\filebeat`   
         
-     
   iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name  
 ```
-        docker run -v {SAMPLE_ROOT_DIRECTORY}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml 
-        -v {SAMPLE_ROOT_DIRECTORY}/guide/restful_service/ballerina.log:/usr/share/filebeat/ballerina.log
-	    --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
+   docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
+   -v {SAMPLE_ROOT}/guide/travel_agency/ballerina.log:/usr/share/filebeat/ballerina.log \
+   --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
 
 - Access Kibana to visualize the logs using following URL
