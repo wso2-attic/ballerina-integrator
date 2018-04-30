@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pranavan15/messaging-with-kafka.svg?branch=master)](https://travis-ci.org/pranavan15/messaging-with-kafka)
+[![Build Status](https://travis-ci.org/ballerina-guides/messaging-with-kafka.svg?branch=master)](https://travis-ci.org/ballerina-guides/messaging-with-kafka)
 
 # Messaging with Kafka
 
