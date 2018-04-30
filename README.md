@@ -82,7 +82,11 @@ asynchronous-invocation
 ```
   
 ### Implement the Stock Quote Summary service with asyncronous invocations
->>>>>>> master
+
+- Once you initialize your Ballerina project, you can change the names of the files to match the project file names in this guide.
+  
+### Implement the Stock Quote Summary service with asyncronous invocations
+
 
 - We can get started with the Stock Quote Summary service, which is the RESTful service that serves the stock quote summary requests. This service receives the requests via the HTTP GET method from the clients.
 
@@ -103,12 +107,10 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/runtime;
 
-
 @Description {value:"Attributes associated with the service endpoint are defined here."}
 endpoint http:Listener asyncServiceEP {
     port: 9090
 };
-
 
 @Description {value:"This service is to be exposed via HTTP/1.1."}
 @http:ServiceConfig {
@@ -130,7 +132,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         http:Request req = new;
         http:Response resp = new;
         string responseStr;
-        
+
         // This initializes empty json to add results from the backend call.
         json  responseJson = {};
         
@@ -225,6 +227,7 @@ You can use any third-party remote service for the remote backend service. For e
 
 NOTE: You can find the complete implementaion of the stock_quote_data_backend [here](stock_quote_data_backend/stock_backend.bal)
 
+
 ## Testing 
 
 ### Invoking stock quote summary service
@@ -236,6 +239,7 @@ $ballerina run stock_quote_data_backend/
 NOTE: To run the Ballerina service, you need to have Ballerina installed in you local machine.
 
 - Then, you need to run `stock_quote_summary_service`. To do this, navigate to the `<SAMPLE_ROOT>` directory and run the following command in the terminal.
+
 
 ```
 $ballerina run stock_quote_summary_service/
@@ -275,6 +279,7 @@ Output :
 ### Writing unit tests 
 
 
+
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
 - Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
@@ -285,6 +290,13 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 This guide contains unit test cases for every all the packages inside the `asynchronous-invocation/guide` directory. 
 
 To run all the tests, open your terminal and navigate to `asynchronous-invocation/guide`, and run the following command.
+
+In Ballerina, the unit test cases should be in the same package inside a directory named  `test`. The naming convention should be as follows:
+
+* Test functions should contain the test prefix.
+  * e.g., testResourceAddOrder()
+
+To run the unit tests, run the following command.
 
 ```bash
 $ ballerina test
@@ -299,6 +311,9 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying locally
 
+
+
+- As the first step, you can build a Ballerina executable archive (.balx) of the service that is developed above. To do this, navigate to the `<SAMPLE_ROOT>/` directory and run the following commands. It points to the directory in which the service you developed is located, and creates an executable binary out of that. 
 
 - As the first step, you can build a Ballerina executable archive (.balx) of the service that is developed above. To do this, navigate to the `<SAMPLE_ROOT>/` directory and run the following commands. It points to the directory in which the service you developed is located, and creates an executable binary out of that. 
 
