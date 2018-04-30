@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package BankingApplication;
-
 import ballerina/test;
 
 // Unit test for testing createAccount() function
@@ -61,11 +59,11 @@ function testDepositMoneyPass () {
     int accountId = createAccount("Elite");
     // Deposit $500 to Elite's account
     match depositMoney(accountId, 500) {
-        // Expected return value is null (not any errors) - Therefore, the below should not be matched
+        // Expected return value is nill (not any errors) - Therefore, the below should not be matched
         // Hence, the below assertion should not be executed unless depositMoney function behaves erroneously
         error err => test:assertTrue(false, msg="Method 'depositMoney()' is not behaving as intended");
         // Below assertion is expected to be executed
-        null => test:assertTrue(true, msg="Method 'depositMoney()' is not behaving as intended");
+        () => test:assertTrue(true, msg="Method 'depositMoney()' is not behaving as intended");
     }
 }
 
@@ -79,9 +77,9 @@ function testDepositMoneyFailCase1 () {
     int accountId = createAccount("Frank");
     // Try to pass a negative amount to deposit
     match depositMoney(accountId, -100) {
-        // An error is expected to be returned (not null) - Therefore, the below should not be matched
+        // An error is expected to be returned (not nill) - Therefore, the below should not be matched
         // Hence, the below assertion should not be executed unless depositMoney function behaves erroneously
-        null => test:assertTrue(false, msg="Method 'depositMoney()' is not behaving as intended");
+        () => test:assertTrue(false, msg="Method 'depositMoney()' is not behaving as intended");
         // Below assertion is expected to be executed
         error err => {
             string expectedErrMsg = "Error: Invalid amount";
@@ -96,9 +94,9 @@ function testDepositMoneyFailCase1 () {
 function testDepositMoneyFailCase2 () {
     // Provide a non existing account ID to method 'depositMoney()' and try to deposit $100
     match depositMoney(1234, 100) {
-        // An error is expected to be returned (not null) - Therefore, the below should not be matched
+        // An error is expected to be returned (not nill) - Therefore, the below should not be matched
         // Hence, the below assertion should not be executed unless depositMoney function behaves erroneously
-        null => test:assertTrue(false, msg="Method 'depositMoney()' is not behaving as intended");
+        () => test:assertTrue(false, msg="Method 'depositMoney()' is not behaving as intended");
         // Below assertion is expected to be executed
         error err => {
             string expectedErrMsg = "Error: Account does not exist";
@@ -119,7 +117,7 @@ function testCheckBalancePass () {
     // Deposit $500 to Grace's account
     _ = depositMoney(accountId, 500);
     // Check balance in Grace's account
-    int balance =? checkBalance(accountId);
+    int balance = check checkBalance(accountId);
     // Grace should have $500 balance in account
     test:assertEquals(balance, 500, msg="Method 'checkBalance()' is not behaving as intended");
 }
@@ -155,11 +153,11 @@ function testWithdrawMoneyPass () {
     _ = depositMoney(accountId, 500);
     // Withdraw $300 from Heidi's account
     match withdrawMoney(accountId, 300) {
-        // Expected return value is null (not any errors) - Therefore, the below should not be matched
+        // Expected return value is nill (not any errors) - Therefore, the below should not be matched
         // Hence, the below assertion should not be executed unless withdrawMoney function behaves erroneously
         error err => test:assertTrue(false, msg="Method 'withdrawMoney()' is not behaving as intended");
         // Below assertion is expected to be executed
-        null => test:assertTrue(true, msg="Method 'withdrawMoney()' is not behaving as intended");
+        () => test:assertTrue(true, msg="Method 'withdrawMoney()' is not behaving as intended");
     }
 }
 
@@ -175,9 +173,9 @@ function testWithdrawMoneyFailCase1 () {
     _ = depositMoney(accountId, 500);
     // Try to pass a negative amount to withdraw
     match withdrawMoney(accountId, -100) {
-        // An error is expected to be returned (not null) - Therefore, the below should not be matched
+        // An error is expected to be returned (not nill) - Therefore, the below should not be matched
         // Hence, the below assertion should not be executed unless withdrawMoney function behaves erroneously
-        null => test:assertTrue(false, msg="Method 'withdrawMoney()' is not behaving as intended");
+        () => test:assertTrue(false, msg="Method 'withdrawMoney()' is not behaving as intended");
         // Below assertion is expected to be executed
         error err => {
             // Expected error message
@@ -193,9 +191,9 @@ function testWithdrawMoneyFailCase1 () {
 function testWithdrawMoneyFailCase2 () {
     // Provide a non existing account ID to method 'withdrawMoney()'
     match withdrawMoney(1234, 200) {
-        // An error is expected to be returned (not null) - Therefore, the below should not be matched
+        // An error is expected to be returned (not nill) - Therefore, the below should not be matched
         // Hence, the below assertion should not be executed unless withdrawMoney function behaves erroneously
-        null => test:assertTrue(false, msg="Method 'withdrawMoney()' is not behaving as intended");
+        () => test:assertTrue(false, msg="Method 'withdrawMoney()' is not behaving as intended");
         // Below assertion is expected to be executed
         error err => {
             // Expected error message
@@ -219,9 +217,9 @@ function testWithdrawMoneyFailCase3 () {
     _ = depositMoney(accountId, 500);
     // Try to pass a big amount to withdraw, which is greater than the available balance
     match withdrawMoney(accountId, 1500) {
-        // An error is expected to be returned (not null) - Therefore, the below should not be matched
+        // An error is expected to be returned (not nill) - Therefore, the below should not be matched
         // Hence, the below assertion should not be executed unless withdrawMoney function behaves erroneously
-        null => test:assertTrue(false, msg="Method 'withdrawMoney()' is not behaving as intended");
+        () => test:assertTrue(false, msg="Method 'withdrawMoney()' is not behaving as intended");
         // Below assertion is expected to be executed
         error err => {
             // Expected error message
