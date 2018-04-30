@@ -64,7 +64,7 @@ script:
 - mv kafka-connector-jars.zip $BALLERINA_VERSION/bre/lib
 
 # Unzip the .zip file
-- unzip $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip
+- nzip $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip -d $BALLERINA_VERSION/bre/lib
 
 # Delete the .zip file
 - rm $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip
