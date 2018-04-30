@@ -25,7 +25,7 @@ endpoint mysql:Client bankDB {
     port: config:getAsInt("DATABASE_PORT", default = 3306),
     name: config:getAsString("DATABASE_NAME", default = "bankDB"),
     username: config:getAsString("DATABASE_USERNAME", default = "root"),
-    password: config:getAsString("DATABASE_PASSWORD", default = "Mathematics"),
+    password: config:getAsString("DATABASE_PASSWORD", default = ""),
     dbOptions: { useSSL: false }
 };
 
