@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pranavan15/managing-database-transactions.svg?branch=master)](https://travis-ci.org/pranavan15/managing-database-transactions)
+[![Build Status](https://travis-ci.org/ballerina-guides/managing-database-transactions.svg?branch=master)](https://travis-ci.org/ballerina-guides/managing-database-transactions)
 
 # Database Transactions
 
