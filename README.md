@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ballerina-guides/asynchronous-invocation.svg?branch=master)](https://travis-ci.org/ballerina-guides/asynchronous-invocation)
+
 # Asynchronous Invocations
 [Asynchronous invocations](https://en.wikipedia.org/wiki/Asynchronous_method_invocation) or the asynchronous pattern is a design pattern in which the call site is not blocked while waiting for the code invoked to finish. Instead, the calling thread can use the result when the reply arrives.
 
