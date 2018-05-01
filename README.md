@@ -209,7 +209,7 @@ service<http:Service> EmployeeData bind listener {
     }
 }
 
-public function insertData(string name, int age, int ssn, int employeeId) returns (json) {
+public function insertData(string name, int age, int ssn, int employeeId) returns (json){
     json updateStatus;
     string sqlString =
     "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
@@ -244,7 +244,7 @@ public function retrieveById(int employeeID) returns (json) {
     return jsonReturnValue;
 }
 
-public function updateData(string name, int age, int ssn, int employeeId) returns (json) {
+public function updateData(string name, int age, int ssn, int employeeId) returns (json){
     json updateStatus = {};
     string sqlString =
     "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
