@@ -163,7 +163,8 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         // The ‘await` keyword blocks until the previously started async function returns.
         // Append the results from all the responses of the stock data backend.
         var response1 = await f1;
-        // Use `match` to check whether the responses are available. If they are not available, an error is generated.
+        // Use `match` to check whether the responses are available.
+	// If a response is not available, an error is generated.
         match response1 {
             http:Response resp => {
 
