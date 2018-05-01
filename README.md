@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ballerina-guides/asynchronous-invocation.svg?branch=master)](https://travis-ci.org/ballerina-guides/asynchronous-invocation)
+
 # Asynchronous Invocations
 [Asynchronous invocations](https://en.wikipedia.org/wiki/Asynchronous_method_invocation) or the asynchronous pattern is a design pattern in which the call site is not blocked while waiting for the code invoked to finish. Instead, the calling thread can use the result when the reply arrives.
 
@@ -163,7 +165,8 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         // The ‘await` keyword blocks until the previously started async function returns.
         // Append the results from all the responses of the stock data backend.
         var response1 = await f1;
-        // Use `match` to check whether the responses are available. If they are not available, an error is generated.
+        // Use `match` to check whether the responses are available.
+	// If a response is not available, an error is generated.
         match response1 {
             http:Response resp => {
 
