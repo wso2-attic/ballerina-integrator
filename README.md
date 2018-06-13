@@ -61,7 +61,7 @@ content-based-routing
 ### Developing the service
 Let's look at the implementation of the company_recruitment_agency_service , which acts as The Content-Based Router.
 
-Let's consider that a request comes to the Company recruitmet agency service with a specific content. when company_recruitment_agency_service receives the request message, reads it, and routes the request to one of the recipients according to the message's content.
+Let's consider that a request comes to the Company recruitment agency service with a specific content. when company_recruitment_agency_service receives the request message, reads it, and routes the request to one of the recipients according to the message's content.
 
 ##### company_recruitment_agency_service.bal
 
@@ -70,6 +70,12 @@ import ballerina/http;
 import ballerina/log;
 import ballerina/mime;
 import ballerina/io;
+
+// Client endpoint to communicate with company recruitment service
+//"http://www.mocky.io" is used to create mock services
+endpoint http:Listener comEP {
+    port: 9090
+};
 
 // Client endpoint to communicate with company recruitment service
 //"http://www.mocky.io" is used to create mock services
@@ -83,7 +89,7 @@ endpoint http:Client locationEP {
 }
 
 //comapnyRecruitmentsAgency service to route each request to relevent endpoints and get their responses.
-service<http:Service> comapnyRecruitmentsAgency  bind { port: 9090 } {
+service<http:Service> comapnyRecruitmentsAgency  bind comEP {
 
 
     //`http:resourceConfig{}` annotation with POST method declares the HTTP method.
