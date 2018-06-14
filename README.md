@@ -410,7 +410,7 @@ service<http:Service> auctionService bind auctionEP {
    $ ballerina build auction_service
   
    Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/travel_agency/kubernetes
+   kubectl apply -f ./target/auction_service/kubernetes
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
