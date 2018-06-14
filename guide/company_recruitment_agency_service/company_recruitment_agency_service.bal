@@ -88,19 +88,19 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
                     //Here, `post` represents the POST action of the HTTP client connector routes the payload to the relevant service when the server accepts the enclosed entity.
                     //HTTP client connector routes the payload to "/v2/5b195c31300000f328da16e8" Endpoint
                     clientResponse =
-                    locationEP->post("/v2/5b1e6956310000fa163ff82e");
+                    locationEP->post("/v2/5b2244432e00009100e315bb");
 
 
                 } else if(nameString == "ABC Company") {
                     //Here, `post` represents the POST action of the HTTP client connector routes the payload to the relevant service when the server accepts the enclosed entity.
                     //HTTP client connector routes the payload to "/v2/5b195c31300000f328da16e8" Endpoint
                     clientResponse =
-                    locationEP->post("/v2/5b1e69bd310000f4113ff832");
+                    locationEP->post("/v2/5b2244db2e00007e00e315c5");
 
                 }else {
                     //request routes to this EP when Company name is a not a valid one
                     clientResponse =
-                    locationEP->post("/v2/5b1e6a1d310000f4113ff836");
+                    locationEP->post("/v2/5b22443d2e00007b00e315b9");
 
                 }
                 //Use the native function 'respond' to send the client response back to the caller.
