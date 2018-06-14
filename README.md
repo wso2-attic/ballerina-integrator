@@ -39,15 +39,18 @@ Ballerina is a complete programming language that supports custom project struct
 
 ```
 scatter-gather-messaging
-  └── guide
-      ├── auction service
-      │   ├── auction_service.bal
-      │   └── tests
-      │       └── auction_service_test.bal
-      ├── bidders endpoint
-         ├── bidders_endpoints.bal
-         └── tests
-             └── bidders_endpoints_test.bal
+   └── guide
+       ├── auction_service
+       │   ├── auction_service.bal
+       │   
+       │       
+       ├── bidders
+       │   ├── bidders_endpoints.bal
+       │   
+       │    
+       ├── tests
+           ├── auction_service_test.bal
+
 ```
 
 - Create the above directories in your local machine and also create empty `.bal` files.
@@ -266,7 +269,7 @@ To run the tests, open your terminal and navigate to `scatter-gather-messaging/g
    $ ballerina test
 ```
 
-To check the implementations of these test files, refer to the [auction_service_test.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/tests/auction_service_test.bal), [bidders_endpoints_test.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/bidders/tests/bidders_endpoints_test.bal).
+To check the implementations of these test files, refer to the [auction_service_test.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/tests/auction_service_test.bal).
 
 ## Deployment
 
@@ -410,7 +413,7 @@ service<http:Service> auctionService bind auctionEP {
    $ ballerina build auction_service
   
    Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/travel_agency/kubernetes
+   kubectl apply -f ./target/auction_service/kubernetes
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
