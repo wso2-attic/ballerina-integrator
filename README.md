@@ -45,7 +45,7 @@ Ballerina is a complete programming language that supports custom project struct
 ```
 content-based-routing
  └── guide
-      └── Company Recruitments agency_service
+      └── Company recruitment agency_service
            ├── company_recruitment_agency_service.bal
        └── tests
             └── company_recruitment_agency_service_test.bal
