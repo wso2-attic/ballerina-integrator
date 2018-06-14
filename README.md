@@ -376,6 +376,8 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `/content-based-routing/guide` and run the following command.  
 ```
    $ ballerina build company_recruitment_agency_service
+   
+    @docker                  - complete 3/3 
 
    Run following command to start docker container: 
    docker run -d -p 9090:9090 ballerina.guides.io/company_recruitment_agency_service:v1.0
@@ -461,6 +463,11 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
   
 ```
    $ ballerina build company_recruitment_agency_service
+   
+   @kubernetes:Service                      - complete 1/1
+   @kubernetes:Ingress                      - complete 1/1
+   @kubernetes:Docker                       - complete 3/3 
+   @kubernetes:Deployment                   - complete 1/1
   
    Run following command to deploy kubernetes artifacts:  
    kubectl apply -f ./target/company_recruitment_agency_service/kubernetes
