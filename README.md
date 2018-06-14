@@ -115,23 +115,23 @@ comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req) {
                 //the http response can be either error|empty|clientResponse
                 (http:Response|error|()) clientResponse;
 
-                if (nameString == "John and Brothers (pvt) Ltd") {
+               if (nameString == "John and Brothers (pvt) Ltd") {
                     //Here, `post` represents the POST action of the HTTP client connector routes the payload to the relevant service when the server accepts the enclosed entity.
                     //HTTP client connector routes the payload to "/v2/5b195c31300000f328da16e8" Endpoint
                     clientResponse =
-                    locationEP->post("/v2/5b195c31300000f328da16e8");
+                    locationEP->post("/v2/5b2244432e00009100e315bb");
 
 
                 } else if(nameString == "ABC Company") {
                     //Here, `post` represents the POST action of the HTTP client connector routes the payload to the relevant service when the server accepts the enclosed entity.
                     //HTTP client connector routes the payload to "/v2/5b195c31300000f328da16e8" Endpoint
                     clientResponse =
-                    locationEP->post("/v2/5b195c6e3000006f26da16e9");
+                    locationEP->post("/v2/5b2244db2e00007e00e315c5");
 
                 }else {
                     //request routes to this EP when Company name is a not a valid one
                     clientResponse =
-                    locationEP->post("/v2/5b1cffbc3200006c00c36d31");
+                    locationEP->post("/v2/5b22443d2e00007b00e315b9");
 
                 }
                 //Use the native function 'respond' to send the client response back to the caller.
