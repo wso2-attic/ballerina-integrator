@@ -307,6 +307,7 @@ To run the unit tests, open your terminal and navigate to `/content-based-routin
    $ ballerina test
 ```
 
+
 ## Deployment
 
 Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
@@ -527,7 +528,9 @@ Access the service
     $ curl -v http://ballerina.guides.io/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
 ```
 
+
 ## Observability 
+
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
 However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `/content-based-routing/guide`.
 
