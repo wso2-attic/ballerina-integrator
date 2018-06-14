@@ -1,5 +1,31 @@
 import ballerina/io;
 import ballerina/http;
+//import ballerinax/docker;
+//import ballerinax/kubernetes;
+//
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"bidders",
+//    tag:"v1.0"
+//}
+//
+//@docker:Expose{}
+//
+//@kubernetes:Ingress {
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-bidders-endpoints",
+//    path:"/"
+//}
+//
+//@kubernetes:Service {
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-bidders-endpoints"
+//}
+//
+//@kubernetes:Deployment {
+//    image:"ballerina.guides.io/bidders_endpoints:v1.0",
+//    name:"ballerina-guides-bidders-endpoints"
+//}
 
 //Service endpoint
 endpoint http:Listener biddersEP {

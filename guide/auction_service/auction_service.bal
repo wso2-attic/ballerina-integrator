@@ -1,6 +1,32 @@
 import ballerina/http;
 import ballerina/io;
-
+//import ballerinax/docker;
+//import ballerinax/kubernetes;
+//
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"auction_service",
+//    tag:"v1.0"
+//}
+//
+//@docker:Expose{}
+//
+//
+//@kubernetes:Ingress {
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-auction-service",
+//    path:"/"
+//}
+//
+//@kubernetes:Service {
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-auction-service"
+//}
+//
+//@kubernetes:Deployment {
+//    image:"ballerina.guides.io/auction_service:v1.0",
+//    name:"ballerina-guides-auction-service"
+//}
 // Service endpoint
 endpoint http:Listener auctionEP {
     port:9090
