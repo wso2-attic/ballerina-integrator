@@ -7,7 +7,7 @@ boolean serviceStarted;
 
 
 function startServices() {
-    serviceStarted = test:startServices("guide");
+    serviceStarted = test:startServices("company_recruitment_agency_service");
 
 }
 
@@ -106,6 +106,6 @@ function Company_Recruitments_Agency() {
 
 
 function stopServices() {
-    test:stopServices("guide");
+    test:stopServices("company_recruitment_agency_service");
 }
 
