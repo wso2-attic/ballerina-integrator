@@ -71,8 +71,45 @@ import ballerina/log;
 import ballerina/mime;
 import ballerina/io;
 
-// Client endpoint to communicate with company recruitment service
-//"http://www.mocky.io" is used to create mock services
+//Deploying on kubernetes
+
+//import ballerina/http;
+//import ballerinax/kubernetes;
+
+//@kubernetes:Ingress {
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-company_recruitment_agency_service",
+//    path:"/"
+//}
+//
+//@kubernetes:Service {
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-company_recruitment_agency_service"
+//}
+//
+//@kubernetes:Deployment {
+//    image:"ballerina.guides.io/company_recruitment_agency_service:v1.0",
+//    name:"ballerina-guides-company_recruitment_agency_service"
+//}
+
+
+
+//Deploying on docker
+
+//import ballerina/http;
+//import ballerinax/docker;
+
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"company_recruitment_agency_service",
+//    tag:"v1.0"
+//}
+//
+//@docker:Expose {}
+//
+
+
+
 endpoint http:Listener comEP {
     port: 9090
 };
@@ -99,7 +136,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
         path: "/company"
     }
 
-comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req) {
+    comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req) {
         //Get the JSON payload from the request message.
         var jsonMsg = req.getJsonPayload();
 
@@ -115,7 +152,7 @@ comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req) {
                 //the http response can be either error|empty|clientResponse
                 (http:Response|error|()) clientResponse;
 
-               if (nameString == "John and Brothers (pvt) Ltd") {
+                if (nameString == "John and Brothers (pvt) Ltd") {
                     //Here, `post` represents the POST action of the HTTP client connector routes the payload to the relevant service when the server accepts the enclosed entity.
                     //HTTP client connector routes the payload to "/v2/5b195c31300000f328da16e8" Endpoint
                     clientResponse =
@@ -165,6 +202,7 @@ comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req) {
         }
     }
 }
+
 ```
 - According to the code implementation company_recruitment_agency_service checks the request content and routes it to relevent service.
 
