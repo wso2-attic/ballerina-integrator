@@ -17,9 +17,9 @@ function testGoogResource() {
     test:assertTrue(serviceStarted, msg = "Unable to start the service");
 
     string response1 = "GOOG, Alphabet Inc., 1013.41";
-    http:Request req = new;
+
     // Send a GET request to the specified endpoint
-    var response = httpEndpoint -> get("/GOOG", request = req);
+    var response = httpEndpoint -> get("/GOOG");
     match response {
         http:Response resp => {
             var res = check resp.getTextPayload();
@@ -37,9 +37,9 @@ function testApplResource() {
     test:assertTrue(serviceStarted, msg = "Unable to start the service");
 
     string response2 = "APPL, Apple Inc., 165.22";
-    http:Request req = new;
+
     // Send a GET request to the specified endpoint
-    var response = httpEndpoint -> get("/APPL", request = req);
+    var response = httpEndpoint -> get("/APPL");
     match response {
         http:Response resp => {
             var res = check resp.getTextPayload();
@@ -57,9 +57,9 @@ function testMsftResource() {
     test:assertTrue(serviceStarted, msg = "Unable to start the service");
 
     string response2 = "MSFT, Microsoft Corporation, 95.35";
-    http:Request req = new;
+
     // Send a GET request to the specified endpoint
-    var response = httpEndpoint -> get("/MSFT", request = req);
+    var response = httpEndpoint -> get("/MSFT");
     match response {
         http:Response resp => {
             var res = check resp.getTextPayload();
