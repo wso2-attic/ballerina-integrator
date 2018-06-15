@@ -1,6 +1,15 @@
 import ballerina/http;
 import ballerina/io;
+import ballerinax/docker;
 
+
+@docker:Config {
+    registry:"ballerina.guides.io",
+    name:"passed_student_filter_service",
+    tag:"v1.0"
+}
+
+@docker:Expose{}
 endpoint http:Listener filterServiceEP {
     port: 9090
 };
