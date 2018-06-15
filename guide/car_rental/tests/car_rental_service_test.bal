@@ -44,7 +44,7 @@ function testResourceDriveSg () {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/driveSg", request = req);
+    http:Response response = check clientEP -> post("/driveSg", req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
@@ -63,7 +63,7 @@ function testResourceDreamCar () {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/dreamCar", request = req);
+    http:Response response = check clientEP -> post("/dreamCar", req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
@@ -82,7 +82,7 @@ function testResourceSixt () {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/sixt", request = req);
+    http:Response response = check clientEP -> post("/sixt", req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected

@@ -128,7 +128,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(flightPayload);
                 // Send a POST request to 'Qatar Airways' and get the results
-                http:Response respWorkerQatar = check airlineEP -> post("/qatarAirways", request = outReq);
+                http:Response respWorkerQatar = check airlineEP -> post("/qatarAirways", outReq);
                 // Reply to the join block from this worker - Send the response from 'Qatar Airways'
                 respWorkerQatar -> fork;
             }
@@ -139,7 +139,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(flightPayload);
                 // Send a POST request to 'Asiana' and get the results
-                http:Response respWorkerAsiana = check airlineEP -> post("/asiana", request = outReq);
+                http:Response respWorkerAsiana = check airlineEP -> post("/asiana", outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
                 respWorkerAsiana -> fork;
             }
@@ -150,7 +150,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(flightPayload);
                 // Send a POST request to 'Emirates' and get the results
-                http:Response respWorkerEmirates = check airlineEP -> post("/emirates", request = outReq);
+                http:Response respWorkerEmirates = check airlineEP -> post("/emirates", outReq);
                 // Reply to the join block from this worker - Send the response from 'Emirates'
                 respWorkerEmirates -> fork;
             }
@@ -215,7 +215,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Asiana' and get the results
-                http:Response respWorkerMiramar = check hotelEP -> post("/miramar", request = outReq);
+                http:Response respWorkerMiramar = check hotelEP -> post("/miramar", outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
                 respWorkerMiramar -> fork;
             }
@@ -226,7 +226,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Aqueen' and get the results
-                http:Response respWorkerAqueen = check hotelEP -> post("/aqueen", request = outReq);
+                http:Response respWorkerAqueen = check hotelEP -> post("/aqueen", outReq);
                 // Reply to the join block from this worker - Send the response from 'Aqueen'
                 respWorkerAqueen -> fork;
             }
@@ -237,7 +237,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(hotelPayload);
                 // Send a POST request to 'Elizabeth' and get the results
-                http:Response respWorkerElizabeth = check hotelEP -> post("/elizabeth", request = outReq);
+                http:Response respWorkerElizabeth = check hotelEP -> post("/elizabeth", outReq);
                 // Reply to the join block from this worker - Send the response from 'Elizabeth'
                 respWorkerElizabeth -> fork;
             }
@@ -303,7 +303,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(vehiclePayload);
                 // Send a POST request to 'DriveSg' and get the results
-                http:Response respWorkerDriveSg = check carRentalEP -> post("/driveSg", request = outReq);
+                http:Response respWorkerDriveSg = check carRentalEP -> post("/driveSg", outReq);
                 // Reply to the join block from this worker - Send the response from 'DriveSg'
                 respWorkerDriveSg -> fork;
             }
@@ -314,7 +314,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(vehiclePayload);
                 // Send a POST request to 'DreamCar' and get the results
-                http:Response respWorkerDreamCar = check carRentalEP -> post("/dreamCar", request = outReq);
+                http:Response respWorkerDreamCar = check carRentalEP -> post("/dreamCar", outReq);
                 // Reply to the join block from this worker - Send the response from 'DreamCar'
                 respWorkerDreamCar -> fork;
             }
@@ -325,7 +325,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                 // Out request payload
                 outReq.setJsonPayload(vehiclePayload);
                 // Send a POST request to 'Sixt' and get the results
-                http:Response respWorkerSixt = check carRentalEP -> post("/sixt", request = outReq);
+                http:Response respWorkerSixt = check carRentalEP -> post("/sixt", outReq);
                 // Reply to the join block from this worker - Send the response from 'Sixt'
                 respWorkerSixt -> fork;
             }
