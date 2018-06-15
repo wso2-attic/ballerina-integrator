@@ -34,13 +34,13 @@ service<kafka:Consumer> franchiseeService2 bind consumer {
     // Triggered whenever a message added to the subscribed topic
     onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
-        foreach record in records {
-            blob serializedMsg = record.value;
+        foreach entry in records {
+            blob serializedMsg = entry.value;
             // Convert the serialized message to string message
             string msg = serializedMsg.toString("UTF-8");
             log:printInfo("New message received from the product admin");
             // log the retrieved Kafka record
-            log:printInfo("Topic: " + record.topic + "; Received Message: " + msg);
+            log:printInfo("Topic: " + entry.topic + "; Received Message: " + msg);
             // Acknowledgement
             log:printInfo("Acknowledgement from Franchisee 2");
         }
