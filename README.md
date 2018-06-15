@@ -15,7 +15,7 @@ The following are the sections available in this guide.
 - [Testing](#testing)
 
 ## What you’ll build 
-To understanding how you can manage database transactions using Ballerina, let’s consider a real-world use case of a simple banking application.
+To understand how you can manage database transactions using Ballerina, let’s consider a real-world use case of a simple banking application.
 This banking application allows users to,
 
 - **Create accounts** : Create a new account by providing username
