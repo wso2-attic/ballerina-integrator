@@ -341,7 +341,7 @@ ballerina: started HTTP/WS endpoint 0.0.0.0:9095
 
 You can run the service that we developed above as a docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
 
-- In our order_mgt_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
+- In our async_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
 
 ##### async_service.bal
 ```ballerina
@@ -400,7 +400,7 @@ curl http://localhost:9090/quote-summary
 
 - First we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
-##### order_mgt_service.bal
+##### async_service.bal
 
 ```ballerina
 import ballerina/http;
