@@ -1,6 +1,6 @@
 import ballerina/http;
-// import ballerinax/docker;
-// import ballerinax/kubernetes;
+//import ballerinax/docker;
+//import ballerinax/kubernetes;
 
 
 // @docker:Config {
@@ -9,7 +9,7 @@ import ballerina/http;
 //     tag:"v1.0"
 // }
 
-// @docker:Expose{}
+//  @docker:Expose{}
 
 // @kubernetes:Ingress {
 //     hostname:"ballerina.guides.io",

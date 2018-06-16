@@ -3,7 +3,7 @@
 # Message-Filtering  
 The Message Filter checks an incoming message against a certain criteria that the message should adhere to. If the criteria is not met, the filter will discard the message. Otherwise, it will proceed the message.
 
-> In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
+> In this guide you will learn about building a message filtering service using Ballerina. 
 
 The following are the sections available in this guide.
 
@@ -307,7 +307,7 @@ service<http:Service> filterService bind filterServiceEP {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
-   $ ballerina build restful_service
+   $ ballerina build message-filtering
   
    Run following command to deploy kubernetes artifacts:  
    kubectl apply -f ./target/message-filtering/kubernetes
