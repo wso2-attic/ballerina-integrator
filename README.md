@@ -449,7 +449,8 @@ endpoint mysql:Client employeeDB {
 @docker:Config {
     registry:"ballerina.guides.io",
     name:"employee_database_service",
-    tag:"v1.0"
+    tag:"v1.0",
+    baseImage:"ballerina/ballerina-platform:0.975.0"
 }
 
 @docker:CopyFiles {
