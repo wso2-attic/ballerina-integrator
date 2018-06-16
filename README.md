@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/ballerina-guides/restful-service.svg?branch=master)](https://travis-ci.org/ballerina-guides/restful-service)
 
-# # Message-Filtering  
+# Message-Filtering  
 The Message Filter checks an incoming message against a certain criteria that the message should adhere to. If the criteria is not met, the filter will discard the message. Otherwise, it will proceed the message.
 
 > In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
@@ -65,7 +65,6 @@ message-filtering
 ##### Skeleton code for passed_student_filter_service.bal
 ```ballerina
 import ballerina/http;
-import ballerina/io;
 import ballerinax/docker;
 
 
@@ -216,46 +215,42 @@ Once you are done with the development, you can deploy the service using any of 
 
 You can run the service that we developed above as a docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
 
-- In our order_mgt_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
+- In our `passed_student_filter_service`, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
 
-##### order_mgt_service.bal
+##### passed_student_filter_service.bal
 ```ballerina
 import ballerina/http;
 import ballerinax/docker;
 
+
 @docker:Config {
     registry:"ballerina.guides.io",
-    name:"restful_service",
+    name:"passed_student_filter_service",
     tag:"v1.0"
 }
 
 @docker:Expose{}
-endpoint http:Listener listener {
-    port:9090
+endpoint http:Listener filterServiceEP {
+    port: 9090
 };
 
-// Order management is done using an in memory map.
-// Add some sample orders to 'ordersMap' at startup.
-map<json> ordersMap;
-
-// RESTful service.
-@http:ServiceConfig { basePath: "/ordermgt" }
-service<http:Service> orderMgt bind listener {
+// REST service to select the passed student from an exam
+service<http:Service> filterService bind filterServiceEP {
 ``` 
 
 - `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:Expose {}` is used to expose the port. 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `restful-service/guide` and run the following command.  
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `message-filtering/guide` and run the following command.  
 ```
-   $ ballerina build restful_service
+   $ ballerina build message-filtering
 
    Run following command to start docker container: 
-   docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
+   docker run -d -p 9090:9090 ballerina.guides.io/passed_student_filter_service:v1.0
 ```
 
 - Once you successfully build the docker image, you can run it with the `docker run` command that is shown in the previous step.  
 ```bash   
-   $ docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
+   $ docker run -d -p 9090:9090 ballerina.guides.io/passed_student_filter_service:v1.0
 ```
 
   Here we run the docker image with flag `-p <host_port>:<container_port>` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
@@ -263,52 +258,46 @@ service<http:Service> orderMgt bind listener {
 - Verify docker container is running with the use of `$ docker ps`. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
 ```bash
-   curl -v -X POST -d \
-   '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-   "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
+   curl -X POST -v -d '{"students":[{"name":"Saman","subject":"Maths","marks": 80},{"name":"Sugath","subject":"Maths","marks": 59},{"name":"Manoj","subject":"Maths","marks": 62},{"name":"Nipun","subject":"Maths","marks": 21}]}' http://localhost:9090/filterService/filterMarks -H 'content-type: application/json'    
 ```
 
 ### Deploying on Kubernetes
 
 - You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-- Let's now see how we can deploy our `order_mgt_service` on Kubernetes.
+- Let's now see how we can deploy our `passed_student_filter_service` on Kubernetes.
 
 - First we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
 ##### order_mgt_service.bal
 
 ```ballerina
-import ballerina/http;
+import ballerina/http;]
 import ballerinax/kubernetes;
+
 
 @kubernetes:Ingress {
     hostname:"ballerina.guides.io",
-    name:"ballerina-guides-restful-service",
+    name:"ballerina-guides-passed_student_filter_service",
     path:"/"
 }
 
 @kubernetes:Service {
     serviceType:"NodePort",
-    name:"ballerina-guides-restful-service"
+    name:"ballerina-guides-passed_student_filter_service"
 }
 
 @kubernetes:Deployment {
-    image:"ballerina.guides.io/restful_service:v1.0",
-    name:"ballerina-guides-restful-service"
+    image:"ballerina.guides.io/passed_student_filter_service:v1.0",
+    name:"ballerina-guides-passed_student_filter_service"
 }
 
-endpoint http:Listener listener {
-    port:9090
+endpoint http:Listener filterServiceEP {
+    port: 9090
 };
 
-// Order management is done using an in memory map.
-// Add some sample orders to 'ordersMap' at startup.
-map<json> ordersMap;
-
-// RESTful service.
-@http:ServiceConfig { basePath: "/ordermgt" }
-service<http:Service> orderMgt bind listener {
+// REST service to select the passed student from an exam
+service<http:Service> filterService bind filterServiceEP {
 ``` 
 
 - Here we have used `@kubernetes:Deployment` to specify the docker image name which will be created as part of building this service. 
@@ -321,19 +310,19 @@ service<http:Service> orderMgt bind listener {
    $ ballerina build restful_service
   
    Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/restful_service/kubernetes
+   kubectl apply -f ./target/message-filtering/kubernetes
 ```
 
 - You can verify that the docker image that we specified in `@kubernetes:Deployment` is created, by using `$ docker images`. 
-- Also the Kubernetes artifacts related our service, will be generated in `./target/restful_service/kubernetes`. 
+- Also the Kubernetes artifacts related our service, will be generated in `./target/message-filtering/kubernetes`. 
 - Now you can create the Kubernetes deployment using:
 
 ```bash
-   $ kubectl apply -f ./target/restful_service/kubernetes 
+   $ kubectl apply -f ./target/message-filtering/kubernetes 
  
-   deployment.extensions "ballerina-guides-restful-service" created
-   ingress.extensions "ballerina-guides-restful-service" created
-   service "ballerina-guides-restful-service" created
+   deployment.extensions "ballerina-guides-passed_student_filter_service" created
+   ingress.extensions "ballerina-guides-passed_student_filter_service" created
+   service "ballerina-guides-passed_student_filter_service" created
 ```
 
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands.
@@ -350,9 +339,7 @@ service<http:Service> orderMgt bind listener {
 Node Port:
  
 ```bash
-   curl -v -X POST -d \
-   '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-   "http://localhost:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"  
+   curl -X POST -v -d '{"students":[{"name":"Saman","subject":"Maths","marks": 80},{"name":"Sugath","subject":"Maths","marks": 59},{"name":"Manoj","subject":"Maths","marks": 62},{"name":"Nipun","subject":"Maths","marks": 21}]}' http://localhost:<Node_Port>/filterService/filterMarks -H 'content-type: application/json'  
 ```
 
 Ingress:
@@ -364,14 +351,12 @@ Add `/etc/hosts` entry to match hostname.
 
 Access the service 
 ```bash 
-   curl -v -X POST -d \
-   '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-   "http://ballerina.guides.io/ordermgt/order" -H "Content-Type:application/json" 
+   curl -X POST -v -d '{"students":[{"name":"Saman","subject":"Maths","marks": 80},{"name":"Sugath","subject":"Maths","marks": 59},{"name":"Manoj","subject":"Maths","marks": 62},{"name":"Nipun","subject":"Maths","marks": 21}]}' http://ballerina.guides.io:<Node_Port>/filterService/filterMarks -H 'content-type: application/json'
 ```
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `restful-service/guide/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `message-filtering/guide/`.
 
 ```ballerina
 [b7a.observability]
@@ -416,9 +401,9 @@ Follow the following steps to use tracing with Ballerina.
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `restful-service/guide` and run the restful-service using following command 
+- Navigate to `message-filtering/guide` and run the `passed_student_filter_service` using following command 
 ```
-   $ ballerina run restful_service/
+   $ ballerina run message-filtering/
 ```
 
 - Observe the tracing using Jaeger UI using following URL
@@ -481,11 +466,11 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `restful-service/guide`
+- Start the Ballerina Service with the following command from `message-filtering/guide`
 ```
-   $ nohup ballerina run restful_service/ &>> ballerina.log&
+   $ nohup ballerina run message-filtering/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `restful-service/guide` directory
+   NOTE: This will write the console log to the `ballerina.log` file in the `message-filtering/guide` directory
 
 - Start Elasticsearch using the following command
 
@@ -560,7 +545,7 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory
      
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
--v {SAMPLE_ROOT}/guide/restful_service/ballerina.log:/usr/share\
+-v {SAMPLE_ROOT}/guide/message-filtering/ballerina.log:/usr/share\
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
