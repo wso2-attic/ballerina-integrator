@@ -22,7 +22,7 @@ script:
 
 # declare STRING variables
 - STRING="Downloading ballerina..."
-- BALLERINA_VERSION="ballerina-platform-0.970.0-beta17"
+- BALLERINA_VERSION="ballerina-platform-0.975.0"
 - MYSQL_CONNECTOR_VERSION="mysql-connector-java-5.1.45"
 
 #print downloading string on a screen
