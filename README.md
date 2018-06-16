@@ -33,8 +33,8 @@ Basically, this service will deal with a MySQL database and expose the data oper
 ## Prerequisites
  
 * [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-* MySQL version 5.6 or better
-* Official JDBC driver for MySQL ( Download https://dev.mysql.com/downloads/connector/j/)
+* MySQL version 5.6 or later
+* [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL
   * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
 * A Text Editor or an IDE
 
@@ -68,7 +68,7 @@ data-backed-service
 ```
 
 ### Developing the SQL data backed web service
-Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntaxes. 
+Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntax.
 We can use the following database schema to store employee data.
 ```
 +------------+-------------+------+-----+---------+-------+
@@ -230,7 +230,7 @@ public function insertData(string name, int age, int ssn, int employeeId) return
 public function retrieveById(int employeeID) returns (json) {
     json jsonReturnValue;
     string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
-    // Retrieve employee data by invoking select action defined in ballerina sql connector
+    // Retrieve employee data by invoking select action defined in ballerina sql client
     var ret = employeeDB->select(sqlString, (), employeeID);
     match ret {
         table dataTable => {
@@ -248,7 +248,7 @@ public function updateData(string name, int age, int ssn, int employeeId) return
     json updateStatus = {};
     string sqlString =
     "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
-    // Update existing data by invoking update action defined in ballerina sql connector
+    // Update existing data by invoking update action defined in ballerina sql client
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
     match ret {
         int updateRowCount => {
@@ -270,7 +270,7 @@ public function deleteData(int employeeID) returns (json) {
     json updateStatus = {};
 
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
-    // Delete existing data by invoking update action defined in ballerina sql connector
+    // Delete existing data by invoking update action defined in ballerina sql client
     var ret = employeeDB->update(sqlString, employeeID);
     match ret {
         int updateRowCount => {
@@ -317,7 +317,7 @@ NOTE : You can find the SQL script(`initializeDataBase.sql`) [here](resources/in
 
 - To run the developed employee database service you need to navigate to `data-backed-service/guide` and execute the following command
 ```
-$ Ballerina run data_backed_service
+$ ballerina run data_backed_service
 ```
 
 - You can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of employeeService as follows. 
@@ -393,8 +393,8 @@ You can deploy the RESTful service that you developed above in your local enviro
 - The successful execution of the service should show us the following output. 
 
 ```
-   ballerina: deploying service(s) in 'data_backed_service'
-   ballerina: started HTTP/WS server connector 0.0.0.0:9090
+   ballerina: initiating service(s) in 'data_backed_service'
+   ballerina: started HTTP/WS server endpoint 0.0.0.0:9090
 ```
 ### Deploying on Docker
 
