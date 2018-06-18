@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/restful-service.svg?branch=master)](https://travis-ci.org/ballerina-guides/restful-service)
 
 # Message-Filtering  
 The Message Filter checks an incoming message against a certain criteria that the message should adhere to. If the criteria is not met, the filter will discard the message. Otherwise, it will proceed the message.
@@ -15,10 +14,10 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you’ll build 
-To understanding how you can build a message filltering web service using Ballerina, let’s consider a real world use case of a Coolified students filtering service based on their marks.
-The following figure illustrates all the required functionalities of the OrderMgt RESTful web service that we need to build. 
+To understanding how you can build a message filltering web service using Ballerina, let’s consider a real world use case of a Colified students filtering service based on their marks.
+The following figure illustrates all the required functionalities of the Message Filtering Service that we need to build. 
 
-![RESTful Service](images/restful-service.svg "RESTful Service")
+![Message Filtering Service](images/ballerina_sample.png "Message Filtering Service")
 
 
 ## Prerequisites
@@ -65,16 +64,7 @@ message-filtering
 ##### Skeleton code for passed_student_filter_service.bal
 ```ballerina
 import ballerina/http;
-import ballerinax/docker;
 
-
-@docker:Config {
-    registry:"ballerina.guides.io",
-    name:"passed_student_filter_service",
-    tag:"v1.0"
-}
-
-@docker:Expose{}
 endpoint http:Listener filterServiceEP {
     port: 9090
 };
@@ -122,8 +112,6 @@ service<http:Service> filterService bind filterServiceEP {
                 i++;
             }
         }
-        //xml xmlPayload = check filteredStudents.toXML({});
-        //io:println(xmlPayload);
 
         // Set JSON response
         response.setJsonPayload(filteredStudents, contentType = "application/json");
@@ -230,6 +218,7 @@ import ballerinax/docker;
 }
 
 @docker:Expose{}
+
 endpoint http:Listener filterServiceEP {
     port: 9090
 };
