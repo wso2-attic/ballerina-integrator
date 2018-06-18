@@ -74,8 +74,6 @@ service<http:Service> filterService bind filterServiceEP {
                 i++;
             }
         }
-        //xml xmlPayload = check filteredStudents.toXML({});
-        //io:println(xmlPayload);
 
         // Set JSON response
         response.setJsonPayload(filteredStudents, contentType = "application/json");
