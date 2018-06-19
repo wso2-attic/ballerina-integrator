@@ -19,9 +19,9 @@ function testStockSummaryService() {
     json response1 = { "GOOG": "Connection refused: localhost/127.0.0.1:9095",
         "APPL": "Connection refused: localhost/127.0.0.1:9095", "MSFT":
         "Connection refused: localhost/127.0.0.1:9095" };
-    http:Request req = new;
+
     // Send a GET request to the specified endpoint
-    var response = httpEndpoint->get("/quote-summary", request = req);
+    var response = httpEndpoint->get("/quote-summary");
     match response {
         http:Response resp => {
             var res = check resp.getJsonPayload();

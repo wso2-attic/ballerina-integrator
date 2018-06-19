@@ -20,15 +20,15 @@ function testStockSummaryService() {
     test:assertTrue(serviceStarted2, msg = "Unable to start the service");
 
     json response1 = {"GOOG":"GOOG, Alphabet Inc., 1013.41", "APPL":"APPL, Apple Inc., 165.22", "MSFT":"MSFT, Microsoft Corporation, 95.35"};
-    http:Request req = new;
+
     // Send a GET request to the specified endpoint
-    var response = httpEndpoint -> get("/quote-summary", request = req);
+    var response = httpEndpoint -> get("/quote-summary");
     match response {
         http:Response resp => {
             var res = check resp.getJsonPayload();
             test:assertEquals(res, response1);
         }
-        http:HttpConnectorError err => test:assertFail(msg = "Failed to call the endpoint:");
+        error err => test:assertFail(msg = "Failed to call the endpoint:");
     }
 }
 

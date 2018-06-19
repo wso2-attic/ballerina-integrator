@@ -23,8 +23,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         endpoint http:Client nasdaqServiceEP {
             url:"http://localhost:9095"
         };
-        http:Request req = new;
-        http:Response resp = new;
+        http:Response finalResponse = new;
         string responseStr;
         // Initialize empty json to add results from backed call
         json  responseJson = {};
@@ -36,23 +35,21 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
 
         // Calling the backend to get the stock quote for GOOG asynchronously
         future <http:Response|error> f1 = start nasdaqServiceEP
-        -> get("/nasdaq/quote/GOOG", request = req);
+        -> get("/nasdaq/quote/GOOG");
 
         io:println(" >> Invocation completed for GOOG stock quote! Proceed without
         blocking for a response.");
-        req = new;
 
         // Calling the backend to get the stock quote for APPL asynchronously
         future <http:Response|error> f2 = start nasdaqServiceEP
-        -> get("/nasdaq/quote/APPL", request = req);
+        -> get("/nasdaq/quote/APPL");
 
         io:println(" >> Invocation completed for APPL stock quote! Proceed without
         blocking for a response.");
-        req = new;
 
         // Calling the backend to get the stock quote for MSFT asynchronously
         future <http:Response|error> f3 = start nasdaqServiceEP
-        -> get("/nasdaq/quote/MSFT", request = req);
+        -> get("/nasdaq/quote/MSFT");
 
         io:println(" >> Invocation completed for MSFT stock quote! Proceed without
         blocking for a response.");
@@ -102,8 +99,8 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         }
 
         // Send the response back to the client
-        resp.setJsonPayload(responseJson);
+        finalResponse.setJsonPayload(responseJson);
         io:println(" >> Response : " + responseJson.toString());
-        _ = caller -> respond(resp);
+        _ = caller -> respond(finalResponse);
     }
 }

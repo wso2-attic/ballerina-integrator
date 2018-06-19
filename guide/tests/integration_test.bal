@@ -21,9 +21,9 @@ function testStockSummaryService() {
 
     json response1 = { "GOOG": "GOOG, Alphabet Inc., 1013.41", "APPL":
     "APPL, Apple Inc., 165.22", "MSFT": "MSFT, Microsoft Corporation, 95.35" };
-    http:Request req = new;
+
     // Send a GET request to the specified endpoint
-    var response = httpEndpoint->get("/quote-summary", request = req);
+    var response = httpEndpoint->get("/quote-summary");
     match response {
         http:Response resp => {
             var res = check resp.getJsonPayload();
