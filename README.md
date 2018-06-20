@@ -33,8 +33,8 @@ Basically, this service will deal with a MySQL database and expose the data oper
 ## Prerequisites
  
 * [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-* MySQL version 5.6 or better
-* Official JDBC driver for MySQL ( Download https://dev.mysql.com/downloads/connector/j/)
+* MySQL version 5.6 or later
+* [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL
   * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
 * A Text Editor or an IDE
 
@@ -68,7 +68,7 @@ data-backed-service
 ```
 
 ### Developing the SQL data backed web service
-Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntaxes. 
+Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntax.
 We can use the following database schema to store employee data.
 ```
 +------------+-------------+------+-----+---------+-------+
@@ -230,7 +230,7 @@ public function insertData(string name, int age, int ssn, int employeeId) return
 public function retrieveById(int employeeID) returns (json) {
     json jsonReturnValue;
     string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
-    // Retrieve employee data by invoking select action defined in ballerina sql connector
+    // Retrieve employee data by invoking select action defined in ballerina sql client
     var ret = employeeDB->select(sqlString, (), employeeID);
     match ret {
         table dataTable => {
@@ -248,7 +248,7 @@ public function updateData(string name, int age, int ssn, int employeeId) return
     json updateStatus = {};
     string sqlString =
     "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
-    // Update existing data by invoking update action defined in ballerina sql connector
+    // Update existing data by invoking update action defined in ballerina sql client
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
     match ret {
         int updateRowCount => {
@@ -270,7 +270,7 @@ public function deleteData(int employeeID) returns (json) {
     json updateStatus = {};
 
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
-    // Delete existing data by invoking update action defined in ballerina sql connector
+    // Delete existing data by invoking update action defined in ballerina sql client
     var ret = employeeDB->update(sqlString, employeeID);
     match ret {
         int updateRowCount => {
@@ -317,7 +317,7 @@ NOTE : You can find the SQL script(`initializeDataBase.sql`) [here](resources/in
 
 - To run the developed employee database service you need to navigate to `data-backed-service/guide` and execute the following command
 ```
-$ Ballerina run data_backed_service
+$ ballerina run data_backed_service
 ```
 
 - You can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of employeeService as follows. 
@@ -393,8 +393,8 @@ You can deploy the RESTful service that you developed above in your local enviro
 - The successful execution of the service should show us the following output. 
 
 ```
-   ballerina: deploying service(s) in 'data_backed_service'
-   ballerina: started HTTP/WS server connector 0.0.0.0:9090
+   ballerina: initiating service(s) in 'data_backed_service'
+   ballerina: started HTTP/WS server endpoint 0.0.0.0:9090
 ```
 ### Deploying on Docker
 
@@ -449,7 +449,8 @@ endpoint mysql:Client employeeDB {
 @docker:Config {
     registry:"ballerina.guides.io",
     name:"employee_database_service",
-    tag:"v1.0"
+    tag:"v1.0",
+    baseImage:"ballerina/ballerina-platform:0.975.0"
 }
 
 @docker:CopyFiles {
@@ -476,7 +477,7 @@ service<http:Service> EmployeeData bind listener {
 ```
 
  - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.
   
 ```
    $ballerina build data_backed_service
@@ -508,7 +509,12 @@ This will also create the corresponding docker image using the docker annotation
 
 Since this guide requires MySQL as a prerequisite, you need a couple of more steps to create a MySQL pod and use it with our sample.  
 
-First let's look at how we can create a MySQL pod in kubernetes.
+First let's look at how we can create a MySQL pod in kubernetes. If you are working with minikube, it will be convenient to use the minikube's in-built docker daemon and push the mysql docker image we are about to build to the minikube's docker registry. This is because during the next steps, in the case of minikube, the docker image we build for employee_database_service will also be pushed to minikube's docker registry. Having both images in the same registry, will reduce the configuration steps.
+Run the following command to start using minikube's in-built docker daemon.
+
+```bash
+minikube docker-env
+```
     
    * Navigate to the <sample_root>/resources directory and run the below command.
 ```
@@ -556,6 +562,7 @@ endpoint mysql:Client employeeDB {
 @kubernetes:Deployment {
     image:"ballerina.guides.io/employee_database_service:v1.0",
     name:"ballerina-guides-employee-database-service",
+    baseImage:"ballerina/ballerina-platform:0.975.0",
     copyFiles:[{target:"/ballerina/runtime/bre/lib",
                 source:<path_to_JDBC_jar>}]
 }
@@ -571,6 +578,19 @@ service<http:Service> EmployeeData bind listener {
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
+- Please note that if you are using minikube it is required to add the `` dockerHost `` and `` dockerCertPath `` configurations under ``  @kubernetes:Deployment ``.
+eg:
+``` ballerina
+@kubernetes:Deployment {
+    image:"ballerina.guides.io/employee_database_service:v1.0",
+    name:"ballerina-guides-employee-database-service",
+    baseImage:"ballerina/ballerina-platform:0.975.0",
+    copyFiles:[{target:"/ballerina/runtime/bre/lib",
+                source:<path_to_JDBC_jar>}],
+    dockerHost:"tcp://<MINIKUBE_IP>:<DOCKER_PORT>",
+    dockerCertPath:"<MINIKUBE_CERT_PATH>"
+}
+```
 
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
@@ -744,7 +764,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 
 - Start the Ballerina Service with the following command from `data-backed-service/guide`
 ```
-   $ nohup ballerina run data-backed-service/ &>> ballerina.log&
+   $ nohup ballerina run data_backed_service/ &>> ballerina.log&
 ```
    NOTE: This will write the console log to the `ballerina.log` file in the `data-backed-service/guide` directory
 

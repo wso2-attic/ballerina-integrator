@@ -25,7 +25,8 @@ import ballerina/config;
 //@docker:Config {
 //    registry:"ballerina.guides.io",
 //    name:"employee_database_service",
-//    tag:"v1.0"
+//    tag:"v1.0",
+//    baseImage:"ballerina/ballerina-platform:0.975.0"
 //}
 //
 //@docker:CopyFiles{
@@ -48,6 +49,7 @@ import ballerina/config;
 //
 //@kubernetes:Deployment {
 //    image:"ballerina.guides.io/employee_database_service:v1.0",
+//    baseImage:"ballerina/ballerina-platform:0.975.0",
 //    name:"ballerina-guides-employee-database-service",
 //    copyFiles:[{target:"/ballerina/runtime/bre/lib",
 //                source:<path_to_JDBC_jar>}]
@@ -70,7 +72,7 @@ endpoint mysql:Client employeeDB {
     port: config:getAsInt("DATABASE_PORT", default = 3306),
     name: config:getAsString("DATABASE_NAME", default = "EMPLOYEE_RECORDS"),
     username: config:getAsString("DATABASE_USERNAME", default = "root"),
-    password: config:getAsString("DATABASE_PASSWORD", default = ""),
+    password: config:getAsString("DATABASE_PASSWORD", default = "root"),
     dbOptions: { useSSL: false }
 };
 

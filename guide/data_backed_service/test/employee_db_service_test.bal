@@ -49,7 +49,7 @@ function testRetrieveByIdResource() {
     // Prepare request with query parameter
     string url = "/employee/" + TEST_EMPLOYEE_ID;
     // Send the request to service and get the response
-    resp = check httpEndpoint->get(url, request = req);
+    resp = check httpEndpoint->get(url);
     // Test the responses from the service with the original test data
     test:assertEquals(resp.statusCode, 200, msg =
         "Retreive employee resource did not reespond with 200 OK signal");
@@ -74,7 +74,7 @@ function testAddEmployeeResource() {
     TEST_EMPLOYEE_ID };
     req.setJsonPayload(requestJson);
     // Send the request to service and get the response
-    resp = check httpEndpoint->post("/employee", request = req);
+    resp = check httpEndpoint->post("/employee", req);
     // Test the response status code is correct
     test:assertEquals(resp.statusCode, 200, msg =
         "Add new employee resource did not reespond with 200 OK signal");
@@ -100,7 +100,7 @@ function testUpdateEmployeeResource() {
         "employeeId": TEST_EMPLOYEE_ID };
     req.setJsonPayload(requestJson);
     // Send the request to service and get the response
-    resp = check httpEndpoint->put("/employee/", request = req);
+    resp = check httpEndpoint->put("/employee/", req);
     // Test the responses from the service with the updated test data
     test:assertEquals(resp.statusCode, 200, msg =
         "Add new employee resource did not reespond with 200 OK signal");
@@ -123,7 +123,7 @@ function testDeleteEmployeeResource() {
     // Testing delete employee resource
     // Send the request to service and get the response
     string url = "/employee/" + TEST_EMPLOYEE_ID;
-    resp = check httpEndpoint->delete(url, request = req);
+    resp = check httpEndpoint->delete(url, req);
     // Test whether the delete operation succeed
     test:assertEquals(resp.statusCode, 200, msg =
         "Delete employee resource did not reespond with 200 OK signal");
