@@ -22,17 +22,18 @@ script:
 
 # declare STRING variables
 - STRING="Downloading ballerina..."
-- BALLERINA_VERSION="ballerina-platform-0.970.0-beta17"
-- MYSQL_CONNECTOR_VERSION="mysql-connector-java-5.1.45"
+- BALLERINA_VERSION=0.975.0
+- MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.45
+- DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
 
 #print downloading string on a screen
 - echo $STRING
 
 #download ballerina distro
-- wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION.zip
+- wget https://product-dist.ballerina.io/downloads/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
 
 #unzip the zip file
-- unzip $BALLERINA_VERSION.zip
+- unzip $DISTRIBUTION_NAME.zip
 
 #download JDBC driver
 - wget http://dev.mysql.com/get/Downloads/Connector-J/$MYSQL_CONNECTOR_VERSION.tar.gz
@@ -41,13 +42,13 @@ script:
 - tar xvzf $MYSQL_CONNECTOR_VERSION.tar.gz
 
 # Add Ballerina to the path variable
-- export PATH=$PATH:$(pwd)/$BALLERINA_VERSION/bin
+- export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
 
 # Print Ballerina version
 - ballerina version
 
 #move the JDBC driver jar into the Ballerina/bre/lib folder
-- mv $MYSQL_CONNECTOR_VERSION/$MYSQL_CONNECTOR_VERSION-bin.jar $BALLERINA_VERSION/bre/lib
+- mv $MYSQL_CONNECTOR_VERSION/$MYSQL_CONNECTOR_VERSION-bin.jar $DISTRIBUTION_NAME/bre/lib
 
 - cd guide/
 - ballerina init
