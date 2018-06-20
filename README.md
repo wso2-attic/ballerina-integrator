@@ -509,7 +509,12 @@ This will also create the corresponding docker image using the docker annotation
 
 Since this guide requires MySQL as a prerequisite, you need a couple of more steps to create a MySQL pod and use it with our sample.  
 
-First let's look at how we can create a MySQL pod in kubernetes.
+First let's look at how we can create a MySQL pod in kubernetes. If you are working with minikube, it will be convenient to use the minikube's in-built docker daemon and push the mysql docker image we are about to build to the minikube's docker registry. This is because during the next steps, in the case of minikube, the docker image we build for employee_database_service will also be pushed to minikube's docker registry. Having both images in the same registry, will reduce the configuration steps.
+Run the following command to start using minikube's in-built docker daemon.
+
+```bash
+minikube docker-env
+```
     
    * Navigate to the <sample_root>/resources directory and run the below command.
 ```
@@ -557,6 +562,7 @@ endpoint mysql:Client employeeDB {
 @kubernetes:Deployment {
     image:"ballerina.guides.io/employee_database_service:v1.0",
     name:"ballerina-guides-employee-database-service",
+    baseImage:"ballerina/ballerina-platform:0.975.0",
     copyFiles:[{target:"/ballerina/runtime/bre/lib",
                 source:<path_to_JDBC_jar>}]
 }
@@ -572,6 +578,19 @@ service<http:Service> EmployeeData bind listener {
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
+- Please note that if you are using minikube it is required to add the `` dockerHost `` and `` dockerCertPath `` configurations under ``  @kubernetes:Deployment ``.
+eg:
+``` ballerina
+@kubernetes:Deployment {
+    image:"ballerina.guides.io/employee_database_service:v1.0",
+    name:"ballerina-guides-employee-database-service",
+    baseImage:"ballerina/ballerina-platform:0.975.0",
+    copyFiles:[{target:"/ballerina/runtime/bre/lib",
+                source:<path_to_JDBC_jar>}],
+    dockerHost:"tcp://<MINIKUBE_IP>:<DOCKER_PORT>",
+    dockerCertPath:"<MINIKUBE_CERT_PATH>"
+}
+```
 
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)

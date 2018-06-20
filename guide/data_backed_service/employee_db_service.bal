@@ -49,6 +49,7 @@ import ballerina/config;
 //
 //@kubernetes:Deployment {
 //    image:"ballerina.guides.io/employee_database_service:v1.0",
+//    baseImage:"ballerina/ballerina-platform:0.975.0",
 //    name:"ballerina-guides-employee-database-service",
 //    copyFiles:[{target:"/ballerina/runtime/bre/lib",
 //                source:<path_to_JDBC_jar>}]
