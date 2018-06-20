@@ -764,7 +764,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 
 - Start the Ballerina Service with the following command from `data-backed-service/guide`
 ```
-   $ nohup ballerina run data-backed-service/ &>> ballerina.log&
+   $ nohup ballerina run data_backed_service/ &>> ballerina.log&
 ```
    NOTE: This will write the console log to the `ballerina.log` file in the `data-backed-service/guide` directory
 
