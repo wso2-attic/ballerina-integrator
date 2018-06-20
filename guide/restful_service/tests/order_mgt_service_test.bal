@@ -36,7 +36,7 @@ function testResourceAddOrder() {
     json payload = {"Order":{"ID":"100500", "Name":"XYZ", "Description":"Sample order."}};
     req.setJsonPayload(payload);
     // Send 'POST' request and obtain the response.
-    http:Response response = check clientEP -> post("/order", request=req);
+    http:Response response = check clientEP -> post("/order", req);
     // Expected response code is 201.
     test:assertEquals(response.statusCode, 201,
         msg = "addOrder resource did not respond with expected response code!");
@@ -57,7 +57,7 @@ function testResourceUpdateOrder() {
     json payload = {"Order":{"Name":"XYZ", "Description":"Updated order."}};
     req.setJsonPayload(payload);
     // Send 'PUT' request and obtain the response.
-    http:Response response = check clientEP -> put("/order/100500", request=req);
+    http:Response response = check clientEP -> put("/order/100500", req);
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "updateOrder resource did not respond with expected response code!");
@@ -73,10 +73,8 @@ function testResourceUpdateOrder() {
 }
 // Function to test GET resource 'findOrder'.
 function testResourceFindOrder() {
-    // Initialize empty http requests and responses.
-    http:Request req = new;
     // Send 'GET' request and obtain the response.
-    http:Response response = check clientEP -> get("/order/100500", request=req);
+    http:Response response = check clientEP -> get("/order/100500");
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "findOrder resource did not respond with expected response code!");
@@ -95,7 +93,7 @@ function testResourceCancelOrder() {
     // Initialize empty http requests and responses.
     http:Request req = new;
     // Send 'DELETE' request and obtain the response.
-    http:Response response = check clientEP -> delete("/order/100500", request=req);
+    http:Response response = check clientEP -> delete("/order/100500", req);
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "cancelOrder resource did not respond with expected response code!");

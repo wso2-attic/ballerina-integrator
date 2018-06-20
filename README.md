@@ -265,8 +265,8 @@ Output :
 < HTTP/1.1 201 Created
 < Content-Type: application/json
 < Location: http://localhost:9090/ordermgt/order/100500
-< Transfer-Encoding: chunked
-< Server: wso2-http-transport
+< content-length: 46
+< server: ballerina/0.975.0
 
 {"status":"Order Created.","orderId":"100500"} 
 ```
