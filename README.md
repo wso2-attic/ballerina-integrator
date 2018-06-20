@@ -92,7 +92,7 @@ asynchronous-invocation
 
 - The Ballerina language supports function calls and client connector actions in order to execute asynchronously. The `start` keyword allows you to invoke the function asychronously. The `future` type allows you to have the result in the future. The program can proceed without any blocking after the asynchronous function invocation. The following statement calls the endpoint asynchronously.
 
-  `future <http:Response|error> responseFuture = start nasdaqServiceEP -> get("/nasdaq/quote/MSFT", request = req);`
+  `future <http:Response|error> responseFuture = start nasdaqServiceEP -> get("/nasdaq/quote/MSFT");`
 
 - Finally, the service appends all three responses and returns the stock quote summary to the client. To get the results from a asynchronous call,  the `await` keyword needs to be used. `await` blocks invocations until the previously started asynchronous invocations are completed.
 The following statement receives the response from the future type.
@@ -127,7 +127,6 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         endpoint http:Client nasdaqServiceEP {
             url: "http://localhost:9095"
         };
-        http:Request req = new;
         http:Response resp = new;
         string responseStr;
 
@@ -141,23 +140,21 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
 
         // This calls the backend to get the stock quote for GOOG asynchronously.
         future <http:Response|http:HttpConnectorError> f1 = start nasdaqServiceEP
-        -> get("/nasdaq/quote/GOOG", request = req);
+        -> get("/nasdaq/quote/GOOG");
 
         io:println(" >> Invocation completed for GOOG stock quote! Proceed without
         blocking for a response.");
-        req = new;
 
         // This calls the backend to get the stock quote for APPL asynchronously.
         future <http:Response|http:HttpConnectorError> f2 = start nasdaqServiceEP
-        -> get("/nasdaq/quote/APPL", request = req);
+        -> get("/nasdaq/quote/APPL");
 
         io:println(" >> Invocation completed for APPL stock quote! Proceed without
         blocking for a response.");
-        req = new;
 
         // This calls the backend to get the stock quote for MSFT asynchronously.
         future <http:Response|http:HttpConnectorError> f3 = start nasdaqServiceEP
-        -> get("/nasdaq/quote/MSFT", request = req);
+        -> get("/nasdaq/quote/MSFT");
 
         io:println(" >> Invocation completed for MSFT stock quote! Proceed without
         blocking for a response.");
