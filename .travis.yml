@@ -24,7 +24,8 @@ script:
 - STRING1="Downloading JDBC connector..."
 
 # Declare variable for Ballerina version
-- BALLERINA_VERSION="ballerina-platform-0.970.0"
+- BALLERINA_VERSION=0.975.0
+- DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
 
 # Declare variable for JDBC version
 - JDBC_VERSION="mysql-connector-java-5.1.45"
@@ -33,13 +34,13 @@ script:
 - echo $STRING
 
 # Download Ballerina dist
-- wget https://product-dist.ballerina.io/downloads/0.970.0/$BALLERINA_VERSION.zip
+- wget https://product-dist.ballerina.io/downloads/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
 
 # Unzip the zip file
-- unzip $BALLERINA_VERSION.zip
+- unzip $DISTRIBUTION_NAME.zip
 
 # Add Ballerina to the path variable
-- export PATH=$PATH:$(pwd)/$BALLERINA_VERSION/bin
+- export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
 
 # Print Ballerina version
 - ballerina version
@@ -54,7 +55,7 @@ script:
 - tar xvzf $JDBC_VERSION.tar.gz
 
 # Copy JDBC jar into Ballerina lib folder
-- cp $JDBC_VERSION/$JDBC_VERSION-bin.jar $BALLERINA_VERSION/bre/lib
+- cp $JDBC_VERSION/$JDBC_VERSION-bin.jar $DISTRIBUTION_NAME/bre/lib
 
 # Change the directory
 - cd guide/
