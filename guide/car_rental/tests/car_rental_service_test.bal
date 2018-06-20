@@ -31,9 +31,6 @@ endpoint http:Client clientEP {
 // Function to test Car rental service
 @test:Config
 function testCarRentalService() {
-    // Initialize the empty http requests and responses
-    http:Request req;
-
     // Test the 'rentCar' resource
     // Construct a request payload
     json payload = {
@@ -43,9 +40,8 @@ function testCarRentalService() {
         "Preference":"Air Conditioned"
     };
 
-    req.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/rent", request = req);
+    http:Response response = check clientEP -> post("/rent", payload);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected

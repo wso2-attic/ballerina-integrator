@@ -31,9 +31,6 @@ endpoint http:Client clientEP {
 // Function to test Airline reservation service
 @test:Config
 function testAirlineReservationService() {
-    // Initialize the empty http requests and responses
-    http:Request req;
-
     // Test the 'reserveTicket' resource
     // Construct a request payload
     json payload = {
@@ -43,9 +40,8 @@ function testAirlineReservationService() {
         "Preference":"Business"
     };
 
-    req.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/reserve", request = req);
+    http:Response response = check clientEP -> post("/reserve", payload);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
         msg = "Airline reservation service did not respond with 200 OK signal!");

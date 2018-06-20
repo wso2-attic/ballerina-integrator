@@ -105,15 +105,12 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
 
         // Reserve airline ticket for the user by calling Airline reservation service
-        http:Request outReqAirline;
-        http:Response inResAirline;
         // construct the payload
         json outReqPayloadAirline = outReqPayload;
         outReqPayloadAirline.Preference = airlinePreference;
-        outReqAirline.setJsonPayload(outReqPayloadAirline);
 
         // Send a post request to airlineReservationService with appropriate payload and get response
-        inResAirline = check airlineReservationEP -> post("/reserve", request = outReqAirline);
+        http:Response inResAirline = check airlineReservationEP -> post("/reserve", outReqPayloadAirline);
 
         // Get the reservation status
         var airlineResPayload = check inResAirline.getJsonPayload();
@@ -128,15 +125,12 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
 
         // Reserve hotel room for the user by calling Hotel reservation service
-        http:Request outReqHotel;
-        http:Response inResHotel;
         // construct the payload
         json outReqPayloadHotel = outReqPayload;
         outReqPayloadHotel.Preference = hotelPreference;
-        outReqHotel.setJsonPayload(outReqPayloadHotel);
 
         // Send a post request to hotelReservationService with appropriate payload and get response
-        inResHotel = check hotelReservationEP -> post("/reserve", request = outReqHotel);
+        http:Response inResHotel = check hotelReservationEP -> post("/reserve", outReqPayloadHotel);
 
         // Get the reservation status
         var hotelResPayload = check inResHotel.getJsonPayload();
@@ -151,15 +145,12 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
 
         // Renting car for the user by calling Car rental service
-        http:Request outReqCar;
-        http:Response inResCar;
         // construct the payload
         json outReqPayloadCar = outReqPayload;
         outReqPayloadCar.Preference = carPreference;
-        outReqCar.setJsonPayload(outReqPayloadCar);
 
         // Send a post request to carRentalService with appropriate payload and get response
-        inResCar = check carRentalEP -> post("/rent", request = outReqCar);
+        http:Response inResCar = check carRentalEP -> post("/rent", outReqPayloadCar);
 
         // Get the rental status
         var carResPayload = check inResCar.getJsonPayload();

@@ -54,9 +54,8 @@ function testTravelAgencyService() {
         "Preference":{"Airline":"Business", "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}
     };
 
-    req.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/arrangeTour", request = req);
+    http:Response response = check clientEP -> post("/arrangeTour", payload);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Travel agency service did not respond with 200 OK signal!");
     // Check whether the response is as expected
