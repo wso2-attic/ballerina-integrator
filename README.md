@@ -1,6 +1,5 @@
 # Pass-through messaging
-
-There are different ways of messaging methods in SOA(Service Oriented Architecture). In this guide we are focusing on pass-through Messaging between services using example scenario
+There are different ways of messaging methods in SOA(Service Oriented Architecture). In this guide, we are focusing on pass-through Messaging between services using an example scenario
 
 > This guide describes implementing pass-through messaging using Ballerina programming language as simple steps
 
@@ -15,17 +14,17 @@ The following are the sections available in this guide.
 
 ## What you’ll build
 
-There are different ways of messaging between services such as pass-through messaging, content-based Routing of messages, header-based Routing of messages, scatter-gather messaging. Almost all methods of messaging occurs delay in messaging while processing of incoming message, other than the pass-through messaging. when routing the message without processing/inspecting the message payload the most efficient way is the pass-through messaging. Here are some differences about conventional message processing vs pass-through messaging.
+There are different ways of messaging between services such as pass-through messaging, content-based Routing of messages, header-based Routing of messages, scatter-gather messaging. Almost all methods of messaging occur a delay in messaging while processing of an incoming message, other than the pass-through messaging. when routing the message without processing/inspecting the message payload the most efficient way is the pass-through messaging. Here are some differences between conventional message processing vs pass-through messaging.
 
 ![alt text](images/processingVSpassthrough.png)
 
-Conventional message processing methods includes a message processor for process message, but pass-through messaging skipped the message processor. So it saves the processing time and power and more efficient when comparing with other types.
+Conventional message processing methods include a message processor for process message, but pass-through messaging skipped the message processor. So it saves the processing time and power and more efficient when compared with other types.
 
-Now let's get understand about scenario which described here. The company owned two sub offices and head office as LK Sub Office, UK Sub Office and US Head Office. When you are connect to a sub office it will automatically redirected to the head office without any latency. To do so, here it used the pass-through messaging method.
+Now let's get understand about the scenario which described here. The company owned two sub-offices and head office as LK Sub Office, UK Sub Office and US Head Office. When you are connecting to a sub-office it will automatically be redirected to the head office without any latency. To do so, here it used the pass-through messaging method.
 
 ![alt text](images/samplescenario.png)
 
-The three offices implemented as three separate services named 'LKSubOffice', 'UKSubOffice' and 'USHeadOffice'. When user calls to 'LKSubOffice' or 'UKSubOffice' using http request, the request redirected to the 'USHeadOffice' service without processing the incoming request. If it processes the incoming request, it will no longer a pass-through messaging. So 'LKSubOffice', 'UKSubOffice' services acts as pass-through messaging services. The 'USHeadOffice' service processes the incoming request method such as 'GET', 'POST'. Then call to the back end service, which will give the "Welcome to WSO2 US head office!" message. So the 'USHeadOffice' service is not a pass-through messaging service.
+The three offices implemented as three separate services named 'LKSubOffice', 'UKSubOffice' and 'USHeadOffice'. When a user calls to 'LKSubOffice' or 'UKSubOffice' using HTTP request, the request redirected to the 'USHeadOffice' service without processing the incoming request. If it processes the incoming request, it will no longer a pass-through messaging. So 'LKSubOffice', 'UKSubOffice' services act as pass-through messaging services. The 'USHeadOffice' service processes the incoming request method such as 'GET', 'POST'. Then call to the back-end service, which will give the "Welcome to WSO2 US head office!" message. So the 'USHeadOffice' service is not a pass-through messaging service.
 
 ## Prerequisites
  
@@ -39,7 +38,7 @@ The three offices implemented as three separate services named 'LKSubOffice', 'U
 
 ## Implementation
 
-> If you are well aware of the implementation, you can directly clone the git repository to your own device. Using that, you can skip the the "Implementation" section and straight forward to "Tasting" section.
+> If you are well aware of the implementation, you can directly clone the git repository to your own device. Using that, you can skip the "Implementation" section and straightforward to "Tasting" section.
 
 ### Create the project structure
 
