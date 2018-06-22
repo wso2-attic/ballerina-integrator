@@ -1,6 +1,6 @@
 # Pass-through messaging
 
-There are different ways of messaging methods in SOA(Service Oriented Architecture). In this guide we wre focusing on pass-through Messaging between services using example scenario
+There are different ways of messaging methods in SOA(Service Oriented Architecture). In this guide we are focusing on pass-through Messaging between services using example scenario
 
 > This guide describes implementing pass-through messaging using Ballerina programming language as simple steps
 
@@ -15,17 +15,17 @@ The following are the sections available in this guide.
 
 ## What you’ll build
 
-There are diffretent ways of messsaging between services such as pass-through messaging, content-based Routing of messages, header-based Routing of messages, scatter-gather messaging. Almost all methods of messaging occurs delay in messaging while processsing of incommoing message, other than the pass-through messaging. when routing the message without processing/inspecting the message payload the most efficient way is the pass-through messaging. Here are some defferences about conventional message processing vs pass-through messaging.
+There are different ways of messaging between services such as pass-through messaging, content-based Routing of messages, header-based Routing of messages, scatter-gather messaging. Almost all methods of messaging occurs delay in messaging while processing of incoming message, other than the pass-through messaging. when routing the message without processing/inspecting the message payload the most efficient way is the pass-through messaging. Here are some differences about conventional message processing vs pass-through messaging.
 
 ![alt text](images/processingVSpassthrough.png)
 
-Conventional message processing methods includes a message processor for process message, but pass-through messsaging skipped the message processor. So it saves the processig time and power and more efficient when camparing with other types.
+Conventional message processing methods includes a message processor for process message, but pass-through messaging skipped the message processor. So it saves the processing time and power and more efficient when comparing with other types.
 
-Now let's get undersatnd about scenario which described here. The company owned two sub offices and head office as LKSubOffice, UKSubOffice and USHeadOffice. When you are connect to a sub office it will automatically redirected to the head office without any latency. To do so, here it used the pass-through messaging method.
+Now let's get understand about scenario which described here. The company owned two sub offices and head office as LK Sub Office, UK Sub Office and US Head Office. When you are connect to a sub office it will automatically redirected to the head office without any latency. To do so, here it used the pass-through messaging method.
 
 ![alt text](images/samplescenario.png)
 
-The three offices implemented as three seperate services named 'LKSubOffice', 'UKSubOffice' and 'USHeadOffice'. When user calls to 'LKSubOffice' or 'UKSubOffice' using http request, the request redirected to the 'USHeadOffice' serive without processing the incomming request. If it processes the incomming request, it will nolonger a pass-through messaging. So 'LKSubOffice', 'UKSubOffice' services acts as pass-through messaging services. The 'USHeadOffice' service processes the incomming request method such as 'GET', 'POST'. Then call to the back end service, which will give the "Welcome to WSO2 US head office!" message. So the 'USHeadOffice' service is not a pass-through messaging service.
+The three offices implemented as three separate services named 'LKSubOffice', 'UKSubOffice' and 'USHeadOffice'. When user calls to 'LKSubOffice' or 'UKSubOffice' using http request, the request redirected to the 'USHeadOffice' service without processing the incoming request. If it processes the incoming request, it will no longer a pass-through messaging. So 'LKSubOffice', 'UKSubOffice' services acts as pass-through messaging services. The 'USHeadOffice' service processes the incoming request method such as 'GET', 'POST'. Then call to the back end service, which will give the "Welcome to WSO2 US head office!" message. So the 'USHeadOffice' service is not a pass-through messaging service.
 
 ## Prerequisites
  
@@ -39,7 +39,7 @@ The three offices implemented as three seperate services named 'LKSubOffice', 'U
 
 ## Implementation
 
-> If you are well aware of the implementaion, you can diractly clone the git repository to your own device. Using that, you can skip the the "Implementation" section and straigh forward to "Teasting" section.    
+> If you are well aware of the implementation, you can directly clone the git repository to your own device. Using that, you can skip the the "Implementation" section and straight forward to "Tasting" section.
 
 ### Create the project structure
 
@@ -71,13 +71,13 @@ To implement the scenario, let's started to implement the passthrough.bal, which
 import ballerina/http;
 import ballerina/log;
 
-//Define end-point for the sub offices as head office link
+//Define endpoint for the sub offices as head office link
 endpoint http:Client clientEP {
     url: "http://localhost:9092/USHeadOffice"
 };
 
 service<http:Service> LKSubOffice bind { port: 9090 } {
-    // This service implement as a passthrough servise. So it allows all HTTP methods. So methods are not specified.
+    // This service implement as a passthrough service. So it allows all HTTP methods. So methods are not specified.
     @http:ResourceConfig {
         path: "/"
     }
@@ -143,14 +143,14 @@ service<http:Service> USHeadOffice bind { port: 9092 } {
         path: "/"
     }
     helloResource(endpoint caller, http:Request req) {
-        //Set log to view the status to know that the passthrough was successfull.
+        //Set log to view the status to know that the passthrough was successful.
         log:printInfo("Now You are connected to US head office  .......");
         // Make the response for the request
         http:Response res = new;
         res.setPayload("Welcome to WSO2 US head office!");
         // Pass the response to the caller
         caller->respond(res)
-        // Cath the errors occured while passing the response
+        // Catch the errors occurred while passing the response
         but { error e =>
         log:printError("Error sending response", err = e) };
     }
@@ -293,7 +293,7 @@ endpoint http:Listener UKSubOfficeEP {
 endpoint http:Listener USHeadOfficeEP {
     port:9092
 };
-//Define end-point for the sub offices as head office link
+//Define endpoint for the sub offices as head office link
 endpoint http:Client clientEP {
     url: "http://localhost:9092/USHeadOffice"
 };
@@ -414,7 +414,7 @@ service<http:Service> USHeadOffice bind USHeadOfficeEP {
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
-- In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
+- In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and hostname ``ballerina.guides.io``)
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
@@ -453,7 +453,7 @@ service<http:Service> USHeadOffice bind USHeadOfficeEP {
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress.
-Here curl request for 'LKSubOffice' service is mentioned, you can siply try to 'UKSubOffice' service as well.
+Here curl request for 'LKSubOffice' service is mentioned, you can simply try to 'UKSubOffice' service as well.
  
 Node Port:
 ```bash
