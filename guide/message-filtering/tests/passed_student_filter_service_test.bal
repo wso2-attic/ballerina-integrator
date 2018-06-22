@@ -1,6 +1,5 @@
 import ballerina/test;
 import ballerina/http;
-import ballerina/io;
 
 
 // Start the filterService
@@ -21,7 +20,7 @@ function testResourceFilterMarks () {
     // Initialize the empty http request
     http:Request req = new;
     // Construct the request payload
-    json payload = {"students":[{"name":"Saman","subject":"Maths","marks":80},{"name":"Sugath","subject":"Maths","marks":34}]};
+    json payload = {"name":"Saman","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science","marks":40}]};
     // Set JSON payload to request
     req.setJsonPayload(payload);
     // Send 'POST' request and obtain the response
@@ -31,9 +30,9 @@ function testResourceFilterMarks () {
     // Get the response payload
     json resPayload = check res.getJsonPayload();
     // Get the student information
-    json passStdInfo = resPayload.students[0];
+    string status = check <string>resPayload.status;
     // Check whether the response is as expected
-    test:assertEquals(passStdInfo.toString(), "{\"name\":\"Saman\",\"mark\":80}", msg = "Response mismatch!");
+    test:assertEquals(status, "Not Qualified", msg = "Response mismatch!");
 
 }
 

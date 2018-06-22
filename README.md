@@ -1,6 +1,6 @@
 
 # Message-Filtering  
-The Message Filter checks an incoming message against a certain criteria that the message should adhere to. If the criteria is not met, the filter will discard the message. Otherwise, it will proceed the message.
+The Message Filter checks an incoming message against a certain criteria that the message should adhere to. If the criteria is not met, the filter will discard the message. Otherwise, it will route the message to the output channel.
 
 > In this guide you will learn about building a message filtering service using Ballerina. 
 
@@ -14,7 +14,7 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you’ll build 
-To understanding how you can build a message filltering web service using Ballerina, let’s consider a real world use case of a Colified students filtering service based on their marks.
+To understanding how you can build a message filltering web service using Ballerina, let’s consider a real world use case of a Colified students filtering service based on the marks of subjects.
 The following figure illustrates all the required functionalities of the Message Filtering Service that we need to build. 
 
 ![Message Filtering Service](images/ballerina_sample.png "Message Filtering Service")
@@ -69,6 +69,10 @@ endpoint http:Listener filterServiceEP {
     port: 9090
 };
 
+endpoint http:Client stdInfoEP {
+    url: "http://www.mocky.io"
+};
+
 // REST service to select the passed student from an exam
 service<http:Service> filterService bind filterServiceEP {
 
@@ -84,48 +88,51 @@ service<http:Service> filterService bind filterServiceEP {
         http:Response response;
 
         // Get the JSON payload from the request
-        json marksReq = check request.getJsonPayload();
+        json reqPayload = check request.getJsonPayload();
 
-        // Get the student array from the request payload
-        json students = marksReq.students;
-        int length = lengthof students; 
+        // Get the information of the subjects
+        string stdName = check <string>reqPayload.name;
+        json subjects = reqPayload.subjects;
 
-        // Created a empty JSON array to add passed student's information
-        json filteredStudents = {students:[]};
-        int i=0;
+        // Declare boolian flag to set Qualified or Not
+        boolean isQualified = false;
 
-        // Iteratting student array
-        foreach student in students {
-            json marks = student.marks;
-            int mark = check <int>marks;
+        // Iteratting subject array
+        foreach subj in subjects {
+            int mark = check <int>subj.marks;
             // Check the student exceed the pass mark value
-            if (mark > 60) {
-                // Create a new JSOn object for each filterd student record
-                json<Student> filteredStudent = {};
-
-                // Adding passed student's information to JSON object
-                filteredStudent.name = student.name;
-                filteredStudent.mark = mark;
-
-                // Adding student filtered student's JSON object to JSON array
-                filteredStudents.students[i] = filteredStudent;
-                i++;
+            if (mark >= 60) {
+                isQualified = true;
+            }else{
+                isQualified = false;
             }
+        }
+        // Set Original payload to a new request object
+        http:Request req = new;
+        req.setJsonPayload(reqPayload, contentType = "application/json");
+
+        // Define a variables for response payload and status code
+        json resp = {status:""};
+        int statusCode;
+
+        // Check whether student is qualified or not
+        if(isQualified){
+            // Call qualified student records persistance service
+            response = check stdInfoEP -> post("/v2/5b2cc4292f00007900ebd395", request = req);
+            statusCode = response.statusCode;
+            // Set response status to Qualified
+            resp.status = "Qualified";
+        }else{
+            // Set response status to Not Qualified
+            resp.status = "Not Qualified";
         }
 
         // Set JSON response
-        response.setJsonPayload(filteredStudents, contentType = "application/json");
+        response.setJsonPayload(resp, contentType = "application/json");
         _ = caller -> respond(response);
     }
 
 }
-
-
-// Defined Student type
-type Student {
-    string name;
-    int mark;
-};
 ```
 
 - You can implement the business logic of message filtering machanism in `filterMarks` resource as per your requirements.
@@ -144,17 +151,17 @@ You can test the functionality of the `passed_student_filter_service` by sending
 
 **Filter Student's marks** 
 ```bash
-curl -X POST -v -d '{"students":[{"name":"Saman","subject":"Maths","marks": 80},{"name":"Sugath","subject":"Maths","marks": 59},{"name":"Manoj","subject":"Maths","marks": 62},{"name":"Nipun","subject":"Maths","marks": 21}]}' http://localhost:9090/filterService/filterMarks -H 'content-type: application/json'
+curl -X POST -v -d '{"name":"Sam","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science","marks":40}]}' http://localhost:9090/filterService/filterMarks -H 'content-type: application/json'
 
 Output :  
 < HTTP/1.1 200 OK
 < content-type: application/json
-< content-length: 68
+< content-length: 22
 < server: ballerina/0.970.1
-< date: Fri, 15 Jun 2018 22:17:41 +0530
+< date: Fri, 22 Jun 2018 23:27:27 +0530
 < 
 * Connection #0 to host localhost left intact
-{"students":[{"name":"Saman","mark":80},{"name":"Manoj","mark":62}]} 
+{"status":"Qualified"}
 ```
 
 ### Writing unit tests 
@@ -247,7 +254,7 @@ service<http:Service> filterService bind filterServiceEP {
 - Verify docker container is running with the use of `$ docker ps`. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
 ```bash
-   curl -X POST -v -d '{"students":[{"name":"Saman","subject":"Maths","marks": 80},{"name":"Sugath","subject":"Maths","marks": 59},{"name":"Manoj","subject":"Maths","marks": 62},{"name":"Nipun","subject":"Maths","marks": 21}]}' http://localhost:9090/filterService/filterMarks -H 'content-type: application/json'    
+   curl -X POST -v -d '{"name":"Sam","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science","marks":40}]}' http://localhost:9090/filterService/filterMarks -H 'content-type: application/json'    
 ```
 
 ### Deploying on Kubernetes
@@ -328,7 +335,7 @@ service<http:Service> filterService bind filterServiceEP {
 Node Port:
  
 ```bash
-   curl -X POST -v -d '{"students":[{"name":"Saman","subject":"Maths","marks": 80},{"name":"Sugath","subject":"Maths","marks": 59},{"name":"Manoj","subject":"Maths","marks": 62},{"name":"Nipun","subject":"Maths","marks": 21}]}' http://localhost:<Node_Port>/filterService/filterMarks -H 'content-type: application/json'  
+   curl -X POST -v -d '{"name":"Sam","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science","marks":40}]}' http://localhost:<Node_Port>/filterService/filterMarks -H 'content-type: application/json'  
 ```
 
 Ingress:
@@ -340,7 +347,7 @@ Add `/etc/hosts` entry to match hostname.
 
 Access the service 
 ```bash 
-   curl -X POST -v -d '{"students":[{"name":"Saman","subject":"Maths","marks": 80},{"name":"Sugath","subject":"Maths","marks": 59},{"name":"Manoj","subject":"Maths","marks": 62},{"name":"Nipun","subject":"Maths","marks": 21}]}' http://ballerina.guides.io:<Node_Port>/filterService/filterMarks -H 'content-type: application/json'
+   curl -X POST -v -d '{"name":"Sam","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science","marks":40}]}' http://ballerina.guides.io:<Node_Port>/filterService/filterMarks -H 'content-type: application/json'
 ```
 
 ## Observability 

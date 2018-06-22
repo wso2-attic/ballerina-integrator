@@ -2,7 +2,6 @@ import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
-
 // @docker:Config {
 //     registry:"ballerina.guides.io",
 //     name:"passed_student_filter_service",
@@ -31,6 +30,10 @@ endpoint http:Listener filterServiceEP {
     port: 9090
 };
 
+endpoint http:Client stdInfoEP {
+    url: "http://www.mocky.io"
+};
+
 // REST service to select the passed student from an exam
 service<http:Service> filterService bind filterServiceEP {
 
@@ -46,45 +49,50 @@ service<http:Service> filterService bind filterServiceEP {
         http:Response response;
 
         // Get the JSON payload from the request
-        json marksReq = check request.getJsonPayload();
+        json reqPayload = check request.getJsonPayload();
 
-        // Get the student array from the request payload
-        json students = marksReq.students;
-        int length = lengthof students; 
+        // Get the information of the subjects
+        string stdName = check <string>reqPayload.name;
+        json subjects = reqPayload.subjects;
 
-        // Created a empty JSON array to add passed student's information
-        json filteredStudents = {students:[]};
-        int i=0;
+        // Declare boolian flag to set Qualified or Not
+        boolean isQualified = false;
 
-        // Iteratting student array
-        foreach student in students {
-            json marks = student.marks;
-            int mark = check <int>marks;
+        // Iteratting subject array
+        foreach subj in subjects {
+            int mark = check <int>subj.marks;
             // Check the student exceed the pass mark value
-            if (mark > 60) {
-                // Create a new JSOn object for each filterd student record
-                json<Student> filteredStudent = {};
-
-                // Adding passed student's information to JSON object
-                filteredStudent.name = student.name;
-                filteredStudent.mark = mark;
-
-                // Adding student filtered student's JSON object to JSON array
-                filteredStudents.students[i] = filteredStudent;
-                i++;
+            if (mark >= 60) {
+                isQualified = true;
+            }else{
+                isQualified = false;
             }
+        }
+        // Set Original payload to a new request object
+        http:Request req = new;
+        req.setJsonPayload(reqPayload, contentType = "application/json");
+
+        // Define a variables for response payload and status code
+        json resp = {status:""};
+        int statusCode;
+
+        // Check whether student is qualified or not
+        if(isQualified){
+            // Call qualified student records persistance service
+            response = check stdInfoEP -> post("/v2/5b2cc4292f00007900ebd395", request = req);
+            statusCode = response.statusCode;
+            // Set response status to Qualified
+            resp.status = "Qualified";
+        }else{
+            // Set response status to Not Qualified
+            resp.status = "Not Qualified";
         }
 
         // Set JSON response
-        response.setJsonPayload(filteredStudents, contentType = "application/json");
-        _ = caller -> respond(response);
+        http:Response res = new;
+        res.statusCode = 200;
+        res.setJsonPayload(resp, contentType = "application/json");
+        _ = caller -> respond(res);
     }
 
 }
-
-
-// Defined Student type
-type Student {
-    string name;
-    int mark;
-};
