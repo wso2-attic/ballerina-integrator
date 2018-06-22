@@ -166,11 +166,11 @@ service<http:Service> USHeadOffice bind { port: 9092 } {
    $ ballerina run passthrough.bal
 ```
    
-- Then you may have two options of request, when connecting to a sub office.
+- Then you may have two options of the request when connecting to a sub-office.
 
 #### Case 1
 
-- To connect to LK sub office
+- To connect to LK sub-office
 
 ```bash
 
@@ -179,7 +179,7 @@ service<http:Service> USHeadOffice bind { port: 9092 } {
 ```
 #### Output
 
-When connecting to the LK sub office, the output will be the "Welcome to WSO2 US head office!" from the US head office.
+When connecting to the LK sub-office, the output will be the "Welcome to WSO2 US head office!" from the US head office.
 
 ```bash
 < HTTP/1.1 200 OK
@@ -201,14 +201,14 @@ To identify the message flow inside the services, there will be INFO in the noti
 
 #### Case 2
 
-- To connect to UK sub office
+- To connect to UK sub-office
 
 ```bash
  $ curl -v http://localhost:9091/UKSubOffice -X GET
 ```
 #### Output
 
-When connecting to the UK sub office, the output will be the "Welcome to WSO2 US head office!" from the US head office.
+When connecting to the UK sub-office, the output will be the "Welcome to WSO2 US head office!" from the US head office.
 
 ```bash
 < HTTP/1.1 200 OK
@@ -268,7 +268,7 @@ As the first step, you can build Ballerina executable archives (.balx) of the se
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a docker container.
+You can run the service that we developed above as a Docker container.
 As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers,
 you just need to put the corresponding docker annotations on your service code.
 
@@ -335,15 +335,15 @@ service<http:Service> USHeadOffice bind USHeadOfficeEP {
    $ docker run -d -p 9090:9090 -p 9091:9091 -p 9092:9092 ballerina.guides.io/passthrough:v1.0
 ```
 
-   Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+   Here we run the docker image with the flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access 'LKSubOffice' and 'UKSubOffice' services, using the same curl commands that we've used above. 
-- for LK sub office
+- for LK sub-office
 ```bash
     curl -v http://localhost:9090/LKSubOffice -X GET
 ```
-- for UK sub office 
+- for UK sub-office 
 ```bash
     curl -v http://localhost:9091/UKSubOffice -X GET
 ```
