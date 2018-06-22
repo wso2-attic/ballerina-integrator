@@ -350,9 +350,9 @@ service<http:Service> USHeadOffice bind USHeadOfficeEP {
 
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-- Let's now see how we can deploy our `passthrough` on Kubernetes. First we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
+- Let's now see how we can deploy our `passthrough` on Kubernetes. First, we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
 ##### passthrough.bal
 
@@ -413,7 +413,7 @@ service<http:Service> USHeadOffice bind USHeadOfficeEP {
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
-- In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and hostname ``ballerina.guides.io``)
+- In addition, we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and hostname ``ballerina.guides.io``)
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
@@ -431,7 +431,7 @@ service<http:Service> USHeadOffice bind USHeadOfficeEP {
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
-- Also the Kubernetes artifacts related our service, will be generated under `` /home/saneth/Documents/ballerina/sample_pass-through/guide/target/kubernetes/``. 
+- Also, the Kubernetes artifacts related to our service will be generated under `` /home/saneth/Documents/ballerina/sample_pass-through/guide/target/kubernetes/``. 
 - Now you can create the Kubernetes deployment using:
 
 ```bash
@@ -492,7 +492,7 @@ NOTE: The above configuration is the minimum configuration needed to enable trac
 
 ### Tracing 
 
-You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+You can monitor ballerina services using inbuilt tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 Follow the following steps to use tracing with Ballerina.
 
 - You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
@@ -551,7 +551,7 @@ Follow the below steps to set up Prometheus and view metrics for 'passthrough'.
    step="PT1M"
 ```
 
-- Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
+- Create a file `prometheus.yml` inside the `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
 ```
    global:
      scrape_interval:     15s
@@ -563,7 +563,7 @@ Follow the below steps to set up Prometheus and view metrics for 'passthrough'.
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+   NOTE: Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
    
 - Run the Prometheus docker image using the following command
 ```
@@ -576,7 +576,7 @@ Follow the below steps to set up Prometheus and view metrics for 'passthrough'.
    http://localhost:19090/
 ```
 
-NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter the following expression in Prometheus UI
 -  http_requests_total
 -  http_response_time
 
@@ -656,7 +656,7 @@ filebeat.prospectors:
 output.logstash:
   hosts: ["logstash:5044"]  
 ```
-NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
+NOTE: Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
 
 ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
         
@@ -668,7 +668,7 @@ $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
- - Access Kibana to visualize the logs using following URL
+ - Access Kibana to visualize the logs using the following URL
 ```
    http://localhost:5601 
 ```
