@@ -20,11 +20,11 @@ There are different ways of messaging between services such as pass-through mess
 
 Conventional message processing methods include a message processor for process message, but pass-through messaging skipped the message processor. So it saves the processing time and power and more efficient when compared with other types.
 
-Now let's get understand about the scenario which described here. The company owned two sub-offices and head office as LK Sub Office, UK Sub Office and US Head Office. When you are connecting to a sub-office it will automatically be redirected to the head office without any latency. To do so, here it used the pass-through messaging method.
+Now let's get understand about the scenario which described here. The owner needs to expand the business. So he makes online shop which connected to the local shop, to expand the business growth. When you are connecting to the online shop, it will automatically be redirected to the local shop without any latency. To do so, here it uses the pass-through messaging method.
 
-![alt text](images/samplescenario.png)
+![alt text](images/samplescenario.jpg)
 
-The three offices implemented as three separate services named 'LKSubOffice', 'UKSubOffice' and 'USHeadOffice'. When a user calls to 'LKSubOffice' or 'UKSubOffice' using HTTP request, the request redirected to the 'USHeadOffice' service without processing the incoming request. If it processes the incoming request, it will no longer a pass-through messaging. So 'LKSubOffice', 'UKSubOffice' services act as pass-through messaging services. The 'USHeadOffice' service processes the incoming request method such as 'GET', 'POST'. Then call to the back-end service, which will give the "Welcome to WSO2 US head office!" message. So the 'USHeadOffice' service is not a pass-through messaging service.
+The two shops implemented as two separate services named as 'OnlineShopping' and 'LocalShop'. When a user calls to 'OnlineShopping' using HTTP request, the request redirected to the 'LocalShop' service without processing the incoming request. Also response from the 'LocalShop' is not be processed in 'OnlineShopping'. If it processes the incoming request or response from the 'LocalShop', it will no longer a pass-through messaging. So messaging between 'OnlineShopping' and 'LocalShop' services act as pass-through messaging. The 'LocalShop' service processes the incoming request method such as 'GET', 'POST'. Then call to the back-end service, which will give the "Welcome to Local Shop! Please put your order here....." message. So messaging in the 'LocalShop' service is not a pass-through messaging service.
 
 ## Prerequisites
  
@@ -55,7 +55,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 - Create the above directories in your local machine and also create empty `.bal` files.
 
-- Then open the terminal and navigate to `Pass-through-messaging-ballerina-/guide` and run Ballerina project initializing toolkit.
+- Then open the terminal and navigate to `Simple-pass-through-messaging-ballerina-/guide` and run Ballerina project initializing toolkit.
 ```bash
    $ ballerina init
 ```
@@ -69,20 +69,26 @@ To implement the scenario, let's started to implement the passthrough.bal, which
 
 import ballerina/http;
 import ballerina/log;
-
-//Define endpoint for the sub offices as head office link
+endpoint http:Listener OnlineShoppingEP {
+    port:9090
+};
+endpoint http:Listener LocalShopEP {
+    port:9091
+};
+//Define end-point for the local shop as online shop link
 endpoint http:Client clientEP {
-    url: "http://localhost:9092/USHeadOffice"
+    url: "http://localhost:9091/LocalShop"
 };
 
-service<http:Service> LKSubOffice bind { port: 9090 } {
-    // This service implement as a passthrough service. So it allows all HTTP methods. So methods are not specified.
+service<http:Service> OnlineShopping bind OnlineShoppingEP {
+    // This service implement as a passthrough servise. So it allows all HTTP methods. So methods are not specified.
     @http:ResourceConfig {
         path: "/"
     }
+
     passthrough(endpoint caller, http:Request req) {
         // set log message as "the request will be directed to another service" in pass-through method.
-        log:printInfo("You will be redirected to US head office from LK sub office  .......");
+        log:printInfo("You will be redirected to Local Shop  .......");
         //'Forward()' used to call the backend endpoint created above as pass-through method. In forward function,
         //it used the same HTTP method, which used to invoke the primary service.
         // The `forward()` function returns the response from the backend if there are no errors.
@@ -108,53 +114,26 @@ service<http:Service> LKSubOffice bind { port: 9090 } {
     }
 }
 
-
-// This service is also implemented as above service to undertand the scenario
-service<http:Service> UKSubOffice bind { port: 9091 } {
-    @http:ResourceConfig {
-        path: "/"
-    }
-    passthrough(endpoint caller, http:Request req) {
-        log:printInfo("You will be redirected to US head office from UK sub office  .......");
-        var clientResponse = clientEP->forward("/", req);
-        match clientResponse {
-            http:Response res => {
-                caller->respond(res) but { error e =>
-                log:printError("Error sending response", err = e) };
-            }
-            error err => {
-                http:Response res = new;
-                res.statusCode = 500;
-                res.setPayload(err.message);
-                caller->respond(res) but { error e =>
-                log:printError("Error sending response", err = e) };
-            }
-        }
-    }
-}
-
-
-//Sample Head office servise service.
-service<http:Service> USHeadOffice bind { port: 9092 } {
-    //The helloResource only accepts requests made using the specified HTTP methods.
+//Sample Local Shop service.
+service<http:Service> LocalShop bind LocalShopEP {
+    //The LocalShop only accepts requests made using the specified HTTP methods.
     @http:ResourceConfig {
         methods: ["POST", "GET"],
         path: "/"
     }
     helloResource(endpoint caller, http:Request req) {
-        //Set log to view the status to know that the passthrough was successful.
-        log:printInfo("Now You are connected to US head office  .......");
+        //Set log to view the status to know that the passthrough was successfull.
+        log:printInfo("Now You are connected to Local shop  .......");
         // Make the response for the request
         http:Response res = new;
-        res.setPayload("Welcome to WSO2 US head office!");
+        res.setPayload("Welcome to Local Shop! Please put your order here.....");
         // Pass the response to the caller
         caller->respond(res)
-        // Catch the errors occurred while passing the response
+        // Cath the errors occured while passing the response
         but { error e =>
         log:printError("Error sending response", err = e) };
     }
 }
-
 ```
 ## Testing 
 
@@ -166,67 +145,33 @@ service<http:Service> USHeadOffice bind { port: 9092 } {
    $ ballerina run passthrough.bal
 ```
    
-- Then you may have two options of the request when connecting to a sub-office.
-
-#### Case 1
-
-- To connect to LK sub-office
+- Then you can send a request to online shopping service.
 
 ```bash
 
- $ curl -v http://localhost:9090/LKSubOffice -X GET
+ $ curl -v http://localhost:9090/OnlineShopping -X GET
 
 ```
 #### Output
 
-When connecting to the LK sub-office, the output will be the "Welcome to WSO2 US head office!" from the US head office.
+When connecting to the online shopping, the output will be the "Welcome to Local Shop! Please put your order here....." from the local shop.
 
 ```bash
 < HTTP/1.1 200 OK
 < content-type: text/plain
-< date: Mon, 11 Jun 2018 18:09:21 +0530
+< date: Sat, 23 Jun 2018 05:45:17 +0530
 < server: ballerina/0.970.1
-< content-length: 31
+< content-length: 54
 < 
 * Connection #0 to host localhost left intact
-Welcome to WSO2 US head office!
+Welcome to Local Shop! Please put your order here.....
 ```
 
 To identify the message flow inside the services, there will be INFO in the notification channel.
 
 ```bash
-2018-06-11 18:09:21,315 INFO  [] - You will be redirected to US head office from LK sub office  ....... 
-2018-06-11 18:09:21,430 INFO  [] - Now You are connected to US head office  ....... 
-```
-
-#### Case 2
-
-- To connect to UK sub-office
-
-```bash
- $ curl -v http://localhost:9091/UKSubOffice -X GET
-```
-#### Output
-
-When connecting to the UK sub-office, the output will be the "Welcome to WSO2 US head office!" from the US head office.
-
-```bash
-< HTTP/1.1 200 OK
-< content-type: text/plain
-< date: Mon, 11 Jun 2018 18:16:51 +0530
-< server: ballerina/0.970.1
-< content-length: 31
-< 
-* Connection #0 to host localhost left intact
-Welcome to WSO2 US head office!
-```
-
-To identify the message flow inside the services, there will be INFO in the notification channel.
-
-```bash
-2018-06-11 18:16:51,396 INFO  [] - You will be redirected to US head office from UK sub office  ....... 
-2018-06-11 18:16:51,497 INFO  [] - Now You are connected to US head office  ....... 
-
+2018-06-23 05:45:27,849 INFO  [passthrough] - You will be redirected to Local Shop  ....... 
+2018-06-23 05:45:27,864 INFO  [passthrough] - Now You are connected to Local shop  ....... 
 ```
 
 ### Writing unit tests 
@@ -235,11 +180,11 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 - Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
    @test:Config
-   function testLKSubOffice() {
+   function testFunc() {
    }
 ```
-This guide contains unit test case for 'LKSubOffice' service and 'UKSubOffice' service in [passthrough_test.bal](https://github.com/sanethmaduranga/Pass-through-messaging-ballerina-/blob/master/guide/tests/passthrough_test.bal) file.
-To run the unit tests, navigate to `Pass-through-messaging-ballerina-/guide/` and run the following command. 
+This guide contains unit test case for 'LKSubOffice' service and 'UKSubOffice' service in [passthrough_test.bal](https://github.com/sanethmaduranga/Simple-pass-through-messaging-ballerina-/blob/master/guide/tests/passthrough_test.bal) file.
+To run the unit tests, navigate to `Simple-pass-through-messaging-ballerina-/guide/` and run the following command. 
 ```bash
    $ ballerina test
 ```
@@ -281,71 +226,57 @@ import ballerina/log;
 import ballerinax/docker;
 
 @docker:Expose {}
-endpoint http:Listener LKSubOfficeEP {
+endpoint http:Listener OnlineShoppingEP {
     port:9090
 };
 @docker:Expose {}
-endpoint http:Listener UKSubOfficeEP {
+endpoint http:Listener LocalShopEP {
     port:9091
 };
-@docker:Expose {}
-endpoint http:Listener USHeadOfficeEP {
-    port:9092
-};
-//Define endpoint for the sub offices as head office link
+//Define end-point for the local shop as online shop link
 endpoint http:Client clientEP {
-    url: "http://localhost:9092/USHeadOffice"
+    url: "http://localhost:9091/LocalShop"
 };
-
 @docker:Config {
     registry:"ballerina.guides.io",
     name:"passthrough",
     tag:"v1.0"
 }
 
-service<http:Service> LKSubOffice bind LKSubOfficeEP {
+service<http:Service> OnlineShopping bind OnlineShoppingEP {
 .
 .
 .
 }
-service<http:Service> UKSubOffice bind UKSubOfficeEP {
+service<http:Service> LocalShop bind LocalShopEP {
 .
 .
 }
-service<http:Service> USHeadOffice bind USHeadOfficeEP {
-.
-.
 ``` 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `Pass-through-messaging-ballerina-/guide` and run the following command.  
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the following command.  
   
 ```
    $ballerina build passthrough
   
-   @docker                  - complete 3/3 
-
+  
    Run following command to start docker container:
-   docker run -d -p 9090:9090 -p 9091:9091 -p 9092:9092 ballerina.guides.io/passthrough:v1.0
+   docker run -d -p 9090:9090 -p 9091:9091 ballerina.guides.io/passthrough:v1.0
 
 ```
 
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
 ```bash
-   $ docker run -d -p 9090:9090 -p 9091:9091 -p 9092:9092 ballerina.guides.io/passthrough:v1.0
+   $ docker run -d -p 9090:9090 -p 9091:9091 ballerina.guides.io/passthrough:v1.0
 ```
 
    Here we run the docker image with the flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
-- You can access 'LKSubOffice' and 'UKSubOffice' services, using the same curl commands that we've used above. 
-- for LK sub-office
+- You can access 'OnlineShopping' service, using the same curl commands that we've used above. 
 ```bash
-    curl -v http://localhost:9090/LKSubOffice -X GET
-```
-- for UK sub-office 
-```bash
-    curl -v http://localhost:9091/UKSubOffice -X GET
+    curl -v http://localhost:9090/OnlineShopping -X GET
 ```
 
 ### Deploying on Kubernetes
@@ -368,47 +299,36 @@ import ballerinax/kubernetes;
 }
 @kubernetes:Service {
     serviceType:"NodePort",
-    name:"LKSubOffice"
+    name:"OnlineShopping"
 }
 @kubernetes:Service {
     serviceType:"NodePort",
-    name:"UKSubOffice"
-}
-@kubernetes:Service {
-    serviceType:"NodePort",
-    name:"USHeadOffice"
+    name:"LocalShop"
 }
 @kubernetes:Deployment {
     image: "ballerina.guides.io/passthrough:v1.0",
     name: "ballerina-guides-pass-through-messaging"
 }
-endpoint http:Listener LKSubOfficeEP {
+endpoint http:Listener OnlineShoppingEP {
     port:9090
 };
-endpoint http:Listener UKSubOfficeEP {
+endpoint http:Listener LocalShopEP {
     port:9091
 };
-endpoint http:Listener USHeadOfficeEP {
-    port:9092
-};
 
-//Define end-point for the sub offices as head office link
+//Define end-point for the local shop as online shop link
 endpoint http:Client clientEP {
-    url: "http://localhost:9092/USHeadOffice"
+    url: "http://localhost:9091/LocalShop"
 };
-
-service<http:Service> LKSubOffice bind LKSubOfficeEP {
+service<http:Service> OnlineShopping bind OnlineShoppingEP {
 .
 .
 .
 }
-service<http:Service> UKSubOffice bind UKSubOfficeEP {
+service<http:Service> LocalShop bind LocalShopEP {
 .
 .
 }
-service<http:Service> USHeadOffice bind USHeadOfficeEP {
-.
-.
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
@@ -419,11 +339,6 @@ service<http:Service> USHeadOffice bind USHeadOfficeEP {
   
 ```
    $ ballerina build passthrough
-  
-   @kubernetes:Service                      - complete 1/1
-   @kubernetes:Ingress                      - complete 1/1
-   @kubernetes:Docker                       - complete 3/3 
-   @kubernetes:Deployment                   - complete 1/1
 
    Run following command to deploy kubernetes artifacts: 
    kubectl apply -f /home/saneth/Documents/ballerina/sample_pass-through/guide/target/kubernetes/
@@ -452,11 +367,11 @@ service<http:Service> USHeadOffice bind USHeadOfficeEP {
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress.
-Here curl request for 'LKSubOffice' service is mentioned, you can simply try to 'UKSubOffice' service as well.
+Here curl request for 'OnlineShopping' service as mentioned below for get results.
  
 Node Port:
 ```bash
-   curl -v http://localhost:<Node_Port>/LKSubOffice -X GET  
+   curl -v http://localhost:<Node_Port>/OnlineShopping -X GET  
 ```
 
 Ingress:
@@ -468,13 +383,13 @@ Add `/etc/hosts` entry to match hostname.
 
 Access the service 
 ```bash
-   curl -v http://ballerina.guides.io/LKSubOffice -X GET
+   curl -v http://ballerina.guides.io/OnlineShopping -X GET
 ```
 
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `Pass-through-messaging-ballerina-/guide/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `Simple-pass-through-messaging-ballerina-/guide/`.
 
 ```ballerina
 [b7a.observability]
@@ -519,7 +434,7 @@ Follow the following steps to use tracing with Ballerina.
    -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `Pass-through-messaging-ballerina-/guide` and run the `passthrough` using following command 
+- Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the `passthrough` using following command 
 ```
    $ ballerina run passthrough/
 ```
@@ -585,11 +500,11 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `Pass-through-messaging-ballerina-/guide`
+- Start the Ballerina Service with the following command from `Simple-pass-through-messaging-ballerina-/guide`
 ```
    $ nohup ballerina run trip-management/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `Pass-through-messaging-ballerina-/guide` directory
+   NOTE: This will write the console log to the `ballerina.log` file in the `Simple-pass-through-messaging-ballerina-/guide` directory
 
 - Start Elasticsearch using the following command
 
