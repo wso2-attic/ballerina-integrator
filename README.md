@@ -41,15 +41,15 @@ Ballerina is a complete programming language that supports custom project struct
 scatter-gather-messaging
    └── guide
        ├── auction_service
-       │   ├── auction_service.bal
+       │   └── auction_service.bal
        │   
        │       
        ├── bidders
-       │   ├── bidders_endpoints.bal
+       │   └── bidders_endpoints.bal
        │   
        │    
-       ├── tests
-           ├── auction_service_test.bal
+       └── tests
+           └── auction_service_test.bal
 
 ```
 
