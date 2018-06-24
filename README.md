@@ -84,11 +84,11 @@ endpoint http:Client locationEP{
     basePath: "/checkVacancies"
 }
 
-//"comapnyRecruitmentsAgency" used to route each request to relevent endpoints and get their responses.
+//"comapnyRecruitmentsAgency" route requests to relevant endpoints and get their responses.
 service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
-     //Resource that handles the POST requests is directed to a specific company using, /checkVacancies/company.
-    @http:ResourceConfig {
+    //Resource that handles the POST requests is directed to a specific company using,/checkVacancies/company.
+    @http:ResourceConfig{
         methods: ["POST"],
         path: "/company"
     }
@@ -109,7 +109,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 (http:Response|error|()) clientResponse;
 
                 if (nameString == "John and Brothers (pvt) Ltd"){
-                    //POST action routes the payload to the relevant service when the server accepts the enclosed entity.
+                    //Routes the payload to the relevant service when the server accepts the enclosed entity.
                     clientResponse =
                     locationEP->post("/v2/5b22493f2e00009200e315ec");
 
@@ -122,10 +122,10 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                     locationEP->post("/v2/5b22443d2e00007b00e315b9");
                 }
                     
-                //Use the native function 'respond' to send the client response back to the caller.
+                //Use respond() to send the client response back to the caller.
                 match clientResponse {
-                    //If the request was successful, an HTTP response is returned.
-                    //respond()` sends back the inbound clientResponse to the caller if no any error is found.
+                    //If the request was successful, response is returned.
+                    //sends back the clientResponse to the caller if no any error is found.
                     http:Response respone =>{
                         CompanyEP->respond(respone) but { error e =>
                         log:printError("Error sending response", err = e) };
@@ -152,7 +152,6 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
         }
     }
 }
-
 ```
 - According to the code implementation company_recruitment_agency_service checks the request content and routes it to relevant services.
 
