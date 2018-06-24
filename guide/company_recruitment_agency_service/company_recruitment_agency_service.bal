@@ -38,12 +38,12 @@ import ballerina/io;
 //@docker:Expose {}
 //
 
-endpoint http:Listener comEP {
+endpoint http:Listener comEP{
     port: 9090
 };
 
 //Client endpoint to communicate with company recruitment service
-endpoint http:Client locationEP {
+endpoint http:Client locationEP{
     url: "http://www.mocky.io"
 };
 
@@ -56,7 +56,7 @@ endpoint http:Client locationEP {
 service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
     //Resource that handles the POST requests is directed to a specific company using, /checkVacancies/company.
-    @http:ResourceConfig {
+    @http:ResourceConfig{
         methods: ["POST"],
         path: "/company"
     }
