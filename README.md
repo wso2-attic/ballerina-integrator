@@ -87,7 +87,7 @@ endpoint http:Client locationEP{
 //"comapnyRecruitmentsAgency" used to route each request to relevent endpoints and get their responses.
 service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
-    //Resource that handles the HTTP POST requests that are directed to a specific company using /checkVacancies/company.
+     //Resource that handles the POST requests is directed to a specific company using, /checkVacancies/company.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/company"
