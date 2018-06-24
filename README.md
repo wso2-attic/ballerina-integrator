@@ -4,7 +4,6 @@ The Content-Based Router (CBR) reads the content of a message and routes it to a
 
 > This guide walks you through the process of implementing a content based routing using Ballerina language.
 
-
 This is a simple ballerina code for content based routing.
 
 The following are the sections available in this guide.
@@ -18,7 +17,7 @@ The following are the sections available in this guide.
 
 ## What you’ll build
 
-To understanding how you can build a content based routing using Ballerina, let's consider a real-world use case of a Company recruitment agency that provides recruiments details of companies. When Company recruitment agency sends a request that includes the company name (EX : ABC Company), that particular request  will be routed to  to its respective endpoint. The company recruitment agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
+To understand how you can build a content based routing using Ballerina, let's consider a real-world use case of a Company recruitment agency service that provides recruitment details of companies. When a Company recruitment agency service sends a request that includes the company name (EX : ABC Company), that particular request will be routed to its respective endpoint. After receiving the request from the content-based router(company_recruitment_agency_service), the relevant company's endpoint sends the response back to the caller. The following diagram illustrates this use case clearly.
 
 ![alt text](/images/BBG-Content_Based_Routing-Page-1.png)
 
@@ -155,11 +154,11 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 }
 
 ```
-- According to the code implementation company_recruitment_agency_service checks the request content and routes it to relevent service.
+- According to the code implementation company_recruitment_agency_service checks the request content and routes it to relevant services.
 
-- In above implementation, company_recruitment_agency_service reads the request's json content("Name") using nameString and sends the request to relevent company. Resource that handles the HTTP POST requests that are directed to a specific company using ```/checkVacancies/company```
+- In the above implementation,company_recruitment_agency_service reads the request's json content("Name") using nameString and sends the request to the relevant company. A Resource that handles the HTTP POST requests that are directed to a specific company using ```/checkVacancies/company```
 
-- After receiving the request from content based router(company_recruitment_agency_service),the relevent company endpoint send the client response back to the caller.
+- After receiving the request from content based router(company_recruitment_agency_service),the relevant company's endpoint sends the response back to the caller.
 
 
 ## Testing 
