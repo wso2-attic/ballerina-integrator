@@ -29,7 +29,7 @@ import ballerina/io;
 //import ballerina/http;
 //import ballerinax/docker;
 
-//@docker:Config {
+//@docker:Config{
 //    registry:"ballerina.guides.io",
 //    name:"company_recruitment_agency_service",
 //    tag:"v1.0"
@@ -38,12 +38,12 @@ import ballerina/io;
 //@docker:Expose {}
 //
 
-endpoint http:Listener comEP{
+endpoint http:Listener comEP {
     port: 9090
 };
 
 //Client endpoint to communicate with company recruitment service
-endpoint http:Client locationEP{
+endpoint http:Client locationEP {
     url: "http://www.mocky.io"
 };
 
@@ -55,7 +55,7 @@ endpoint http:Client locationEP{
 //"comapnyRecruitmentsAgency" used to route each request to relevent endpoints and get their responses.
 service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
-    //Resource that handles the HTTP POST requests that are directed to a specific company using /checkVacancies/company.
+    //Resource that handles the POST requests is directed to a specific company using, /checkVacancies/company.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/company"
