@@ -52,10 +52,10 @@ endpoint http:Client locationEP{
     basePath: "/checkVacancies"
 }
 
-//"comapnyRecruitmentsAgency" used to route each request to relevent endpoints and get their responses.
+//"comapnyRecruitmentsAgency" route requests to relevant endpoints and get their responses.
 service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
-    //Resource that handles the POST requests is directed to a specific company using, /checkVacancies/company.
+    //Resource that handles the POST requests is directed to a specific company using,/checkVacancies/company.
     @http:ResourceConfig{
         methods: ["POST"],
         path: "/company"
@@ -77,7 +77,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 (http:Response|error|()) clientResponse;
 
                 if (nameString == "John and Brothers (pvt) Ltd"){
-                    //POST action routes the payload to the relevant service when the server accepts the enclosed entity.
+                    //Routes the payload to the relevant service when the server accepts the enclosed entity.
                     clientResponse =
                     locationEP->post("/v2/5b22493f2e00009200e315ec");
 
