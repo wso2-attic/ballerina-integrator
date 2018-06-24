@@ -90,10 +90,10 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                     locationEP->post("/v2/5b22443d2e00007b00e315b9");
                 }
                     
-                //Use the native function 'respond' to send the client response back to the caller.
+                //Use respond() to send the client response back to the caller.
                 match clientResponse {
-                    //If the request was successful, an HTTP response is returned.
-                    //respond()` sends back the inbound clientResponse to the caller if no any error is found.
+                    //If the request was successful, response is returned.
+                    //sends back the clientResponse to the caller if no any error is found.
                     http:Response respone =>{
                         CompanyEP->respond(respone) but { error e =>
                         log:printError("Error sending response", err = e) };
