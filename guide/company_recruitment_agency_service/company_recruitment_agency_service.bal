@@ -55,7 +55,7 @@ endpoint http:Client locationEP{
 //"comapnyRecruitmentsAgency" route requests to relevant endpoints and get their responses.
 service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
-    //Resource that handles the POST requests is directed to a specific company using,/checkVacancies/company.
+    // POST requests is directed to a specific company using,/checkVacancies/company.
     @http:ResourceConfig{
         methods: ["POST"],
         path: "/company"
@@ -77,7 +77,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 (http:Response|error|()) clientResponse;
 
                 if (nameString == "John and Brothers (pvt) Ltd"){
-                    //Routes the payload to the relevant service when the server accepts the enclosed entity.
+                    //Routes the payload to the relevant service.
                     clientResponse =
                     locationEP->post("/v2/5b22493f2e00009200e315ec");
 
@@ -109,8 +109,9 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                     () => {}
                 }
             }
+            
+            // If there is an error,the 500 error response is constructed and sent back to the client.
             error err =>{
-                // If there was an error, the 500 error response is constructed and sent back to the client.
                 http:Response res = new;
                 res.statusCode = 500;
                 res.setPayload(err.message);
