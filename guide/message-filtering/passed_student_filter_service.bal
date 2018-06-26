@@ -58,7 +58,7 @@ service<http:Service> filterService bind filterServiceEP {
         // Declare boolian flag to set Qualified or Not
         boolean isQualified = false;
 
-        // Iteratting subject array
+        // Iterating subject array
         foreach subj in subjects {
             int mark = check <int>subj.marks;
             // Check the student exceed the pass mark value

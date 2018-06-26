@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/ballerina-guides/message-filtering.svg?branch=master)](https://travis-ci.org/ballerina-guides/message-filtering)
 
 # Message-Filtering  
 The Message Filter checks an incoming message against a certain criteria that the message should adhere to. If the criteria is not met, the filter will discard the message. Otherwise, it will route the message to the output channel.
@@ -97,7 +98,7 @@ service<http:Service> filterService bind filterServiceEP {
         // Declare boolian flag to set Qualified or Not
         boolean isQualified = false;
 
-        // Iteratting subject array
+        // Iterating subject array
         foreach subj in subjects {
             int mark = check <int>subj.marks;
             // Check the student exceed the pass mark value
