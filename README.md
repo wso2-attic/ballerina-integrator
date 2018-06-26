@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/ballerina-guides/scatter-gather-messaging.svg?branch=master)](https://travis-ci.org/ballerina-guides/scatter-gather-messaging)
+
+
 # Scatter-Gather Messaging
 
 A scatter-gather messaging is send a message to multiple recipients and re-aggregates the responses back into a single message.
