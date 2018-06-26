@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/sanethmaduranga/pass-through-messaging.svg?branch=master)](https://travis-ci.org/sanethmaduranga/pass-through-messaging)
+[![Build Status](https://travis-ci.org/ballerina-guides/pass-through-messaging.svg?branch=master)](https://travis-ci.org/ballerina-guides/pass-through-messaging)
 
 # Pass-through messaging
 There are different ways of messaging methods in SOA(Service Oriented Architecture). In this guide, we are focusing on pass-through Messaging between services using an example scenario
