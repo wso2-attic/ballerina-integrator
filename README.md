@@ -43,16 +43,16 @@ Ballerina is a complete programming language that supports custom project struct
 ```
 scatter-gather-messaging
    └── guide
+       ├── scatter-gather-messaging
+       │
        ├── auction_service
        │   ├── auction_service.bal
-       │   
-       │       
-       ├── bidders
+       │     
+       ├── bidders	
        │   ├── bidders_endpoints.bal
-       │   
        │    
        ├── tests
-           ├── auction_service_test.bal
+            └── auction_service_test.bal
 
 ```
 
@@ -282,17 +282,17 @@ Once you are done with the development, you can deploy the services using any of
 
 - As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `scatter-gather-messaging/guide` and run the following command. 
 ```bash
-$ ballerina build <Package_Name>
+$ ballerina build scatter-gather-messaging
 ```
 
 - Once the .balx files are created inside the target folder, you can run them using the following command. 
 ```bash
-$ ballerina run target/<Exec_Archive_File_Name>
+$ ballerina run target/scatter-gather-messaging.balx 
 ```
 
 - The successful execution of a service will show us something similar to the following output. 
 ```
-ballerina: initiating service(s) in 'target/guide.balx'
+ballerina: initiating service(s) in 'target/scatter-gather-messaging.balx'
 ballerina: started HTTP/WS endpoint 0.0.0.0:9091
 ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 
