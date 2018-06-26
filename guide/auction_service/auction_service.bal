@@ -29,16 +29,16 @@ import ballerina/io;
 //}
 // Service endpoint
 endpoint http:Listener auctionEP {
-    port:9090
+    port: 9090
 };
 
 //Client endpoint to communicate with bidders
 endpoint http:Client biddersEP1 {
-    url:"http://localhost:9091/bidders"
+    url: "http://localhost:9091/bidders"
 };
 
 // Auction service to get highest bid from bidders
-@http:ServiceConfig {basePath:"/auction"}
+@http:ServiceConfig { basePath: "/auction" }
 service<http:Service> auctionService bind auctionEP {
 
     //Resource to get highest bid value
@@ -53,8 +53,8 @@ service<http:Service> auctionService bind auctionEP {
             // NOT a valid JSON payload
             any => {
                 outResponse.statusCode = 400;
-                outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(outResponse);
+                outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+                _ = client->respond(outResponse);
                 done;
             }
         }
@@ -65,8 +65,8 @@ service<http:Service> auctionService bind auctionEP {
         // If payload parsing fails, send a "Bad Request" message as the response
         if (Item == null || Condition == null) {
             outResponse.statusCode = 400;
-            outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(outResponse);
+            outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
+            _ = client->respond(outResponse);
             done;
         }
 
@@ -92,7 +92,7 @@ service<http:Service> auctionService bind auctionEP {
                 // Set out request payload
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 2' and get the results
-                http:Response respWorkerBidder2 = check biddersEP1 -> post("/bidder2", request = outReq);
+                http:Response respWorkerBidder2 = check biddersEP1->post("/bidder2", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Bidder 2'
                 respWorkerBidder2 -> fork;
             }
@@ -103,7 +103,7 @@ service<http:Service> auctionService bind auctionEP {
                 // Set out request payload
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 3' and get the results
-                http:Response respWorkerBidder3 = check biddersEP1 -> post("/bidder3", request = outReq);
+                http:Response respWorkerBidder3 = check biddersEP1->post("/bidder3", request = outReq);
                 // Reply to the join block from this worker - Send the response from 'Bidder 3'
                 respWorkerBidder3 -> fork;
             }
@@ -158,9 +158,7 @@ service<http:Service> auctionService bind auctionEP {
             }
             // Send final response to client
             outResponse.setJsonPayload(jsonHighestBid);
-            _ = client -> respond(outResponse);
+            _ = client->respond(outResponse);
         }
-
-
     }
 }
