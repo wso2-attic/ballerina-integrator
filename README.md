@@ -174,7 +174,7 @@ You can test the functionality of the company_recruitment_agency_service by send
 **Route the request when "Name"="John and Brothers (pvt) Ltd"** 
 
 ```bash
- $ curl -v http://localhost:9090/checkVacancies/company -d '{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content- Type:application/json"
+ $ curl -v http://localhost:9090/checkVacancies/company -d'{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content-Type:application/json"
   
  Output : 
   
