@@ -43,8 +43,5 @@ script:
 # Initialize the Ballerina project
 - ballerina init
 
-# Run Ballerina pass-through service
-- ballerina run passthrough
-
 # Run tests
 - ballerina test
