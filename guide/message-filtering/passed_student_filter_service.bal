@@ -79,7 +79,7 @@ service<http:Service> filterService bind filterServiceEP {
         // Check whether student is qualified or not
         if(isQualified){
             // Call qualified student records persistance service
-            response = check stdInfoEP -> post("/v2/5b2cc4292f00007900ebd395", request = req);
+            response = check stdInfoEP -> post("/v2/5b2cc4292f00007900ebd395", req);
             statusCode = response.statusCode;
             // Set response status to Qualified
             resp.status = "Qualified";
