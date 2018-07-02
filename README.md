@@ -45,7 +45,8 @@ Ballerina is a complete programming language that supports custom project struct
 content-based-routing
  └── guide
       └── Company recruitment agency_service
-           ├── company_recruitment_agency_service.bal
+           ├── company_recruitment_agency_service.bal   
+      └── Company recruitment agency_service  
 	   ├──company_data_service.bal
        └── tests
             └── company_recruitment_agency_service_test.bal
@@ -72,12 +73,12 @@ import ballerina/mime;
 import ballerina/io;
 
 endpoint http:Listener comEP{
-    port: 9090
+    port: 9091
 };
 
 //Client endpoint to communicate with company recruitment service
 endpoint http:Client locationEP{
-    url: "http://www.mocky.io"
+    url: "http://localhost:9090/companies"
 };
 
 //Service is invoked using basePath value "/checkVacancies"
@@ -97,7 +98,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
     comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req){
         //Get the JSON payload from the request message.
         var jsonMsg = req.getJsonPayload();
-       
+
         match jsonMsg{
             //Try parsing the JSON payload from the request
             json msg =>{
@@ -112,17 +113,20 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 if (nameString == "John and Brothers (pvt) Ltd"){
                     //Routes the payload to the relevant service.
                     clientResponse =
-                    locationEP->post("/v2/5b22493f2e00009200e315ec");
+                    locationEP->get("/John-and-Brothers-(pvt)-Ltd");
 
                 }else if(nameString == "ABC Company"){
                     clientResponse =
-                    locationEP->post("/v2/5b2244db2e00007e00e315c5");
+                    locationEP->get("/ABC-Company");
 
-                }else{ 
+                }else if(nameString == "Smart Automobile"){
                     clientResponse =
-                    locationEP->post("/v2/5b22443d2e00007b00e315b9");
+                    locationEP->get("/Smart-Automobile");
+
+                }else {
+                    clientResponse = log:printError("Company Not Found!");
                 }
-                    
+
                 //Use respond() to send the client response back to the caller.
                 match clientResponse {
                     //If the request was successful, response is returned.
@@ -142,7 +146,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                     () => {}
                 }
             }
-            
+
             // If there is an error,the 500 error response is constructed and sent back to the client.
             error err =>{
                 http:Response res = new;
@@ -155,6 +159,8 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
     }
 }
 ```
+Let's now look at the company_data_service that is responsible for communicating with the all companies endpoints.
+
 #### company_data_service.bal
 
 ```ballerina
@@ -267,11 +273,11 @@ service<http:Service> orderMgt bind listener {
 
 ### Invoking the service
 
-You can run the company_recruitment_agency_service  that you developed above, in your local environment. Open your terminal and navigate to `guide/company_recruitment_agency_service`, and execute the following command.
+You can run the company_recruitment_agency_service  that you developed above, in your local environment. Open your terminal and navigate to `guide/`, and execute the following command.
 ```
 
-$ ballerina run company_data_service.bal
-$ ballerina run company_recruitment_agency_service.bal
+$ ballerina run company_data_service/
+$ ballerina run company_recruitment_agency_service/
 
 ```
 You can test the functionality of the company_recruitment_agency_service by sending HTTP POST request. For example, we have used the curl commands to test each routing operation of company_recruitment_agency_service as follows.
@@ -284,7 +290,7 @@ You can test the functionality of the company_recruitment_agency_service by send
  Output : 
   
 *   Trying 127.0.0.1...
-* Connected to localhost (127.0.0.1) port 9090 (#0)
+* Connected to localhost (127.0.0.1) port 9091 (#0)
 > POST /checkVacancies/company HTTP/1.1
 > Host: localhost:9090
 > User-Agent: curl/7.47.0
@@ -319,7 +325,7 @@ $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" : "ABC Compan
 Output : 
 
 *   Trying 127.0.0.1...
-* Connected to localhost (127.0.0.1) port 9090 (#0)
+* Connected to localhost (127.0.0.1) port 9091 (#0)
 > POST /checkVacancies/company HTTP/1.1
 > Host: localhost:9090
 > User-Agent: curl/7.47.0
@@ -355,7 +361,7 @@ $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" : "Smart Auto
 Output :
 
 *   Trying 127.0.0.1...
-* Connected to localhost (127.0.0.1) port 9090 (#0)
+* Connected to localhost (127.0.0.1) port 9091 (#0)
 > POST /checkVacancies/company HTTP/1.1
 > Host: localhost:9090
 > User-Agent: curl/7.47.0
