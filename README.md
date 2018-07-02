@@ -44,12 +44,12 @@ Ballerina is a complete programming language that supports custom project struct
 ```
 content-based-routing
  └── guide
-      └── Company recruitment agency_service
-           ├── company_recruitment_agency_service.bal   
-      └── Company recruitment agency_service  
-	   ├──company_data_service.bal
-       └── tests
-            └── company_recruitment_agency_service_test.bal
+      └── company_data_service
+           ├── company_data_service.bal 
+      └── company_recruitment_agency_service  
+	   ├──company_recruitment_agency_service.bal  
+      └── tests
+           ├──company_recruitment_agency_service_test.bal
 ```
 - Create the above directories in your local machine and also create empty `.bal` files.
 
