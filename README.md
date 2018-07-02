@@ -179,6 +179,7 @@ map<json> companyDataMap;
 // RESTful service.
 @http:ServiceConfig { basePath: "/companies" }
 service<http:Service> orderMgt bind listener {
+
     // Resource that handles the HTTP GET requests that are directed to a specific
     // Company data of company using path '/John-and-Brothers-(pvt)-Ltd'
     @http:ResourceConfig {
