@@ -17,7 +17,7 @@ script:
 - STRING="Downloading ballerina..."
 
 # Declare variable for Ballerina version
-- BALLERINA_VERSION=0.975.0
+- BALLERINA_VERSION=0.970.1
 
 # Declare variable for distribution name
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
