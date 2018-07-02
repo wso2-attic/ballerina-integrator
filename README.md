@@ -149,7 +149,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 }
             }
 
-            // If there is an error,the 500 error response is constructed and sent back to the client.
+            //If there is an error,the 500 error response is constructed and sent back to the client.
             error err =>{
                 http:Response res = new;
                 res.statusCode = 500;
