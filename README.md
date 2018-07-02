@@ -46,6 +46,7 @@ content-based-routing
  └── guide
       └── Company recruitment agency_service
            ├── company_recruitment_agency_service.bal
+	   ├──company_data_service.bal
        └── tests
             └── company_recruitment_agency_service_test.bal
 ```
@@ -154,11 +155,112 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
     }
 }
 ```
-- According to the code implementation company_recruitment_agency_service checks the request content and routes it to relevant services.
+#### company_data_service.bal
+
+```ballerina
+import ballerina/http;
+
+endpoint http:Listener listener {
+    port: 9090
+};
+
+// Company Data management is done using an in memory map.
+map<json> companyDataMap;
+
+
+// RESTful service.
+@http:ServiceConfig { basePath: "/companies" }
+service<http:Service> orderMgt bind listener {
+    // Resource that handles the HTTP GET requests that are directed to a specific
+    // Company data of company using path '/John-and-Brothers-(pvt)-Ltd'
+    @http:ResourceConfig {
+        methods: ["GET"],
+        path: "/John-and-Brothers-(pvt)-Ltd"
+    }
+    findJohnAndBrothersPvtLtd(endpoint client, http:Request req) {
+        json? payload = {
+            Name: "John and Brothers (pvt) Ltd",
+            Total_number_of_Vacancies: 12,
+            Available_job_roles : "Senior Software Engineer = 3 ,Marketing Executives =5 Management Trainees=4",
+            CV_Closing_Date: "17/06/2018" ,
+            ContactNo: 01123456 ,
+            Email_Address: "careersjohn@jbrothers.com"
+        };
+
+        http:Response response;
+        if (payload == null) {
+            payload = "Data : 'John-and-Brothers-(pvt)-Ltd' cannot be found.";
+        }
+
+        // Set the JSON payload in the outgoing response message.
+        response.setJsonPayload(payload);
+
+        // Send response to the client.
+        _ = client->respond(response);
+    }
+
+    // Resource that handles the HTTP GET requests that are directed to a specific
+    // Company data of company using path '/ABC-Company'
+    @http:ResourceConfig {
+        methods: ["GET"],
+        path: "/ABC-Company"
+    }
+    findAbcCompany(endpoint client, http:Request req) {
+        json? payload = {
+            Name:"ABC Company",
+            Total_number_of_Vacancies: 10,
+            Available_job_roles : "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=2",
+            CV_Closing_Date: "20/07/2018" ,
+            ContactNo: 0112774 ,
+            Email_Address: "careers@abc.com"
+        };
+
+        http:Response response;
+        if (payload == null) {
+            payload = "Data : 'ABC-Company' cannot be found.";
+        }
+
+        // Set the JSON payload in the outgoing response message.
+        response.setJsonPayload(payload);
+
+        // Send response to the client.
+        _ = client->respond(response);
+    }
+
+    // Resource that handles the HTTP GET requests that are directed to a specific
+    // Company data of company using path '/Smart-Automobile'
+    @http:ResourceConfig {
+        methods: ["GET"],
+        path: "/Smart-Automobile"
+    }
+    findSmartAutomobile(endpoint client, http:Request req) {
+        json? payload = {
+            Name:"Smart Automobile",
+            Total_number_of_Vacancies: 11,
+            Available_job_roles : "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=3",
+            CV_Closing_Date: "20/07/2018" ,
+            ContactNo: 0112774 ,
+            Email_Address: "careers@smart.com"
+        };
+
+        http:Response response;
+        if (payload == null) {
+            payload = "Data : 'Smart-Automobile' cannot be found.";
+        }
+
+        // Set the JSON payload in the outgoing response message.
+        response.setJsonPayload(payload);
+
+        // Send response to the client.
+        _ = client->respond(response);
+    }
+}
+```
+- According to the code implementation company_recruitment_agency_service checks the request content and routes it to company_data_service.
 
 - In the above implementation,company_recruitment_agency_service reads the request's json content("Name") using nameString and sends the request to the relevant company. A Resource that handles the HTTP POST requests that are directed to a specific company using ```/checkVacancies/company```
 
-- After receiving the request from content based router(company_recruitment_agency_service),the relevant company's endpoint sends the response back to the caller.
+- After receiving the request from content based router(company_recruitment_agency_service),the company_data_service sends relevant response back to the caller.
 
 
 ## Testing 
@@ -167,14 +269,17 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
 You can run the company_recruitment_agency_service  that you developed above, in your local environment. Open your terminal and navigate to `guide/company_recruitment_agency_service`, and execute the following command.
 ```
+
+$ ballerina run company_data_service.bal
 $ ballerina run company_recruitment_agency_service.bal
+
 ```
 You can test the functionality of the company_recruitment_agency_service by sending HTTP POST request. For example, we have used the curl commands to test each routing operation of company_recruitment_agency_service as follows.
 
 **Route the request when "Name"="John and Brothers (pvt) Ltd"** 
 
 ```bash
- $ curl -v http://localhost:9090/checkVacancies/company -d'{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content-Type:application/json"
+ $ curl -v http://localhost:9091/checkVacancies/company -d'{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content-Type:application/json"
   
  Output : 
   
@@ -209,7 +314,7 @@ You can test the functionality of the company_recruitment_agency_service by send
 **Route the request when "Name"="ABC Company"**
 
 ```bash
-$ curl -v http://localhost:9090/checkVacancies/company -d '{"Name" : "ABC Company"}' -H "Content-Type:application/json"
+$ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" : "ABC Company"}' -H "Content-Type:application/json"
 
 Output : 
 
@@ -245,7 +350,7 @@ Output :
 **Route the request when "Name"="Smart Automobile"**
 
 ```bash
-$ curl -v http://localhost:9090/checkVacancies/company -d '{"Name" : "Smart Automobile"}' -H "Content-Type:application/json"
+$ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" : "Smart Automobile"}' -H "Content-Type:application/json"
 
 Output :
 
@@ -312,7 +417,8 @@ Once you are done with the development, you can deploy the service using any of 
 - The successful execution of the service will show us the following output. 
 ```
    ballerina: initiating service(s) in 'target/company_recruitment_agency_service.balx'
-   ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+	ballerina: started HTTP/WS endpoint 0.0.0.0:9091
+	ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ### Deploying on Docker
