@@ -39,12 +39,12 @@ import ballerina/io;
 //
 
 endpoint http:Listener comEP{
-    port: 9090
+    port: 9091
 };
 
 //Client endpoint to communicate with company recruitment service
 endpoint http:Client locationEP{
-    url: "http://www.mocky.io"
+    url: "http://localhost:9090/companies"
 };
 
 //Service is invoked using basePath value "/checkVacancies"
@@ -64,7 +64,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
     comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req){
         //Get the JSON payload from the request message.
         var jsonMsg = req.getJsonPayload();
-       
+
         match jsonMsg{
             //Try parsing the JSON payload from the request
             json msg =>{
@@ -79,17 +79,22 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 if (nameString == "John and Brothers (pvt) Ltd"){
                     //Routes the payload to the relevant service.
                     clientResponse =
-                    locationEP->post("/v2/5b22493f2e00009200e315ec");
+                    locationEP->get("/John-and-Brothers-(pvt)-Ltd");
 
                 }else if(nameString == "ABC Company"){
                     clientResponse =
-                    locationEP->post("/v2/5b2244db2e00007e00e315c5");
+                    locationEP->get("/ABC-Company");
 
-                }else{ 
+                }else if(nameString == "Smart Automobile"){
                     clientResponse =
-                    locationEP->post("/v2/5b22443d2e00007b00e315b9");
+                    locationEP->get("/Smart-Automobile");
+
+                }else {
+
+                    clientResponse = log:printError("Company Not Found!");
+
                 }
-                    
+
                 //Use respond() to send the client response back to the caller.
                 match clientResponse {
                     //If the request was successful, response is returned.
@@ -109,7 +114,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                     () => {}
                 }
             }
-            
+
             // If there is an error,the 500 error response is constructed and sent back to the client.
             error err =>{
                 http:Response res = new;

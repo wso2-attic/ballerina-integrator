@@ -24,7 +24,7 @@ function startService() {
 function Company_Recruitments_Agency() {
 
 // Invoking the main function
-endpoint http:Client httpEndpoint { url: "http://localhost:9090" };
+endpoint http:Client httpEndpoint { url: "http://localhost:9091" };
 // Chck whether the server is started
 test:assertTrue(serviceStarted, msg = "Unable to start the service");
 json payload = { "Name": "John and Brothers (pvt) Ltd" };
@@ -38,7 +38,7 @@ json payload3 = { "Name": "Smart Automobile" };
         "Total_number_of_Vacancies": 12,
         "Available_job_roles" : "Senior Software Engineer = 3 ,Marketing Executives =5 Management Trainees=4",
         "CV_Closing_Date": "17/06/2018" ,
-        "ContactNo": 1123456 ,
+        "ContactNo": 01123456 ,
         "Email_Address": "careersjohn@jbrothers.com"
     };
 
@@ -48,9 +48,9 @@ json payload3 = { "Name": "Smart Automobile" };
         "Name":"ABC Company",
         "Total_number_of_Vacancies": 10,
         "Available_job_roles" : "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=2",
-        "CV_Closing_Date": "20/07/2018" ,
-        "ContactNo": 112774 ,
-        "Email_Address":"careers@abc.com"
+        "CV_Closing_Date":"20/07/2018" ,
+        "ContactNo": 0112774 ,
+        "Email_Address": "careers@abc.com"
     };
 
     json response3 = {
@@ -60,9 +60,8 @@ json payload3 = { "Name": "Smart Automobile" };
         "Total_number_of_Vacancies": 11,
         "Available_job_roles" : "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=3",
         "CV_Closing_Date": "20/07/2018" ,
-        "ContactNo": 112774 ,
+        "ContactNo": 0112774 ,
         "Email_Address": "careers@smart.com"
-
 
     };
 
