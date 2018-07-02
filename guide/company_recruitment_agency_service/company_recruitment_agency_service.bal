@@ -62,9 +62,9 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
     comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req){
         //Get the JSON payload from the request message.
         var jsonMsg = req.getJsonPayload();
-
+        
+       //Parsing the JSON payload from the request
         match jsonMsg{
-            //Parsing the JSON payload from the request
             json msg =>{
                 //Get the string value relevant to the key `name`.
                 string nameString;
@@ -94,9 +94,9 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 }
 
                 //Use respond() to send the client response back to the caller.
+                //when the request was successful, response is returned.
+                //sends back the clientResponse to the caller if no any error is found.
                 match clientResponse {
-                    //when the request was successful, response is returned.
-                    //sends back the clientResponse to the caller if no any error is found.
                     http:Response respone =>{
                         CompanyEP->respond(respone) but { error e =>
                         log:printError("Error sending response", err = e) };
@@ -113,8 +113,8 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 }
             }
 
-            //500 error response is constructed and sent back to the client.
             error err =>{
+            //500 error response is constructed and sent back to the client.
                 http:Response res = new;
                 res.statusCode = 500;
                 res.setPayload(err.message);
