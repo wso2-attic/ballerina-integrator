@@ -475,12 +475,12 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
     @docker                  - complete 3/3 
 
    Run following command to start docker container: 
-   docker run -d -p 9090:9090 ballerina.guides.io/company_recruitment_agency_service:v1.0
+   docker run -d -p 9091:9091 ballerina.guides.io/company_recruitment_agency_service:v1.0
 ```
 
 - Once you successfully build the docker image, you can run it with the `docker run` command that is shown in the previous step.  
 ```bash   
-   $ docker run -d -p 9090:9090 ballerina.guides.io/company_recruitment_agency_service:v1.0
+   $ docker run -d -p 9091:9091 ballerina.guides.io/company_recruitment_agency_service:v1.0
 ```
 
   Here we run the docker image with flag `-p <host_port>:<container_port>` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
