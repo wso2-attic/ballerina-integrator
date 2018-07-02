@@ -11,6 +11,8 @@ boolean serviceStarted;
 function startService() {
     serviceStarted = test:startServices("company_recruitment_agency_service");
 
+    serviceStarted = test:startServices("company_data_service");
+
 }
 
 
@@ -20,14 +22,15 @@ function startService() {
 }
 
 
-
 function Company_Recruitments_Agency() {
 
 // Invoking the main function
-endpoint http:Client httpEndpoint { url: "http://localhost:9091" };
+endpoint http:Client httpEndpoint { url:"http://localhost:9091" };
+
 // Chck whether the server is started
 test:assertTrue(serviceStarted, msg = "Unable to start the service");
-json payload = { "Name": "John and Brothers (pvt) Ltd" };
+
+json payload =  { "Name": "John and Brothers (pvt) Ltd" };
 json payload2 = { "Name": "ABC Company" };
 json payload3 = { "Name": "Smart Automobile" };
 
@@ -48,7 +51,7 @@ json payload3 = { "Name": "Smart Automobile" };
         "Name":"ABC Company",
         "Total_number_of_Vacancies": 10,
         "Available_job_roles" : "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=2",
-        "CV_Closing_Date":"20/07/2018" ,
+        "CV_Closing_Date": "20/07/2018" ,
         "ContactNo": 0112774 ,
         "Email_Address": "careers@abc.com"
     };
@@ -68,7 +71,7 @@ json payload3 = { "Name": "Smart Automobile" };
     http:Request req = new;
     req.setJsonPayload(payload);
     // Send a GET request to the specified endpoint
-    var response = httpEndpoint->post("/checkVacancies/company ", request = req);
+    var response = httpEndpoint->post("/checkVacancies/company", request = req);
     match response {
         http:Response resp => {
             var jsonRes = check resp.getJsonPayload();
@@ -106,9 +109,8 @@ json payload3 = { "Name": "Smart Automobile" };
 
 }
 
-
-
 function stopService() {
     test:stopServices("company_recruitment_agency_service");
+    test:stopServices("company_data_service");
 }
 

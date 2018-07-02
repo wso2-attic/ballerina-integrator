@@ -5,7 +5,6 @@ import ballerina/io;
 
 //Deploying on kubernetes
 
-//import ballerina/http;
 //import ballerinax/kubernetes;
 
 //@kubernetes:Ingress{
@@ -26,7 +25,6 @@ import ballerina/io;
 
 //Deploying on docker
 
-//import ballerina/http;
 //import ballerinax/docker;
 
 //@docker:Config{
