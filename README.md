@@ -449,19 +449,17 @@ import ballerinax/docker;
 @docker:Expose {}
 
 
-// Client endpoint to communicate with company recruitment service
-//"http://www.mocky.io" is used to create mock services
-
-endpoint http:Listener comEP {
-    port: 9090
+endpoint http:Listener comEP{
+    port: 9091
 };
 
-endpoint http:Client locationEP {
-    url: "http://www.mocky.io"
+//Client endpoint to communicate with company recruitment service
+endpoint http:Client locationEP{
+    url: "http://localhost:9090/companies"
 };
 
-//Service is invoked using `basePath` value "/checkVacancies"
-@http:ServiceConfig {
+//Service is invoked using basePath value "/checkVacancies"
+@http:ServiceConfig{
     basePath: "/checkVacancies"
 }
 
@@ -492,16 +490,16 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
 
 **Request when "Name"="John and Brothers (pvt) Ltd"**
 ```bash
-    $ curl -v http://localhost:9090/checkVacancies/company -d '{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content- Type:application/json"
+    $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content- Type:application/json"
 ```
 
 **Request when "Name"="ABC Company"**
 ```bash
-    $ curl -v http://localhost:9090/checkVacancies/company -d '{"Name" :"ABC Company"}' -H "Content- Type:application/json"
+    $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" :"ABC Company"}' -H "Content- Type:application/json"
 ```
 **Request when "Name"="Smart Automobile**
 ```bash
-    $ curl -v http://localhost:9090/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
+    $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
 ```
 ### Deploying on Kubernetes
 
@@ -533,23 +531,23 @@ import ballerinax/kubernetes;
     name:"ballerina-guides-company_recruitment_agency_service"
 }
 
-endpoint http:Listener comEP {
-    port: 9090
+endpoint http:Listener comEP{
+    port: 9091
 };
 
-// Client endpoint to communicate with company recruitment service
-//"http://www.mocky.io" is used to create mock services
-endpoint http:Client locationEP {
-    url: "http://www.mocky.io"
+//Client endpoint to communicate with company recruitment service
+endpoint http:Client locationEP{
+    url: "http://localhost:9090/companies"
 };
 
-//Service is invoked using `basePath` value "/checkVacancies"
-@http:ServiceConfig {
+//Service is invoked using basePath value "/checkVacancies"
+@http:ServiceConfig{
     basePath: "/checkVacancies"
 }
 
 //comapnyRecruitmentsAgency service to route each request to relevent endpoints and get their responses.
 service<http:Service> comapnyRecruitmentsAgency  bind comEP {
+
 ``` 
 
 - Here we have used `@kubernetes:Deployment` to specify the docker image name which will be created as part of building this service. 
