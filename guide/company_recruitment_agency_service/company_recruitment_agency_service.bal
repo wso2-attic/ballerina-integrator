@@ -64,7 +64,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
         var jsonMsg = req.getJsonPayload();
 
         match jsonMsg{
-            //Try parsing the JSON payload from the request
+            //Parsing the JSON payload from the request
             json msg =>{
                 //Get the string value relevant to the key `name`.
                 string nameString;
@@ -95,7 +95,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
                 //Use respond() to send the client response back to the caller.
                 match clientResponse {
-                    //If the request was successful, response is returned.
+                    //when the request was successful, response is returned.
                     //sends back the clientResponse to the caller if no any error is found.
                     http:Response respone =>{
                         CompanyEP->respond(respone) but { error e =>
@@ -113,7 +113,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 }
             }
 
-            // If there is an error,the 500 error response is constructed and sent back to the client.
+            //500 error response is constructed and sent back to the client.
             error err =>{
                 http:Response res = new;
                 res.statusCode = 500;
