@@ -89,7 +89,7 @@ import ballerina/mysql;
 import ballerina/log;
 import ballerina/http;
 
-type Employee {
+type Employee record {
     string name;
     int age;
     int ssn;
@@ -365,8 +365,9 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 ```
 This guide contains unit test cases to test the resources available in the employee_data_service we implemented above.
 To run the unit tests, go to the guide directory and run the following command.
+Please note that --config option is required if it is needed to read configurations from a ballerina configuration file.
 ```bash
-$ ballerina test
+$ ballerina test --config ./ballerina.conf
 ```
 NOTE: To check the implementation of the test file, refer to the [employee_db_service_test.bal](guide/data_backed_service/test/employee_db_service_test.bal).
 

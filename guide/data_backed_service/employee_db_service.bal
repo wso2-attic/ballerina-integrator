@@ -59,7 +59,7 @@ endpoint http:Listener listener {
     port: 9090
 };
 
-type Employee {
+type Employee record {
     string name;
     int age;
     int ssn;
@@ -125,7 +125,7 @@ service<http:Service> EmployeeData bind listener {
         // Invoke retrieveById function to retrieve data from Mymysql database
         var employeeData = retrieveById(empID);
         // Send the response back to the client with the employee data
-        response.setJsonPayload(employeeData);
+        response.setJsonPayload(untaint employeeData);
         _ = httpConnection->respond(response);
     }
 
