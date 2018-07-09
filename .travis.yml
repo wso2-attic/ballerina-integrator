@@ -33,13 +33,13 @@ script:
 - wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
 
 #unzip the zip file
-- unzip $DISTRIBUTION_NAME.zip
+- unzip -q $DISTRIBUTION_NAME.zip
 
 #download JDBC driver
 - wget http://dev.mysql.com/get/Downloads/Connector-J/$MYSQL_CONNECTOR_VERSION.tar.gz
 
 #untar the tar file
-- tar xvzf $MYSQL_CONNECTOR_VERSION.tar.gz
+- tar xzf $MYSQL_CONNECTOR_VERSION.tar.gz
 
 # Add Ballerina to the path variable
 - export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
