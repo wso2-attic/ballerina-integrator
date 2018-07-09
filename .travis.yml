@@ -17,17 +17,17 @@ script:
 - STRING="Downloading ballerina..."
 
 # Declare variable for Ballerina version
-- BALLERINA_VERSION=0.975.0
+- BALLERINA_VERSION=0.976.1-SNAPSHOT
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
 
 # Print STRING variable
 - echo $STRING
 
 # Download Ballerina dist
-- wget https://product-dist.ballerina.io/downloads/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
+- wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
 
 # Unzip the zip file
-- unzip $DISTRIBUTION_NAME.zip
+- unzip -q $DISTRIBUTION_NAME.zip
 
 # Add Ballerina to the path variable
 - export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
@@ -36,7 +36,7 @@ script:
 - ballerina version
 
 # Change the directory
-- cd guide/
+- cd guide
 
 # Initialize the Ballerina project
 - ballerina init
