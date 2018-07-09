@@ -365,7 +365,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
 ```
 This guide contains unit test cases to test the resources available in the employee_data_service we implemented above.
 To run the unit tests, go to the guide directory and run the following command.
-Please note that --config option is required if it is needed to read configurations from a ballerina configuration file.
+Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file.
 ```bash
 $ ballerina test --config ./ballerina.conf
 ```
