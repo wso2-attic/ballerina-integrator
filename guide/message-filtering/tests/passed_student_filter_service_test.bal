@@ -24,7 +24,7 @@ function testResourceFilterMarks () {
     // Set JSON payload to request
     req.setJsonPayload(payload);
     // Send 'POST' request and obtain the response
-    http:Response res = check clientEP -> post("/filterMarks", request = req);
+    http:Response res = check clientEP -> post("/filterMarks", req);
     // Expected response code is 200
     test:assertEquals(res.statusCode, 200, msg = "filterMarks resource did not respond with expected response code!");
     // Get the response payload

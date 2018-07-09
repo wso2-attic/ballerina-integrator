@@ -58,7 +58,7 @@ service<http:Service> filterService bind filterServiceEP {
         // Declare boolian flag to set Qualified or Not
         boolean isQualified = false;
 
-        // Iteratting subject array
+        // Iterating subject array
         foreach subj in subjects {
             int mark = check <int>subj.marks;
             // Check the student exceed the pass mark value
@@ -79,7 +79,7 @@ service<http:Service> filterService bind filterServiceEP {
         // Check whether student is qualified or not
         if(isQualified){
             // Call qualified student records persistance service
-            response = check stdInfoEP -> post("/v2/5b2cc4292f00007900ebd395", request = req);
+            response = check stdInfoEP -> post("/v2/5b2cc4292f00007900ebd395", req);
             statusCode = response.statusCode;
             // Set response status to Qualified
             resp.status = "Qualified";
