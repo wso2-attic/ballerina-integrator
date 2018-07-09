@@ -17,16 +17,14 @@ script:
 - STRING="Downloading ballerina..."
 
 # Declare variable for Ballerina version
-- BALLERINA_VERSION=0.970.1
-
-# Declare variable for distribution name
+- BALLERINA_VERSION=0.976.1-SNAPSHOT
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
 
 # Print STRING variables
 - echo $DISTRIBUTION_NAME
 
 # Download Ballerina dist
-- wget https://product-dist.ballerina.io/downloads/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
+- wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
 
 # Unzip the zip file
 - unzip $DISTRIBUTION_NAME.zip
