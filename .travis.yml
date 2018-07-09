@@ -19,7 +19,8 @@ script:
 - STRING2="Downloading Ballerina-Kafka connector jars..."
 
 # Declare variable for Ballerina version
-- BALLERINA_VERSION="ballerina-platform-0.970.0"
+- BALLERINA_VERSION=0.976.1-SNAPSHOT
+- DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
 
 # Declare variable for Kafka version
 - KAFKA_VERSION="kafka_2.11-1.1.0"
@@ -28,13 +29,13 @@ script:
 - echo $STRING
 
 # Download Ballerina dist
-- wget https://product-dist.ballerina.io/downloads/0.970.0/$BALLERINA_VERSION.zip
+- wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
 
 # Unzip the .zip file
-- unzip $BALLERINA_VERSION.zip
+- unzip -q $DISTRIBUTION_NAME.zip
 
 # Add Ballerina to the path variable
-- export PATH=$PATH:$(pwd)/$BALLERINA_VERSION/bin
+- export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
 
 # Print Ballerina version
 - ballerina version
@@ -46,7 +47,7 @@ script:
 - wget http://www-us.apache.org/dist/kafka/1.1.0/$KAFKA_VERSION.tgz
 
 # Untar the .tgz file
-- tar xvzf $KAFKA_VERSION.tgz
+- tar xzf $KAFKA_VERSION.tgz
 
 # Start ZooKeeper
 - ./$KAFKA_VERSION/bin/zookeeper-server-start.sh -daemon ./$KAFKA_VERSION/config/zookeeper.properties
@@ -64,7 +65,7 @@ script:
 - mv kafka-connector-jars.zip $BALLERINA_VERSION/bre/lib
 
 # Unzip the .zip file
-- unzip $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip -d $BALLERINA_VERSION/bre/lib
+- unzip -q $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip -d $BALLERINA_VERSION/bre/lib
 
 # Delete the .zip file
 - rm $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip
