@@ -54,7 +54,7 @@ The following figure illustrates the scenario of the Stock Quote Summary service
 ## Implementation
 
 
-> If you want to skip the basics, you can download the git repo and directly move to the**Testing**section by skipping the**Implementation**section.
+> If you want to skip the basics, you can download the git repo and directly move to the **Testing** section by skipping the **Implementation** section.
 
 
 ### Create the project structure
@@ -127,7 +127,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         endpoint http:Client nasdaqServiceEP {
             url: "http://localhost:9095"
         };
-        http:Response resp = new;
+        http:Response finalResponse = new;
         string responseStr;
 
         // This initializes empty json to add results from the backend call.
@@ -139,21 +139,21 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         // remote invocation returns without waiting for response.
 
         // This calls the backend to get the stock quote for GOOG asynchronously.
-        future <http:Response|http:HttpConnectorError> f1 = start nasdaqServiceEP
+        future <http:Response|error> f1 = start nasdaqServiceEP
         -> get("/nasdaq/quote/GOOG");
 
         io:println(" >> Invocation completed for GOOG stock quote! Proceed without
         blocking for a response.");
 
         // This calls the backend to get the stock quote for APPL asynchronously.
-        future <http:Response|http:HttpConnectorError> f2 = start nasdaqServiceEP
+        future <http:Response|error> f2 = start nasdaqServiceEP
         -> get("/nasdaq/quote/APPL");
 
         io:println(" >> Invocation completed for APPL stock quote! Proceed without
         blocking for a response.");
 
         // This calls the backend to get the stock quote for MSFT asynchronously.
-        future <http:Response|http:HttpConnectorError> f3 = start nasdaqServiceEP
+        future <http:Response|error> f3 = start nasdaqServiceEP
         -> get("/nasdaq/quote/MSFT");
 
         io:println(" >> Invocation completed for MSFT stock quote! Proceed without
@@ -167,7 +167,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         match response1 {
             http:Response resp => {
 
-                responseStr = check resp.getStringPayload();
+                responseStr = check resp.getTextPayload();
                 // Add the response from the `/GOOG` endpoint to the `responseJson` file.
 
                 responseJson["GOOG"] = responseStr;
@@ -182,7 +182,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         match response2 {
             http:Response resp => {
             
-                responseStr = check resp.getStringPayload();
+                responseStr = check resp.getTextPayload();
                 // Add the response from `/APPL` endpoint to `responseJson` file.
                 responseJson["APPL"] = responseStr;
             }
@@ -195,7 +195,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         var response3 = await f3;
         match response3 {
             http:Response resp => {
-                responseStr = check resp.getStringPayload();
+                responseStr = check resp.getTextPayload();
                 // Add the response from the `/MSFT` endpoint to the `responseJson` file.
                 responseJson["MSFT"] = responseStr;
 
@@ -207,9 +207,9 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         }
 
         // Send the response back to the client.
-        resp.setJsonPayload(responseJson);
+        finalResponse.setJsonPayload(untaint responseJson);
         io:println(" >> Response : " + responseJson.toString());
-        _ = caller->respond(resp);
+        _ = caller->respond(finalResponse);
     }
 }
 ```
@@ -371,14 +371,11 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `asynchronous-invocation/guide` and run the following command.  
 ```
    $ ballerina build stock_quote_summary_service
-
-   Run following command to start docker container: 
-   docker run -d -p 9090:9090 ballerina.guides.io/stock_quote_summary_service:v1.0
 ```
 
 - Once you successfully build the docker image, you can run it with the `docker run` command that is shown in the previous step.  
 ```   
-   $ docker run -d -p 9090:9090 ballerina.guides.io/stock_quote_summary_service:v1.0
+   $ docker run -d -p 9090:9090 ballerina.guides.io/async_service:v1.0
 ```
 
   Here we run the docker image with flag `-p <host_port>:<container_port>` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
