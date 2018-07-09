@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/SavithriNandadasa/content-based-routing-1.svg?branch=master)](https://travis-ci.org/SavithriNandadasa/content-based-routing-1)
+[![Build Status](https://travis-ci.org/ballerina-guides/content-based-routing.svg?branch=master)](https://travis-ci.org/ballerina-guides/content-based-routing))
 
 # Content Based Routing
 
