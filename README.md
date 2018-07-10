@@ -540,7 +540,7 @@ Invoke the service
 
 ## Observability 
 Ballerina comes with support for observability built-in to the language.
-Observability is disabled by default. It can be enabled by adding the following configurations to `ballerina.conf` file in `restful-service/guide/`.
+Observability is disabled by default. It can be enabled by adding the following configurations to `ballerina.conf` file in `restful-service/guide/`. A sample configuration file can be found in `restful-service/guide/restful_service`.
 
 ```ballerina
 [b7a.observability]
@@ -554,7 +554,11 @@ enabled=true
 enabled=true
 ```
 
-NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations, default values are loaded for the rest of the configuration parameters of metrics and tracing.
+To start the ballerina service using the configuration file, run the following command
+```
+   $ ballerina run restful_service/ --config restful_service/ballerina.conf
+```
+>NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations, default values are loaded for the rest of the configuration parameters of metrics and tracing.
 
 ### Tracing 
 
@@ -587,7 +591,7 @@ Follow the following steps to use tracing with Ballerina.
 
 - Navigate to `restful-service/guide` and run the restful-service using the following command
 ```
-   $ ballerina run restful_service
+   $ ballerina run restful_service --config restful_service/ballerina.conf
 ```
 
 - Observe the tracing using Jaeger UI using the following URL
@@ -635,7 +639,12 @@ Follow the below steps to set up Prometheus and view metrics for the `restful_se
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
-   
+
+- Navigate to `restful-service/guide` and run the restful-service using following command
+```
+  $ ballerina run restful_service/ --config restful_service/ballerina.conf
+```
+
 - You can access Prometheus at the following URL
 ```
    http://localhost:19090/
@@ -735,4 +744,4 @@ $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.
 ```
    http://localhost:5601 
 ```
-  
+
