@@ -94,7 +94,7 @@ asynchronous-invocation
 
   `future <http:Response|error> responseFuture = start nasdaqServiceEP -> get("/nasdaq/quote/MSFT");`
 
-- Finally, the service appends all three responses and returns the stock quote summary to the client. To get the results from an asynchronous call,  the `await` keyword needs to be used. `await` blocks invocations until the previously started asynchronous invocations are completed.
+- Finally, the service appends all three responses and returns the stock quote summary to the client. To get the results from an asynchronous call, the `await` keyword needs to be used. `await` blocks invocations until the previously started asynchronous invocations are completed.
 The following statement receives the response from the future type.
 
   ` var response1 = check await f1;`
