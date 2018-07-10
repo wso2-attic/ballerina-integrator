@@ -83,7 +83,7 @@ asynchronous-invocation
    $ ballerina init
 ```
 
-### Implement the Stock Quote Summary service with asyncronous invocations
+### Implement the Stock Quote Summary service with asynchronous invocations
 
 
 - We can get started with the Stock Quote Summary service, which is the RESTful service that serves the stock quote summary requests. This service receives the requests via the HTTP GET method from the clients.
@@ -94,7 +94,7 @@ asynchronous-invocation
 
   `future <http:Response|error> responseFuture = start nasdaqServiceEP -> get("/nasdaq/quote/MSFT");`
 
-- Finally, the service appends all three responses and returns the stock quote summary to the client. To get the results from a asynchronous call,  the `await` keyword needs to be used. `await` blocks invocations until the previously started asynchronous invocations are completed.
+- Finally, the service appends all three responses and returns the stock quote summary to the client. To get the results from an asynchronous call,  the `await` keyword needs to be used. `await` blocks invocations until the previously started asynchronous invocations are completed.
 The following statement receives the response from the future type.
 
   ` var response1 = check await f1;`
@@ -163,7 +163,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         // Append the results from all the responses of the stock data backend.
         var response1 = await f1;
         // Use `match` to check whether the responses are available.
-	// If a response is not available, an error is generated.
+        // If a response is not available, an error is generated.
         match response1 {
             http:Response resp => {
 
@@ -283,7 +283,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
    function testQuoteService() {
 ```
   
-This guide contains unit test cases for every all the packages inside the `asynchronous-invocation/guide` directory. 
+This guide contains unit test cases for all the packages inside the `asynchronous-invocation/guide` directory.
 
 
 To check the implementation of the test file, refer tests folder in the [git repository](https://github.com/ballerina-guides/asynchronous-invocation).
@@ -296,10 +296,7 @@ Once you are done with the development, you can deploy the service using any of 
 ### Deploying locally
 
 
-
-- As the first step, you can build a Ballerina executable archive (.balx) of the service that is developed above. To do this, navigate to the `<SAMPLE_ROOT>/` directory and run the following commands. It points to the directory in which the service you developed is located, and creates an executable binary out of that. 
-
-- As the first step, you can build a Ballerina executable archive (.balx) of the service that is developed above. To do this, navigate to the `<SAMPLE_ROOT>/` directory and run the following commands. It points to the directory in which the service you developed is located, and creates an executable binary out of that. 
+- As the first step, you can build a Ballerina executable archive (.balx) of the service that is developed above. To do this, navigate to the `<SAMPLE_ROOT>/` directory and run the following commands. It points to the directory in which the service you developed is located, and creates an executable binary out of that.
 
 
 ```
@@ -336,9 +333,9 @@ ballerina: started HTTP/WS endpoint 0.0.0.0:9095
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
+You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding Docker annotations on your service code.
 
-- In our async_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
+- In our async_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable Docker image generation during the build time.
 
 ##### async_service.bal
 ```ballerina
@@ -365,22 +362,22 @@ endpoint http:Listener listener {
 service<http:Service> AsyncInvoker bind asyncServiceEP {
 ``` 
 
-- `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:Expose {}` is used to expose the port. 
+- `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port.
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `asynchronous-invocation/guide` and run the following command.  
+This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `asynchronous-invocation/guide` and run the following command.
 ```
    $ ballerina build stock_quote_summary_service
 ```
 
-- Once you successfully build the docker image, you can run it with the `docker run` command that is shown in the previous step.  
+- Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.
 ```   
    $ docker run -d -p 9090:9090 ballerina.guides.io/async_service:v1.0
 ```
 
-  Here we run the docker image with flag `-p <host_port>:<container_port>` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+  Here we run the Docker image with flag `-p <host_port>:<container_port>` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port.
 
-- Verify docker container is running with the use of `$ docker ps`. The status of the docker container should be shown as 'Up'. 
+- Verify Docker container is running with the use of `$ docker ps`. The status of the Docker container should be shown as 'Up'.
 - You can access the service using the same curl commands that we've used above. 
 ```
 curl http://localhost:9090/quote-summary
@@ -388,7 +385,7 @@ curl http://localhost:9090/quote-summary
 
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs.
 
 - Let's now see how we can deploy our `stock_quote_summary_service` on Kubernetes.
 
@@ -429,12 +426,12 @@ endpoint http:Listener listener {
 service<http:Service> AsyncInvoker bind asyncServiceEP {
 ``` 
 
-- Here we have used `@kubernetes:Deployment` to specify the docker image name which will be created as part of building this service. 
+- Here we have used `@kubernetes:Deployment` to specify the Docker image name which will be created as part of building this service.
 - We have also specified `@kubernetes:Service` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `@kubernetes:Ingress` which is the external interface to access your service (with path `/` and host name `ballerina.guides.io`)
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ ballerina build stock_quote_summary_service
@@ -443,7 +440,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
    kubectl apply -f ./target/stock_quote_summary_service/kubernetes
 ```
 
-- You can verify that the docker image that we specified in `@kubernetes:Deployment` is created, by using `$ docker images`. 
+- You can verify that the Docker image that we specified in `@kubernetes:Deployment` is created, by using `$ docker images`.
 - Also the Kubernetes artifacts related our service, will be generated in `./target/stock_quote_summary_service/kubernetes`. 
 - Now you can create the Kubernetes deployment using:
 
@@ -525,7 +522,7 @@ Follow the following steps to use tracing with Ballerina.
    reporter.max.buffer.spans=1000
 ```
 
-- Run Jaeger docker image using the following command
+- Run Jaeger Docker image using the following command
 ```bash
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 \
    -p14268:14268 jaegertracing/all-in-one:latest
@@ -574,9 +571,9 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+   NOTE : Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
    
-- Run the Prometheus docker image using the following command
+- Run the Prometheus Docker image using the following command
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
