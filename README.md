@@ -467,7 +467,7 @@ Access the service
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it. A sample configuration file can be found in `service-composition/guide/travel_agency/`.
 
 ```ballerina
 [b7a.observability]
@@ -484,7 +484,7 @@ enabled=true
 To start the ballerina service using the configuration file, run the following command
 
 ```
-   $ ballerina run travel_agency/ --config <path>/<to>/<ballerina.conf>
+   $ ballerina run travel_agency/ --config travel_agency/ballerina.conf
 ```
 NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
 
@@ -519,7 +519,7 @@ Follow the following steps to use tracing with Ballerina.
 
 - Navigate to `service-composition/guide` and run the `travel_agency_service` using following command 
 ```
-   $ ballerina run travel_agency/ --config <path>/<to>/<ballerina.conf>
+   $ ballerina run travel_agency/ --config travel_agency/ballerina.conf
 ```
 
 - Observe the tracing using Jaeger UI using following URL
@@ -533,7 +533,7 @@ Follow the below steps to set up Prometheus and view metrics for travel_agency s
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
 
-```ballerina
+```
    [b7a.observability.metrics]
    enabled=true
    reporter="prometheus"
@@ -565,7 +565,7 @@ Follow the below steps to set up Prometheus and view metrics for travel_agency s
 
 - Navigate to `service-composition/guide` and run the `travel_agency_service` using following command
 ```
-  $ ballerina run travel_agency/ --config <path>/<to>/<ballerina.conf>
+  $ ballerina run travel_agency/ --config travel_agency/ballerina.conf
 ```
 
 - You can access Prometheus at the following URL
