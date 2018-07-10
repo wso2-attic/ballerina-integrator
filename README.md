@@ -6,7 +6,7 @@ A service composition is an aggregate of services collectively composed to autom
 
 > This guide walks you through the process of implementing a service composition using Ballerina language. 
 
-The following are the sections available in this guide.
+Following are the sections available in this guide.
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
@@ -16,7 +16,7 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you’ll build
-To understanding how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
+To understand how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
 
 ![alt text](/images/service-composition.svg)
 
@@ -33,7 +33,7 @@ Travel agency is the service that acts as the composition initiator. The other t
 
 ## Implementation
 
-> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping  "Implementation" section.
+> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping "Implementation" section.
 
 ### Create the project structure
 
@@ -152,7 +152,6 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 Let's now look at the code segment that is responsible for parsing the JSON payload from the user request.
 
 ```ballerina
-
 // Try parsing the JSON payload from the user request
 match inRequest.getJsonPayload() {
     // Valid JSON payload
@@ -269,7 +268,7 @@ As shown above, the travel agency service rents a car for the requested user by 
 
 ### Invoking the service
 
-- Navigate to `service-composition/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services in ports 9091, 9092, 9093 and 9090 respectively.
+- Navigate to `service-composition/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services on ports 9091, 9092, 9093 and 9090 respectively.
 
 ```bash
    $ ballerina run airline_reservation/
@@ -342,11 +341,11 @@ Once you are done with the development, you can deploy the services using any of
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
+You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding Docker annotations on your service code.
 
-Let's see how we can deploy the travel_agency_service we developed above on docker. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
+Let's see how we can deploy the travel_agency_service we developed above on Docker. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running.
 
-- In our travel_agency_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
+- In our travel_agency_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable Docker image generation during the build time.
 
 ##### travel_agency_service.bal
 ```ballerina
@@ -370,24 +369,24 @@ endpoint http:Listener travelAgencyEP {
 service<http:Service> travelAgencyService bind travelAgencyEP {
 ``` 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `service-composition/guide` and run the following command.  
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `service-composition/guide` and run the following command.
   
 ```
    $ballerina build travel_agency
   
-   Run following command to start docker container: 
+   Run following command to start Docker container:
    docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
 
-- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+- Once you successfully build the Docker image, you can run it with the `` docker run`` command that is shown in the previous step.
 
 ```bash
    $ docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
 ```
 
-   Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+   Here we run the Docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port.
 
-- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+- Verify Docker container is running with the use of `` $ docker ps``. The status of the Docker container should be shown as 'Up'.
 - You can access the service using the same curl commands that we've used above. 
  
 ```bash
@@ -400,7 +399,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs.
 
 - Let's now see how we can deploy our `travel_agency_service` on Kubernetes. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
 
@@ -438,11 +437,11 @@ endpoint http:Listener travelAgencyEP {
 service<http:Service> travelAgencyService bind travelAgencyEP {    
 ``` 
 
-- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
+- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name which will be created as part of building this service.
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ ballerina build travel_agency
@@ -451,7 +450,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
    kubectl apply -f ./target/travel_agency/kubernetes
 ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
+- You can verify that the Docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``.
 - Also the Kubernetes artifacts related our service, will be generated under `` ./target/travel_agency/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
@@ -538,7 +537,7 @@ Follow the following steps to use tracing with Ballerina.
    reporter.max.buffer.spans=1000
 ```
 
-- Run Jaeger docker image using the following command
+- Run Jaeger Docker image using the following command
 ```bash
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
@@ -587,9 +586,9 @@ Follow the below steps to set up Prometheus and view metrics for travel_agency s
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+   NOTE : Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
    
-- Run the Prometheus docker image using the following command
+- Run the Prometheus Docker image using the following command
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
