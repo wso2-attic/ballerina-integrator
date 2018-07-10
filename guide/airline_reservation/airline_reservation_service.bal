@@ -95,7 +95,7 @@ service<http:Service> airlineReservationService bind airlineEP {
             "Price":278
         };
         // Response payload
-        response.setJsonPayload(flightDetails);
+        response.setJsonPayload(untaint flightDetails);
         // Send the response to the caller
         _ = caller -> respond(response);
     }
@@ -144,7 +144,7 @@ service<http:Service> airlineReservationService bind airlineEP {
             "Price":275
         };
         // Response payload
-        response.setJsonPayload(flightDetails);
+        response.setJsonPayload(untaint flightDetails);
         // Send the response to the caller
         _ = caller -> respond(response);
     }
@@ -193,7 +193,7 @@ service<http:Service> airlineReservationService bind airlineEP {
             "Price":273
         };
         // Response payload
-        response.setJsonPayload(flightDetails);
+        response.setJsonPayload(untaint flightDetails);
         // Send the response to the caller
         _ = caller -> respond(response);
     }

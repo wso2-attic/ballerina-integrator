@@ -92,7 +92,7 @@ service<http:Service> hotelReservationService bind hotelEP {
             "DistanceToLocation":6
         };
         // Response payload
-        response.setJsonPayload(hotelDetails);
+        response.setJsonPayload(untaint hotelDetails);
         // Send the response to the caller
         _ = caller -> respond(response);
     }
@@ -138,7 +138,7 @@ service<http:Service> hotelReservationService bind hotelEP {
             "DistanceToLocation":4
         };
         // Response payload
-        response.setJsonPayload(hotelDetails);
+        response.setJsonPayload(untaint hotelDetails);
         // Send the response to the caller
         _ = caller -> respond(response);
     }
@@ -184,7 +184,7 @@ service<http:Service> hotelReservationService bind hotelEP {
             "DistanceToLocation":2
         };
         // Response payload
-        response.setJsonPayload(hotelDetails);
+        response.setJsonPayload(untaint hotelDetails);
         // Send the response to the caller
         _ = caller -> respond(response);
     }
