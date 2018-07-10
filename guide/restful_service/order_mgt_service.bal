@@ -16,31 +16,31 @@
 
 import ballerina/http;
 //import ballerinax/docker;
-//import ballerinax/kubernetes;
+import ballerinax/kubernetes;
 
 //@docker:Config {
 //    registry:"ballerina.guides.io",
 //    name:"restful_service",
 //    tag:"v1.0"
 //}
-//
+
 //@docker:Expose{}
 
-//@kubernetes:Ingress {
-//    hostname:"ballerina.guides.io",
-//    name:"ballerina-guides-restful-service",
-//    path:"/"
-//}
-//
-//@kubernetes:Service {
-//    serviceType:"NodePort",
-//    name:"ballerina-guides-restful-service"
-//}
-//
-//@kubernetes:Deployment {
-//    image:"ballerina.guides.io/restful_service:v1.0",
-//    name:"ballerina-guides-restful-service"
-//}
+@kubernetes:Ingress {
+    hostname:"ballerina.guides.io",
+    name:"ballerina-guides-restful-service",
+    path:"/"
+}
+
+@kubernetes:Service {
+    serviceType:"NodePort",
+    name:"ballerina-guides-restful-service"
+}
+
+@kubernetes:Deployment {
+    image:"ballerina.guides.io/restful_service:v1.0",
+    name:"ballerina-guides-restful-service"
+}
 
 endpoint http:Listener listener {
     port: 9090
@@ -69,7 +69,7 @@ service<http:Service> orderMgt bind listener {
         }
 
         // Set the JSON payload in the outgoing response message.
-        response.setJsonPayload(payload);
+        response.setJsonPayload(untaint payload);
 
         // Send response to the client.
         _ = client->respond(response);
@@ -89,7 +89,7 @@ service<http:Service> orderMgt bind listener {
         // Create response message.
         json payload = { status: "Order Created.", orderId: orderId };
         http:Response response;
-        response.setJsonPayload(payload);
+        response.setJsonPayload(untaint payload);
 
         // Set 201 Created status code in the response message.
         response.statusCode = 201;
@@ -125,7 +125,7 @@ service<http:Service> orderMgt bind listener {
 
         http:Response response;
         // Set the JSON payload to the outgoing response message to the client.
-        response.setJsonPayload(existingOrder);
+        response.setJsonPayload(untaint existingOrder);
         // Send response to the client.
         _ = client->respond(response);
     }
@@ -143,7 +143,7 @@ service<http:Service> orderMgt bind listener {
 
         json payload = "Order : " + orderId + " removed.";
         // Set a generated payload with order status.
-        response.setJsonPayload(payload);
+        response.setJsonPayload(untaint payload);
 
         // Send response to the client.
         _ = client->respond(response);
