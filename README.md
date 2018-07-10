@@ -6,7 +6,7 @@ A service composition is an aggregate of services collectively composed to autom
 
 > This guide walks you through the process of implementing a service composition using Ballerina language. 
 
-Following are the sections available in this guide.
+The following are the sections available in this guide.
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
@@ -184,7 +184,7 @@ if (outReqPayload.Name == null || outReqPayload.ArrivalDate == null ||
 }
 ```
 
-The above code shows how the request JSON payload is parsed to create json literals required for further processing.
+The above code shows how the request JSON payload is parsed to create JSON literals required for further processing.
 
 Let's now look at the code segment that is responsible for communicating with the airline reservation service. 
 
@@ -437,7 +437,7 @@ endpoint http:Listener travelAgencyEP {
 service<http:Service> travelAgencyService bind travelAgencyEP {    
 ``` 
 
-- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name which will be created as part of building this service.
+- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name that will be created as part of building this service.
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
