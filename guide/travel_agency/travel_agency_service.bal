@@ -110,7 +110,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqPayloadAirline.Preference = airlinePreference;
 
         // Send a post request to airlineReservationService with appropriate payload and get response
-        http:Response inResAirline = check airlineReservationEP -> post("/reserve", outReqPayloadAirline);
+        http:Response inResAirline = check airlineReservationEP -> post("/reserve", untaint outReqPayloadAirline);
 
         // Get the reservation status
         var airlineResPayload = check inResAirline.getJsonPayload();
@@ -130,7 +130,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqPayloadHotel.Preference = hotelPreference;
 
         // Send a post request to hotelReservationService with appropriate payload and get response
-        http:Response inResHotel = check hotelReservationEP -> post("/reserve", outReqPayloadHotel);
+        http:Response inResHotel = check hotelReservationEP -> post("/reserve", untaint outReqPayloadHotel);
 
         // Get the reservation status
         var hotelResPayload = check inResHotel.getJsonPayload();
@@ -150,7 +150,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqPayloadCar.Preference = carPreference;
 
         // Send a post request to carRentalService with appropriate payload and get response
-        http:Response inResCar = check carRentalEP -> post("/rent", outReqPayloadCar);
+        http:Response inResCar = check carRentalEP -> post("/rent", untaint outReqPayloadCar);
 
         // Get the rental status
         var carResPayload = check inResCar.getJsonPayload();

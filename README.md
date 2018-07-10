@@ -127,6 +127,8 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
     @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
         produces:["application/json"]}
     arrangeTour(endpoint client, http:Request inRequest) {
+        http:Response outResponse;
+        json inReqPayload;
 
         // JSON payload format for an HTTP OUT request
         json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"",
@@ -140,7 +142,6 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // Renting car for the user by calling the car rental service
 
-
         // If all three response positive status, send a successful message to the user
         outResponse.setJsonPayload({"Message":"Congrats! Your journey is ready!"});
         _ = client -> respond(outResponse);
@@ -148,19 +149,55 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 }
 ```
 
+Let's now look at the code segment that is responsible for parsing the JSON payload from the user request.
+
+```ballerina
+
+// Try parsing the JSON payload from the user request
+match inRequest.getJsonPayload() {
+    // Valid JSON payload
+    json payload => inReqPayload = payload;
+    // NOT a valid JSON payload
+    any => {
+        outResponse.statusCode = 400;
+        outResponse.setJsonPayload(
+                {"Message":"Invalid payload - Not a valid JSON payload"});
+        _ = client -> respond(outResponse);
+        done;
+    }
+}
+
+outReqPayload.Name = inReqPayload.Name;
+outReqPayload.ArrivalDate = inReqPayload.ArrivalDate;
+outReqPayload.DepartureDate = inReqPayload.DepartureDate;
+json airlinePreference = inReqPayload.Preference.Airline;
+json hotelPreference = inReqPayload.Preference.Accommodation;
+json carPreference = inReqPayload.Preference.Car;
+
+// If payload parsing fails, send a "Bad Request" message as the response
+if (outReqPayload.Name == null || outReqPayload.ArrivalDate == null ||
+    outReqPayload.DepartureDate == null || airlinePreference == null ||
+    hotelPreference == null || carPreference == null) {
+    outResponse.statusCode = 400;
+    outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
+    _ = client -> respond(outResponse);
+    done;
+}
+```
+
+The above code shows how the request JSON payload is parsed to create json literals required for further processing.
+
 Let's now look at the code segment that is responsible for communicating with the airline reservation service. 
 
 ```ballerina
 // Reserve airline ticket for the user by calling Airline reservation service
-http:Request outReqAirline;
-http:Response inResAirline;
 // construct the payload
 json outReqPayloadAirline = outReqPayload;
 outReqPayloadAirline.Preference = airlinePreference;
-outReqAirline.setJsonPayload(outReqPayloadAirline);
 
 // Send a post request to airline service with appropriate payload and get response
-inResAirline = check airlineReservationEP -> post("/reserve", request = outReqAirline);
+http:Response inResAirline = check airlineReservationEP -> post("/reserve",
+                                                    untaint outReqPayloadAirline);
 
 // Get the reservation status
 var airlineResPayload = check inResAirline.getJsonPayload();
@@ -181,15 +218,13 @@ Let's now look at the code segment that is responsible for communicating with th
 
 ```ballerina
 // Reserve hotel room for the user by calling Hotel reservation service
-http:Request outReqHotel;
-http:Response inResHotel;
 // construct the payload
 json outReqPayloadHotel = outReqPayload;
 outReqPayloadHotel.Preference = hotelPreference;
-outReqHotel.setJsonPayload(outReqPayloadHotel);
 
 // Send a post request to hotel service with appropriate payload and get response
-inResHotel = check hotelReservationEP -> post("/reserve", request = outReqHotel);
+http:Response inResHotel = check hotelReservationEP -> post("/reserve",
+                                                    untaint outReqPayloadHotel);
 
 // Get the reservation status
 var hotelResPayload = check inResHotel.getJsonPayload();
@@ -209,15 +244,12 @@ Finally, let's look at the code segment that is responsible for communicating wi
 
 ```ballerina
 // Renting car for the user by calling Car rental service
-http:Request outReqCar;
-http:Response inResCar;
 // construct the payload
 json outReqPayloadCar = outReqPayload;
 outReqPayloadCar.Preference = carPreference;
-outReqCar.setJsonPayload(outReqPayloadCar);
 
 // Send a post request to car rental service with appropriate payload and get response
-inResCar = check carRentalEP -> post("/rent", request = outReqCar);
+http:Response inResCar = check carRentalEP -> post("/rent", untaint outReqPayloadCar);
 
 // Get the rental status
 var carResPayload = check inResCar.getJsonPayload();
