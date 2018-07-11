@@ -93,7 +93,7 @@ service<http:Service> carRentalService bind carEP {
             "PricePerDay":5
         };
         // Response payload
-        response.setJsonPayload(vehicleDetails);
+        response.setJsonPayload(untaint vehicleDetails);
         // Send the response to the caller
         _ = caller -> respond(response);
     }
@@ -140,7 +140,7 @@ service<http:Service> carRentalService bind carEP {
             "PricePerDay":6
         };
         // Response payload
-        response.setJsonPayload(vehicleDetails);
+        response.setJsonPayload(untaint vehicleDetails);
         // Send the response to the caller
         _ = caller -> respond(response);
     }
@@ -187,7 +187,7 @@ service<http:Service> carRentalService bind carEP {
             "PricePerDay":7
         };
         // Response payload
-        response.setJsonPayload(vehicleDetails);
+        response.setJsonPayload(untaint vehicleDetails);
         // Send the response to the caller
         _ = caller -> respond(response);
     }

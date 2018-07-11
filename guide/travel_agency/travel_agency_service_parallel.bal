@@ -126,7 +126,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             worker qatarWorker {
                 http:Request outReq;
                 // Out request payload
-                outReq.setJsonPayload(flightPayload);
+                outReq.setJsonPayload(untaint flightPayload);
                 // Send a POST request to 'Qatar Airways' and get the results
                 http:Response respWorkerQatar = check airlineEP -> post("/qatarAirways", outReq);
                 // Reply to the join block from this worker - Send the response from 'Qatar Airways'
@@ -137,7 +137,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             worker asianaWorker {
                 http:Request outReq;
                 // Out request payload
-                outReq.setJsonPayload(flightPayload);
+                outReq.setJsonPayload(untaint flightPayload);
                 // Send a POST request to 'Asiana' and get the results
                 http:Response respWorkerAsiana = check airlineEP -> post("/asiana", outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
@@ -148,7 +148,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             worker emiratesWorker {
                 http:Request outReq;
                 // Out request payload
-                outReq.setJsonPayload(flightPayload);
+                outReq.setJsonPayload(untaint flightPayload);
                 // Send a POST request to 'Emirates' and get the results
                 http:Response respWorkerEmirates = check airlineEP -> post("/emirates", outReq);
                 // Reply to the join block from this worker - Send the response from 'Emirates'
@@ -213,7 +213,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             worker miramar {
                 http:Request outReq;
                 // Out request payload
-                outReq.setJsonPayload(hotelPayload);
+                outReq.setJsonPayload(untaint hotelPayload);
                 // Send a POST request to 'Asiana' and get the results
                 http:Response respWorkerMiramar = check hotelEP -> post("/miramar", outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
@@ -224,7 +224,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             worker aqueen {
                 http:Request outReq;
                 // Out request payload
-                outReq.setJsonPayload(hotelPayload);
+                outReq.setJsonPayload(untaint hotelPayload);
                 // Send a POST request to 'Aqueen' and get the results
                 http:Response respWorkerAqueen = check hotelEP -> post("/aqueen", outReq);
                 // Reply to the join block from this worker - Send the response from 'Aqueen'
@@ -235,7 +235,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             worker elizabeth {
                 http:Request outReq;
                 // Out request payload
-                outReq.setJsonPayload(hotelPayload);
+                outReq.setJsonPayload(untaint hotelPayload);
                 // Send a POST request to 'Elizabeth' and get the results
                 http:Response respWorkerElizabeth = check hotelEP -> post("/elizabeth", outReq);
                 // Reply to the join block from this worker - Send the response from 'Elizabeth'
@@ -301,7 +301,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             worker driveSg {
                 http:Request outReq;
                 // Out request payload
-                outReq.setJsonPayload(vehiclePayload);
+                outReq.setJsonPayload(untaint vehiclePayload);
                 // Send a POST request to 'DriveSg' and get the results
                 http:Response respWorkerDriveSg = check carRentalEP -> post("/driveSg", outReq);
                 // Reply to the join block from this worker - Send the response from 'DriveSg'
@@ -312,7 +312,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             worker dreamCar {
                 http:Request outReq;
                 // Out request payload
-                outReq.setJsonPayload(vehiclePayload);
+                outReq.setJsonPayload(untaint vehiclePayload);
                 // Send a POST request to 'DreamCar' and get the results
                 http:Response respWorkerDreamCar = check carRentalEP -> post("/dreamCar", outReq);
                 // Reply to the join block from this worker - Send the response from 'DreamCar'
@@ -323,7 +323,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             worker sixt {
                 http:Request outReq;
                 // Out request payload
-                outReq.setJsonPayload(vehiclePayload);
+                outReq.setJsonPayload(untaint vehiclePayload);
                 // Send a POST request to 'Sixt' and get the results
                 http:Response respWorkerSixt = check carRentalEP -> post("/sixt", outReq);
                 // Reply to the join block from this worker - Send the response from 'Sixt'
@@ -355,7 +355,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         };
 
         // Response payload
-        outResponse.setJsonPayload(clientResponse);
+        outResponse.setJsonPayload(untaint clientResponse);
         // Send the response to the client
         _ = client -> respond(outResponse);
     }
