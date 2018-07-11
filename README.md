@@ -16,15 +16,15 @@ The following are the sections available in this guide.
 
 ## What you’ll build 
 To understand how you can build a RESTful web service using Ballerina, let’s consider a real world use case of an order management scenario of an online retail application.
-We can model the order management scenario as a RESTful web service; 'order_mgt_service',  which accepts different HTTP request for order management tasks such as order creation, retrieval, updating and deletion.
-The following figure illustrates all the required functionalities of the OrderMgt RESTful web service that we will build.
+You can model the order management scenario as a RESTful web service; 'order_mgt_service',  which accepts different HTTP request for order management tasks such as order creation, retrieval, updating and deletion.
+The following diagram illustrates all the required functionality of the Order Management RESTful web service that you are going to build.
 
 ![RESTful Service](images/restful-service.svg "RESTful Service")
 
-- **Create Order** : To place a new order you can send an HTTP POST request which contains the order details to the endpoint: `http://xyz.retail.com/order`. If the request is successful, the service responds with a `201 Created` HTTP response, with the `location` header pointing to the newly created resource at `http://xyz.retail.com/order/123456`.
-- **Retrieve Order** : You can retrieve the order details by sending an HTTP GET request to the relevant endpoint: `http://xyz.retail.com/order/<orderId>`
-- **Update Order** : You can update an existing order by sending an HTTP PUT request with the content for the updated order.
-- **Delete Order** : An existing order can be deleted by sending an HTTP DELETE request to the relevant endpoint: `http://xyz.retail.com/order/<orderId>`.
+- **Create Order** : To place a new order, use an HTTP POST request that contains order details, and then send the request to the http://xyz.retail.com/order endpoint. If the request is successful, the service should respond with a 201 Created HTTP response that has the location header pointing to the newly created resource at http://xyz.retail.com/order/123456.
+- **Retrieve Order** : To retrieve order details, send an HTTP GET request to the appropriate URL that includes the order ID.http://xyz.retail.com/order/.
+- **Update Order** : To update an existing order, send an HTTP PUT request with content for the order update.
+- **Delete Order** : To delete an existing order, send an HTTP DELETE request to the http://xyz.retail.com/order/ endpoint.
 
 ## Prerequisites
  
@@ -42,7 +42,7 @@ The following figure illustrates all the required functionalities of the OrderMg
 
 ### Create the project structure
 
-For the purpose of this guide, let's use the following package structure.
+Let's use the following package structure for this project.
 
 ```
 restful-service
@@ -55,17 +55,17 @@ restful-service
 
 - Create the above directories in your local machine, along with the empty `.bal` files.
 
-- Then open the terminal and navigate to `restful-service/guide` and run Ballerina project initializing toolkit.
+- Then open the terminal, navigate to restful-service/guide, and run the Ballerina project initializing toolkit.
 ```bash
    $ ballerina init
 ```
 
 ### Developing the RESTful web service
 
-- We can start by defining a Ballerina HTTP service for our order management service: `orderMgt`. The `orderMgt` service can be composed of multiple resources, with each resource being responsible for a specific order management functionality.
+- You can start by defining a Ballerina HTTP service for the order management service `orderMgt`. The `orderMgt` service can comprise of multiple resources where each resource is responsible for a specific order management functionality.
 
-- You can add the following code segment to your `order_mgt_service.bal` file. It contains a service skeleton upon which we can build the order management service.
-For each order management operation, there is a dedicated resource and inside each resource we can implement the order management operation logic.
+You can add the following code segment to your `order_mgt_service.bal` file. It contains a service skeleton based on which you can build the order management service.
+For each order management operation, there is a dedicated resource. You can implement the order management operation logic inside each resource.
 
 ##### Skeleton code for order_mgt_service.bal
 ```ballerina
@@ -125,7 +125,8 @@ service<http:Service> orderMgt bind listener {
 }
 ```
 
-- You can implement the business logic of each resource as per your requirements. For simplicity, we have used an in-memory map to keep all the order details. You can find the full source code of the order management service below. In addition to the order processing logic, we have also manipulated some HTTP status codes and headers whenever required.
+- You can implement the business logic of each resource depending on your requirements. For simplicity, you can use an in-memory map to keep all the order details.
+  Following is the full source code of the order management service. Here, you will see how certain HTTP status codes and headers are manipulated whenever required in addition to the order processing logic.
 
 
 ##### order_mgt_service.bal
@@ -241,7 +242,7 @@ service<http:Service> orderMgt bind listener {
 }
 ```
 
-- With that we've completed the development of order management service.
+- With that you have completed the development of the order management service.
 
 
 ## Testing 
@@ -253,7 +254,8 @@ You can run the RESTful service that you developed above, in your local environm
 $ ballerina run restful_service
 ```
 
-You can test the functionality of the `orderMgt` RESTFul service by sending HTTP requests for each order management operation. For example, here's a set of cURL commands we used for testing each of the operations of the order management service.
+To test the functionality of the orderMgt RESTFul service, send HTTP requests for each order management operation.
+Following are sample cURL commands that you can use to test each operation of the order management service.
 
 **Create Order** 
 ```bash
@@ -321,7 +323,7 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying locally
 
-- As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above. Navigate to `restful-service/guide` and run the following command. 
+- As the first step, you can build a Ballerina executable archive (.balx) of the service that you developed. Navigate to `restful-service/guide` and run the following command.
 ```bash
    $ ballerina build restful_service
 ```
@@ -331,7 +333,7 @@ Once you are done with the development, you can deploy the service using any of 
    $ ballerina run target/restful_service.balx
 ```
 
-- The successful startup of the service will result in the following output.
+- Successful startup of the service results in the following output.
 ```
    ballerina: initiating service(s) in 'target/restful_service.balx'
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
@@ -339,9 +341,9 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying on Docker
 
-Services can be packaged and deployed as Docker containers as well. You can use the [Ballerina Docker Extension](https://github.com/ballerinax/docker) (provided in the Ballerina Platform) which provides native support for running Ballerina programs in containers. You just need to add the relevant Docker annotations to your listener endpoints.
+You can package and deploy services as Docker containers if necessary. You can use the [Ballerina Docker Extension](https://github.com/ballerinax/docker) (provided in the Ballerina Platform) to provide native support to run Ballerina programs in containers. You just need to add the relevant Docker annotations to your listener endpoints.
 
-- In our `order_mgt_service.bal` file, we need to import `ballerinax/docker` and add the `@docker:Config` annotation to the listener endpoint as shown below to enable Docker image generation when building the service.
+- In the `order_mgt_service.bal` file, you need to import `ballerinax/docker`, and add the `@docker:Config` annotation to the listener endpoint as shown below to enable Docker image generation when you build the service.
 
 ##### order_mgt_service.bal
 ```ballerina
@@ -369,7 +371,7 @@ service<http:Service> orderMgt bind listener {
 
 - `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port to which the listener is bound to.
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above. This will also create the corresponding Docker image using the configurations provided through the annotations. Navigate to `restful-service/guide` and run the following command.
+- Now you can build a Ballerina executable archive (.balx) of the service that you developed above. This also creates the corresponding Docker image using the configurations provided through the annotations. Navigate to `restful-service/guide` and run the following command:
 ```bash
    $ ballerina build restful_service
 
@@ -400,15 +402,15 @@ service<http:Service> orderMgt bind listener {
             docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
 ```
 
-- Once you have successfully built the Docker image, you can run it using the `docker run` command which was given at the end of the build.
+- Once you have successfully built the Docker image, you can run it using the `docker run` command that you see at the end of the build
 ```bash   
    $ docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
 ```
 
-  Here we are running a Docker container with the flag `-p <host_port>:<container_port>` to map the container's port 9090 to the host's port 9090 so that the service will be accessible through the same port on the host.
+You have to run the Docker container with the `-p <host_port>:<container_port>` flag so that the container's port 9090 maps to the host's port 9090, and the service is accessible through the same port on the host
 
 - Verify that the container is up and running with the use of `docker ps`. The status of the container should be shown as 'Up'.
-- You can invoke the service using the same cURL commands that we've used above.
+- You can invoke the service using the same cURL commands that you used above.
 ```bash
    $ curl -v -X POST -d \
    '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
@@ -417,11 +419,11 @@ service<http:Service> orderMgt bind listener {
 
 ### Deploying on Kubernetes
 
-- You can deploy the service that we developed above, on Kubernetes. The Ballerina language offers native support for running Ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. It will take care of the creation of the Docker images as well so that you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina Kubernetes Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs.
+- You can deploy the service that you developed above on Kubernetes. The Ballerina language provides native support to run Ballerina programs on Kubernetes, and allows you to include Kubernetes annotations as part of your service code. Ballerina also takes care of the creation of Docker images so that you do not need to explicitly create Docker images prior to deploying it on Kubernetes. For more details and samples on Kubernetes deployment with Ballerina, see [Ballerina Kubernetes Extension](https://github.com/ballerinax/kubernetes). You can also find details on using Minikube to deploy Ballerina programs.
 
-- Now let's take a look at how we can deploy our `orderMgt` service on Kubernetes.
+- Now let's take a look at how you can deploy the orderMgt service on Kubernetes.
 
-- First we need to import `ballerinax/kubernetes` and add the `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service.
+- To enable Kubernetes deployment for the service, first you need to import `ballerinax/kubernetes` and add the `@kubernetes` annotations as shown below:"
 
 ##### order_mgt_service.bal
 
@@ -455,12 +457,12 @@ map<json> ordersMap;
 service<http:Service> orderMgt bind listener {
 ``` 
 
-- Here we have used `@kubernetes:Deployment` to specify the Docker image name which will be created as part of building this service.
-- We have also specified `@kubernetes:Service` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
-- In addition we have used `@kubernetes:Ingress` which is the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
+- `@kubernetes:Deployment` is used to specify the Docker image name that should be created as part of building the service.
+- `@kubernetes:Service` is specified to create a Kubernetes service that exposes the Ballerina service that is running on a Pod.
+- `@kubernetes:Ingress` is used as the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
-  
+Now, use the following command to build a Ballerina executable archive (.balx) of the service that you developed above.
+This creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured.
 ```
    $ ballerina build restful_service
    Compiling source
@@ -493,8 +495,8 @@ service<http:Service> orderMgt bind listener {
             kubectl apply -f /home/pubudu/wso2/bbg/restful-service/guide/target/kubernetes/restful_service
 ```
 
-- You can verify that the Docker image that we specified in `@kubernetes:Deployment` was created using the `docker images` command.
-- The Kubernetes artifacts related to the service will be generated in `./target/restful_service/kubernetes`.
+- Use the `docker images` command to verify whether the Docker image that you specified in `@kubernetes:Deployment` was created.
+- The Kubernetes artifacts related to the service are generated in the `./target/restful_service/kubernetes` directory.
 - Now you can create the Kubernetes deployment using:
 
 ```bash
@@ -514,7 +516,7 @@ service<http:Service> orderMgt bind listener {
    $ kubectl get ingress
 ```
 
-- If all artifacts were successfully deployed, you can invoke the service either via Node Port or ingress.
+- If all artifacts are successfully deployed, you can invoke the service either via Node Port or Ingress.
 
 Node Port:
  
@@ -540,7 +542,9 @@ Invoke the service
 
 ## Observability 
 Ballerina comes with support for observability built-in to the language.
-Observability is disabled by default. It can be enabled by adding the following configurations to `ballerina.conf` file in `restful-service/guide/`. A sample configuration file can be found in `restful-service/guide/restful_service`.
+Observability is disabled by default.
+To enable Observability, add the following configurations to the `ballerina.conf` file in `restful-service/guide/`.
+A sample configuration file can be found in `restful-service/guide/restful_service`.
 
 ```ballerina
 [b7a.observability]
@@ -558,12 +562,13 @@ To start the ballerina service using the configuration file, run the following c
 ```
    $ ballerina run restful_service/ --config restful_service/ballerina.conf
 ```
->NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations, default values are loaded for the rest of the configuration parameters of metrics and tracing.
+
+>NOTE: The configuration provided above is the minimum configuration required to enable tracing and metrics. When you use the minimum configuration, the default values are loaded for the rest of the configuration parameters of metrics and tracing.
 
 ### Tracing 
 
-You can monitor Ballerina services using built-in tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
-Follow the following steps to use tracing with Ballerina.
+You can monitor Ballerina services using the built-in tracing capability of Ballerina. Let's use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system here.
+Follow the steps below to use tracing with Ballerina
 
 - You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
 ```
@@ -594,13 +599,14 @@ Follow the following steps to use tracing with Ballerina.
    $ ballerina run restful_service --config restful_service/ballerina.conf
 ```
 
-- Observe the tracing using Jaeger UI using the following URL
+- Use the following URL to analyze tracing using Jaeger.
 ```
    http://localhost:16686
 ```
 
 ### Metrics
-Metrics and alerts are built-in with Ballerina. We will use Prometheus as the monitoring tool.
+
+Metrics and alerts are built-in with Ballerina. We will use Prometheus as the monitoring tool here.
 Follow the below steps to set up Prometheus and view metrics for the `restful_service`.
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under the `Observability` section.
@@ -634,7 +640,7 @@ Follow the below steps to set up Prometheus and view metrics for the `restful_se
 
    NOTE : Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
    
-- Run the Prometheus Docker image using the following command
+- Use the following command to start a Prometheus Docker container:
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
@@ -650,20 +656,17 @@ Follow the below steps to set up Prometheus and view metrics for the `restful_se
    http://localhost:19090/
 ```
 
-NOTE:  By default, Ballerina will have the following metrics for HTTP server connector. You can enter the following expressions in Prometheus UI:
--  http_requests_total
--  http_response_time
-
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import `ballerina/log` package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log package that allows you to log messages to the console. You can import the `ballerina/log` package and start logging.
+The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina service with the following command from `restful-service/guide`
 ```
    $ nohup ballerina run restful_service/ &>> ballerina.log&
 ```
-> NOTE: This will write the console log to the `ballerina.log` file in the `restful-service/guide` directory
+> NOTE: This writes the console log to the `ballerina.log` file in the `restful-service/guide` directory
 
 - Start Elasticsearch using the following command
 ```
