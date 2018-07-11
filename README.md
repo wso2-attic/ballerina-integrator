@@ -579,7 +579,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    prom/prometheus
 ```
 
-- Navigate to `asynchronous-invocation/guide` and run the asynchronous-invocation using following command
+- Navigate to `asynchronous-invocation/guide` and run the asynchronous-invocation using the following command
 ```
   $ ballerina run stock_quote_summary_service/ --config stock_quote_summary_service/ballerina.conf
 ```
