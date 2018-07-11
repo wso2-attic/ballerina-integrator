@@ -692,13 +692,13 @@ Ballerina is by default observable. Meaning you can easily observe your services
 However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it. A sample configuration file can be found in `parallel-service-orchestration/guide/travel_agency`.
 
 ```ballerina
-[observability]
+[b7a.observability]
 
-[observability.metrics]
+[b7a.observability.metrics]
 # Flag to enable Metrics
 enabled=true
 
-[observability.tracing]
+[b7a.observability.tracing]
 # Flag to enable Tracing
 enabled=true
 ```
