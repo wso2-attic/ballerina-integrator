@@ -689,18 +689,24 @@ Access the service
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `parallel-service-orchestration/guide/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it. A sample configuration file can be found in `parallel-service-orchestration/guide/travel_agency`.
 
 ```ballerina
-[observability]
+[b7a.observability]
 
-[observability.metrics]
+[b7a.observability.metrics]
 # Flag to enable Metrics
 enabled=true
 
-[observability.tracing]
+[b7a.observability.tracing]
 # Flag to enable Tracing
 enabled=true
+```
+
+To start the ballerina service using the configuration file, run the following command
+
+```
+   $ ballerina run travel_agency/ --config travel_agency/ballerina.conf
 ```
 
 ### Tracing 
@@ -714,7 +720,7 @@ Follow the following steps to use tracing with Ballerina.
 
 - Navigate to `parallel-service-orchestration/guide/` and start all services using following command 
 ```
-   $ ballerina run <package_name>
+   $ ballerina run <package_name> --config travel_agency/ballerina.conf
 ```
    
 - Observe the tracing using Jaeger UI using following URL
@@ -732,18 +738,14 @@ Metrics and alerts are built-in with ballerina. We will use Prometheus as the mo
 Follow the below steps to set up Prometheus and view metrics for travel_agency service.
 
 - Set the below configurations in the `ballerina.conf` file in the project root.
-```ballerina
-   [observability.metrics.prometheus]
-   # Flag to enable Prometheus HTTP endpoint
+```
+   [b7a.observability.metrics]
    enabled=true
-   # Prometheus HTTP endpoint port. Metrics will be exposed in /metrics context.
-   # Eg: http://localhost:9797/metrics
+   reporter="prometheus"
+
+   [b7a.observability.metrics.prometheus]
    port=9797
-   # Flag to indicate whether meter descriptions should be sent to Prometheus.
-   descriptions=false
-   # The step size to use in computing windowed statistics like max.
-   # The default is 1 minute.
-   step="PT1M"
+   host="0.0.0.0"
 ```
 
 - Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
@@ -768,11 +770,11 @@ Follow the below steps to set up Prometheus and view metrics for travel_agency s
 
 - Navigate to `parallel-service-orchestration/guide/` and start all services using following command 
 ```
-   $ballerina run <package_name>
+   $ ballerina run <package_name> --config travel_agency/ballerina.conf
 ```
 
    NOTE: First start the `travel_agency` package since it's the main orchestrator for other services(also we are going
-    to trace from traval agency service)
+    to trace from traval agency service hence do not use the config file for other services)
    
 - You can access Prometheus at the following URL
 ```
