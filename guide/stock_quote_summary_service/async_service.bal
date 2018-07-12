@@ -99,7 +99,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         }
 
         // Send the response back to the client
-        finalResponse.setJsonPayload(responseJson);
+        finalResponse.setJsonPayload(untaint responseJson);
         io:println(" >> Response : " + responseJson.toString());
         _ = caller -> respond(finalResponse);
     }
