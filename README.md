@@ -637,15 +637,15 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
    $ ballerina build travel_agency
   
    Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/travel_agency/kubernetes
+   kubectl apply -f ./target/kubernetes/travel_agency
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
-- Also the Kubernetes artifacts related our service, will be generated under `` ./target/travel_agency/kubernetes``. 
+- Also the Kubernetes artifacts related our service, will be generated under `` ./target/kubernetes/travel_agency``. 
 - Now you can create the Kubernetes deployment using:
 
 ```bash
-   $ kubectl apply -f ./target/travel_agency/kubernetes 
+   $ kubectl apply -f ./target/kubernetes/travel_agency
  
    deployment.extensions "ballerina-guides-travel-agency-service" created
    ingress.extensions "ballerina-guides-travel-agency-service" created
