@@ -492,15 +492,15 @@ This creates the corresponding Docker image and the Kubernetes artifacts using t
             @kubernetes:Docker 			 - complete 3/3
 
             Run following command to deploy kubernetes artifacts:
-            kubectl apply -f /home/pubudu/wso2/bbg/restful-service/guide/target/kubernetes/restful_service
+            kubectl apply -f /home/ballerina/restful-service/guide/target/kubernetes/restful_service
 ```
 
 - Use the `docker images` command to verify whether the Docker image that you specified in `@kubernetes:Deployment` was created.
-- The Kubernetes artifacts related to the service are generated in the `./target/restful_service/kubernetes` directory.
+- The Kubernetes artifacts related to the service are generated in the `./target/kubernetes/restful_service` directory.
 - Now you can create the Kubernetes deployment using:
 
 ```bash
-   $ kubectl apply -f ./target/restful_service/kubernetes 
+   $ kubectl apply -f ./target/kubernetes/restful_service
  
    deployment.extensions "ballerina-guides-restful-service" created
    ingress.extensions "ballerina-guides-restful-service" created
@@ -560,7 +560,7 @@ enabled=true
 
 To start the ballerina service using the configuration file, run the following command
 ```
-   $ ballerina run restful_service/ --config restful_service/ballerina.conf
+   $ ballerina run restful_service --config restful_service/ballerina.conf
 ```
 
 >NOTE: The configuration provided above is the minimum configuration required to enable tracing and metrics. When you use the minimum configuration, the default values are loaded for the rest of the configuration parameters of metrics and tracing.
@@ -648,7 +648,7 @@ Follow the below steps to set up Prometheus and view metrics for the `restful_se
 
 - Navigate to `restful-service/guide` and run the restful-service using following command
 ```
-  $ ballerina run restful_service/ --config restful_service/ballerina.conf
+  $ ballerina run restful_service --config restful_service/ballerina.conf
 ```
 
 - You can access Prometheus at the following URL
@@ -664,7 +664,7 @@ The following section describes how to search, analyze, and visualize logs in re
 
 - Start the Ballerina service with the following command from `restful-service/guide`
 ```
-   $ nohup ballerina run restful_service/ &>> ballerina.log&
+   $ nohup ballerina run restful_service &>> ballerina.log&
 ```
 > NOTE: This writes the console log to the `ballerina.log` file in the `restful-service/guide` directory
 
