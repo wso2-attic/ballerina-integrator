@@ -117,7 +117,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
             //500 error response is constructed and sent back to the client.
                 http:Response res = new;
                 res.statusCode = 500;
-                res.setPayload(err.message);
+                res.setPayload(untaint err.message);
                 CompanyEP->respond(res) but { error e =>
                 log:printError("Error sending response", err = e) };
             }

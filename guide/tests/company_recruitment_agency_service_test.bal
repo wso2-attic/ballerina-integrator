@@ -71,7 +71,7 @@ json payload3 = { "Name": "Smart Automobile" };
     http:Request req = new;
     req.setJsonPayload(payload);
     // Send a GET request to the specified endpoint
-    var response = httpEndpoint->post("/checkVacancies/company", request = req);
+    var response = httpEndpoint->post("/checkVacancies/company", req);
     match response {
         http:Response resp => {
             var jsonRes = check resp.getJsonPayload();
@@ -83,7 +83,7 @@ json payload3 = { "Name": "Smart Automobile" };
 
     http:Request req2 = new;
     req2.setJsonPayload(payload2);
-    var respnc = httpEndpoint->post("/checkVacancies/company ", request = req2);
+    var respnc = httpEndpoint->post("/checkVacancies/company ",  req2);
     match respnc {
         http:Response resp => {
             var jsonRes = check resp.getJsonPayload();
@@ -96,7 +96,7 @@ json payload3 = { "Name": "Smart Automobile" };
     http:Request req3 = new;
     req3.setJsonPayload(payload3);
     // Send a GET request to the specified endpoint
-    var respnce = httpEndpoint->post("/checkVacancies/company ", request = req3);
+    var respnce = httpEndpoint->post("/checkVacancies/company ", req3);
     match respnce {
         http:Response resp => {
             var jsonRes = check resp.getJsonPayload();
