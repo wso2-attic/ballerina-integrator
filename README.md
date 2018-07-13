@@ -560,7 +560,7 @@ enabled=true
 
 To start the ballerina service using the configuration file, run the following command
 ```
-   $ ballerina run product_admin_portal/ --config product_admin_portal/ballerina.conf
+   $ ballerina run --config product_admin_portal/ballerina.conf product_admin_portal/
 ```
 
 NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
@@ -594,9 +594,9 @@ Follow the following steps to use tracing with Ballerina.
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `messaging-with-kafka/guide` and run the `product_admin_portal` using following command 
+- Navigate to `messaging-with-kafka/guide` and run the `product_admin_portal` using the following command
 ```
-   $ ballerina run product_admin_portal/ --config product_admin_portal/ballerina.conf
+   $ ballerina run --config product_admin_portal/ballerina.conf product_admin_portal/
 ```
 
 - Observe the tracing using Jaeger UI using following URL
@@ -640,9 +640,9 @@ Follow the below steps to set up Prometheus and view metrics for product_admin_p
    prom/prometheus
 ```
 
-- Navigate to `messaging-with-kafka/guide` and run the `product_admin_portal` using following command
+- Navigate to `messaging-with-kafka/guide` and run the `product_admin_portal` using the following command
 ```
-   $ ballerina run product_admin_portal/ --config product_admin_portal/ballerina.conf
+   $ ballerina run --config product_admin_portal/ballerina.conf product_admin_portal/
 ```
 
 - You can access Prometheus at the following URL
