@@ -500,7 +500,7 @@ enabled=true
 To start the ballerina service using the configuration file, run the following command
 
 ```
-   $ ballerina run stock_quote_summary_service/ --config stock_quote_summary_service/ballerina.conf
+   $ ballerina run --config stock_quote_summary_service/ballerina.conf stock_quote_summary_service/
 ```
 NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
 
@@ -533,9 +533,9 @@ Follow the following steps to use tracing with Ballerina.
    -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `asynchronous-invocation/guide` and run the asynchronous-invocation using following command 
+- Navigate to `asynchronous-invocation/guide` and run the asynchronous-invocation using the following command
 ```
-   $ ballerina run stock_quote_summary_service/ --config stock_quote_summary_service/ballerina.conf
+   $ ballerina run --config stock_quote_summary_service/ballerina.conf stock_quote_summary_service/
 ```
 
 - Observe the tracing using Jaeger UI using following URL
@@ -581,7 +581,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
 
 - Navigate to `asynchronous-invocation/guide` and run the asynchronous-invocation using the following command
 ```
-  $ ballerina run stock_quote_summary_service/ --config stock_quote_summary_service/ballerina.conf
+  $ ballerina run --config stock_quote_summary_service/ballerina.conf stock_quote_summary_service/
 ```
 
 - You can access Prometheus at the following URL
