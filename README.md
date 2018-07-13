@@ -466,7 +466,7 @@ service<http:Service> orderMgt bind listener {
 - `@kubernetes:Ingress` is used as the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
 
 If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
-- `dockerCertpath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
+- `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
 - `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
 
 Now, use the following command to build a Ballerina executable archive (.balx) of the service that you developed above.
