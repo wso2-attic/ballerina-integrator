@@ -278,49 +278,49 @@ Let's now look at some important log statements we will get as the response for 
 INFO  [banking_application] - Transfer $300 from Alice's account to Bob's account 
 INFO  [banking_application] - Expected: Transaction to be successful 
 INFO  [banking_application] - Initiating transaction 
-INFO  [banking_application] - Transfering money from account ID 1 to account ID 2 
+INFO  [banking_application] - Available balance in account ID 1: 500
 INFO  [banking_application] - Withdrawing money from account ID: 1 
 INFO  [banking_application] - $300 has been withdrawn from account ID 1 
 INFO  [banking_application] - Depositing money to account ID: 2 
 INFO  [banking_application] - $300 has been deposited to account ID 2 
 INFO  [banking_application] - Transaction committed 
-INFO  [banking_application] - Successfully transferred $300 from account 1 to account 2 
+INFO  [banking_application] - Successfully transferred $300 from account ID 1 to account ID
 ```
 
 - For the `scenario 2` where 'Alice' tries to transfer $500 to Bob's account, the transaction is expected to fail as 'Alice' has an insufficient balance
 
 ```
 ------------------------------------ Scenario 2---------------------------------------- 
-INFO  [banking_application] - Try to transfer $500 from Alice's acc to Bob's acc 
-INFO  [banking_application] - Expected: Transaction to fail as Alice now only has $200
+INFO  [banking_application] - Again try to transfer $500 from Alice's account to Bob's account
+INFO  [banking_application] - Expected: Transaction to fail as Alice now only has a balance of $200 in account
 INFO  [banking_application] - Initiating transaction 
-INFO  [banking_application] - Transfering money from account ID 1 to account ID 2 
-INFO  [banking_application] - Withdrawing money from account ID: 1 
-INFO  [banking_application] - Checking balance for account ID: 1 
-INFO  [banking_application] - Available balance in account ID 1: 200 
-ERROR [banking_application] - Error while withdrawing the money: Not enough balance 
+INFO  [banking_application] - Available balance in account ID 1: 200
+INFO  [banking_application] - Error while withdrawing the money: Error: Not enough balance
+INFO  [banking_application] - Failed to transfer money from account ID 1 to account ID 2
 ```
 
 - For the `scenario 3` where 'Bob' tries to transfer $500 to account ID 1234, the transaction is expected to fail as account ID 1234 does not exist
 
 ```
 ------------------------------------ Scenario 3---------------------------------------- 
-INFO  [banking_application] - Try to transfer $500 from Bob's acc to a non-existing acc
-INFO  [banking_application] - Expected: Transaction to fail as recipient ID is invalid 
+INFO  [banking_application] - Try to transfer $500 from Bob's account to a non existing account ID
+INFO  [banking_application] - Expected: Transaction to fail as account ID of recipient is invalid
 INFO  [banking_application] - Initiating transaction 
-INFO  [banking_application] - Transfering money from account ID 2 to account ID 1234 
+INFO  [banking_application] - vailable balance in account ID 2: 1300
 INFO  [banking_application] - Withdrawing money from account ID: 2 
 INFO  [banking_application] - $500 has been withdrawn from account ID 2 
 INFO  [banking_application] - Depositing money to account ID: 1234 
 INFO  [banking_application] - Verifying whether account ID 1234 exists 
-ERROR [banking_application] - Error while depositing the money: Account does not exist 
-INFO  [banking_application] - Check balance for Bob's account 
-INFO  [banking_application] - Available balance in account ID 2: 1300 
-INFO  [banking_application] - You should see $1300 balance in Bob's account (NOT $800) 
+ERROR [banking_application] - Error while depositing the money: Error: Account does not exist
+INFO  [banking_application] - Failed to transfer money from account ID 2 to account ID 1234
+INFO  [banking_application] - Check balance for Bob's account
+INFO  [banking_application] - Available balance in account ID 2: 1300
+INFO  [banking_application] - You should see $1300 balance in Bob's account (NOT $800)
 INFO  [banking_application] - Explanation: 
 When trying to transfer $500 from Bob's account to account ID 1234, initially $500
-withdrew from Bob's account. But then the deposit operation failed due to an invalid
-recipient; Hence, the TX failed and withdraw operation rollbacked as it is in same TX
+was withdrawn from Bob's account. But then the deposit operation failed due to an invalid
+recipient account ID; Hence, the transaction failed and withdraw operation rollbacked as 
+it is in same transaction
 ```
 
 ### Writing unit tests 
@@ -338,5 +338,6 @@ To run the unit tests, navigate to `managing-database-transactions/guide` and ru
 ```bash
    $ ballerina test
 ```
+Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file
 
 To check the implementation of the test file, refer to the [account_manager_test.bal](https://github.com/ballerina-guides/managing-database-transactions/blob/master/guide/banking_application/tests/account_manager_test.bal).
