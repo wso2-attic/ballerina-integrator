@@ -385,10 +385,10 @@ service<http:Service> orderMgt bind listener {
        restful_service:0.0.0
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
    ballerina: stopped HTTP/WS endpoint 0.0.0.0:9090
-            ✔ testResourceAddOrder
-            ✔ testResourceUpdateOrder
-            ✔ testResourceFindOrder
-            ✔ testResourceCancelOrder
+            [pass] testResourceAddOrder
+            [pass] testResourceUpdateOrder
+            [pass] testResourceFindOrder
+            [pass] testResourceCancelOrder
 
             4 passing
             0 failing
@@ -419,11 +419,15 @@ You have to run the Docker container with the `-p <host_port>:<container_port>` 
 
 ### Deploying on Kubernetes
 
-- You can deploy the service that you developed above on Kubernetes. The Ballerina language provides native support to run Ballerina programs on Kubernetes, and allows you to include Kubernetes annotations as part of your service code. Ballerina also takes care of the creation of Docker images so that you do not need to explicitly create Docker images prior to deploying it on Kubernetes. For more details and samples on Kubernetes deployment with Ballerina, see [Ballerina Kubernetes Extension](https://github.com/ballerinax/kubernetes). You can also find details on using Minikube to deploy Ballerina programs.
+- You can deploy the service that you developed above on Kubernetes. The Ballerina language provides native support to run Ballerina programs on Kubernetes, and allows you to include Kubernetes annotations as part of your service code.
+Ballerina also takes care of the creation of Docker images so that you do not need to explicitly create Docker images prior to deploying it on Kubernetes.
+For more details and samples on Kubernetes deployment with Ballerina, see [Ballerina Kubernetes Extension](https://github.com/ballerinax/kubernetes). You can also find details on using Minikube to deploy Ballerina programs.
 
 - Now let's take a look at how you can deploy the orderMgt service on Kubernetes.
 
 - To enable Kubernetes deployment for the service, first you need to import `ballerinax/kubernetes` and add the `@kubernetes` annotations as shown below:"
+
+> NOTE: Linux users can use Minikube to try this out locally.
 
 ##### order_mgt_service.bal
 
@@ -461,6 +465,10 @@ service<http:Service> orderMgt bind listener {
 - `@kubernetes:Service` is specified to create a Kubernetes service that exposes the Ballerina service that is running on a Pod.
 - `@kubernetes:Ingress` is used as the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
 
+If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
+- `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
+- `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
+
 Now, use the following command to build a Ballerina executable archive (.balx) of the service that you developed above.
 This creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured.
 ```
@@ -475,10 +483,10 @@ This creates the corresponding Docker image and the Kubernetes artifacts using t
        restful_service:0.0.0
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
    ballerina: stopped HTTP/WS endpoint 0.0.0.0:9090
-            ✔ testResourceAddOrder
-            ✔ testResourceUpdateOrder
-            ✔ testResourceFindOrder
-            ✔ testResourceCancelOrder
+            [pass] testResourceAddOrder
+            [pass] testResourceUpdateOrder
+            [pass] testResourceFindOrder
+            [pass] testResourceCancelOrder
 
             4 passing
             0 failing
@@ -526,9 +534,20 @@ Node Port:
    "http://localhost:<Node_Port>/ordermgt/order" -H "Content-Type:application/json"  
 ```
 
+If you are using Minikube, you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
+```bash
+    $ minikube ip
+    192.168.99.100
+
+    $ kubectl get services
+    NAME                               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+    ballerina-guides-restful-service   NodePort    10.100.226.129   <none>        9090:30659/TCP   3h
+```
+The endpoint URL for the above case would be as follows: `http://192.168.99.100:30659/ordermgt/order`
+
 Ingress:
 
-Add `/etc/hosts` entry to match hostname. 
+Add `/etc/hosts` entry to match hostname. For Minikube, the IP address should be the IP address of the cluster.
 ``` 
    127.0.0.1 ballerina.guides.io
 ```
@@ -638,7 +657,7 @@ Follow the below steps to set up Prometheus and view metrics for the `restful_se
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE : Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
+> NOTE : Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
    
 - Use the following command to start a Prometheus Docker container:
 ```
@@ -731,7 +750,7 @@ filebeat.prospectors:
 output.logstash:
   hosts: ["logstash:5044"]  
 ```
-> NOTE : Modify the ownership of `filebeat.yml` file using `$chmod go-w filebeat.yml`
+> NOTE: Modify the ownership of `filebeat.yml` file using `$chmod go-w filebeat.yml`
 
 ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
         
