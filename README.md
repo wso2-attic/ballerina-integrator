@@ -706,7 +706,7 @@ enabled=true
 To start the ballerina service using the configuration file, run the following command
 
 ```
-   $ ballerina run travel_agency/ --config travel_agency/ballerina.conf
+   $ ballerina run --config travel_agency/ballerina.conf <package_name>
 ```
 
 ### Tracing 
@@ -718,9 +718,9 @@ Follow the following steps to use tracing with Ballerina.
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `parallel-service-orchestration/guide/` and start all services using following command 
+- Navigate to `parallel-service-orchestration/guide/` and start all services using the following command
 ```
-   $ ballerina run <package_name> --config travel_agency/ballerina.conf
+   $ ballerina run --config travel_agency/ballerina.conf <package_name>
 ```
    
 - Observe the tracing using Jaeger UI using following URL
@@ -768,9 +768,9 @@ Follow the below steps to set up Prometheus and view metrics for travel_agency s
    docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/tmp/prometheus.yml prom/prometheus
 ```
 
-- Navigate to `parallel-service-orchestration/guide/` and start all services using following command 
+- Navigate to `parallel-service-orchestration/guide/` and start all services using the following command
 ```
-   $ ballerina run <package_name> --config travel_agency/ballerina.conf
+   $ ballerina run --config travel_agency/ballerina.conf <package_name>
 ```
 
    NOTE: First start the `travel_agency` package since it's the main orchestrator for other services(also we are going
