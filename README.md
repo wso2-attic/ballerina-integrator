@@ -579,7 +579,7 @@ enabled=true
 
 To start the ballerina service using the configuration file, run the following command
 ```
-   $ ballerina run restful_service --config restful_service/ballerina.conf
+   $ ballerina run --config restful_service/ballerina.conf restful_service
 ```
 
 >NOTE: The configuration provided above is the minimum configuration required to enable tracing and metrics. When you use the minimum configuration, the default values are loaded for the rest of the configuration parameters of metrics and tracing.
@@ -615,7 +615,7 @@ Follow the steps below to use tracing with Ballerina
 
 - Navigate to `restful-service/guide` and run the restful-service using the following command
 ```
-   $ ballerina run restful_service --config restful_service/ballerina.conf
+   $ ballerina run --config restful_service/ballerina.conf restful_service
 ```
 
 - Use the following URL to analyze tracing using Jaeger.
@@ -667,7 +667,7 @@ Follow the below steps to set up Prometheus and view metrics for the `restful_se
 
 - Navigate to `restful-service/guide` and run the restful-service using following command
 ```
-  $ ballerina run restful_service --config restful_service/ballerina.conf
+  $ ballerina run --config restful_service/ballerina.conf restful_service
 ```
 
 - You can access Prometheus at the following URL
