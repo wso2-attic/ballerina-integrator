@@ -16,6 +16,7 @@
 
 import ballerina/log;
 import wso2/kafka;
+import ballerina/internal;
 
 // Kafka consumer endpoint
 endpoint kafka:SimpleConsumer consumer {
@@ -35,9 +36,9 @@ service<kafka:Consumer> franchiseeService2 bind consumer {
     onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
         foreach entry in records {
-            blob serializedMsg = entry.value;
+            byte[] serializedMsg = entry.value;
             // Convert the serialized message to string message
-            string msg = serializedMsg.toString("UTF-8");
+            string msg = internal:byteArrayToString(serializedMsg, "UTF-8");
             log:printInfo("New message received from the product admin");
             // log the retrieved Kafka record
             log:printInfo("Topic: " + entry.topic + "; Received Message: " + msg);
