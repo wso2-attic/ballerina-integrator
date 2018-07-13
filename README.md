@@ -414,19 +414,25 @@ Once you are done with the development, you can deploy the service using any of 
 
 - As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above. Navigate to `/content-based-routing/guide` and run the following command. 
 ```bash
+   $ ballerina build company_data_service
    $ ballerina build company_recruitment_agency_service
 ```
 
-- Once the company_recruitment_agency_service.balx is created inside the target folder, you can run that with the following command. 
+- Once the company_recruitment_agency_service.balx and company_data_service.balx are created inside the target folder, you can run that with the following command. 
 ```bash
    $ ballerina run target/company_recruitment_agency_service.balx
+   $ ballerina run target/company_data_service.balx
+   
 ```
 
 - The successful execution of the service will show us the following output. 
 ```
+   ballerina: initiating service(s) in 'target/company_data_service.balx'
+    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+
    ballerina: initiating service(s) in 'target/company_recruitment_agency_service.balx'
-	ballerina: started HTTP/WS endpoint 0.0.0.0:9091
-	ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+    ballerina: started HTTP/WS endpoint 0.0.0.0:9091
+	
 ```
 
 ### Deploying on Docker
