@@ -515,7 +515,7 @@ enabled=true
 To start the ballerina service using the configuration file, run the following command
 
 ```
-   $ ballerina run travel_agency/ --config travel_agency/ballerina.conf
+   $ ballerina run --config travel_agency/ballerina.conf travel_agency
 ```
 NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
 
@@ -548,9 +548,9 @@ Follow the following steps to use tracing with Ballerina.
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `service-composition/guide` and run the `travel_agency_service` using following command 
+- Navigate to `service-composition/guide` and run the `travel_agency_service` using the following command
 ```
-   $ ballerina run travel_agency/ --config travel_agency/ballerina.conf
+   $ ballerina run --config travel_agency/ballerina.conf travel_agency
 ```
 
 - Observe the tracing using Jaeger UI using following URL
@@ -594,9 +594,9 @@ Follow the below steps to set up Prometheus and view metrics for travel_agency s
    prom/prometheus
 ```
 
-- Navigate to `service-composition/guide` and run the `travel_agency_service` using following command
+- Navigate to `service-composition/guide` and run the `travel_agency_service` using the following command
 ```
-  $ ballerina run travel_agency/ --config travel_agency/ballerina.conf
+  $ ballerina run --config travel_agency/ballerina.conf travel_agency
 ```
 
 - You can access Prometheus at the following URL
