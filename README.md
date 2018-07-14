@@ -79,10 +79,10 @@ Sample response payload:
 {"Bidder Name":"Bidder 2","Bid":470000}
 ```
 
-When a auctioneer initiate a request to get highest bid value, the auction service need to send this request to all the bidders that are include in the system. To check the implementation of this bidders endpoints, see the [bidders_endpoints.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/bidders/bidders_endpoints.bal) file.
+When a auctioneer initiate a request to get highest bid value, the auction service need to send this request to all the bidders that are include in the system. To check the implementation of this bidders endpoints, see the [bidders_endpoints.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/auction_service/bidders_endpoints.bal) file.
 
 If all bidders endpoints work successfully, the auction service proceed to get highest bid value and send back to the client(auctioneer) with the bidder name. The skeleton of `auction_service.bal` file is attached below. Inline comments are added for better understanding.
-Refer to the [auction_service.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/auction%20service/auction_service.bal) to see the complete implementation of the auction service.
+Refer to the [auction_service.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/auction_service/auction_service.bal) to see the complete implementation of the auction service.
 
 ##### auction_service.bal
 
