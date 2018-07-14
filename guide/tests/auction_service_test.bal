@@ -4,7 +4,7 @@ import ballerina/http;
 
 // Before Suite Function can be used to start the service
 @test:BeforeSuite
-function beforeSuiteFunc () {
+function beforeSuiteFunc() {
     // Start the 'auctionService' before running the test
     _ = test:startServices("auction_service");
 
@@ -16,25 +16,27 @@ function beforeSuiteFunc () {
 
 // Client endpoint
 endpoint http:Client clientEP1 {
-    url:"http://localhost:9090/auction"
+    url: "http://localhost:9090/auction"
 };
 
 // Test function
 @test:Config
-function testAuctionService () {
+function testAuctionService() {
     // Initialize the empty http requests and responses
     http:Request req;
 
     // Request Payload
     json requestPayload = {
-        "Item":"Car",
-        "Condition":"good"
+        "Item": "Car",
+        "Condition": "good"
     };
 
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP1 -> post("/setAuction", request = req);
+    io:println("test");
+    //runtime:sleep(60000);
+    http:Response response = check clientEP1->post("/setAuction", req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Online auction service did not respond with 200 OK signal!");
     // Check whether the response is as expected
@@ -46,7 +48,7 @@ function testAuctionService () {
 
 // After Suite Function is used to stop the service
 @test:AfterSuite
-function afterSuiteFunc () {
+function afterSuiteFunc() {
     // Stop the 'auctionService' after running the test
     test:stopServices("auction_service");
 
