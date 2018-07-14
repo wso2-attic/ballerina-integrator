@@ -4,9 +4,9 @@
 
 The Content-Based Router (CBR) reads the content of a message and routes it to a specific recipient based on its content. This approach is useful when an implementation of a specific logical function is distributed across multiple physical systems.
 
-> This guide walks you through the process of implementing a content based routing using Ballerina language.
+> This guide walks you through the process of implementing content-based routing using the Ballerina language.
 
-This is a simple ballerina code for content based routing.
+This is a simple Ballerina code for content-based routing.
 
 The following are the sections available in this guide.
 
@@ -19,7 +19,7 @@ The following are the sections available in this guide.
 
 ## What you’ll build
 
-To understand how you can build a content based routing using Ballerina, let's consider a real-world use case of a Company recruitment agency service that provides recruitment details of companies. When a Company recruitment agency service sends a request that includes the company name (EX : ABC Company), that particular request will be routed to its respective endpoint. After receiving the request from the content-based router(company_recruitment_agency_service), the relevant company's endpoint sends the response back to the caller. The following diagram illustrates this use case clearly.
+To understand how you can build a content-based routing system using Ballerina, let's consider a real-world use case of a company recruitment agency service that provides recruitment details of companies. When a company recruitment agency service sends a request that includes the company name (e.g., ABC Company), that particular request will be routed to its respective endpoint. After receiving the request from the content-based router (company_recruitment_agency_service), the relevant company's endpoint sends the response back to the caller. The following diagram illustrates this use case clearly.
 
 ![alt text](/images/content_based_routing_image.png)
 
@@ -414,25 +414,19 @@ Once you are done with the development, you can deploy the service using any of 
 
 - As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above. Navigate to `/content-based-routing/guide` and run the following command. 
 ```bash
-   $ ballerina build company_data_service
    $ ballerina build company_recruitment_agency_service
 ```
 
-- Once the company_recruitment_agency_service.balx and company_data_service.balx are created inside the target folder, you can run that with the following command. 
+- Once the company_recruitment_agency_service.balx is created inside the target folder, you can run that with the following command. 
 ```bash
    $ ballerina run target/company_recruitment_agency_service.balx
-   $ ballerina run target/company_data_service.balx
-   
 ```
 
 - The successful execution of the service will show us the following output. 
 ```
-   ballerina: initiating service(s) in 'target/company_data_service.balx'
-    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
-
    ballerina: initiating service(s) in 'target/company_recruitment_agency_service.balx'
-    ballerina: started HTTP/WS endpoint 0.0.0.0:9091
-	
+	ballerina: started HTTP/WS endpoint 0.0.0.0:9091
+	ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ### Deploying on Docker
@@ -728,52 +722,57 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+> **NOTE**: Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`.
    
-- Run the Prometheus docker image using the following command
+Run the Prometheus Docker image using the following command.
+
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
    
-- You can access Prometheus at the following URL
+You can access Prometheus at the following URL.
+
 ```
    http://localhost:19090/
 ```
 
-NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+> **NOTE**: By default Ballerina has the following metrics for the HTTP server connector. You can enter the following expression in Prometheus UI.
 -  http_requests_total
 -  http_response_time
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log package for logging to the console. You can import the `ballerina/log` package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `/content-based-routing/guide`
+Start the Ballerina Service with the following command from the `/content-based-routing/guide` directory.
+
 ```
    $ nohup ballerina runcompany_recruitment_agency_service/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `/content-based-routing/guide` directory
 
-- Start Elasticsearch using the following command
+> **NOTE**: This will write the console log to the `ballerina.log` file in the `/content-based-routing/guide` directory.
 
-- Start Elasticsearch using the following command
+Start Elasticsearch using the following command
+
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
 
-   NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
+> **NOTE**: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`.
    
-- Start Kibana plugin for data visualization with Elasticsearch
+Start the Kibana plugin for data visualization with Elasticsearch.
+
 ```
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
 
-- Configure logstash to format the ballerina logs
+Configure logstash to format the Ballerina logs.
 
 i) Create a file named `logstash.conf` with the following content
+
 ```
 input {  
  beats{ 
@@ -811,7 +810,8 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
   
  - Configure filebeat to ship the ballerina logs
     
-i) Create a file named `filebeat.yml` with the following content
+i) Create a file named `filebeat.yml` with the following content.
+
 ```
 filebeat.prospectors:
 - type: log
@@ -820,11 +820,12 @@ filebeat.prospectors:
 output.logstash:
   hosts: ["logstash:5044"]  
 ```
-NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
 
-ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
+> **NOTE**: Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
+
+ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`.
         
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name.
      
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
@@ -832,7 +833,8 @@ $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
- - Access Kibana to visualize the logs using following URL
+ - Access Kibana to visualize the logs using the following URL:
+ 
 ```
    http://localhost:5601 
 ```
