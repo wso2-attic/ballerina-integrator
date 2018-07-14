@@ -22,7 +22,7 @@ function testResourceFilterMarks () {
     // Construct the request payload
     json payload = {"name":"Saman","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science","marks":40}]};
     // Set JSON payload to request
-    req.setJsonPayload(payload);
+    req.setJsonPayload(untaint payload);
     // Send 'POST' request and obtain the response
     http:Response res = check clientEP -> post("/filterMarks", req);
     // Expected response code is 200
