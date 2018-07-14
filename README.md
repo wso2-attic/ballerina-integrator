@@ -44,15 +44,13 @@ Ballerina is a complete programming language that supports custom project struct
 scatter-gather-messaging
    └── guide
        ├── scatter-gather-messaging
-       │
-       ├── auction_service
-       │   ├── auction_service.bal
-       │     
-       ├── bidders	
-       │   ├── bidders_endpoints.bal
-       │    
-       ├── tests
-            └── auction_service_test.bal
+           │
+           ├── auction_service
+           │   ├── auction_service.bal	
+           │   ├── bidders_endpoints.bal
+           │    
+           ├── tests
+                └── auction_service_test.bal
 
 ```
 
@@ -91,36 +89,61 @@ Refer to the [auction_service.bal](https://github.com/HisharaPerera/scatter-gath
 ```ballerina
 import ballerina/http;
 import ballerina/io;
-
+//import ballerinax/docker;
+//import ballerinax/kubernetes;
+//
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"auction_service",
+//    tag:"v1.0"
+//}
+//
+//@docker:Expose{}
+//
+//
+//@kubernetes:Ingress {
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-auction-service",
+//    path:"/"
+//}
+//
+//@kubernetes:Service {
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-auction-service"
+//}
+//
+//@kubernetes:Deployment {
+//    image:"ballerina.guides.io/auction_service:v1.0",
+//    name:"ballerina-guides-auction-service"
+//}
 // Service endpoint
 endpoint http:Listener auctionEP {
-    port:9090
+    port: 9090
 };
 
 //Client endpoint to communicate with bidders
-endpoint http:Client biddersEP {
-    url:"http://localhost:9091/bidders"
+endpoint http:Client biddersEP1 {
+    url: "http://localhost:9091/bidders"
 };
 
 // Auction service to get highest bid from bidders
-@http:ServiceConfig {basePath:"/auction"}
+@http:ServiceConfig { basePath: "/auction" }
 service<http:Service> auctionService bind auctionEP {
 
     //Resource to get highest bid value
-    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], 
-    produces: ["application/json"] }
+    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
     setAuction(endpoint client, http:Request inRequest) {
         http:Response outResponse;
         json inReqPayload;
 
         match inRequest.getJsonPayload() {
             // Valid JSON payload
-            json payload => inReqPayload = payload;
+            json payload => inReqPayload = untaint payload;
             // NOT a valid JSON payload
             any => {
                 outResponse.statusCode = 400;
-                outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(outResponse);
+                outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+                _ = client->respond(outResponse);
                 done;
             }
         }
@@ -131,50 +154,24 @@ service<http:Service> auctionService bind auctionEP {
         // If payload parsing fails, send a "Bad Request" message as the response
         if (Item == null || Condition == null) {
             outResponse.statusCode = 400;
-            outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(outResponse);
+            outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
+            _ = client->respond(outResponse);
             done;
         }
 
-	//Try parsing the JSON payload from the user request
-	//Get the bid value from bidder 1
-	//Get the bid value from bidder 2
-	//Get the bid value from bidder 3
-       
-            // Select the bidder with the highest bid
-            if (bidder1Bid > bidder2Bid) {
-                if (bidder1Bid > bidder3Bid) {
-                    jsonHighestBid = jsonResponseBidder1;
-                }
-            } else {
-                if (bidder2Bid > bidder3Bid) {
-                    jsonHighestBid = jsonResponseBidder2;
-                }
-                else {
-                    jsonHighestBid = jsonResponseBidder3;
-                }
-            }
-            // Send final response to client
-            outResponse.setJsonPayload(jsonHighestBid);
-            _ = client -> respond(outResponse);
-        }
+        json jsonResponseBidder1;
+        json jsonResponseBidder2;
+        json jsonResponseBidder3;
+        json jsonHighestBid;
 
-
-    }
-}
-```
-
-Let's now look at the code segment that is responsible for communicating with the all bidders endpoints.
-
-```ballerina
-fork {
+        fork {
             // Worker to communicate with 'Bidder 1'
             worker bidder1Worker {
                 http:Request outReq;
                 // Set out request payload
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 1' and get the results
-                http:Response respWorkerBidder1 = check biddersEP->post("/bidder1", request = outReq);
+                http:Response respWorkerBidder1 = check biddersEP1->post("/bidder1", outReq);
                 // Reply to the join block from this worker - Send the response from 'Bidder1'
                 respWorkerBidder1 -> fork;
             }
@@ -184,7 +181,7 @@ fork {
                 // Set out request payload
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 2' and get the results
-                http:Response respWorkerBidder2 = check biddersEP -> post("/bidder2", request = outReq);
+                http:Response respWorkerBidder2 = check biddersEP1->post("/bidder2", outReq);
                 // Reply to the join block from this worker - Send the response from 'Bidder 2'
                 respWorkerBidder2 -> fork;
             }
@@ -195,7 +192,7 @@ fork {
                 // Set out request payload
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 3' and get the results
-                http:Response respWorkerBidder3 = check biddersEP -> post("/bidder3", request = outReq);
+                http:Response respWorkerBidder3 = check biddersEP1->post("/bidder3", outReq);
                 // Reply to the join block from this worker - Send the response from 'Bidder 3'
                 respWorkerBidder3 -> fork;
             }
@@ -225,6 +222,109 @@ fork {
                 }
             }
 
+            // Get the bid value response from bidder 3
+            if (biddersResponses["bidder3Worker"] != null) {
+                var resBidder3 = check <http:Response>(biddersResponses["bidder3Worker"]);
+                jsonResponseBidder3 = check resBidder3.getJsonPayload();
+                match jsonResponseBidder3.Bid {
+                    int intVal => bidder3Bid = intVal;
+                    any otherVals => bidder3Bid = -1;
+                }
+            }
+
+            // Select the bidder with the highest bid
+            if (bidder1Bid > bidder2Bid) {
+                if (bidder1Bid > bidder3Bid) {
+                    jsonHighestBid = untaint jsonResponseBidder1;
+                }
+            } else {
+                if (bidder2Bid > bidder3Bid) {
+                    jsonHighestBid = untaint jsonResponseBidder2;
+                }
+                else {
+                    jsonHighestBid = untaint jsonResponseBidder3;
+                }
+            }
+            // Send final response to client
+            outResponse.setJsonPayload(jsonHighestBid);
+            _ = client->respond(outResponse);
+        }
+    }
+}
+
+```
+
+Let's now look at the code segment that is responsible for communicating with the all bidders endpoints.
+
+```ballerina
+fork {
+            // Worker to communicate with 'Bidder 1'
+            worker bidder1Worker {
+                http:Request outReq;
+                // Set out request payload
+                outReq.setJsonPayload(inReqPayload);
+                // Send a POST request to 'Bidder 1' and get the results
+                http:Response respWorkerBidder1 = check biddersEP1->post("/bidder1", outReq);
+                // Reply to the join block from this worker - Send the response from 'Bidder1'
+                respWorkerBidder1 -> fork;
+            }
+            // Worker to communicate with 'Bidder 2'
+            worker bidder2Worker {
+                http:Request outReq;
+                // Set out request payload
+                outReq.setJsonPayload(inReqPayload);
+                // Send a POST request to 'Bidder 2' and get the results
+                http:Response respWorkerBidder2 = check biddersEP1->post("/bidder2", outReq);
+                // Reply to the join block from this worker - Send the response from 'Bidder 2'
+                respWorkerBidder2 -> fork;
+            }
+
+            // Worker to communicate with 'Bidder 3'
+            worker bidder3Worker {
+                http:Request outReq;
+                // Set out request payload
+                outReq.setJsonPayload(inReqPayload);
+                // Send a POST request to 'Bidder 3' and get the results
+                http:Response respWorkerBidder3 = check biddersEP1->post("/bidder3", outReq);
+                // Reply to the join block from this worker - Send the response from 'Bidder 3'
+                respWorkerBidder3 -> fork;
+            }
+        } join (all) (map biddersResponses) {
+            // Wait until the responses received from all the workers running
+            int bidder1Bid;
+            int bidder2Bid;
+            int bidder3Bid;
+
+            // Get the bid value response from bidder 1
+            if (biddersResponses["bidder1Worker"] != null) {
+                var resBidder1 = check <http:Response>(biddersResponses["bidder1Worker"]);
+                jsonResponseBidder1 = check resBidder1.getJsonPayload();
+                match jsonResponseBidder1.Bid {
+                    int intVal => bidder1Bid = intVal;
+                    any otherVals => bidder1Bid = -1;
+                }
+            }
+
+            // Get the bid value response from bidder 2
+            if (biddersResponses["bidder2Worker"] != null) {
+                var resBidder2 = check <http:Response>(biddersResponses["bidder2Worker"]);
+                jsonResponseBidder2 = check resBidder2.getJsonPayload();
+                match jsonResponseBidder2.Bid {
+                    int intVal => bidder2Bid = intVal;
+                    any otherVals => bidder2Bid = -1;
+                }
+            }
+
+            // Get the bid value response from bidder 3
+            if (biddersResponses["bidder3Worker"] != null) {
+                var resBidder3 = check <http:Response>(biddersResponses["bidder3Worker"]);
+                jsonResponseBidder3 = check resBidder3.getJsonPayload();
+                match jsonResponseBidder3.Bid {
+                    int intVal => bidder3Bid = intVal;
+                    any otherVals => bidder3Bid = -1;
+                }
+            }
+        }
 ```
 
 The above code shows how the auction service initiates a request to all bidders that are include in the system to get their bid value.
@@ -239,7 +339,7 @@ The above code shows how the auction service initiates a request to all bidders 
 $ ballerina run auction_service/auction_service.bal
 ```
 ```bash
-$ ballerina run bidders/bidders_endpoints.bal
+$ ballerina run auction_service/bidders_endpoints.bal
 ```
    
 - Invoke the auction service by sending a POST request to get highest bid.
@@ -282,20 +382,19 @@ Once you are done with the development, you can deploy the services using any of
 
 - As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `scatter-gather-messaging/guide` and run the following command. 
 ```bash
-$ ballerina build scatter-gather-messaging
+$ ballerina build auction_service
 ```
 
 - Once the .balx files are created inside the target folder, you can run them using the following command. 
 ```bash
-$ ballerina run target/scatter-gather-messaging.balx 
+$ ballerina run target/auction_service.balx  
 ```
 
 - The successful execution of a service will show us something similar to the following output. 
 ```
-ballerina: initiating service(s) in 'target/scatter-gather-messaging.balx'
+ballerina: initiating service(s) in 'target/auction_service.balx'
 ballerina: started HTTP/WS endpoint 0.0.0.0:9091
 ballerina: started HTTP/WS endpoint 0.0.0.0:9090
-
 ```
 
 ### Deploying on Docker

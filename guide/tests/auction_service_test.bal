@@ -34,7 +34,9 @@ function testAuctionService() {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP1->post("/setAuction", request = req);
+    io:println("test");
+    //runtime:sleep(60000);
+    http:Response response = check clientEP1->post("/setAuction", req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Online auction service did not respond with 200 OK signal!");
     // Check whether the response is as expected
