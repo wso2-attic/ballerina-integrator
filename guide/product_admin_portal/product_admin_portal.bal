@@ -95,7 +95,7 @@ service<http:Service> productAdminService bind listener {
 
         // Construct and serialize the message to be published to the Kafka topic
         json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPriceAmount};
-        blob serializedMsg = priceUpdateInfo.toString().toBlob("UTF-8");
+        byte[] serializedMsg = priceUpdateInfo.toString().toByteArray("UTF-8");
 
         // Produce the message and publish it to the Kafka topic
         kafkaProducer->send(serializedMsg, "product-price", partition = 0);
