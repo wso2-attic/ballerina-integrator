@@ -637,15 +637,15 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
    $ ballerina build travel_agency
   
    Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/travel_agency/kubernetes
+   kubectl apply -f ./target/kubernetes/travel_agency
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
-- Also the Kubernetes artifacts related our service, will be generated under `` ./target/travel_agency/kubernetes``. 
+- Also the Kubernetes artifacts related our service, will be generated under `` ./target/kubernetes/travel_agency``. 
 - Now you can create the Kubernetes deployment using:
 
 ```bash
-   $ kubectl apply -f ./target/travel_agency/kubernetes 
+   $ kubectl apply -f ./target/kubernetes/travel_agency
  
    deployment.extensions "ballerina-guides-travel-agency-service" created
    ingress.extensions "ballerina-guides-travel-agency-service" created
@@ -871,7 +871,7 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your
   iii) Start the logstash container, replace the {SAMPLE_ROOT_DIRECTORY} with your directory name  
 ```
    docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
-   -v {SAMPLE_ROOT}/guide/travel_agency/ballerina.log:/usr/share/filebeat/ballerina.log \
+   -v {SAMPLE_ROOT}/guide/ballerina.log:/usr/share/filebeat/ballerina.log \
    --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
 
