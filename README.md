@@ -669,7 +669,7 @@ enabled=true
 
 To start the ballerina service using the configuration file, run the following command
 ```
-   $ ballerina run --config data_backed_service/ballerina.conf data_backed_service/
+   $ ballerina run --config data_backed_service/ballerina.conf data_backed_service
 ```
 
 NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
@@ -705,7 +705,7 @@ Follow the following steps to use tracing with Ballerina.
 
 - Navigate to `data-backed-service/guide` and run the data-backed-service using the following command
 ```
-   $ ballerina run --config data_backed_service/ballerina.conf data_backed_service/
+   $ ballerina run --config data_backed_service/ballerina.conf data_backed_service
 ```
 
 - Observe the tracing using Jaeger UI using following URL
@@ -751,7 +751,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina datab
 
 - Navigate to `data-backed-service/guide` and run the data-backed-service using the following command
 ```
-   $ ballerina run --config data_backed_service/ballerina.conf data_backed_service/
+   $ ballerina run --config data_backed_service/ballerina.conf data_backed_service
 ```
 
 - You can access Prometheus at the following URL
