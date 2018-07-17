@@ -26,8 +26,6 @@ json requestPayload = {
 
 @test:BeforeSuite
 function beforeFunc () {
-    // Start the 'carRentalService' before running the test
-    _ = test:startServices("car_rental");
 }
 
 // Client endpoint
@@ -94,6 +92,4 @@ function testResourceSixt () {
 
 @test:AfterSuite
 function afterFunc () {
-    // Stop the 'carRentalService' after running the test
-    test:stopServices("car_rental");
 }

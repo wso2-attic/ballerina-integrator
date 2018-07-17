@@ -27,8 +27,6 @@ json requestPayload = {
 
 @test:BeforeSuite
 function beforeFunc () {
-    // Start the 'airlineReservationService' before running the test
-    _ = test:startServices("airline_reservation");
 }
 
 // Client endpoint
@@ -98,6 +96,4 @@ function testResourceFlightEmirates () {
 
 @test:AfterSuite
 function afterFunc () {
-    // Stop the 'airlineReservationService' after running the test
-    test:stopServices("airline_reservation");
 }
