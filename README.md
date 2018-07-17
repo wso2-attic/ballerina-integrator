@@ -653,7 +653,7 @@ Access the service
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc. Refer to [how-to-observe-ballerina-code](https://ballerina.io/learn/how-to-observe-ballerina-code/) for more information.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it. A sample configuration file can be found in `data-backed-service/guide/data_backed_service`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it.
 
 ```ballerina
 [b7a.observability]
@@ -666,12 +666,6 @@ enabled=true
 # Flag to enable Tracing
 enabled=true
 ```
-
-To start the ballerina service using the configuration file, run the following command
-```
-   $ ballerina run --config data_backed_service/ballerina.conf data_backed_service
-```
-
 NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
 
 ### Tracing 
@@ -705,7 +699,7 @@ Follow the following steps to use tracing with Ballerina.
 
 - Navigate to `data-backed-service/guide` and run the data-backed-service using the following command
 ```
-   $ ballerina run --config data_backed_service/ballerina.conf data_backed_service
+   $ ballerina run data_backed_service
 ```
 
 - Observe the tracing using Jaeger UI using following URL
@@ -751,7 +745,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina datab
 
 - Navigate to `data-backed-service/guide` and run the data-backed-service using the following command
 ```
-   $ ballerina run --config data_backed_service/ballerina.conf data_backed_service
+   $ ballerina run data_backed_service
 ```
 
 - You can access Prometheus at the following URL
