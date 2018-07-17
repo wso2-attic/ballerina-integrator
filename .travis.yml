@@ -54,6 +54,8 @@ script:
 
 - unzip -q $KAFKA_CONNECTOR_DISTRIBUTION.zip
 
+- tree $KAFKA_CONNECTOR_DISTRIBUTION
+
 - cp $KAFKA_CONNECTOR_DISTRIBUTION/dependencies/wso2-kafka-package-$KAFKA_CONNECTOR_VERSION.jar $DISTRIBUTION_NAME/bre/lib
 
 - cd guide
