@@ -13,34 +13,30 @@
 # limitations under the License.
 
 script:
-# Declare STRING variable
-- STRING="Downloading ballerina..."
+- BALLERINA_VERSION="${VERSION:-0.976.1-SNAPSHOT}"
+- echo -e "\033[36m${BALLERINA_VERSION}\033[m"
 
-# Declare variable for Ballerina version
-- BALLERINA_VERSION=0.976.1-SNAPSHOT
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
+- echo -e "\033[36m${DISTRIBUTION_NAME}\033[m"
 
-# Print STRING variable
-- echo $STRING
+- DOWNLOAD_CHANNEL="${CHANNEL:-nightly}"
+- echo -e "\033[36m${DOWNLOAD_CHANNEL}\033[m"
 
-# Download Ballerina dist
-- wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
+- DOWNLOAD_LOCATION="${URL:-https://product-dist.ballerina.io}"
+- echo -e "\033[36m${DOWNLOAD_LOCATION}\033[m"
 
-# Unzip the zip file
+- echo -e "\033[36m$DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip\033[m"
+- wget $DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
+
 - unzip -q $DISTRIBUTION_NAME.zip
 
-# Add Ballerina to the path variable
 - export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
 
-# Print Ballerina version
 - ballerina version
 
-# Change the directory
-- cd guide/
+- cd guide
 
-# Initialize the Ballerina project
 - ballerina init
 
-# Run tests
 - ballerina test stock_quote_data_backend
 - ballerina test stock_quote_summary_service
