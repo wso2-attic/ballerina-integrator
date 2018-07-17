@@ -405,12 +405,12 @@ First let's see how to configure MySQL in docker container.
 
   * Initially, you need to pull the MySQL docker image using the below command.
 ```
-    $docker pull mysql
+    $docker pull mysql:5.7.22
 ```
 
   * Then run the MySQL as root user with container name `docker_mysql` and password being `root` to easily follow this guide. 
 ```
-    $docker run --name docker_mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+    $docker run --name docker_mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7.22
 ```
 
   * Check whether the MySQL container is up and running using the following command.
