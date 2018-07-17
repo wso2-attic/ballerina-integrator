@@ -4,9 +4,9 @@
 
 The Content-Based Router (CBR) reads the content of a message and routes it to a specific recipient based on its content. This approach is useful when an implementation of a specific logical function is distributed across multiple physical systems.
 
-> This guide walks you through the process of implementing a content based routing using Ballerina language.
+> This guide walks you through the process of implementing content-based routing using the Ballerina language.
 
-This is a simple ballerina code for content based routing.
+This is a simple Ballerina code for content-based routing.
 
 The following are the sections available in this guide.
 
@@ -19,7 +19,7 @@ The following are the sections available in this guide.
 
 ## What you’ll build
 
-To understand how you can build a content based routing using Ballerina, let's consider a real-world use case of a Company recruitment agency service that provides recruitment details of companies. When a Company recruitment agency service sends a request that includes the company name (EX : ABC Company), that particular request will be routed to its respective endpoint. After receiving the request from the content-based router(company_recruitment_agency_service), the relevant company's endpoint sends the response back to the caller. The following diagram illustrates this use case clearly.
+To understand how you can build a content-based routing system using Ballerina, let's consider a real-world use case of a company recruitment agency service that provides recruitment details of companies. When a company recruitment agency service sends a request that includes the company name (e.g., ABC Company), that particular request will be routed to its respective endpoint. After receiving the request from the content-based router (`company_recruitment_agency_service`), the relevant company's endpoint sends the response back to the caller. The following diagram illustrates this use case clearly.
 
 ![alt text](/images/content_based_routing_image.png)
 
@@ -37,7 +37,7 @@ To understand how you can build a content based routing using Ballerina, let's c
 
 ## Implementation
 
-> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping "Implementation" section.   
+> If you want to skip the basics, you can download the GitHub repo and directly move to the "Testing" section by skipping the "Implementation" section.   
 
 ### Create the project structure
 
@@ -53,18 +53,17 @@ content-based-routing
       └── tests
            ├──company_recruitment_agency_service_test.bal
 ```
-- Create the above directories in your local machine and also create empty `.bal` files.
 
-- Then open the terminal and navigate to `/content-based-routing/guide` and run Ballerina project initializing toolkit.
+Create the above directories in your local machine and also create empty `.bal` files. Open the terminal and navigate to `/content-based-routing/guide` and run Ballerina project initializing toolkit.
 
 ```bash
    $ ballerina init
 ```
 
 ### Developing the service
-Let's look at the implementation of the company_recruitment_agency_service , which acts as The Content-Based Router.
+Let's look at the implementation of the `company_recruitment_agency_service`, which acts as the Content-Based Router.
 
-Let's consider that a request comes to the Company recruitment agency service with a specific content. when company_recruitment_agency_service receives the request message, reads it, and routes the request to one of the recipients according to the message's content.
+Let's consider that a request comes to the company recruitment agency service with specific content. The `company_recruitment_agency_service` receives the request message, reads it, and routes the request to one of the recipients according to the message's content.
 
 ##### company_recruitment_agency_service.bal
 
@@ -88,10 +87,10 @@ endpoint http:Client locationEP{
     basePath: "/checkVacancies"
 }
 
-//"comapnyRecruitmentsAgency" route requests to relevant endpoints and get their responses.
+//"comapnyRecruitmentsAgency" routes requests to relevant endpoints and gets their responses.
 service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
-    // POST requests is directed to a specific company using,/checkVacancies/company.
+    // POST requests is directed to a specific company using, /checkVacancies/company.
     @http:ResourceConfig{
         methods: ["POST"],
         path: "/company"
@@ -108,7 +107,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
 
                 nameString = check <string>msg["Name"];
 
-                //The http response can be either error|empty|clientResponse
+                //The HTTP response can be either error|empty|clientResponse
                 (http:Response|error|()) clientResponse;
 
                 if (nameString == "John and Brothers (pvt) Ltd"){
@@ -130,8 +129,8 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 }
 
                 //Use respond() to send the client response back to the caller.
-                //when the request was successful, response is returned.
-                //sends back the clientResponse to the caller if no any error is found.
+                //When the request is successful, the response is returned.
+                //Sends back the clientResponse to the caller if no error is found.
                 match clientResponse {
                     http:Response respone =>{
                         CompanyEP->respond(respone) but { error e =>
@@ -160,7 +159,8 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
     }
 }
 ```
-Let's now look at the company_data_service that is responsible for communicating with the all companies endpoints.
+
+Let's now look at `company_data_service`, which is responsible for communicating with all the company's endpoints.
 
 #### company_data_service.bal
 
@@ -171,7 +171,7 @@ endpoint http:Listener listener {
     port: 9090
 };
 
-// Company Data management is done using an in memory map.
+// Company data management is done using an in memory map.
 map<json> companyDataMap;
 
 
@@ -179,8 +179,8 @@ map<json> companyDataMap;
 @http:ServiceConfig { basePath: "/companies" }
 service<http:Service> orderMgt bind listener {
 
-    // Resource that handles the HTTP GET requests that are directed to a specific
-    // Company data of company using path '/John-and-Brothers-(pvt)-Ltd'
+    // Resource that handles the HTTP GET requests that are directed to specific
+    // company data using path '/John-and-Brothers-(pvt)-Ltd'
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/John-and-Brothers-(pvt)-Ltd"
@@ -207,8 +207,8 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    // Resource that handles the HTTP GET requests that are directed to a specific
-    // Company data of company using path '/ABC-Company'
+    // Resource that handles the HTTP GET requests that are directed to specific
+    // company data using path '/ABC-Company'
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/ABC-Company"
@@ -235,8 +235,8 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    // Resource that handles the HTTP GET requests that are directed to a specific
-    // Company data of company using path '/Smart-Automobile'
+    // Resource that handles the HTTP GET requests that are directed to specific
+    // company data using path '/Smart-Automobile'
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/Smart-Automobile"
@@ -264,25 +264,25 @@ service<http:Service> orderMgt bind listener {
     }
 }
 ```
-- According to the code implementation company_recruitment_agency_service checks the request content and routes it to company_data_service.
 
-- In the above implementation,company_recruitment_agency_service reads the request's json content("Name") using nameString and sends the request to the relevant company. A Resource that handles the HTTP POST requests that are directed to a specific company using ```/checkVacancies/company```
+- According to the code implementation, `company_recruitment_agency_service` checks the request content and routes it to `company_data_service`.
 
-- After receiving the request from content based router(company_recruitment_agency_service),the company_data_service sends relevant response back to the caller.
+- In the above implementation, `company_recruitment_agency_service` reads the request's JSON content ("Name") using `nameString` and sends the request to the relevant company. This is a resource that handles the HTTP POST requests that are directed to a specific company using `/checkVacancies/company`.
 
+- After receiving the request from the content-based router (`company_recruitment_agency_service`), the `company_data_service` sends the relevant response back to the caller.
 
 ## Testing 
 
 ### Invoking the service
 
-You can run the company_recruitment_agency_service  that you developed above, in your local environment. Open your terminal and navigate to `guide/`, and execute the following command.
-```
+You can run the `company_recruitment_agency_service` that you developed above in your local environment. Open your command line and navigate to `guide/`, and execute the following command.
 
+```
 $ ballerina run company_data_service/
 $ ballerina run company_recruitment_agency_service/
-
 ```
-You can test the functionality of the company_recruitment_agency_service by sending HTTP POST request. For example, we have used the curl commands to test each routing operation of company_recruitment_agency_service as follows.
+
+You can test the functionality of the `company_recruitment_agency_service` by sending an HTTP POST request. For example, we have used cURL commands to test each routing operation of `company_recruitment_agency_service` as follows.
 
 **Route the request when "Name"="John and Brothers (pvt) Ltd"** 
 
@@ -389,18 +389,22 @@ Output :
     
 }
 ```
+
 ### Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
-- Test functions should be annotated with `@test:Config`. See the below example.
+
+Test functions should be annotated with `@test:Config`. See the following example.
+
 ```ballerina
    @test:Config
    company_recruitment_agency_service) {
 ```
   
-This guide contains unit test cases for each resource available in the 'company_recruitment_agency_service implemented above. 
+This guide contains unit test cases for each resource available in the `company_recruitment_agency_service` implemented above. 
 
-To run the unit tests, open your terminal and navigate to `/content-based-routing/guide`, and run the following command.
+To run the unit tests, open your command line and navigate to `/content-based-routing/guide`, and run the following command.
+
 ```bash
    $ ballerina test
 ```
@@ -412,34 +416,31 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying locally
 
-- As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above. Navigate to `/content-based-routing/guide` and run the following command. 
+As the first step, you can build a Ballerina executable archive (.balx) of the service that you developed above. Navigate to `/content-based-routing/guide` and run the following command. 
+
 ```bash
-   $ ballerina build company_data_service
    $ ballerina build company_recruitment_agency_service
 ```
 
-- Once the company_recruitment_agency_service.balx and company_data_service.balx are created inside the target folder, you can run that with the following command. 
+Once the `company_recruitment_agency_service.balx` file is created inside the target folder, you can run that with the following command. 
+
 ```bash
    $ ballerina run target/company_recruitment_agency_service.balx
-   $ ballerina run target/company_data_service.balx
-   
 ```
 
-- The successful execution of the service will show us the following output. 
-```
-   ballerina: initiating service(s) in 'target/company_data_service.balx'
-    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+The successful execution of the service will show us the following output. 
 
+```
    ballerina: initiating service(s) in 'target/company_recruitment_agency_service.balx'
-    ballerina: started HTTP/WS endpoint 0.0.0.0:9091
-	
+	ballerina: started HTTP/WS endpoint 0.0.0.0:9091
+	ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. 
+You can run the service that we developed above as a Docker container. As the Ballerina platform includes a [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding Docker annotations on your service code. 
 
-- In our company_recruitment_agency_service, we need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
+In the `company_recruitment_agency_service`, you need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable Docker image generation during the build time. 
 
 ##### company_recruitment_agency_service.bal
 
@@ -474,9 +475,11 @@ endpoint http:Client locationEP{
 service<http:Service> comapnyRecruitmentsAgency  bind comEP {
 
 ```
-- `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:Expose {}` is used to expose the port. 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `/content-based-routing/guide` and run the following command.  
+The `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port. 
+
+Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `/content-based-routing/guide` and run the following command.  
+
 ```
    $ ballerina build company_recruitment_agency_service
    
@@ -486,36 +489,46 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
    docker run -d -p 9091:9091 ballerina.guides.io/company_recruitment_agency_service:v1.0
 ```
 
-- Once you successfully build the docker image, you can run it with the `docker run` command that is shown in the previous step.  
+- Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.  
+
 ```bash   
    $ docker run -d -p 9091:9091 ballerina.guides.io/company_recruitment_agency_service:v1.0
 ```
 
-  Here we run the docker image with flag `-p <host_port>:<container_port>` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+Here you can run the Docker image with flag `-p <host_port>:<container_port>` so that you use the host port 9090 and the container port 9090. Therefore, you can access the service through the host port. 
 
-- Verify docker container is running with the use of `$ docker ps`. The status of the docker container should be shown as 'Up'. 
-- You can access the service using the same curl commands that we've used above. 
+Verify if the Docker container is running with the use of `$ docker ps`. The status of the Docker container should be shown as 'Up'. 
+
+You can access the service using the same cURL commands that you used above. 
 
 **Request when "Name"="John and Brothers (pvt) Ltd"**
+
 ```bash
     $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content- Type:application/json"
+    
 ```
 
 **Request when "Name"="ABC Company"**
+
 ```bash
     $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" :"ABC Company"}' -H "Content- Type:application/json"
 ```
+
 **Request when "Name"="Smart Automobile**
+
 ```bash
     $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
 ```
+
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
+You can run the service that you developed above on Kubernetes. The Ballerina language offers native support for running Ballerina programs on Kubernetes with the use of Kubernetes annotations you can include as part of your service code. Also, it will take care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. 
 
-- Let's now see how we can deploy our `company_recruitment_agency_service` on Kubernetes.
+Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-- First we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
+Let's now see how we can deploy our `company_recruitment_agency_service` on Kubernetes.
+
+First you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service you developed above. 
 
 ##### company_recruitment_agency_service.bal
 
@@ -558,11 +571,13 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
 
 ``` 
 
-- Here we have used `@kubernetes:Deployment` to specify the docker image name which will be created as part of building this service. 
-- We have also specified `@kubernetes:Service` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
-- In addition we have used `@kubernetes:Ingress` which is the external interface to access your service (with path `/` and host name `ballerina.guides.io`)
+Here you have used `@kubernetes:Deployment` to specify the Docker image name that will be created as part of building this service. 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+You have also specified `@kubernetes:Service` so that it creates a Kubernetes service that exposes the Ballerina service that is running on a Pod.  
+
+Additionally, you have used `@kubernetes:Ingress` which is the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
+
+Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ ballerina build company_recruitment_agency_service
@@ -576,10 +591,11 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
    kubectl apply -f ./target/company_recruitment_agency_service/kubernetes
 ```
 
-- You can verify that the docker image that we specified in `@kubernetes:Deployment` is created, by using `$ docker images`. 
-- Also the Kubernetes artifacts related our service, will be generated in `./target/company_recruitment_agency_service/kubernetes`. 
+You can verify that the Docker image that you specified in `@kubernetes:Deployment` is created, by using `$ docker images`. 
 
-- Now you can create the Kubernetes deployment using:
+Also the Kubernetes artifacts related your service will be generated in `./target/company_recruitment_agency_service/kubernetes`. 
+
+Now you can create the Kubernetes deployment using:
 
 ```bash
    $ kubectl apply -f ./target/company_recruitment_agency_service/kubernetes 
@@ -589,7 +605,7 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
    service "ballerina-guides-company_recruitment_agency_service" created
 ```
 
-- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands.
+You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands.
 
 ```bash
    $ kubectl get service
@@ -598,20 +614,23 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP {
    $ kubectl get ingress
 ```
 
-- If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
+If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
 
-Node Port:
+Node port:
 
 **Request when "Name"="John and Brothers (pvt) Ltd"**
+
 ```bash
     $ curl -v http://localhost:<Node_Port>/checkVacancies/company -d '{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content- Type:application/json"
 ```
 
 **Request when "Name"="ABC Company"**
+
 ```bash
     $ curl -v http://localhost:<Node_Port>/checkVacancies/company -d '{"Name" :"ABC Company"}' -H "Content- Type:application/json"
 ```
 **Request when "Name"="Smart Automobile**
+
 ```bash
     $ curl -v http://localhost:<Node_Port>/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
 ```
@@ -619,30 +638,34 @@ Node Port:
 Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
+
 ``` 
    127.0.0.1 ballerina.guides.io
 ```
-Access the service 
+
+Access the service. 
 
 **Request when "Name"="John and Brothers (pvt) Ltd"**
+
 ```bash
     $ curl -v http:/ballerina.guides.io/checkVacancies/company -d '{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content- Type:application/json"
 ```
 
 **Request when "Name"="ABC Company"**
+
 ```bash
     $ curl -v http:/ballerina.guides.io/checkVacancies/company -d '{"Name" :"ABC Company"}' -H "Content- Type:application/json"
 ```
+
 **Request when "Name"="Smart Automobile**
+
 ```bash
     $ curl -v http://ballerina.guides.io/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
 ```
 
-
 ## Observability 
 
-Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `/content-based-routing/guide`.
+Ballerina is by default observable. Meaning you can easily observe your services, resources, etc. However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `/content-based-routing/guide`.
 
 ```ballerina
 [b7a.observability]
@@ -655,14 +678,17 @@ enabled=true
 # Flag to enable Tracing
 enabled=true
 ```
-NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
+
+> **NOTE**: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are loaded as the other configuration parameters of metrics and tracing.
 
 ### Tracing 
 
-You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
-Follow the following steps to use tracing with Ballerina.
+You can monitor Ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+
+Follow the steps below to use tracing with Ballerina.
 
 - You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+
 ```
    [b7a.observability]
 
@@ -680,24 +706,27 @@ Follow the following steps to use tracing with Ballerina.
    reporter.max.buffer.spans=1000
 ```
 
-- Run Jaeger docker image using the following command
+- Run Jaeger docker image using the following command.
+
 ```bash
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
    -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `/content-based-routing/guide` and run the restful-service using following command 
+- Navigate to `/content-based-routing/guide` and run the restful-service using following command.
+
 ```
    $ ballerina run company_recruitment_agency_service/
 ```
 
-- Observe the tracing using Jaeger UI using following URL
+- Observe the tracing using Jaeger UI using following URL.
+
 ```
    http://localhost:16686
 ```
+
 ### Metrics
-Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
+Metrics and alerts are built-in with Ballerina. We will use Prometheus as the monitoring tool. Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
 
@@ -717,6 +746,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
 ```
 
 - Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
+
 ```
    global:
      scrape_interval:     15s
@@ -728,52 +758,57 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+> **NOTE**: Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`.
    
-- Run the Prometheus docker image using the following command
+Run the Prometheus Docker image using the following command.
+
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
    
-- You can access Prometheus at the following URL
+You can access Prometheus at the following URL.
+
 ```
    http://localhost:19090/
 ```
 
-NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+> **NOTE**: By default Ballerina has the following metrics for the HTTP server connector. You can enter the following expression in Prometheus UI.
 -  http_requests_total
 -  http_response_time
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log package for logging to the console. You can import the `ballerina/log` package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `/content-based-routing/guide`
+Start the Ballerina Service with the following command from the `/content-based-routing/guide` directory.
+
 ```
    $ nohup ballerina runcompany_recruitment_agency_service/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `/content-based-routing/guide` directory
 
-- Start Elasticsearch using the following command
+> **NOTE**: This will write the console log to the `ballerina.log` file in the `/content-based-routing/guide` directory.
 
-- Start Elasticsearch using the following command
+Start Elasticsearch using the following command
+
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
 
-   NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
+> **NOTE**: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`.
    
-- Start Kibana plugin for data visualization with Elasticsearch
+Start the Kibana plugin for data visualization with Elasticsearch.
+
 ```
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
 
-- Configure logstash to format the ballerina logs
+Configure logstash to format the Ballerina logs.
 
 i) Create a file named `logstash.conf` with the following content
+
 ```
 input {  
  beats{ 
@@ -811,7 +846,8 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
   
  - Configure filebeat to ship the ballerina logs
     
-i) Create a file named `filebeat.yml` with the following content
+i) Create a file named `filebeat.yml` with the following content.
+
 ```
 filebeat.prospectors:
 - type: log
@@ -820,11 +856,12 @@ filebeat.prospectors:
 output.logstash:
   hosts: ["logstash:5044"]  
 ```
-NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
 
-ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
+> **NOTE**: Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
+
+ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`.
         
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name.
      
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
@@ -832,7 +869,8 @@ $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
- - Access Kibana to visualize the logs using following URL
+ - Access Kibana to visualize the logs using the following URL:
+ 
 ```
    http://localhost:5601 
 ```
