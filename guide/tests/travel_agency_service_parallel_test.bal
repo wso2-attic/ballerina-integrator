@@ -21,17 +21,6 @@ import ballerina/test;
 function beforeFunc () {
     // Start the 'travelAgencyService' before running the test
     _ = test:startServices("travel_agency");
-
-    // 'travelAgencyService' needs to communicate with airline reservation, hotel reservation and car rental services
-    // Therefore, start these three services before running the test
-    // Start the 'airlineReservationService'
-    _ = test:startServices("airline_reservation");
-
-    // Start the 'hotelReservationService'
-    _ = test:startServices("hotel_reservation");
-
-    // Start the 'carRentalService'
-    _ = test:startServices("car_rental");
 }
 
 // Client endpoint
@@ -77,13 +66,4 @@ function testTravelAgencyService () {
 function afterFunc () {
     // Stop the 'travelAgencyService' after running the test
     test:stopServices("travel_agency");
-
-    // Stop the 'airlineReservationService'
-    test:stopServices("airline_reservation");
-
-    // Stop the 'hotelReservationService'
-    test:stopServices("hotel_reservation");
-
-    // Stop the 'carRentalService'
-    test:stopServices("car_rental");
 }
