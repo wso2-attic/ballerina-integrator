@@ -54,10 +54,10 @@ service-composition
       │   ├── hotel_reservation_service.bal
       │   └── tests
       │       └── hotel_reservation_service_test.bal
-      ├── travel_agency
-      │   └── travel_agency_service.bal
-      └── tests
-          └── travel_agency_service_test.bal
+      └── travel_agency
+          ├── travel_agency_service.bal
+          └── tests
+              └── travel_agency_service_test.bal
 ```
 
 - Create the above directories in your local machine and also create empty `.bal` files.
