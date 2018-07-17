@@ -21,7 +21,7 @@ The following are the sections available in this guide.
 
 To understand how you can build a content-based routing system using Ballerina, let's consider a real-world use case of a company recruitment agency service that provides recruitment details of companies. When a company recruitment agency service sends a request that includes the company name (e.g., ABC Company), that particular request will be routed to its respective endpoint. After receiving the request from the content-based router (`company_recruitment_agency_service`), the relevant company's endpoint sends the response back to the caller. The following diagram illustrates this use case clearly.
 
-![alt text](/images/content_based_routing_image.png)
+![alt text](/images/content-based-routing.svg)
 
 
 ## Prerequisites
