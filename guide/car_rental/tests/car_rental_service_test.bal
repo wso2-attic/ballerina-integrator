@@ -17,12 +17,6 @@
 import ballerina/test;
 import ballerina/http;
 
-@test:BeforeSuite
-function beforeFunc() {
-    // Start the 'carRentalService' before running the test
-    _ = test:startServices("car_rental");
-}
-
 // Client endpoint
 endpoint http:Client clientEP {
     url:"http://localhost:9093/car"
@@ -48,10 +42,4 @@ function testCarRentalService() {
     json resPayload = check response.getJsonPayload();
     json expected = {"Status":"Success"};
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
-}
-
-@test:AfterSuite
-function afterFunc() {
-    // Stop the 'carRentalService' after running the test
-    test:stopServices("car_rental");
 }
