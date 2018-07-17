@@ -17,12 +17,6 @@
 import ballerina/test;
 import ballerina/http;
 
-@test:BeforeSuite
-function beforeFunc() {
-    // Start the 'orderMgt' service before running the test.
-    _ = test:startServices("restful_service");
-}
-
 endpoint http:Client clientEP {
     url:"http://localhost:9090/ordermgt"
 };
@@ -101,10 +95,4 @@ function testResourceCancelOrder() {
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), "Order : 100500 removed.",
         msg = "Response mismatch!");
-}
-
-@test:AfterSuite
-function afterFunc() {
-    // Stop the 'orderMgt' service after running the test.
-    test:stopServices("restful_service");
 }
