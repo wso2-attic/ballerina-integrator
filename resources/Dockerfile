@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License
 
-FROM mysql:latest
+FROM mysql:5.7.22
 LABEL maintainer="dev@ballerina.io"
 
 # COPY MYSQL scripts for database creation
