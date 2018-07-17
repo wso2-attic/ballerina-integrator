@@ -36,6 +36,8 @@ script:
 
 - unzip -q $DISTRIBUTION_NAME.zip
 
+- MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.45
+
 - wget http://dev.mysql.com/get/Downloads/Connector-J/$MYSQL_CONNECTOR_VERSION.tar.gz
 
 - tar xzf $MYSQL_CONNECTOR_VERSION.tar.gz
