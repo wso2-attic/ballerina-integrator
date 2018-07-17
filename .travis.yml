@@ -19,49 +19,37 @@ before_script:
 - mysql -u root --password=""  < ./resources/database_initializer.sql
 
 script:
-# Declare STRING variables
-- STRING="Downloading Ballerina..."
-- STRING1="Downloading JDBC connector..."
+- BALLERINA_VERSION="${VERSION:-0.976.1-SNAPSHOT}"
+- echo -e "\033[36m${BALLERINA_VERSION}\033[m"
 
-# Declare variable for Ballerina version
-- BALLERINA_VERSION=0.976.1-SNAPSHOT
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
+- echo -e "\033[36m${DISTRIBUTION_NAME}\033[m"
 
-# Declare variable for JDBC version
-- JDBC_VERSION="mysql-connector-java-5.1.45"
+- DOWNLOAD_CHANNEL="${CHANNEL:-nightly}"
+- echo -e "\033[36m${DOWNLOAD_CHANNEL}\033[m"
 
-# Print STRING variable
-- echo $STRING
+- DOWNLOAD_LOCATION="${URL:-https://product-dist.ballerina.io}"
+- echo -e "\033[36m${DOWNLOAD_LOCATION}\033[m"
 
-# Download Ballerina dist
-- wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
+- echo -e "\033[36m$DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip\033[m"
+- wget $DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
 
-# Unzip the zip file
 - unzip -q $DISTRIBUTION_NAME.zip
 
-# Add Ballerina to the path variable
 - export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
 
-# Print Ballerina version
 - ballerina version
 
-# Print STRING1 variable
-- echo $STRING1
+- JDBC_VERSION="mysql-connector-java-5.1.45"
 
-# Download JDBC
 - wget http://dev.mysql.com/get/Downloads/Connector-J/$JDBC_VERSION.tar.gz
 
-# Untar the tar file
 - tar xzf $JDBC_VERSION.tar.gz
 
-# Copy JDBC jar into Ballerina lib folder
 - cp $JDBC_VERSION/$JDBC_VERSION-bin.jar $DISTRIBUTION_NAME/bre/lib
 
-# Change the directory
 - cd guide
 
-# Initialize the Ballerina project
 - ballerina init
 
-# Run tests
 - ballerina test
