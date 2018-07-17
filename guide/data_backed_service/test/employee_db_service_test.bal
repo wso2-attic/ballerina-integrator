@@ -24,19 +24,6 @@ endpoint http:Client httpEndpoint {
     url: "http://localhost:9090/records"
 };
 
-// Before suite function
-@test:BeforeSuite
-function beforeFunc() {
-    // Start employee database service
-    _ = test:startServices("data_backed_service");
-}
-
-// After suite function
-@test:AfterSuite
-function afterFunc() {
-    // Stop employee database service
-    test:stopServices("data_backed_service");
-}
 @test:Config {
     dependsOn: ["testAddEmployeeResource"]
 }
