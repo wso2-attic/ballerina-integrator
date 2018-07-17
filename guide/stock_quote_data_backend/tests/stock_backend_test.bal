@@ -2,19 +2,10 @@ import ballerina/test;
 import ballerina/io;
 import ballerina/http;
 
-boolean serviceStarted;
-
-@test:BeforeSuite
-function startService() {
-    serviceStarted = test:startServices("stock_quote_data_backend");
-}
-
 @test:Config
 function testGoogResource() {
     // Invoking the main function
     endpoint http:Client httpEndpoint {url:"http://localhost:9095/nasdaq/quote"};
-    // Chck whether the server is started
-    test:assertTrue(serviceStarted, msg = "Unable to start the service");
 
     string response1 = "GOOG, Alphabet Inc., 1013.41";
 
@@ -33,8 +24,6 @@ function testGoogResource() {
 function testApplResource() {
     // Invoking the main function
     endpoint http:Client httpEndpoint {url:"http://localhost:9095/nasdaq/quote"};
-    // Chck whether the server is started
-    test:assertTrue(serviceStarted, msg = "Unable to start the service");
 
     string response2 = "APPL, Apple Inc., 165.22";
 
@@ -53,8 +42,6 @@ function testApplResource() {
 function testMsftResource() {
     // Invoking the main function
     endpoint http:Client httpEndpoint {url:"http://localhost:9095/nasdaq/quote"};
-    // Chck whether the server is started
-    test:assertTrue(serviceStarted, msg = "Unable to start the service");
 
     string response2 = "MSFT, Microsoft Corporation, 95.35";
 
