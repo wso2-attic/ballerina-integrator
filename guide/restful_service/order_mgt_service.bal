@@ -16,37 +16,32 @@
 
 import ballerina/http;
 //import ballerinax/docker;
-import ballerinax/kubernetes;
+//import ballerinax/kubernetes;
 
 //@docker:Config {
 //    registry:"ballerina.guides.io",
 //    name:"restful_service",
 //    tag:"v1.0"
 //}
-
 //@docker:Expose{}
-
-@kubernetes:Ingress {
-    hostname:"ballerina.guides.io",
-    name:"ballerina-guides-restful-service",
-    path:"/"
-}
-
-@kubernetes:Service {
-    serviceType:"NodePort",
-    name:"ballerina-guides-restful-service"
-}
-
-@kubernetes:Deployment {
-    image:"ballerina.guides.io/restful_service:v1.0",
-    name:"ballerina-guides-restful-service"
-}
-
+//@kubernetes:Ingress {
+//    hostname:"ballerina.guides.io",
+//    name:"ballerina-guides-restful-service",
+//    path:"/"
+//}
+//@kubernetes:Service {
+//    serviceType:"NodePort",
+//    name:"ballerina-guides-restful-service"
+//}
+//@kubernetes:Deployment {
+//    image:"ballerina.guides.io/restful_service:v1.0",
+//    name:"ballerina-guides-restful-service"
+//}
 endpoint http:Listener listener {
     port: 9090
 };
 
-// Order management is done using an in memory map.
+// Order management is done using an in-memory map.
 // Add some sample orders to 'ordersMap' at startup.
 map<json> ordersMap;
 
