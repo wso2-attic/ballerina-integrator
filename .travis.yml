@@ -52,9 +52,9 @@ script:
 
 - wget https://github.com/wso2-ballerina/package-kafka/releases/download/v$KAFKA_CONNECTOR_VERSION/$KAFKA_CONNECTOR_DISTRIBUTION.zip
 
-- unzip -q KAFKA_CONNECTOR_DISTRIBUTION.zip
+- unzip -q $KAFKA_CONNECTOR_DISTRIBUTION.zip
 
-- cp KAFKA_CONNECTOR_DISTRIBUTION/dependencies/wso2-kafka-package-KAFKA_CONNECTOR_VERSION.jar $DISTRIBUTION_NAME/bre/lib
+- cp $KAFKA_CONNECTOR_DISTRIBUTION/dependencies/wso2-kafka-package-$KAFKA_CONNECTOR_VERSION.jar $DISTRIBUTION_NAME/bre/lib
 
 - cd guide
 
