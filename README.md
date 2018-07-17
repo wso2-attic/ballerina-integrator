@@ -26,7 +26,9 @@ Now let's understand the scenario described here. The owner needs to expand the 
 
 ![alt text](images/samplescenario.jpg)
 
-The two shops are implemented as two separate services named as 'OnlineShopping' and 'LocalShop'. When a user calls to 'OnlineShopping' using HTTP request, the request redirected to the 'LocalShop' service without processing the incoming request. Also response from the 'LocalShop' is not be processed in 'OnlineShopping'. If it processes the incoming request or response from the 'LocalShop', it will no longer a pass-through messaging. So messaging between 'OnlineShopping' and 'LocalShop' services act as pass-through messaging. The 'LocalShop' service processes the incoming request method such as 'GET', 'POST'. Then call to the back-end service, which will give the "Welcome to Local Shop! Please put your order here....." message. So messaging in the 'LocalShop' service is not a pass-through messaging service.
+The two shops are implemented as two separate services named as 'OnlineShopping' and 'LocalShop'. When a user makes a call to 'OnlineShopping' using an HTTP request, the request is redirected to the 'LocalShop' service without processing the incoming request. Also the response from the 'LocalShop' is not be processed in 'OnlineShopping'. If it processes the incoming request or response from the 'LocalShop', it will no longer be a pass-through messaging method. 
+
+So, messaging between 'OnlineShopping' and 'LocalShop' services act as pass-through messaging. The 'LocalShop' service processes the incoming request method such as 'GET' and 'POST'. Then it calls the back-end service, which will give the "Welcome to Local Shop! Please put your order here....." message. So messaging in the 'LocalShop' service is not a pass-through messaging service.
 
 ## Prerequisites
  
@@ -40,11 +42,12 @@ The two shops are implemented as two separate services named as 'OnlineShopping'
 
 ## Implementation
 
-> If you are well aware of the implementation, you can directly clone the git repository to your own device. Using that, you can skip the "Implementation" section and straightforward to "Tasting" section.
+> If you are well aware of the implementation, you can directly clone the GitHub repository to your own device. Using that, you can skip the "Implementation" section and move straight to the "Testing" section.
 
 ### Create the project structure
 
 Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
+
 ```
  └── guide
      ├── passthrough
@@ -55,18 +58,20 @@ Ballerina is a complete programming language that supports custom project struct
 
 ```
 
-- Create the above directories in your local machine and also create empty `.bal` files.
+Create the above directories in your local machine and also create empty `.bal` files.
 
-- Then open the terminal and navigate to `Simple-pass-through-messaging-ballerina-/guide` and run Ballerina project initializing toolkit.
+Open the terminal and navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the Ballerina project initializing toolkit.
+
 ```bash
    $ ballerina init
 ```
 
 ### Developing the service
 
-To implement the scenario, let's started to implement the passthrough.bal, which is the main file in implementing. Refer to the code attached below. Inline comments added for better understanding.
+To implement the scenario, let's start by implementing the passthrough.bal file, which is the main file in the implementation. Refer to the code attached below. Inline comments are added for better understanding.
 
 ##### passthrough.bal
+
 ```ballerina
 
 import ballerina/http;
@@ -77,27 +82,27 @@ endpoint http:Listener OnlineShoppingEP {
 endpoint http:Listener LocalShopEP {
     port:9091
 };
-//Define end-point for the local shop as online shop link
+//Define endpoint for the local shop as online shop link.
 endpoint http:Client clientEP {
     url: "http://localhost:9091/LocalShop"
 };
 
 service<http:Service> OnlineShopping bind OnlineShoppingEP {
-    // This service implement as a passthrough servise. So it allows all HTTP methods. So methods are not specified.
+    // This service is implemented as a passthrough service. So it allows all HTTP methods. So methods are not specified.
     @http:ResourceConfig {
         path: "/"
     }
 
     passthrough(endpoint caller, http:Request req) {
-        // set log message as "the request will be directed to another service" in pass-through method.
+        // Set log message as "the request will be directed to another service" in the pass-through method.
         log:printInfo("You will be redirected to Local Shop  .......");
-        //'Forward()' used to call the backend endpoint created above as pass-through method. In forward function,
-        //it used the same HTTP method, which used to invoke the primary service.
+        // 'Forward()' is used to call the backend endpoint created above as pass-through method. In forward function,
+        // it used the same HTTP method, which is used to invoke the primary service.
         // The `forward()` function returns the response from the backend if there are no errors.
         var clientResponse = clientEP->forward("/", req);
-        // Inorder to detect the errors in return output of the 'forward()' , it used 'match' to catch those kind of errors
+        // In order to detect the errors in the return output of 'forward()', 'match' is used to catch those kind of errors.
         match clientResponse {
-            // Returned response will directed to the outbound endpoint.
+            // Returned response is directed to the outbound endpoint.
             http:Response res => {
                 caller->respond(res)
                 // If response contains errors, give the error message
@@ -126,17 +131,18 @@ service<http:Service> LocalShop bind LocalShopEP {
     helloResource(endpoint caller, http:Request req) {
         //Set log to view the status to know that the passthrough was successfull.
         log:printInfo("Now You are connected to Local shop  .......");
-        // Make the response for the request
+        // Make the response for the request.
         http:Response res = new;
         res.setPayload("Welcome to Local Shop! Please put your order here.....");
-        // Pass the response to the caller
+        // Pass the response to the caller.
         caller->respond(res)
-        // Cath the errors occured while passing the response
+        // Catch the errors that occur while passing the response.
         but { error e =>
         log:printError("Error sending response", err = e) };
     }
 }
 ```
+
 ## Testing 
 
 ### Invoking the service
