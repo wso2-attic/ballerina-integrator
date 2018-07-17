@@ -3,9 +3,9 @@
 
 # Scatter-Gather Messaging
 
-A scatter-gather messaging is send a message to multiple recipients and re-aggregates the responses back into a single message.
+Scatter-gather messaging is used send a message to multiple recipients and re-aggregates the responses back into a single message.
 
-> This guide walks you through the process of implementing a scatter-gather messaging using Ballerina language. 
+> This guide walks you through the process of implementing scatter-gather messaging using Ballerina language. 
 
 The following are the sections available in this guide.
 
@@ -17,7 +17,7 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you’ll build
-To understanding how you can build a scatter-gather messaging using Ballerina, let's consider a real-world use case of a online auction service that get the highest bid value from bidders. This package includes scatter-gather component for get highest bid value by processing responses and three bidder endpoints. Therefore, the online auction service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
+To understand how you can build scatter-gather messaging using Ballerina, let's consider a real-world use case of an online auction service that gets the highest bid value from bidders. This package includes a scatter-gather component to get the highest bid value by processing responses and three bidder endpoints. Therefore, the online auction service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
 
 ![alt text](/images/scatter-gather-messaging.png)
 
@@ -34,7 +34,7 @@ Auction service is the service that acts as the scatter-gather component. The ot
 
 ## Implementation
 
-> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping  "Implementation" section.
+> If you want to skip the basics, you can download the GitHub repo and directly move to the "Testing" section by skipping  the "Implementation" section.
 
 ### Create the project structure
 
@@ -54,9 +54,10 @@ scatter-gather-messaging
 
 ```
 
-- Create the above directories in your local machine and also create empty `.bal` files.
+Create the above directories in your local machine and also create empty `.bal` files.
 
-- Then open the terminal and navigate to `scatter-gather-messaging/guide` and run Ballerina project initializing toolkit.
+Open the terminal and navigate to `scatter-gather-messaging/guide` and run the Ballerina project initializing toolkit.
+
 ```bash
 $ ballerina init
 ```
@@ -65,10 +66,10 @@ $ ballerina init
 
 Let's look at the implementation of the auction service, which acts as the scatter-gather component.
 
-
-In this implementation to get a best bid value, auction service requires communicating with three other endpoints: bidder1, bidder2, bidder3. All these endpoints accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. Request and response payloads are similar for all three backend services.
+In this implementation to get a best bid value, the auction service requires communicating with three other endpoints: bidder1, bidder2, and bidder3. All these endpoints accept POST requests with appropriate JSON payloads and send responses back with JSON payloads. Request and response payloads are similar for all three backend services.
 
 Sample request payload:
+
 ```bash
 {"Item":"car","Condition":"good"};
 ```
@@ -79,9 +80,10 @@ Sample response payload:
 {"Bidder Name":"Bidder 2","Bid":470000}
 ```
 
-When a auctioneer initiate a request to get highest bid value, the auction service need to send this request to all the bidders that are include in the system. To check the implementation of this bidders endpoints, see the [bidders_endpoints.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/auction_service/bidders_endpoints.bal) file.
+When a auctioneer initiates a request to get the highest bid value, the auction service needs to send this request to all the bidders that are included in the system. To check the implementation of this bidders endpoints, see the [bidders_endpoints.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/auction_service/bidders_endpoints.bal) file.
 
-If all bidders endpoints work successfully, the auction service proceed to get highest bid value and send back to the client(auctioneer) with the bidder name. The skeleton of `auction_service.bal` file is attached below. Inline comments are added for better understanding.
+If all the endpoints of bidders work successfully, the auction service proceeds to get highest bid value and send it back to the client (auctioneer) with the bidder name. The skeleton of the `auction_service.bal` file is attached below. Inline comments are added for better understanding.
+
 Refer to the [auction_service.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/auction_service/auction_service.bal) to see the complete implementation of the auction service.
 
 ##### auction_service.bal
@@ -197,7 +199,7 @@ service<http:Service> auctionService bind auctionEP {
                 respWorkerBidder3 -> fork;
             }
         } join (all) (map biddersResponses) {
-            // Wait until the responses received from all the workers running
+            // Wait until the responses are received from all the workers running
             int bidder1Bid;
             int bidder2Bid;
             int bidder3Bid;
@@ -254,7 +256,7 @@ service<http:Service> auctionService bind auctionEP {
 
 ```
 
-Let's now look at the code segment that is responsible for communicating with the all bidders endpoints.
+Let's now look at the code segment that is responsible for communicating with all the endpoints of the bidders.
 
 ```ballerina
 fork {
@@ -290,7 +292,7 @@ fork {
                 respWorkerBidder3 -> fork;
             }
         } join (all) (map biddersResponses) {
-            // Wait until the responses received from all the workers running
+            // Wait until the responses are received from all the workers running
             int bidder1Bid;
             int bidder2Bid;
             int bidder3Bid;
@@ -327,7 +329,7 @@ fork {
         }
 ```
 
-The above code shows how the auction service initiates a request to all bidders that are include in the system to get their bid value.
+The above code shows how the auction service initiates a request to all bidders that are included in the system to get their bid value.
 
 ## Testing 
 
