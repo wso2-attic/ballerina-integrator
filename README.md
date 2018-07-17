@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/ballerina-guides/pass-through-messaging.svg?branch=master)](https://travis-ci.org/ballerina-guides/pass-through-messaging)
 
 # Pass-through messaging
-There are different ways of messaging methods in SOA(Service Oriented Architecture). In this guide, we are focusing on pass-through Messaging between services using an example scenario
+There are different ways of messaging methods in SOA (Service Oriented Architecture). In this guide, we are focusing on pass-through Messaging between services using an example scenario.
 
-> This guide describes implementing pass-through messaging using Ballerina programming language as simple steps
+> This guide describes implementing pass-through messaging using Ballerina programming language as simple steps.
 
 The following are the sections available in this guide.
 
@@ -409,10 +409,12 @@ NOTE: The above configuration is the minimum configuration needed to enable trac
 
 ### Tracing 
 
-You can monitor ballerina services using inbuilt tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
-Follow the following steps to use tracing with Ballerina.
+You can monitor Ballerina services using inbuilt tracing capabilities of Ballerina. Let's use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 
-- You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+Follow the steps below to use tracing with Ballerina.
+
+You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+
 ```
    [b7a.observability]
 
@@ -430,28 +432,30 @@ Follow the following steps to use tracing with Ballerina.
    reporter.max.buffer.spans=1000
 ```
 
-- Run Jaeger docker image using the following command
+Run the Jaeger Docker image using the following command.
+
 ```bash
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
    -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the `passthrough` using following command 
+Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the `passthrough` using following command 
+
 ```
    $ ballerina run passthrough/
 ```
 
-- Observe the tracing using Jaeger UI using following URL
+Observe the tracing using Jaeger UI using the following URL.
+
 ```
    http://localhost:16686
 ```
 
 ### Metrics
 
-Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Prometheus and view metrics for 'passthrough'.
+Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool. Follow the steps below to set up Prometheus and view metrics for 'passthrough'.
 
-- You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
+You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under the `Observability` section.
 
 ```ballerina
    [b7a.observability.metrics]
@@ -468,7 +472,8 @@ Follow the below steps to set up Prometheus and view metrics for 'passthrough'.
    step="PT1M"
 ```
 
-- Create a file `prometheus.yml` inside the `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
+Create a file `prometheus.yml` inside the `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
+
 ```
    global:
      scrape_interval:     15s
@@ -480,53 +485,57 @@ Follow the below steps to set up Prometheus and view metrics for 'passthrough'.
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE: Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+> **NOTE**: Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
    
-- Run the Prometheus docker image using the following command
+Run the Prometheus docker image using the following command
+
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
    
-- You can access Prometheus at the following URL
+You can access Prometheus at the following URL.
+
 ```
    http://localhost:19090/
 ```
 
-NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter the following expression in Prometheus UI
--  http_requests_total
--  http_response_time
-
+> **NOTE**: Ballerina will by default have the following metrics for HTTP server connector. You can enter the following expression in Prometheus UI.
+>    -  http_requests_total
+>    -  http_response_time
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log package for logging to the console. You can import `ballerina/log` package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `Simple-pass-through-messaging-ballerina-/guide`
+Start the Ballerina service with the following command from `Simple-pass-through-messaging-ballerina-/guide`
+
 ```
    $ nohup ballerina run trip-management/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `Simple-pass-through-messaging-ballerina-/guide` directory
 
-- Start Elasticsearch using the following command
+> **NOTE**: This writes the console log to the `ballerina.log` file in the `Simple-pass-through-messaging-ballerina-/guide` directory.
 
-- Start Elasticsearch using the following command
+Start Elasticsearch using the following command.
+
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
 
-   NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
+> **NOTE**: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`.
    
-- Start Kibana plugin for data visualization with Elasticsearch
+Start Kibana plugin for data visualization with Elasticsearch.
+
 ```
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
 
-- Configure logstash to format the ballerina logs
+Configure logstash to format the Ballerina logs.
 
-i) Create a file named `logstash.conf` with the following content
+i) Create a file named `logstash.conf` with the following content.
+
 ```
 input {  
  beats{ 
@@ -552,9 +561,9 @@ output {
 }  
 ```
 
-ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`
+ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`.
      
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
      
 ```
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
@@ -562,9 +571,10 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
   
- - Configure filebeat to ship the ballerina logs
+Configure filebeat to ship the Ballerina logs.
     
-i) Create a file named `filebeat.yml` with the following content
+i) Create a file named `filebeat.yml` with the following content.
+
 ```
 filebeat.prospectors:
 - type: log
@@ -573,11 +583,12 @@ filebeat.prospectors:
 output.logstash:
   hosts: ["logstash:5044"]  
 ```
-NOTE: Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
+
+> **NOTE**: Modify the ownership of `filebeat.yml` file using `$chmod go-w filebeat.yml`.
 
 ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
         
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
      
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
@@ -585,7 +596,8 @@ $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
- - Access Kibana to visualize the logs using the following URL
+Access Kibana to visualize the logs using the following URL.
+
 ```
    http://localhost:5601 
 ```
