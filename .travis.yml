@@ -46,6 +46,7 @@ script:
 
 - mv $MYSQL_CONNECTOR_VERSION/$MYSQL_CONNECTOR_VERSION-bin.jar $DISTRIBUTION_NAME/bre/lib
 
-- cd guide/
+- cd guide
+
 - ballerina init
 - ballerina test
