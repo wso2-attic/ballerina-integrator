@@ -16,17 +16,17 @@ The following are the sections available in this guide.
 
 ## What you’ll build
 
-There are different ways of messaging between services such as pass-through messaging, content-based Routing of messages, header-based Routing of messages, scatter-gather messaging. Almost all methods of messaging occur a delay in messaging while processing of an incoming message, other than the pass-through messaging. when routing the message without processing/inspecting the message payload the most efficient way is the pass-through messaging. Here are some differences between conventional message processing vs pass-through messaging.
+There are different ways of messaging between services such as pass-through messaging, content-based routing of messages, header-based routing of messages, and scatter-gather messaging. There is a delay in messaging while processing an incoming message in all messaging methods excluding pass-through messaging. When routing the message without processing/inspecting the message payload, the most efficient way is the pass-through messaging. Here are some differences between conventional message processing vs pass-through messaging.
 
 ![alt text](images/processingVSpassthrough.png)
 
-Conventional message processing methods include a message processor for process message, but pass-through messaging skipped the message processor. So it saves the processing time and power and more efficient when compared with other types.
+Conventional message processing methods include a message processor for processing messages, but pass-through messaging skipped the message processor. It thereby saves the processing time and power and is more efficient when compared to other types.
 
-Now let's get understand about the scenario which described here. The owner needs to expand the business. So he makes online shop which connected to the local shop, to expand the business growth. When you are connecting to the online shop, it will automatically be redirected to the local shop without any latency. To do so, here it uses the pass-through messaging method.
+Now let's understand the scenario described here. The owner needs to expand the business, so he makes online shop that is connected to the local shop, to expand the business. When you connect to the online shop, it will automatically be redirected to the local shop without any latency. To do so, the pass-through messaging method is used.
 
 ![alt text](images/samplescenario.jpg)
 
-The two shops implemented as two separate services named as 'OnlineShopping' and 'LocalShop'. When a user calls to 'OnlineShopping' using HTTP request, the request redirected to the 'LocalShop' service without processing the incoming request. Also response from the 'LocalShop' is not be processed in 'OnlineShopping'. If it processes the incoming request or response from the 'LocalShop', it will no longer a pass-through messaging. So messaging between 'OnlineShopping' and 'LocalShop' services act as pass-through messaging. The 'LocalShop' service processes the incoming request method such as 'GET', 'POST'. Then call to the back-end service, which will give the "Welcome to Local Shop! Please put your order here....." message. So messaging in the 'LocalShop' service is not a pass-through messaging service.
+The two shops are implemented as two separate services named as 'OnlineShopping' and 'LocalShop'. When a user calls to 'OnlineShopping' using HTTP request, the request redirected to the 'LocalShop' service without processing the incoming request. Also response from the 'LocalShop' is not be processed in 'OnlineShopping'. If it processes the incoming request or response from the 'LocalShop', it will no longer a pass-through messaging. So messaging between 'OnlineShopping' and 'LocalShop' services act as pass-through messaging. The 'LocalShop' service processes the incoming request method such as 'GET', 'POST'. Then call to the back-end service, which will give the "Welcome to Local Shop! Please put your order here....." message. So messaging in the 'LocalShop' service is not a pass-through messaging service.
 
 ## Prerequisites
  
@@ -141,13 +141,13 @@ service<http:Service> LocalShop bind LocalShopEP {
 
 ### Invoking the service
 
-- Navigate to `pass-through` and run the following command in terminal to start  `passthrough.bal .
+Navigate to `pass-through` and run the following command in the command line to start `passthrough.bal`.
 
 ```bash
    $ ballerina run passthrough.bal
 ```
    
-- Then you can send a request to online shopping service.
+Send a request to the online shopping service.
 
 ```bash
 
@@ -156,7 +156,7 @@ service<http:Service> LocalShop bind LocalShopEP {
 ```
 #### Output
 
-When connecting to the online shopping, the output will be the "Welcome to Local Shop! Please put your order here....." from the local shop.
+When connecting to the online shopping, the output will be "Welcome to Local Shop! Please put your order here....." from the local shop.
 
 ```bash
 < HTTP/1.1 200 OK
@@ -178,15 +178,20 @@ To identify the message flow inside the services, there will be INFO in the noti
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
-- Test functions should be annotated with `@test:Config`. See the below example.
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions, the below convention should be followed.
+
+Test functions should be annotated with `@test:Config`. See the below example.
+
 ```ballerina
    @test:Config
    function testFunc() {
    }
 ```
+
 This guide contains unit test case for 'LKSubOffice' service and 'UKSubOffice' service in [passthrough_test.bal](https://github.com/sanethmaduranga/Simple-pass-through-messaging-ballerina-/blob/master/guide/tests/passthrough_test.bal) file.
+
 To run the unit tests, navigate to `Simple-pass-through-messaging-ballerina-/guide/` and run the following command. 
+
 ```bash
    $ ballerina test
 ```
@@ -197,17 +202,20 @@ After the development process, you can deploy the services using below methods b
 
 ### Deploying locally
 
-As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `Pass-through-messaging-ballerina-/guide` and run the following command.
+As the first step, you can build Ballerina executable archives (.balx) of the services that you developed above. Navigate to `Pass-through-messaging-ballerina-/guide` and run the following command.
+
 ```bash
    $ ballerina build
 ```
 
-- Once the .balx files are created inside the target folder, you can run them using the following command. 
+Once the .balx files are created inside the target folder, you can run them using the following command. 
+
 ```bash
    $ ballerina run target/<Exec_Archive_File_Name>
 ```
 
-- The successful execution of a service will show us something similar to the following output.
+The successful execution of a service will show us something similar to the following output.
+
 ```
    ballerina: initiating service(s) in 'target/passthrough.balx'
    
@@ -216,12 +224,13 @@ As the first step, you can build Ballerina executable archives (.balx) of the se
 ### Deploying on Docker
 
 You can run the service that we developed above as a Docker container.
-As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers,
-you just need to put the corresponding docker annotations on your service code.
 
-- In our 'passthrough', we need to import  `ballerinax/docker` and use the annotation `@docker:Config,@docker:Expose` as shown below to enable docker image generation during the build time. 
+As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running Ballerina programs on containers, you just need to put the corresponding Docker annotations on your service code.
+
+In our `passthrough`, we need to import  `ballerinax/docker` and use the annotation `@docker:Config,@docker:Expose` as shown below to enable Docker image generation during the build time. 
 
 ##### passthrough.bal
+
 ```ballerina
 import ballerina/http;
 import ballerina/log;
@@ -256,7 +265,7 @@ service<http:Service> LocalShop bind LocalShopEP {
 }
 ``` 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the following command.  
+Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This also creates the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the following command.  
   
 ```
    $ballerina build passthrough
@@ -267,25 +276,27 @@ service<http:Service> LocalShop bind LocalShopEP {
 
 ```
 
-- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.  
 
 ```bash
    $ docker run -d -p 9090:9090 -p 9091:9091 ballerina.guides.io/passthrough:v1.0
 ```
 
-   Here we run the docker image with the flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+You can run the Docker image with the flag `-p <host_port>:<container_port>` so that we use the host port 9090 and the container port 9090. Therefore, you can access the service through the host port. 
 
-- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
-- You can access 'OnlineShopping' service, using the same curl commands that we've used above. 
+Verify if the Docker container is running with the use of `$ docker ps`. The status of the Docker container should be shown as 'Up'. 
+
+You can access 'OnlineShopping' service, using the same cURL commands that you've used above. 
+
 ```bash
     curl -v http://localhost:9090/OnlineShopping -X GET
 ```
 
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
+You can run the service that you developed above on Kubernetes. The Ballerina language offers native support for running Ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-- Let's now see how we can deploy our `passthrough` on Kubernetes. First, we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service we developed above. 
+Let's now see how to deploy `passthrough` on Kubernetes. First, you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service you developed above. 
 
 ##### passthrough.bal
 
@@ -333,11 +344,13 @@ service<http:Service> LocalShop bind LocalShopEP {
 }
 ``` 
 
-- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
-- We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
-- In addition, we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and hostname ``ballerina.guides.io``)
+Here we have used `@kubernetes:Deployment` to specify the Docker image name, which is created as part of building this service. 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+You have also specified `@kubernetes:Service` so that it will create a Kubernetes service, which exposes the Ballerina service that is running on a Pod.  
+
+In addition, you have used `@kubernetes:Ingress`, which is the external interface to access your service (with path `/` and hostname `ballerina.guides.io`)
+
+Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ ballerina build passthrough
@@ -347,9 +360,11 @@ service<http:Service> LocalShop bind LocalShopEP {
 
 ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
-- Also, the Kubernetes artifacts related to our service will be generated under `` /home/saneth/Documents/ballerina/sample_pass-through/guide/target/kubernetes/``. 
-- Now you can create the Kubernetes deployment using:
+You can verify that the Docker image that you specified in `@kubernetes:Deployment` is created by using the `docker images` command. 
+
+Also, the Kubernetes artifacts related to your service will be generated under `/home/saneth/Documents/ballerina/sample_pass-through/guide/target/kubernetes/`. 
+
+Now you can create the Kubernetes deployment using:
 
 ```bash
    $ kubectl apply -f /home/saneth/Documents/ballerina/sample_pass-through/guide/target/kubernetes/ 
@@ -359,7 +374,7 @@ service<http:Service> LocalShop bind LocalShopEP {
    service "passthrough" created
 ```
 
-- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
+You can verify that the Kubernetes deployment, service, and ingress are running properly, by using following Kubernetes commands. 
 
 ```bash
    $ kubectl get service
@@ -368,10 +383,10 @@ service<http:Service> LocalShop bind LocalShopEP {
    $ kubectl get ingress
 ```
 
-- If everything is successfully deployed, you can invoke the service either via Node port or ingress.
-Here curl request for 'OnlineShopping' service as mentioned below for get results.
+If everything is successfully deployed, you can invoke the service either via Node port or ingress. The cURL request for the 'OnlineShopping' service is mentioned below to get the results.
  
 Node Port:
+
 ```bash
    curl -v http://localhost:<Node_Port>/OnlineShopping -X GET  
 ```
@@ -379,19 +394,20 @@ Node Port:
 Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
+
 ``` 
    127.0.0.1 ballerina.guides.io
 ```
 
-Access the service 
+Access the service.
+
 ```bash
    curl -v http://ballerina.guides.io/OnlineShopping -X GET
 ```
 
 
 ## Observability 
-Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `Simple-pass-through-messaging-ballerina-/guide/`.
+Ballerina is by default observable. This means you can easily observe your services, resources, etc. However, observability is disabled by default via configuration. Observability can be enabled by adding the following configurations to the `ballerina.conf` file in `Simple-pass-through-messaging-ballerina-/guide/`.
 
 ```ballerina
 [b7a.observability]
@@ -405,7 +421,7 @@ enabled=true
 enabled=true
 ```
 
-NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
+> **NOTE**: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations, default values are loaded as the other configuration parameters of metrics and tracing.
 
 ### Tracing 
 
