@@ -88,6 +88,7 @@ import ballerina/sql;
 import ballerina/mysql;
 import ballerina/log;
 import ballerina/http;
+import ballerina/config;
 
 type Employee record {
     string name;
@@ -142,7 +143,7 @@ service<http:Service> EmployeeData bind listener {
         json ret = insertData(employeeData.name, employeeData.age, employeeData.ssn,
             employeeData.employeeId);
         // Send the response back to the client with the employee data
-        response.setJsonPayload(ret);
+        response.setJsonPayload(untaint ret);
         _ = httpConnection->respond(response);
     }
 
@@ -159,7 +160,7 @@ service<http:Service> EmployeeData bind listener {
         // Invoke retrieveById function to retrieve data from Mymysql database
         var employeeData = retrieveById(empID);
         // Send the response back to the client with the employee data
-        response.setJsonPayload(employeeData);
+        response.setJsonPayload(untaint employeeData);
         _ = httpConnection->respond(response);
     }
 
