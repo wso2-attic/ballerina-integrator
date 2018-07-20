@@ -13,68 +13,52 @@
 # limitations under the License.
 
 script:
-# Declare STRING variables
-- STRING="Downloading Ballerina..."
-- STRING1="Downloading Kafka..."
-- STRING2="Downloading Ballerina-Kafka connector jars..."
+# Ballerina
+- BALLERINA_VERSION="${VERSION:-0.976.1-SNAPSHOT}"
+- echo -e "\033[36m${BALLERINA_VERSION}\033[m"
 
-# Declare variable for Ballerina version
-- BALLERINA_VERSION=0.976.1-SNAPSHOT
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
+- echo -e "\033[36m${DISTRIBUTION_NAME}\033[m"
 
-# Declare variable for Kafka version
-- KAFKA_VERSION="kafka_2.11-1.1.0"
+- DOWNLOAD_CHANNEL="${CHANNEL:-nightly}"
+- echo -e "\033[36m${DOWNLOAD_CHANNEL}\033[m"
 
-# Print STRING variable
-- echo $STRING
+- DOWNLOAD_LOCATION="${URL:-https://product-dist.ballerina.io}"
+- echo -e "\033[36m${DOWNLOAD_LOCATION}\033[m"
 
-# Download Ballerina dist
-- wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
+- echo -e "\033[36m$DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip\033[m"
+- wget $DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
 
-# Unzip the .zip file
 - unzip -q $DISTRIBUTION_NAME.zip
 
-# Add Ballerina to the path variable
 - export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
 
-# Print Ballerina version
 - ballerina version
 
-# Print STRING1 variable
-- echo $STRING1
+# Kafka
+- KAFKA_VERSION=kafka_2.11-1.1.0
 
-# Download Kafka
 - wget http://www-us.apache.org/dist/kafka/1.1.0/$KAFKA_VERSION.tgz
 
-# Untar the .tgz file
 - tar xzf $KAFKA_VERSION.tgz
 
-# Start ZooKeeper
 - ./$KAFKA_VERSION/bin/zookeeper-server-start.sh -daemon ./$KAFKA_VERSION/config/zookeeper.properties
 
-# Start Kafka
 - ./$KAFKA_VERSION/bin/kafka-server-start.sh -daemon ./$KAFKA_VERSION/config/server.properties
 
-# Print STRING2 variable
-- echo $STRING2
+# Ballerina Kafka Connector
+- KAFKA_CONNECTOR_VERSION="${CONNECTOR_VERSION:-0.97.0}"
+- KAFKA_CONNECTOR_DISTRIBUTION=wso2-kafka-$KAFKA_CONNECTOR_VERSION
 
-# Download required Ballerina-Kafka connector jars
-- wget https://transfer.sh/lCM40/kafka-connector-jars.zip
+- wget https://github.com/wso2-ballerina/package-kafka/releases/download/v$KAFKA_CONNECTOR_VERSION/$KAFKA_CONNECTOR_DISTRIBUTION.zip
 
-# Move the zip file into Ballerina lib folder
-- mv kafka-connector-jars.zip $BALLERINA_VERSION/bre/lib
+- unzip -q $KAFKA_CONNECTOR_DISTRIBUTION.zip -d $KAFKA_CONNECTOR_DISTRIBUTION
 
-# Unzip the .zip file
-- unzip -q $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip -d $BALLERINA_VERSION/bre/lib
+- cp $KAFKA_CONNECTOR_DISTRIBUTION/dependencies/wso2-kafka-package-$KAFKA_CONNECTOR_VERSION.jar $DISTRIBUTION_NAME/bre/lib
+- cp -R $KAFKA_CONNECTOR_DISTRIBUTION/balo/wso2 $DISTRIBUTION_NAME/lib/repo
 
-# Delete the .zip file
-- rm $BALLERINA_VERSION/bre/lib/kafka-connector-jars.zip
+- cd guide
 
-# Change the directory
-- cd guide/
-
-# Initialize the Ballerina project
 - ballerina init
 
-# Run tests
 - ballerina test
