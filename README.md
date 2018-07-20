@@ -111,7 +111,7 @@ service<http:Service> filterService bind filterServiceEP {
         }
         // Set original payload to a new request object
         http:Request req = new;
-        req.setJsonPayload(reqPayload, contentType = "application/json");
+        req.setJsonPayload(untaint reqPayload);
 
         // Define variables for response payload and status code
         json resp = {status:""};
@@ -130,7 +130,7 @@ service<http:Service> filterService bind filterServiceEP {
         }
 
         // Set JSON response
-        response.setJsonPayload(resp, contentType = "application/json");
+        response.setJsonPayload(untaint resp);
         _ = caller -> respond(response);
     }
 
