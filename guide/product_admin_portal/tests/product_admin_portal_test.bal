@@ -17,12 +17,6 @@
 import ballerina/test;
 import ballerina/http;
 
-@test:BeforeSuite
-function beforeFunc() {
-    // Start the 'product_admin_portal' service before running the test
-    _ = test:startServices("product_admin_portal");
-}
-
 // Client endpoint
 endpoint http:Client clientEP {
     url:"http://localhost:9090/product"
@@ -45,7 +39,7 @@ function testProductAdminPortal () {
 
     req.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/updatePrice", request = req);
+    http:Response response = check clientEP -> post("/updatePrice", req);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
         msg = "product admin service did not respond with 200 OK signal!");
@@ -53,10 +47,4 @@ function testProductAdminPortal () {
     json resPayload = check response.getJsonPayload();
     json expected = {"Status":"Success"};
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
-}
-
-@test:AfterSuite
-function afterFunc() {
-    // Stop the 'product_admin_portal' service after running the test
-    test:stopServices("product_admin_portal");
 }
