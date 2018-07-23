@@ -3,10 +3,10 @@ import ballerina/http;
 
 
 // Start the filterService
-@test:BeforeSuite 
-function setupService () {
-    _ = test:startServices("message-filtering");
-}
+//@test:BeforeSuite
+////function setupService () {
+////    _ = test:startServices("message-filtering");
+////}
 
 // Client endpoint
 endpoint http:Client clientEP {
