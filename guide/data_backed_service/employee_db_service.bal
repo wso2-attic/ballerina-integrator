@@ -14,45 +14,45 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/sql;
-import ballerina/mysql;
-import ballerina/log;
-import ballerina/http;
 import ballerina/config;
+import ballerina/http;
+import ballerina/log;
+import ballerina/mysql;
+import ballerina/sql;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
 //@docker:Config {
-//    registry:"ballerina.guides.io",
-//    name:"employee_database_service",
-//    tag:"v1.0",
-//    baseImage:"ballerina/ballerina-platform:0.980.0"
+//    registry: "ballerina.guides.io",
+//    name: "employee_database_service",
+//    tag: "v1.0",
+//    baseImage: "ballerina/ballerina-platform:0.980.0"
 //}
 //
 //@docker:CopyFiles{
-//    files:[{source:<path_to_JDBC_jar>,
-//            target:"/ballerina/runtime/bre/lib"}]
+//    files: [{ source: <path_to_JDBC_jar>,
+//            target: "/ballerina/runtime/bre/lib" }]
 //}
 //
 //@docker:Expose{}
 
 //@kubernetes:Ingress {
-//    hostname:"ballerina.guides.io",
-//    name:"ballerina-guides-employee-database-service",
-//    path:"/"
+//    hostname: "ballerina.guides.io",
+//    name: "ballerina-guides-employee-database-service",
+//    path: "/"
 //}
 //
 //@kubernetes:Service {
-//    serviceType:"NodePort",
-//    name:"ballerina-guides-employee-database-service"
+//    serviceType: "NodePort",
+//    name: "ballerina-guides-employee-database-service"
 //}
 //
 //@kubernetes:Deployment {
-//    image:"ballerina.guides.io/employee_database_service:v1.0",
-//    baseImage:"ballerina/ballerina-platform:0.980.0",
-//    name:"ballerina-guides-employee-database-service",
-//    copyFiles:[{target:"/ballerina/runtime/bre/lib",
-//                source:<path_to_JDBC_jar>}]
+//    image: "ballerina.guides.io/employee_database_service:v1.0",
+//    baseImage: "ballerina/ballerina-platform:0.980.0",
+//    name: "ballerina-guides-employee-database-service",
+//    copyFiles: [{ target: "/ballerina/runtime/bre/lib",
+//                source: <path_to_JDBC_jar> }]
 //}
 
 endpoint http:Listener listener {
