@@ -452,7 +452,7 @@ endpoint mysql:Client employeeDB {
     registry: "ballerina.guides.io",
     name: "employee_database_service",
     tag: "v1.0",
-    baseImage: "ballerina/ballerina-platform:0.980.0"
+    baseImage: "ballerina/ballerina-platform:0.981.0"
 }
 
 @docker:CopyFiles {
@@ -562,7 +562,7 @@ endpoint mysql:Client employeeDB {
 @kubernetes:Deployment {
     image: "ballerina.guides.io/employee_database_service:v1.0",
     name: "ballerina-guides-employee-database-service",
-    baseImage: "ballerina/ballerina-platform:0.980.0",
+    baseImage: "ballerina/ballerina-platform:0.981.0",
     copyFiles: [{ target: "/ballerina/runtime/bre/lib",
                 source: <path_to_JDBC_jar> }]
 }
@@ -584,7 +584,7 @@ eg:
 @kubernetes:Deployment {
     image: "ballerina.guides.io/employee_database_service:v1.0",
     name: "ballerina-guides-employee-database-service",
-    baseImage: "ballerina/ballerina-platform:0.980.0",
+    baseImage: "ballerina/ballerina-platform:0.981.0",
     copyFiles: [{ target: "/ballerina/runtime/bre/lib",
                 source: <path_to_JDBC_jar> }],
     dockerHost: "tcp://<MINIKUBE_IP>:<DOCKER_PORT>",
@@ -602,15 +602,15 @@ This will also create the corresponding docker image and the Kubernetes artifact
    $ ballerina build data_backed_service
 
    Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/data_backed_service/kubernetes
+   kubectl apply -f ./target/kubernetes/data_backed_service
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
-- Also the Kubernetes artifacts related our service, will be generated in `` ./target/data_backed_service/kubernetes``. 
+- Also the Kubernetes artifacts related our service, will be generated in `` ./target/kubernetes/data_backed_service``.
 - Now you can create the Kubernetes deployment using:
 
 ```
-   $ kubectl apply -f ./target/data_backed_service/kubernetes
+   $ kubectl apply -f ./target/kubernetes/data_backed_service
 
    deployment.extensions "ballerina-guides-employee-database-service" created
    ingress.extensions "ballerina-guides-employee-database-service" created
@@ -633,6 +633,13 @@ Node Port:
 ```
    curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
    "http://localhost:<Node_Port>/records/employee" -H "Content-Type:application/json"  
+```
+
+If you are using minikube the request would be as follows.
+
+```
+   curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
+   "http://<Minikube_IP>:<Node_Port>/records/employee" -H "Content-Type:application/json"
 ```
 
 Ingress:
