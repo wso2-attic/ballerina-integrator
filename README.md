@@ -372,7 +372,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `service-composition/guide` and run the following command.
   
 ```
-   $ballerina build travel_agency
+   $ ballerina build travel_agency
   
    Run following command to start Docker container:
    docker run -d -p 9090:9090 ballerina.guides.io/travel_agency_service:v1.0
