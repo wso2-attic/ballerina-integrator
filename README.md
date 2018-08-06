@@ -578,7 +578,7 @@ service<http:Service> EmployeeData bind listener {
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
-- Please note that if you are using minikube it is required to add the `` dockerHost `` and `` dockerCertPath `` configurations under ``  @kubernetes:Deployment ``.
+- Please note that if you are using Minikube it is required to add the `` dockerHost `` and `` dockerCertPath `` configurations under ``  @kubernetes:Deployment ``.
 eg:
 ``` ballerina
 @kubernetes:Deployment {
@@ -635,7 +635,7 @@ Node Port:
    "http://localhost:<Node_Port>/records/employee" -H "Content-Type:application/json"  
 ```
 
-If you are using minikube the request would be as follows.
+If you are using Minikube the request would be as follows.
 
 ```
    curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
