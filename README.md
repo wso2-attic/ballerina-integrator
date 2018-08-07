@@ -56,11 +56,12 @@ Ballerina is a complete programming language that supports custom project struct
 ```
 managing-database-transactions
  └── guide
+      ├── ballerina.conf
       └── banking_application
            ├── account_manager.bal
            ├── application.bal
            └── tests
-                └── account_manager_test.bal              
+                └── account_manager_test.bal
 ```
 
 - Create the above directories in your local machine and also create empty `.bal` files.
@@ -84,33 +85,33 @@ understanding.
 ##### transferMoney function
 ```ballerina
 // Function to transfer money from one account to another.
-public function transferMoney(int fromAcc, int toAcc, int amount) returns (boolean) {
+public function transferMoney(int fromAccId, int toAccId, int amount) returns (boolean) {
     boolean isSuccessful;
     log:printInfo("Initiating transaction");
     // Transaction block - Ensures the 'ACID' properties.
     // Withdraw and deposit should happen as a transaction when transferring money
     // from one account to another.
     // Here, the reason for switching off the 'retries' option is, in failing scenarios
-    // almost all the time transaction fails due to erroneous operations by the users.
+    // almost all the time transaction fails due to erroneous operations triggered by the users.
     transaction with retries = 0, oncommit = commitFunc, onabort = abortFunc {
         // Withdraw money from transferor's account.
-        match withdrawMoney(fromAcc, amount) {
+        match withdrawMoney(fromAccId, amount) {
             error withdrawError => {
                 log:printError("Error while withdrawing the money: " +
                     withdrawError.message);
                 // Abort transaction if withdrawal fails.
-                log:printError("Failed to transfer money from account ID " + fromAcc +
-                    " to account ID " + toAcc);
+                log:printError("Failed to transfer money from account ID " + fromAccId +
+                    " to account ID " + toAccId);
                 abort;
             }
             () => {
-                match depositMoney(toAcc, amount) {
+                match depositMoney(toAccId, amount) {
                     error depositError => {
                         log:printError("Error while depositing the money: " +
                             depositError.message);
                         // Abort transaction if deposit fails.
                         log:printError("Failed to transfer money from account ID " +
-                            fromAcc + " to account ID " + toAcc);
+                            fromAccId + " to account ID " + toAccId);
                         abort;
                     }
                     () => isSuccessful = true;
@@ -119,7 +120,7 @@ public function transferMoney(int fromAcc, int toAcc, int amount) returns (boole
         }
         // If transaction successful.
         log:printInfo("Successfully transferred $" + amount + " from account ID " +
-            fromAcc + " to account ID " + toAcc);
+            fromAccId + " to account ID " + toAccId);
     }
     return isSuccessful;
 }
