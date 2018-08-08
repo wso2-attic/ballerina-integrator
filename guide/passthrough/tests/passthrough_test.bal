@@ -3,7 +3,6 @@ import ballerina/io;
 import ballerina/test;
 
 function startService() {
-
 }
 
 @test:Config {
@@ -31,5 +30,4 @@ function testFunc() {
 
 
 function stopService() {
-
 }
