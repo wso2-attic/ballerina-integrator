@@ -155,13 +155,14 @@ You can test the functionality of the `passed_student_filter_service` by sending
 **Filter Student's marks**
 
 ```bash
-curl -X POST -v -d '{"name":"Sam","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science","marks":40}]}' http://localhost:9090/filterService/filterMarks -H 'content-type: application/json'
+curl -X POST -v -d '{"name":"Sam","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science", "marks":70}]}' 
+http://localhost:9090/filterService/filterMarks -H 'content-type: application/json'
 
 Output :  
 < HTTP/1.1 200 OK
 < content-type: application/json
 < content-length: 22
-< server: ballerina/0.970.1
+< server: ballerina/0.981.0
 < date: Fri, 22 Jun 2018 23:27:27 +0530
 < 
 * Connection #0 to host localhost left intact
@@ -280,9 +281,11 @@ Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernet
 
 Let's now see how we can deploy our `passed_student_filter_service` on Kubernetes.
 
-First you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service you developed above. 
+First you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the service you developed above.
 
-##### order_mgt_service.bal
+> NOTE: Linux users can use Minikube to try this out locally.
+
+##### passed_student_filter_service.bal
 
 ```ballerina
 import ballerina/http;]
@@ -311,13 +314,15 @@ endpoint http:Listener filterServiceEP {
 
 // REST service to select the passed student from an exam
 service<http:Service> filterService bind filterServiceEP {
-``` 
+```
 
-`@kubernetes:Deployment` is used to specify the Docker image name that is created as part of building this service. 
+- `@kubernetes:Deployment` is used to specify the Docker image name that should be created as part of building the service.
+- `@kubernetes:Service` is specified to create a Kubernetes service that exposes the Ballerina service that is running on a Pod.
+- `@kubernetes:Ingress` is used as the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
 
-You have also specified `@kubernetes:Service` so that it will create a Kubernetes service that exposes the Ballerina service that is running on a Pod.  
-
-Additionally, you have used `@kubernetes:Ingress`, which is the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
+If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
+- `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
+- `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
 
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This also creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
@@ -325,7 +330,7 @@ Now you can build a Ballerina executable archive (.balx) of the service that you
    $ ballerina build message-filtering
   
    Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/message-filtering/kubernetes
+   kubectl apply -f ./target/kubernetes/message-filtering
 ```
 
 You can verify that the Docker image that you specified in `@kubernetes:Deployment` is created, by using `$ docker images`. 
@@ -335,7 +340,7 @@ Also, the Kubernetes artifacts related your service are generated in `./target/m
 Now you can create the Kubernetes deployment using:
 
 ```bash
-   $ kubectl apply -f ./target/message-filtering/kubernetes 
+   $ kubectl apply -f ./target/kubernetes/message-filtering
  
    deployment.extensions "ballerina-guides-passed_student_filter_service" created
    ingress.extensions "ballerina-guides-passed_student_filter_service" created
@@ -359,7 +364,21 @@ Node Port:
    curl -X POST -v -d '{"name":"Sam","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science","marks":40}]}' http://localhost:<Node_Port>/filterService/filterMarks -H 'content-type: application/json'  
 ```
 
+If you are using Minikube, you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
+```bash
+    $ minikube ip
+    192.168.99.100
+
+    $ kubectl get services
+    NAME                                             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+    ballerina-guides-passed-student-filter-service   NodePort    10.100.226.129   <none>        9090:30659/TCP   3h
+```
+
+The endpoint URL for the above case would be as follows: `http://192.168.99.100:30659/filterService/filterMarks`
+
 Ingress:
+
+- Make sure that Nginx backend and controller deployed as mentioned in [here](https://github.com/ballerinax/kubernetes/tree/master/samples#setting-up-nginx).
 
 Add `/etc/hosts` entry to match hostname. 
 
