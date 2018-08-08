@@ -2,10 +2,7 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/test;
 
-boolean serviceStarted;
-
 function startService() {
-    serviceStarted = test:startServices("passthrough");
 }
 
 @test:Config {
@@ -16,8 +13,7 @@ function startService() {
 function testFunc() {
     // Invoking the main function
     endpoint http:Client httpEndpoint { url: "http://localhost:9090" };
-    // Chck whether the server is started
-    test:assertTrue(serviceStarted, msg = "Unable to start the service");
+
     string response1="Welcome to Local Shop! Please put your order here.....";
 
     // Send a GET request to the specified endpoint
@@ -34,5 +30,4 @@ function testFunc() {
 
 
 function stopService() {
-    test:stopServices("passthrough");
 }
