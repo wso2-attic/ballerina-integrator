@@ -133,7 +133,11 @@ endpoint http:Client biddersEP1 {
 service<http:Service> auctionService bind auctionEP {
 
     //Resource to get highest bid value
-    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
+    @http:ResourceConfig { 
+        methods: ["POST"], 
+        consumes: ["application/json"], 
+        produces: ["application/json"] 
+    }
     setAuction(endpoint client, http:Request inRequest) {
         http:Response outResponse;
         json inReqPayload;
@@ -348,7 +352,7 @@ $ ballerina run auction_service/bidders_endpoints.bal
 Invoke the auction service by sending a POST request to get the highest bid.
 
 ```bash
-curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" 
+curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" \
 -H "Content-Type:application/json"
 ```
 
@@ -356,7 +360,7 @@ The auction service sends a response similar to the following. That means ‘Bid
     
 ```bash
 < HTTP/1.1 200 OK
-{"Bidder Name":"Bidder 3","Bid":470000}
+{"Bidder Name":"Bidder 3", "Bid":470000}
 ```
    
 ### Writing unit tests 
@@ -445,7 +449,7 @@ service<http:Service> auctionService bind auctionEP {
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `scatter-gather-messaging/guide` and run the following command.  
   
 ```
-$ballerina build auction_service
+$ ballerina build auction_service
   
 Run following command to start docker container:
 docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
@@ -464,7 +468,7 @@ Verify the Docker container is running with the use of `$ docker ps`. The status
 You can access the service using the same cURL commands that you used above. 
  
 ```bash
-curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" 
+curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" \
 -H "Content-Type:application/json"
 ```
 
@@ -559,7 +563,7 @@ If everything is successfully deployed, you can invoke the service either via No
 Node Port:
 
 ```bash
-curl -v -X POST -d '{"Item":"car","Condition":"good"}' 
+curl -v -X POST -d '{"Item":"car","Condition":"good"}' \
 "http://localhost:<Node_Port>/auction/setAuction" -H "Content-Type:application/json" 
 ```
 
@@ -574,7 +578,7 @@ Add `/etc/hosts` entry to match hostname.
 Access the service .
 
 ```bash
-curl -v -X POST -d '{"Item":"car","Condition":"good"}' 
+curl -v -X POST -d '{"Item":"car","Condition":"good"}' \
 "http://ballerina.guides.io/auction/setAuction" -H "Content-Type:application/json" 
 ```
 
