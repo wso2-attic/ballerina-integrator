@@ -474,16 +474,16 @@ To see the complete implementation of the above file, refer to the [travel_agenc
     
    {
      "Flight":
-     {"Airline":"Emirates","ArrivalDate":"12-03-2018","ReturnDate":"13-04-2018",
-     "From":"Colombo","To":"Changi","Price":273},
+     {"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
+     "From":"Colombo", "To":"Changi","Price":273},
      
      "Hotel":
-     {"HotelName":"Elizabeth","FromDate":"12-03-2018","ToDate":"13-04-2018",
+     {"HotelName":"Elizabeth", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
      "DistanceToLocation":2},
      
      "Vehicle":
-     {"Company":"DriveSG","VehicleType":"Car","FromDate":"12-03-2018",
-     "ToDate":"13-04-2018","PricePerDay":5}
+     {"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018",
+     "ToDate":"13-04-2018", "PricePerDay":5}
    }
 ```    
    

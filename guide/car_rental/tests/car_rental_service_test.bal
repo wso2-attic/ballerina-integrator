@@ -46,8 +46,8 @@ function testResourceDriveSg () {
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"Company\":\"DriveSG\",\"VehicleType\":\"Car\",\"FromDate\":\"12-03-2018\"," +
-        "\"ToDate\":\"13-04-2018\",\"PricePerDay\":5}";
+    string expected = "{\"Company\":\"DriveSG\", \"VehicleType\":\"Car\", \"FromDate\":\"12-03-2018\", " +
+        "\"ToDate\":\"13-04-2018\", \"PricePerDay\":5}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
@@ -65,8 +65,8 @@ function testResourceDreamCar () {
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"Company\":\"DreamCar\",\"VehicleType\":\"Car\",\"FromDate\":\"12-03-2018\"," +
-        "\"ToDate\":\"13-04-2018\",\"PricePerDay\":6}";
+    string expected = "{\"Company\":\"DreamCar\", \"VehicleType\":\"Car\", \"FromDate\":\"12-03-2018\", " +
+        "\"ToDate\":\"13-04-2018\", \"PricePerDay\":6}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
@@ -84,8 +84,8 @@ function testResourceSixt () {
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "Car rental service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"Company\":\"Sixt\",\"VehicleType\":\"Car\",\"FromDate\":\"12-03-2018\"," +
-        "\"ToDate\":\"13-04-2018\",\"PricePerDay\":7}";
+    string expected = "{\"Company\":\"Sixt\", \"VehicleType\":\"Car\", \"FromDate\":\"12-03-2018\", " +
+        "\"ToDate\":\"13-04-2018\", \"PricePerDay\":7}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
