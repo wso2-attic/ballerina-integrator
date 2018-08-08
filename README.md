@@ -294,20 +294,18 @@ You can test the functionality of the `company_recruitment_agency_service` by se
 *   Trying 127.0.0.1...
 * Connected to localhost (127.0.0.1) port 9091 (#0)
 > POST /checkVacancies/company HTTP/1.1
-> Host: localhost:9090
+> Host: localhost:9091
 > User-Agent: curl/7.47.0
 > Accept: */*
 > Content-Type:application/json
-> Content-Length: 40
+> Content-Length: 39
 > 
 
 * upload completely sent off: 40 out of 40 bytes
 < HTTP/1.1 200 OK
-< Date: Mon, 11 Jun 2018 13:30:00 GMT
 < Content-Type: application/json
-< Via: 1.1 vegur
-< server: Cowboy
-< content-length: 356
+< server: ballerina/0.981.0
+< content-length: 268
 
 {
     "Name": "John and Brothers (pvt) Ltd",
@@ -329,19 +327,17 @@ Output :
 *   Trying 127.0.0.1...
 * Connected to localhost (127.0.0.1) port 9091 (#0)
 > POST /checkVacancies/company HTTP/1.1
-> Host: localhost:9090
+> Host: localhost:9091
 > User-Agent: curl/7.47.0
 > Accept: */*
 > Content-Type:application/json
-> Content-Length: 22
+> Content-Length: 24
 
 * upload completely sent off: 40 out of 40 bytes
 < HTTP/1.1 200 OK
-< Date: Mon, 11 Jun 2018 13:30:00 GMT
 < Content-Type: application/json
-< Via: 1.1 vegur
-< server: Cowboy
-< content-length: 308
+< server: ballerina/0.981.0
+< content-length: 230
 
 {
     "Name":"ABC Company",
@@ -365,7 +361,7 @@ Output :
 *   Trying 127.0.0.1...
 * Connected to localhost (127.0.0.1) port 9091 (#0)
 > POST /checkVacancies/company HTTP/1.1
-> Host: localhost:9090
+> Host: localhost:9091
 > User-Agent: curl/7.47.0
 > Accept: */*
 > Content-Type:application/json
@@ -373,11 +369,9 @@ Output :
 
 * upload completely sent off: 29 out of 29 bytes
 < HTTP/1.1 200 OK
-< Date: Mon, 11 Jun 2018 12:27:45 GMT
 < Content-Type: application/json
-< Via: 1.1 vegur
-< server: Cowboy
-< content-length: 315
+< server: ballerina/0.981.0
+< content-length: 237
 
 {
     "Name":"Smart Automobile",
