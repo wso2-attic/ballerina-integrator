@@ -41,7 +41,7 @@ function testAuctionService() {
     test:assertEquals(response.statusCode, 200, msg = "Online auction service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     // Flight details
-    string expectedResult = "{\"Bidder Name\":\"Bidder 2\",\"Bid\":470000}";
+    string expectedResult = "{\"Bidder Name\":\"Bidder 2\", \"Bid\":470000}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expectedResult, msg = "Response mismatch!");
 }
