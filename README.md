@@ -20,7 +20,7 @@ To understand how you can use asynchronous invocations with Ballerina, let’s c
 
 - The Stock Quote Summary service calls a remote backend to get the stock data.
 - The Ballerina Stock Quote Summary service calls the remote backends of three separate endpoints asynchronously.
-- Finally, the quote summary servie appends all the results from three backends and sends the responses to the client.
+- Finally, the quote summary service appends all the results from three backends and sends the responses to the client.
 
 
 The following figure illustrates the scenario of the Stock Quote Summary service with asynchronous invocations. 
@@ -230,7 +230,7 @@ NOTE: You can find the complete implementaion of the stock_quote_data_backend [h
 
 - First, you need to run `stock_quote_data_backend`. To do this, navigate to the `<SAMPLE_ROOT>` directory and run the following command in the terminal.
 ```
-$ballerina run stock_quote_data_backend/
+$ ballerina run stock_quote_data_backend/
 ```
 NOTE: To run the Ballerina service, you need to have Ballerina installed in you local machine.
 
@@ -238,7 +238,7 @@ NOTE: To run the Ballerina service, you need to have Ballerina installed in you 
 
 
 ```
-$ballerina run stock_quote_summary_service/
+$ ballerina run stock_quote_summary_service/
 ```
 
 - Now you can execute the following curl commands to call the stock quote summary service.
@@ -300,32 +300,32 @@ Once you are done with the development, you can deploy the service using any of 
 
 
 ```
-$ballerina build stock_quote_summary_service
+$ ballerina build stock_quote_summary_service
 ```
 
 ```
-$ballerina build stock_quote_data_backend
+$ ballerina build stock_quote_data_backend
 ```
 
 - Once the `stock_quote_summary_service.balx` and `build stock_quote_data_backend.balx` are created inside the target directory, issue the following command to execute them. 
 
 ```
-$ballerina run target/stock_quote_summary_service.balx
+$ ballerina run target/stock_quote_summary_service.balx
 ```
 
 ```
-$ballerina run target/stock_quote_data_backend.balx
+$ ballerina run target/stock_quote_data_backend.balx
 ```
 
 - Once the service is successfully executed, the following output is displayed. 
 ```
-$ballerina run target/stock_quote_summary_service.balx
+$ ballerina run target/stock_quote_summary_service.balx
 ballerina: initiating service(s) in 'async_service.bal'
 ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ```
-$ballerina run target/stock_quote_data_backend.balx
+$ ballerina run target/stock_quote_data_backend.balx
 ballerina: initiating service(s) in 'stock_backend.bal'
 ballerina: started HTTP/WS endpoint 0.0.0.0:9095
 
