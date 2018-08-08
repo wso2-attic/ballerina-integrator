@@ -37,7 +37,7 @@ function testResourceAddOrder() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"status\":\"Order Created.\",\"orderId\":\"100500\"}", msg = "Response mismatch!");
+        "{\"status\":\"Order Created.\", \"orderId\":\"100500\"}", msg = "Response mismatch!");
 }
 
 @test:Config {
@@ -58,7 +58,7 @@ function testResourceUpdateOrder() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"Order\":{\"ID\":\"100500\",\"Name\":\"XYZ\",\"Description\":\"Updated order.\"}}",
+        "{\"Order\":{\"ID\":\"100500\", \"Name\":\"XYZ\", \"Description\":\"Updated order.\"}}",
         msg = "Response mismatch!");
 }
 
@@ -75,7 +75,7 @@ function testResourceFindOrder() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"Order\":{\"ID\":\"100500\",\"Name\":\"XYZ\",\"Description\":\"Updated order.\"}}",
+        "{\"Order\":{\"ID\":\"100500\", \"Name\":\"XYZ\", \"Description\":\"Updated order.\"}}",
         msg = "Response mismatch!");
 }
 
