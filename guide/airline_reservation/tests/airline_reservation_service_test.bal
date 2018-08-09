@@ -48,8 +48,8 @@ function testResourceFlightConcord () {
     test:assertEquals(response.statusCode, 200,
         msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"Airline\":\"Qatar Airways\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
-        "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":278}";
+    string expected = "{\"Airline\":\"Qatar Airways\", \"ArrivalDate\":\"12-03-2018\"," +
+        " \"ReturnDate\":\"13-04-2018\", \"From\":\"Colombo\", \"To\":\"Changi\", \"Price\":278}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
@@ -68,8 +68,8 @@ function testResourceFlightAsiana () {
     test:assertEquals(response.statusCode, 200,
         msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"Airline\":\"Asiana\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
-        "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":275}";
+    string expected = "{\"Airline\":\"Asiana\", \"ArrivalDate\":\"12-03-2018\", \"ReturnDate\":\"13-04-2018\", " +
+        "\"From\":\"Colombo\", \"To\":\"Changi\", \"Price\":275}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
@@ -88,8 +88,8 @@ function testResourceFlightEmirates () {
     test:assertEquals(response.statusCode, 200,
         msg = "Airline reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"Airline\":\"Emirates\",\"ArrivalDate\":\"12-03-2018\",\"ReturnDate\":\"13-04-2018\"," +
-        "\"From\":\"Colombo\",\"To\":\"Changi\",\"Price\":273}";
+    string expected = "{\"Airline\":\"Emirates\", \"ArrivalDate\":\"12-03-2018\", \"ReturnDate\":\"13-04-2018\", " +
+        "\"From\":\"Colombo\", \"To\":\"Changi\", \"Price\":273}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }

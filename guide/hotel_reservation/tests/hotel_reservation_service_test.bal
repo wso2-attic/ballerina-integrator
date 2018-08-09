@@ -47,8 +47,8 @@ function testResourceMiramar () {
     test:assertEquals(response.statusCode, 200,
         msg = "Hotel reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"HotelName\":\"Miramar\",\"FromDate\":\"12-03-2018\"," +
-        "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":6}";
+    string expected = "{\"HotelName\":\"Miramar\", \"FromDate\":\"12-03-2018\", " +
+        "\"ToDate\":\"13-04-2018\", \"DistanceToLocation\":6}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
@@ -67,8 +67,8 @@ function testResourceAqueen () {
     test:assertEquals(response.statusCode, 200,
         msg = "Hotel reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"HotelName\":\"Aqueen\",\"FromDate\":\"12-03-2018\"," +
-        "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":4}";
+    string expected = "{\"HotelName\":\"Aqueen\", \"FromDate\":\"12-03-2018\", " +
+        "\"ToDate\":\"13-04-2018\", \"DistanceToLocation\":4}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
@@ -87,8 +87,8 @@ function testResourceElizabeth () {
     test:assertEquals(response.statusCode, 200,
         msg = "Hotel reservation service did not respond with 200 OK signal!");
     // Check whether the response is as expected
-    string expected = "{\"HotelName\":\"Elizabeth\",\"FromDate\":\"12-03-2018\"," +
-        "\"ToDate\":\"13-04-2018\",\"DistanceToLocation\":2}";
+    string expected = "{\"HotelName\":\"Elizabeth\", \"FromDate\":\"12-03-2018\", " +
+        "\"ToDate\":\"13-04-2018\", \"DistanceToLocation\":2}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
 }
