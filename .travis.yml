@@ -19,7 +19,7 @@ before_script:
 - mysql -u root --password=""  < ./resources/initializeDataBase.sql
 
 script:
-- BALLERINA_VERSION="${VERSION:-0.981.0}"
+- BALLERINA_VERSION="${VERSION:-0.980.2-SNAPSHOT}"
 - echo -e "\033[36m${BALLERINA_VERSION}\033[m"
 
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
