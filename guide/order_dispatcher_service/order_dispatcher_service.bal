@@ -49,7 +49,6 @@ endpoint jms:QueueSender jmsProducerWholesale {
     queueName:"Wholesale_Queue"
 };
 
-
 // JMS service that consumes messages from the JMS queue
 // Bind the created consumer to the listener service
 service<jms:Consumer> orderDispatcherService bind jmsConsumer {
