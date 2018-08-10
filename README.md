@@ -1,11 +1,11 @@
-# ballerina-guide-working-with-ActiveMQ
+# messaging-with-activemq
 
 This Guide will illustrate how to configure ballerina services as a JMS producer (one way messaging, aka fire and forget mode) and JMS consumer with ActiveMQ message broker.
 
 Let's consider a real world secenario where online order management system. Clients can place their orders, then Order accepting ballerina service will place that orders into a message broker queue, then Order dispatcher ballerina service will route them to a difference queues by considering the message content( it will check retail order or whole sale order), then respective ballerina services will consume the messages from each queue.
 
 
-![alt text](https://github.com/tdkmalan/ballerina-guide-working-with-ActiveMQ/blob/master/JMS_bal_Service.png)
+![alt text](https://github.com/tdkmalan/messaging-with-activemq/blob/master/JMS_bal_Service.png)
 
 
 # The following are the sections available in this guide.
@@ -37,7 +37,7 @@ If you want to skip the basics, you can download the git repo and directly move 
 Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
 
 ```
-ballerina-guide-working-with-ActiveMQ
+messaging-with-activemq
  └── guide
       ├── order_accepting_service
       │    ├── order_accepting_service.bal
@@ -51,11 +51,11 @@ ballerina-guide-working-with-ActiveMQ
       │    └── retail_order_process_service.bal
       │ 
       └── retail_order_process_service
-	   └── wholesale_order_process_service.bal	
+	       └── wholesale_order_process_service.bal	
 ```
      
 - Create the above directories in your local machine and also create empty .bal files.
-- Then open the terminal and navigate to ballerina-guide-working-with-ActiveMQ/guide and run Ballerina project initializing toolkit.
+- Then open the terminal and navigate to messaging-with-activemq/guide and run Ballerina project initializing toolkit.
 
 ```
   $ ballerina init
@@ -367,7 +367,7 @@ Once you are done with the development, you can deploy the services using any of
 
 **Deploying locally**
 
-As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to  ballerina-guide-working-with-ActiveMQ/guide and run the following command.
+As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to  messaging-with-activemq/guide and run the following command.
 ```
    $ ballerina build
 ```
@@ -476,7 +476,7 @@ service<http:Service> orderAcceptingService bind listener {
 
 - @docker:Config annotation is used to provide the basic docker image configurations for the sample. @docker:CopyFiles is used to copy the JMS broker jar files into the ballerina bre/lib folder. You can provide multiple files as an array to field files of CopyFiles docker annotation. @docker:Expose {} is used to expose the port.
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to ballerina-guide-working-with-ActiveMQ/guide and run the following command.
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to messaging-with-activemq/guide and run the following command.
 
 ```
 ballerina build
@@ -500,7 +500,7 @@ curl -d '{"customerID":"C001","productID":"P001","quantity":"4","orderType":"ret
 # Observability
 
 
-Ballerina is by default observable. Meaning you can easily observe your services, resources, etc. However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to ballerina.conf file in ballerina-guide-working-with-ActiveMQ/guide/.
+Ballerina is by default observable. Meaning you can easily observe your services, resources, etc. However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to ballerina.conf file in messaging-with-activemq/guide/.
 ```
 [b7a.observability]
 
@@ -539,7 +539,7 @@ NOTE: The above configuration is the minimum configuration needed to enable trac
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
-- Navigate to ballerina-guide-working-with-ActiveMQ/guide and run the order_accepting_service using following command
+- Navigate to messaging-with-activemq/guide and run the order_accepting_service using following command
 ```
    $ ballerina run order_accepting_service/
 ```
@@ -600,7 +600,7 @@ NOTE: Ballerina will by default have following metrics for HTTP server connector
 
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from ballerina-guide-working-with-ActiveMQ/guide
+- Start the Ballerina Service with the following command from messaging-with-activemq/guide
 ```
    $ nohup ballerina run order_accepting_service/ &>> ballerina.log&
    ```
