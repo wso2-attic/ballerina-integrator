@@ -18,8 +18,6 @@ import ballerina/log;
 import ballerina/jms;
 import ballerina/io;
 
-
-
 // Initialize a JMS connection with the provider
 // 'Apache ActiveMQ' has been used as the message broker
 jms:Connection conn = new({
@@ -62,14 +60,12 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
         // Retrieve the string payload using native function
         var orderDetails = check message.getTextMessageContent();
         log:printInfo("validating  Details: " + orderDetails);
-
         //Converting String content to JSON
         io:StringReader reader = new io:StringReader(orderDetails);
         json result = check reader.readJson();
         var closeResult = reader.close();
         //Retrieving JSON attribute "OrderType" value
         json orderType = result.orderType;
-
         //filtering and routing messages using message orderType
         if(orderType.toString() == "retail"){
               // Create a JMS message

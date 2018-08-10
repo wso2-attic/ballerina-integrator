@@ -17,7 +17,6 @@
 import ballerina/log;
 import ballerina/jms;
 
-
 // Initialize a JMS connection with the provider
 // 'Apache ActiveMQ' has been used as the message broker
 jms:Connection conn = new({
