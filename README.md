@@ -476,9 +476,9 @@ function handleUpdate(int|error returned, string message) {
 ### Before you begin
 * Run the SQL script `initialize.sql` provided in the resources folder, to initialize the databases and to create the required tables.
 ```
-   $mysql -u <username> -p <file location>/initialize.sql 
+   $mysql -u <username> -p <file location>/Initialize.sql 
 ``` 
-NOTE : You can find the SQL script(`initialize.sql`) [here](resources/initialize.sql)
+NOTE : You can find the SQL script(`Initialize.sql`) [here](resources/Initialize.sql)
 
 ### Invoking the service
 
