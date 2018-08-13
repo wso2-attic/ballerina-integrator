@@ -12,7 +12,7 @@ endpoint mysql:Client testDB {
     port: 3306,
     name: "testdb",
     username: "root",
-    password: "wso2123",
+    password: "",
     poolOptions: { maximumPoolSize: 5 },
     dbOptions: { useSSL: false }
 };
@@ -22,7 +22,7 @@ endpoint mysql:Client testDB1 {
     port: 3306,
     name: "testdb1",
     username: "root",
-    password: "wso2123",
+    password: "",
     poolOptions: { maximumPoolSize: 5 },
     dbOptions: { useSSL: false }
 };
