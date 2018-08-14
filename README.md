@@ -565,11 +565,11 @@ The successful execution of a service will show us something similar to the foll
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in the docker container.   
+You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding Docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in the Docker container.   
 
-First, let's see how to configure MySQL in the docker container.
+First, let's see how to configure MySQL in the Docker container.
 
-  * Initially, you need to pull the MySQL docker image using the below command.
+  * Initially, you need to pull the MySQL Docker image using the below command.
 ```
     $docker pull mysql:5.7.22
 ```
@@ -693,7 +693,7 @@ service<http:Service> backend bind backendEP {
 ```
 
  - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `eip-message-transformation/guide/` folder and run the following command.
+This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to the `eip-message-transformation/guide/` folder and run the following command.
 
 ```
    $ballerina build message_transformation
@@ -709,15 +709,15 @@ Generating executable
         docker run -d -p 9090:9090 ballerina.guides.io/message_transformation:v1.0
 ```
 
-- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+- Once you successfully build the Docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
 ```   
    $docker run -d -p 9090:9090 ballerina.guides.io/message_transformation:v1.0
 ```
 
-- Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+- Here we run the Docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
-- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+- Verify Docker container is running with the use of `` $ docker ps``. The status of the Docker container should be shown as 'Up'. 
 
 - You can access the service using the same curl commands that we've used above. 
  
@@ -727,12 +727,12 @@ curl -v http://localhost:9090/contentfilter -d '{"id" : 105, "name" : "ballerina
 
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina program on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina program on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
 Since this guide requires MySQL as a prerequisite, you need a couple of more steps to create a MySQL pod and use it with our sample.  
 
-First, let's look at how we can create a MySQL pod in kubernetes. If you are working with minikube, it will be convenient to use the minikube's in-built docker daemon and push the MySQL docker image we are about to build to the minikube's docker registry. This is because during the next steps, in the case of minikube, the docker image we build for employee_database_service will also be pushed to minikube's docker registry. Having both images in the same registry will reduce the configuration steps.
-Run the following command to start using minikube's in-built docker daemon.
+First, let's look at how we can create a MySQL pod in kubernetes. If you are working with minikube, it will be convenient to use the minikube's in-built Docker daemon and push the MySQL Docker image we are about to build to the minikube's Docker registry. This is because during the next steps, in the case of minikube, the Docker image we build for employee_database_service will also be pushed to minikube's Docker registry. Having both images in the same registry will reduce the configuration steps.
+Run the following command to start using minikube's in-built Docker daemon.
 
 ```bash
 minikube docker-env
@@ -858,7 +858,7 @@ service<http:Service> backend bind backendEP {
 .
 }
 ```
-- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
+- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name which will be created as part of building this service. `copyFiles` field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
 - Please note that if you are using minikube it is required to add the `` dockerHost `` and `` dockerCertPath `` configurations under ``  @kubernetes:Deployment ``.
 eg:
 ``` ballerina
@@ -877,7 +877,7 @@ eg:
 - In addition, we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and hostname ``ballerina.guides.io``)
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ballerina build message_transformation
@@ -896,7 +896,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
            kubectl apply -f ./target/message_transformation/kubernetes/
 ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
+- You can verify that the Docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/message_transformation/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
@@ -1030,7 +1030,7 @@ Create a file `prometheus.yml` inside the `/tmp/` location. Add the below config
 
 > **NOTE**: Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
    
-Run the Prometheus docker image using the following command
+Run the Prometheus Docker image using the following command
 
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
