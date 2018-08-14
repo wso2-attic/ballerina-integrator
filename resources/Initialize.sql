@@ -12,8 +12,6 @@ USE testdb;
 -- create student table and StudentDetails table in the database
 CREATE TABLE IF NOT EXISTS student (id INT, name VARCHAR(255), city VARCHAR(255), gender VARCHAR(255), PRIMARY KEY (id));
 
-
-
 -- Create testDB database
 CREATE DATABASE IF NOT EXISTS testdb1;     
 
@@ -35,6 +33,3 @@ INSERT INTO StudentDetails(ID, Com_Maths, Physics, Chemistry) values (107, 'A', 
 INSERT INTO StudentDetails(ID, Com_Maths, Physics, Chemistry) values (108, 'A', 'C', 'C');
 INSERT INTO StudentDetails(ID, Com_Maths, Physics, Chemistry) values (109, 'B', 'C', 'B');
 INSERT INTO StudentDetails(ID, Com_Maths, Physics, Chemistry) values (110, 'C', 'C', 'C');
-
-
-
