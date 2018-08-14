@@ -27,7 +27,7 @@ The content filter EIP (Enterprise Integration Pattern) important when we need t
 
 ![alt text](images/contentfilter.png)
 
-In our sample scenario, input request contains a lot of student's details. So content filter uses to simplify the input request such as request contains only student ID. Additional data such as student name, student's city, and gender will be dropped to ensure the performance of message transformation.
+In our sample scenario, input request contains a lot of student's details. So, the content filter is used to simplify the input request so that the request contains only the student ID. Additional data such as student name, student's city, and gender will be dropped to ensure the performance of message transformation.
 
 ### Content Enricher
 The Content Enricher EIP facilitates communication with another system if the message originator does not have all the required data items available. It accesses an external data source to augment a message with missing information.
