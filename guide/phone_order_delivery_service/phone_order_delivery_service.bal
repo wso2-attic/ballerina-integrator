@@ -2,7 +2,6 @@ import ballerina/log;
 import ballerina/http;
 import ballerina/jms;
 
-
 //Deploying on kubernetes
 
 //import ballerinax/kubernetes;
@@ -41,8 +40,6 @@ import ballerina/jms;
 //@http:ServiceConfig {basePath:"/phonestore1"}
 //service<http:Service> phone_store_service bind listener {
 
-
-
 //Deploying on docker
 
 // import ballerinax/docker;
@@ -74,14 +71,12 @@ import ballerina/jms;
 //@http:ServiceConfig {basePath:"/phonestore1"}
 //service<http:Service> phone_order_delivery_service bind listener {
 
-
 type phoneDeliver record {
     string customerName;
     string address;
     string contactNumber;
     string deliveryPhoneName;
 };
-
 
 json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
 
@@ -190,9 +185,7 @@ service<http:Service> phone_order_delivery_service bind deliveryEP {
         response.setJsonPayload(responseMessage);
         _ = caller -> respond(response);
     }
-
 }
-
 
 jms:Connection conn = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
@@ -207,12 +200,10 @@ jms:Session jmsSession2 = new(conn, {
 
 // Initialize a queue receiver using the created session
 
-
 endpoint jms:QueueReceiver jmsConsumer2 {
     session:jmsSession2,
     queueName:"DeliveryQueue"
 };
-
 
 service<jms:Consumer> deliverySystem bind jmsConsumer2 {
     // Triggered whenever an order is added to the 'OrderQueue'
@@ -223,8 +214,5 @@ service<jms:Consumer> deliverySystem bind jmsConsumer2 {
         log:printInfo("Delivery Details: " + stringPayload2);
 
         log:printInfo(" Delivery Details sent to the customer successfully");
-
-
     }
 }
-
