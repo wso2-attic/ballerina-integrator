@@ -16,6 +16,7 @@
 
 import ballerina/log;
 import ballerina/jms;
+import ballerina/io;
 
 // Initialize a JMS connection with the provider
 // 'Apache ActiveMQ' has been used as the message broker
@@ -45,8 +46,12 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
         log:printInfo("New order received from the JMS Queue");
         // Retrieve the string payload using native function
         var orderDetails = check message.getTextMessageContent();
-        log:printInfo("below retail order has been successfully processed");
-        log:printInfo(orderDetails);
+        //Convert String Payload to the JSON
+        io:StringReader reader = new io:StringReader(orderDetails);
+        json result = check reader.readJson();
+        var closeResult = reader.close();
+        log:printInfo("New retail order has been processed successfully; Order ID: '" + result.customerID +
+                "', Product ID: '" + result.productID + "', Quantity: '" + result.quantity + "';");
 
     }
 }
