@@ -167,7 +167,7 @@ service<http:Service> orderAcceptingService bind listener {
 
 **order_dispatcher_service.bal**
 
-```
+```ballerina
 import ballerina/log;
 import ballerina/jms;
 import ballerina/io;
@@ -246,7 +246,7 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
 
 **retail_order_process_service.bal**
 
-```
+```ballerina
 import ballerina/log;
 import ballerina/jms;
 
@@ -288,7 +288,7 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
 
 **wholesale_order_process_service.bal**
 
-```
+```ballerina
 import ballerina/log;
 import ballerina/jms;
 
@@ -337,7 +337,7 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
    $ ./activemq start
 ```
 - run following commands in seperate terminals. 
-```
+```ballerina
    $ ballerina run order_accepting_service.bal
    $ ballerina run order_dispatcher_service.bal
    $ ballerina run retail_order_process_service.bal
@@ -356,7 +356,7 @@ curl -d '{"customerID":"C002","productID":"P002","quantity":"40000","orderType":
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'. When writing the test functions the below convention should be followed.
 
 Test functions should be annotated with @test:Config. See the below example.
-```
+```ballerina
    @test:Config
    function testResourcePickup() {
 ```
@@ -368,15 +368,15 @@ Once you are done with the development, you can deploy the services using any of
 **Deploying locally**
 
 As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to  messaging-with-activemq/guide and run the following command.
-```
+```ballerina
    $ ballerina build
 ```
 Once the .balx files are created inside the target folder, you can run them using the following command.
-``
+```ballerina
    $ ballerina run <Exec_Archive_File_Name>
-``
-The successful execution of a service will show us something similar to the following output.
 ```
+The successful execution of a service will show us something similar to the following output.
+```ballerina
 ballerina: initiating service(s) in 'order_accepting_service.balx'
 ballerina: initiating service(s) in 'order_dispatcher_service.balx'
 ballerina: initiating service(s) in 'retail_order_process_service.balx'
@@ -407,7 +407,7 @@ Now let's see how we can deploy the order_acepting_service we developed above on
 
 **order_acepting_service**
 
-```
+```ballerina
 import ballerina/log;
 import ballerina/http;
 import ballerina/jms;
@@ -478,7 +478,7 @@ service<http:Service> orderAcceptingService bind listener {
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to messaging-with-activemq/guide and run the following command.
 
-```
+```ballerina
 ballerina build
 
 ```
