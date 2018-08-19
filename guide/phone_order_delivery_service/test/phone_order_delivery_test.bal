@@ -17,7 +17,6 @@
 import ballerina/http;
 import ballerina/test;
 
-
 // Function to test 'placeOrder' resource
 @test:Config
 
@@ -42,6 +41,4 @@ function testResourceOrderDelivey() {
     json resPayload = check response.getJsonPayload();
     json expected = { "Message": "Your order is successfully placed. Ordered phone will be delivered soon" };
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
-
 }
-
