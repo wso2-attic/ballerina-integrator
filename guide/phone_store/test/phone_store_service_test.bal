@@ -17,8 +17,6 @@
 import ballerina/http;
 import ballerina/test;
 
-
-
 @test:Config
 function testResourceGetPhoneList() {
 
@@ -62,5 +60,3 @@ function testResourcePlaceOrder() {
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
 
 }
-
-
