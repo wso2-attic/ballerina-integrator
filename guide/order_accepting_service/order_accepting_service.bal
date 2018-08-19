@@ -32,7 +32,7 @@ type Order record {
 // 'Apache ActiveMQ' has been used as the message broker in this example
 jms:Connection jmsConnection = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://172.17.0.2:61616"
+        providerUrl: "tcp://localhost:61616"
     });
 
 // Initialize a JMS session on top of the created connection
@@ -46,22 +46,23 @@ endpoint jms:QueueSender jmsProducer {
     queueName: "Order_Queue"
 };
 
-@docker:Config {
-    registry: "ballerina.guides.io",
-    name: "order_accepting_service.bal",
-    tag: "v1.0"
-}
 
-@docker:CopyFiles {
-    files: [{ source: "/home/krishan/Servers/apache-activemq-5.12.0/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar",
-        target: "/ballerina/runtime/bre/lib" }, { source:
-    "/home/krishan/Servers/apache-activemq-5.12.0/lib/activemq-client-5.12.0.jar",
-        target: "/ballerina/runtime/bre/lib" }] }
+//@docker:Config {
+//    registry: "ballerina.guides.io",
+//    name: "order_accepting_service.bal",
+//    tag: "v1.0"
+//}
 
-@docker:Expose {}
-endpoint http:Listener listener {
-    port: 9090
-};
+//@docker:CopyFiles {
+//    files: [{ source: "/home/krishan/Servers/apache-activemq-5.12.0/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar",
+//        target: "/ballerina/runtime/bre/lib" }, { source:
+//    "/home/krishan/Servers/apache-activemq-5.12.0/lib/activemq-client-5.12.0.jar",
+//        target: "/ballerina/runtime/bre/lib" }] }
+
+//@docker:Expose {}
+//endpoint http:Listener listener {
+//    port: 9090
+//};
 
 // Order Accepting Service, which allows users to place order online
 @http:ServiceConfig { basePath: "/placeOrder" }
