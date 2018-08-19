@@ -69,6 +69,7 @@ Let's get start with the implementation of the "order_accepting_service.bal", wh
 import ballerina/log;
 import ballerina/http;
 import ballerina/jms;
+import ballerinax/docker;
 
 // Type definition for a order
 type Order record {
@@ -77,7 +78,6 @@ type Order record {
     string quantity;
     string orderType;
 };
-
 
 // Initialize a JMS connection with the provider
 // 'providerUrl' and 'initialContextFactory' vary based on the JMS provider you use
@@ -94,22 +94,35 @@ jms:Session jmsSession = new(jmsConnection, {
 
 // Initialize a queue sender using the created session
 endpoint jms:QueueSender jmsProducer {
-    session:jmsSession,
-    queueName:"Order_Queue"
+    session: jmsSession,
+    queueName: "Order_Queue"
 };
 
-// Service endpoint
-endpoint http:Listener listener {
-    port:9090
-};
+
+//@docker:Config {
+//    registry: "ballerina.guides.io",
+//    name: "order_accepting_service.bal",
+//    tag: "v1.0"
+//}
+
+//@docker:CopyFiles {
+//    files: [{ source: "/home/krishan/Servers/apache-activemq-5.12.0/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar",
+//        target: "/ballerina/runtime/bre/lib" }, { source:
+//    "/home/krishan/Servers/apache-activemq-5.12.0/lib/activemq-client-5.12.0.jar",
+//        target: "/ballerina/runtime/bre/lib" }] }
+
+//@docker:Expose {}
+//endpoint http:Listener listener {
+//    port: 9090
+//};
 
 // Order Accepting Service, which allows users to place order online
-@http:ServiceConfig {basePath:"/placeorder"}
+@http:ServiceConfig { basePath: "/placeOrder" }
 service<http:Service> orderAcceptingService bind listener {
     // Resource that allows users to place an order 
     @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"],
         produces: ["application/json"] }
-    placeOrder(endpoint caller, http:Request request) {
+    place(endpoint caller, http:Request request) {
         http:Response response;
         Order newOrder;
         json reqPayload;
@@ -121,22 +134,22 @@ service<http:Service> orderAcceptingService bind listener {
             // NOT a valid JSON payload
             any => {
                 response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
+                response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+                _ = caller->respond(response);
                 done;
             }
         }
 
         json customerID = reqPayload.customerID;
-        json productID  = reqPayload.productID;
+        json productID = reqPayload.productID;
         json quantity = reqPayload.quantity;
         json orderType = reqPayload.orderType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (customerID == null || productID == null || quantity == null || orderType == null) {
             response.statusCode = 400;
-            response.setJsonPayload({"Message":"Bad Request - Invalid payload"});
-            _ = caller -> respond(response);
+            response.setJsonPayload({ "Message": "Bad Request - Invalid payload" });
+            _ = caller->respond(response);
             done;
         }
 
@@ -146,21 +159,20 @@ service<http:Service> orderAcceptingService bind listener {
         newOrder.quantity = quantity.toString();
         newOrder.orderType = orderType.toString();
 
-    
         json responseMessage;
         var orderDetails = check <json>newOrder;
         // Create a JMS message
         jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails.toString());
         // Send the message to the JMS queue
-        _ = jmsProducer -> send(queueMessage);
+        _ = jmsProducer->send(queueMessage);
         // Construct a success message for the response
-        responseMessage = {"Message":"Your order is successfully placed"};
+        responseMessage = { "Message": "Your order is successfully placed" };
         log:printInfo("New order added to the JMS Queue; customerID: '" + newOrder.customerID +
-                    "', productID: '" + newOrder.productID + "';");
+                "', productID: '" + newOrder.productID + "';");
 
         // Send response to the user
         response.setJsonPayload(responseMessage);
-        _ = caller -> respond(response);
+        _ = caller->respond(response);
     }
 }
 ```
@@ -171,7 +183,6 @@ service<http:Service> orderAcceptingService bind listener {
 import ballerina/log;
 import ballerina/jms;
 import ballerina/io;
-
 
 // Initialize a JMS connection with the provider
 // 'Apache ActiveMQ' has been used as the message broker
@@ -188,22 +199,21 @@ jms:Session jmsSession = new(conn, {
 
 // Initialize a queue receiver using the created session
 endpoint jms:QueueReceiver jmsConsumer {
-    session:jmsSession,
-    queueName:"Order_Queue"
+    session: jmsSession,
+    queueName: "Order_Queue"
 };
 
 // Initialize a retail queue sender using the created session
 endpoint jms:QueueSender jmsProducerRetail {
-    session:jmsSession,
-    queueName:"Retail_Queue"
+    session: jmsSession,
+    queueName: "Retail_Queue"
 };
 
 // Initialize a wholesale queue sender using the created session
 endpoint jms:QueueSender jmsProducerWholesale {
-    session:jmsSession,
-    queueName:"Wholesale_Queue"
+    session: jmsSession,
+    queueName: "Wholesale_Queue"
 };
-
 
 // JMS service that consumes messages from the JMS queue
 // Bind the created consumer to the listener service
@@ -215,31 +225,30 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
         // Retrieve the string payload using native function
         var orderDetails = check message.getTextMessageContent();
         log:printInfo("validating  Details: " + orderDetails);
-
         //Converting String content to JSON
         io:StringReader reader = new io:StringReader(orderDetails);
         json result = check reader.readJson();
         var closeResult = reader.close();
         //Retrieving JSON attribute "OrderType" value
         json orderType = result.orderType;
-
         //filtering and routing messages using message orderType
-        if(orderType.toString() == "retail"){
-              // Create a JMS message
-                jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails);
-            // Send the message to the Retail JMS queue
-             _ = jmsProducerRetail -> send(queueMessage);
-             log:printInfo("New Retail order added to the Retail JMS Queue");
-        }else if(orderType.toString() == "wholesale"){
+        if (orderType.toString() == "retail"){
             // Create a JMS message
-                jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails);
+            jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails);
+            // Send the message to the Retail JMS queue
+            _ = jmsProducerRetail->send(queueMessage);
+            log:printInfo("New Retail order added to the Retail JMS Queue");
+        } else if (orderType.toString() == "wholesale"){
+            // Create a JMS message
+            jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails);
             // Send the message to the Wolesale JMS queue
-             _ = jmsProducerWholesale -> send(queueMessage);
-             log:printInfo("New Wholesale order added to the Wholesale JMS Queue");
-        }else{    
+            _ = jmsProducerWholesale->send(queueMessage);
+            log:printInfo("New Wholesale order added to the Wholesale JMS Queue");
+        } else {
             //ignoring invalid orderTypes  
-        log:printInfo("No any valid order type recieved, ignoring the message, order type recieved - " + orderType.toString());
-        }    
+            log:printInfo("No any valid order type recieved, ignoring the message, order type recieved - " + orderType.
+                    toString());
+        }
     }
 }
 ```
@@ -249,7 +258,7 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
 ```ballerina
 import ballerina/log;
 import ballerina/jms;
-
+import ballerina/io;
 
 // Initialize a JMS connection with the provider
 // 'Apache ActiveMQ' has been used as the message broker
@@ -266,8 +275,8 @@ jms:Session jmsSession = new(conn, {
 
 // Initialize a retail queue receiver using the created session
 endpoint jms:QueueReceiver jmsConsumer {
-    session:jmsSession,
-    queueName:"Retail_Queue"
+    session: jmsSession,
+    queueName: "Retail_Queue"
 };
 
 // JMS service that consumes messages from the JMS queue
@@ -279,11 +288,15 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
         log:printInfo("New order received from the JMS Queue");
         // Retrieve the string payload using native function
         var orderDetails = check message.getTextMessageContent();
-        log:printInfo("below retail order has been successfully processed");
-        log:printInfo(orderDetails);
+        //Convert String Payload to the JSON
+        io:StringReader reader = new io:StringReader(orderDetails);
+        json result = check reader.readJson();
+        var closeResult = reader.close();
+        log:printInfo("New retail order has been processed successfully; Order ID: '" + result.customerID.toString() +
+                "', Product ID: '" + result.productID.toString() + "', Quantity: '" + result.quantity.toString() + "';");
+
     }
 }
-
 ```
 
 **wholesale_order_process_service.bal**
@@ -291,7 +304,7 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
 ```ballerina
 import ballerina/log;
 import ballerina/jms;
-
+import ballerina/io;
 
 // Initialize a JMS connection with the provider
 // 'Apache ActiveMQ' has been used as the message broker
@@ -308,8 +321,8 @@ jms:Session jmsSession = new(conn, {
 
 // Initialize a retail queue receiver using the created session
 endpoint jms:QueueReceiver jmsConsumer {
-    session:jmsSession,
-    queueName:"Wholesale_Queue"
+    session: jmsSession,
+    queueName: "Wholesale_Queue"
 };
 
 // JMS service that consumes messages from the JMS queue
@@ -321,8 +334,12 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
         log:printInfo("New order received from the JMS Queue");
         // Retrieve the string payload using native function
         var orderDetails = check message.getTextMessageContent();
-        log:printInfo("below wholesale order has been successfully processed");
-        log:printInfo(orderDetails);
+        //Convert String Payload to the JSON
+        io:StringReader reader = new io:StringReader(orderDetails);
+        json result = check reader.readJson();
+        var closeResult = reader.close();
+        log:printInfo("New wholesale order has been processed successfully; Order ID: '" + result.customerID.toString() +
+                "', Product ID: '" + result.productID.toString() + "', Quantity: '" + result.quantity.toString() + "';");
 
     }
 }
