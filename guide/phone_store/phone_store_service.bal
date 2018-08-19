@@ -2,7 +2,6 @@ import ballerina/log;
 import ballerina/http;
 import ballerina/jms;
 
-
 //Deploying on kubernetes
 
 //import ballerinax/kubernetes;
@@ -41,8 +40,6 @@ import ballerina/jms;
 //@http:ServiceConfig {basePath:"/phonestore"}
 //service<http:Service> phone_store_service bind listener {
 
-
-
 //Deploying on docker
 
 // import ballerinax/docker;
@@ -74,7 +71,6 @@ import ballerina/jms;
 //@http:ServiceConfig {basePath:"/phonestore"}
 //service<http:Service> phone_store_service bind listener {
 
-
 public http:Request backendreq;
 
 // Type definition for a phone order
@@ -101,20 +97,16 @@ jms:Session jmsSession = new(jmsConnection, {
         acknowledgementMode: "AUTO_ACKNOWLEDGE"
     });
 
-
 // Initialize a queue sender using the created session
 endpoint jms:QueueSender jmsProducer {
     session:jmsSession,
     queueName:"OrderQueue"
 };
 
-
 // Service endpoint
-
 endpoint http:Listener listener {
     port:9090
 };
-
 
 // phone store service, which allows users to order phones online for delivery
 @http:ServiceConfig {basePath:"/phonestore"}
@@ -124,8 +116,6 @@ service<http:Service> phone_store_service bind listener {
         produces: ["application/json"] }
 
     placeOrder(endpoint caller, http:Request request) {
-
-
 
         backendreq= untaint request;
         http:Response response;
@@ -173,7 +163,6 @@ service<http:Service> phone_store_service bind listener {
                 break;
             }
         }
-
         json responseMessage;
         // If the requested phone is available, then add the order to the 'OrderQueue'
         if (isPhoneAvailable) {
@@ -181,29 +170,24 @@ service<http:Service> phone_store_service bind listener {
             // Create a JMS message
             jms:Message queueMessage = check jmsSession.createTextMessage(phoneOrderDetails.toString());
 
-
             log:printInfo("order will be added to the order  Queue; CustomerName: '" + newOrder.customerName +
                     "', OrderedPhone: '" + newOrder.orderedPhoneName + "';");
-
 
             // Send the message to the JMS queue
             _ = jmsProducer -> send(queueMessage);
 
-
             // Construct a success message for the response
             responseMessage = {"Message":"Your order is successfully placed. Ordered phone will be delivered soon"};
-
         }
         else {
             // If phone is not available, construct a proper response message to notify user
             responseMessage = {"Message":"Requested phone not available"};
         }
-
+        
         // Send response to the user
         response.setJsonPayload(responseMessage);
         _ = caller -> respond(response);
     }
-
     // Resource that allows users to get a list of all the available phones
     @http:ResourceConfig {methods:["GET"], produces:["application/json"]}
     getPhoneList(endpoint client, http:Request request) {
@@ -213,28 +197,23 @@ service<http:Service> phone_store_service bind listener {
         _ = client -> respond(response);
     }
 }
-
-
 jms:Connection conn = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
     });
-
+    
 // Initialize a JMS session on top of the created connection
 jms:Session jmsSession2 = new(conn, {
         // Optional property. Defaults to AUTO_ACKNOWLEDGE
         acknowledgementMode: "AUTO_ACKNOWLEDGE"
     });
-
+    
 // Initialize a queue receiver using the created session
-
 
 endpoint jms:QueueReceiver jmsConsumer {
     session:jmsSession2,
     queueName:"OrderQueue"
 };
-
-
 // JMS service that consumes messages from the JMS queue
 // Bind the created consumer to the listener service
 service<jms:Consumer> orderDeliverySystem bind jmsConsumer {
@@ -255,15 +234,8 @@ service<jms:Consumer> orderDeliverySystem bind jmsConsumer {
                 log:printInfo("forward error..................");
             }
         }
-
-
     }
 }
-
 endpoint http:Client phone_order_delivery_serviceEP {
     url: "http://localhost:9091/deliveryDetails/sendDelivery"
-
 };
-
-
-
