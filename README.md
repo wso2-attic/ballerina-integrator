@@ -430,9 +430,6 @@ import ballerina/http;
 import ballerina/jms;
 import ballerinax/docker;   
 
-
-
-
 // Type definition for a order
 type Order record {
     string customerID;
@@ -440,7 +437,6 @@ type Order record {
     string quantity;
     string orderType;
 };
-
 
 // Initialize a JMS connection with the provider
 // 'providerUrl' and 'initialContextFactory' vary based on the JMS provider you use
@@ -461,7 +457,6 @@ endpoint jms:QueueSender jmsProducer {
     queueName:"Order_Queue"
 };
 
-
 @docker:Config {
     registry:"ballerina.guides.io",
     name:"order_accepting_service.bal",
@@ -469,10 +464,9 @@ endpoint jms:QueueSender jmsProducer {
 }
 
 @docker:CopyFiles {
-   files:[{source:"/home/krishan/Servers/apache-activemq-5.12.0/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar",
-           target:"/ballerina/runtime/bre/lib"},{source:"/home/krishan/Servers/apache-activemq-5.12.0/lib/activemq-client-5.12.0.jar",
-          target:"/ballerina/runtime/bre/lib"}] }
-
+    files:[{source:<path_to_JMS_broker_jars>,
+            target:"/ballerina/runtime/bre/lib"}]
+}
 
 @docker:Expose{}
 endpoint http:Listener listener {
