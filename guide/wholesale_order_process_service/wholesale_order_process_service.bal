@@ -32,8 +32,8 @@ jms:Session jmsSession = new(conn, {
 
 // Initialize a retail queue receiver using the created session
 endpoint jms:QueueReceiver jmsConsumer {
-    session:jmsSession,
-    queueName:"Wholesale_Queue"
+    session: jmsSession,
+    queueName: "Wholesale_Queue"
 };
 
 // JMS service that consumes messages from the JMS queue

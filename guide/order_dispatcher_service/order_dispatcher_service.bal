@@ -33,20 +33,20 @@ jms:Session jmsSession = new(conn, {
 
 // Initialize a queue receiver using the created session
 endpoint jms:QueueReceiver jmsConsumer {
-    session:jmsSession,
-    queueName:"Order_Queue"
+    session: jmsSession,
+    queueName: "Order_Queue"
 };
 
 // Initialize a retail queue sender using the created session
 endpoint jms:QueueSender jmsProducerRetail {
-    session:jmsSession,
-    queueName:"Retail_Queue"
+    session: jmsSession,
+    queueName: "Retail_Queue"
 };
 
 // Initialize a wholesale queue sender using the created session
 endpoint jms:QueueSender jmsProducerWholesale {
-    session:jmsSession,
-    queueName:"Wholesale_Queue"
+    session: jmsSession,
+    queueName: "Wholesale_Queue"
 };
 
 // JMS service that consumes messages from the JMS queue
@@ -66,21 +66,22 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
         //Retrieving JSON attribute "OrderType" value
         json orderType = result.orderType;
         //filtering and routing messages using message orderType
-        if(orderType.toString() == "retail"){
-              // Create a JMS message
-                jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails);
-            // Send the message to the Retail JMS queue
-             _ = jmsProducerRetail -> send(queueMessage);
-             log:printInfo("New Retail order added to the Retail JMS Queue");
-        }else if(orderType.toString() == "wholesale"){
+        if (orderType.toString() == "retail"){
             // Create a JMS message
-                jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails);
+            jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails);
+            // Send the message to the Retail JMS queue
+            _ = jmsProducerRetail->send(queueMessage);
+            log:printInfo("New Retail order added to the Retail JMS Queue");
+        } else if (orderType.toString() == "wholesale"){
+            // Create a JMS message
+            jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails);
             // Send the message to the Wolesale JMS queue
-             _ = jmsProducerWholesale -> send(queueMessage);
-             log:printInfo("New Wholesale order added to the Wholesale JMS Queue");
-        }else{    
+            _ = jmsProducerWholesale->send(queueMessage);
+            log:printInfo("New Wholesale order added to the Wholesale JMS Queue");
+        } else {
             //ignoring invalid orderTypes  
-        log:printInfo("No any valid order type recieved, ignoring the message, order type recieved - " + orderType.toString());
-        }    
+            log:printInfo("No any valid order type recieved, ignoring the message, order type recieved - " + orderType.
+                    toString());
+        }
     }
 }

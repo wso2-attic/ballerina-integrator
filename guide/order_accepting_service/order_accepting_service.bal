@@ -17,7 +17,7 @@
 import ballerina/log;
 import ballerina/http;
 import ballerina/jms;
-import ballerinax/docker;   
+import ballerinax/docker;
 
 // Type definition for a order
 type Order record {
@@ -32,7 +32,7 @@ type Order record {
 // 'Apache ActiveMQ' has been used as the message broker in this example
 jms:Connection jmsConnection = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://172.17.0.2:61616" 
+        providerUrl: "tcp://172.17.0.2:61616"
     });
 
 // Initialize a JMS session on top of the created connection
@@ -42,28 +42,29 @@ jms:Session jmsSession = new(jmsConnection, {
 
 // Initialize a queue sender using the created session
 endpoint jms:QueueSender jmsProducer {
-    session:jmsSession,
-    queueName:"Order_Queue"
+    session: jmsSession,
+    queueName: "Order_Queue"
 };
 
 @docker:Config {
-    registry:"ballerina.guides.io",
-    name:"order_accepting_service.bal",
-    tag:"v1.0"
+    registry: "ballerina.guides.io",
+    name: "order_accepting_service.bal",
+    tag: "v1.0"
 }
 
 @docker:CopyFiles {
-   files:[{source:"/home/krishan/Servers/apache-activemq-5.12.0/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar",
-           target:"/ballerina/runtime/bre/lib"},{source:"/home/krishan/Servers/apache-activemq-5.12.0/lib/activemq-client-5.12.0.jar",
-          target:"/ballerina/runtime/bre/lib"}] }
+    files: [{ source: "/home/krishan/Servers/apache-activemq-5.12.0/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar",
+        target: "/ballerina/runtime/bre/lib" }, { source:
+    "/home/krishan/Servers/apache-activemq-5.12.0/lib/activemq-client-5.12.0.jar",
+        target: "/ballerina/runtime/bre/lib" }] }
 
-@docker:Expose{}
+@docker:Expose {}
 endpoint http:Listener listener {
-    port:9090
+    port: 9090
 };
 
 // Order Accepting Service, which allows users to place order online
-@http:ServiceConfig {basePath:"/placeOrder"}
+@http:ServiceConfig { basePath: "/placeOrder" }
 service<http:Service> orderAcceptingService bind listener {
     // Resource that allows users to place an order 
     @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"],
@@ -80,22 +81,22 @@ service<http:Service> orderAcceptingService bind listener {
             // NOT a valid JSON payload
             any => {
                 response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
+                response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+                _ = caller->respond(response);
                 done;
             }
         }
 
         json customerID = reqPayload.customerID;
-        json productID  = reqPayload.productID;
+        json productID = reqPayload.productID;
         json quantity = reqPayload.quantity;
         json orderType = reqPayload.orderType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (customerID == null || productID == null || quantity == null || orderType == null) {
             response.statusCode = 400;
-            response.setJsonPayload({"Message":"Bad Request - Invalid payload"});
-            _ = caller -> respond(response);
+            response.setJsonPayload({ "Message": "Bad Request - Invalid payload" });
+            _ = caller->respond(response);
             done;
         }
 
@@ -110,14 +111,14 @@ service<http:Service> orderAcceptingService bind listener {
         // Create a JMS message
         jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails.toString());
         // Send the message to the JMS queue
-        _ = jmsProducer -> send(queueMessage);
+        _ = jmsProducer->send(queueMessage);
         // Construct a success message for the response
-        responseMessage = {"Message":"Your order is successfully placed"};
+        responseMessage = { "Message": "Your order is successfully placed" };
         log:printInfo("New order added to the JMS Queue; customerID: '" + newOrder.customerID +
-                    "', productID: '" + newOrder.productID + "';");
+                "', productID: '" + newOrder.productID + "';");
 
         // Send response to the user
         response.setJsonPayload(responseMessage);
-        _ = caller -> respond(response);
+        _ = caller->respond(response);
     }
 }
