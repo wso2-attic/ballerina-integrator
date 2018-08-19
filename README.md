@@ -57,7 +57,7 @@ messaging-with-activemq
 - Create the above directories in your local machine and also create empty .bal files.
 - Then open the terminal and navigate to messaging-with-activemq/guide and run Ballerina project initializing toolkit.
 
-```
+```ballerina
   $ ballerina init
 ```
 # Developing the service
