@@ -50,8 +50,8 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
         io:StringReader reader = new io:StringReader(orderDetails);
         json result = check reader.readJson();
         var closeResult = reader.close();
-        log:printInfo("New retail order has been processed successfully; Order ID: '" + result.customerID +
-                "', Product ID: '" + result.productID + "', Quantity: '" + result.quantity + "';");
+        log:printInfo("New retail order has been processed successfully; Order ID: '" + result.customerID.toString() +
+                "', Product ID: '" + result.productID.toString() + "', Quantity: '" + result.quantity.toString() + "';");
 
     }
 }
