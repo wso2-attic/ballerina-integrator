@@ -1,28 +1,27 @@
-import ballerina/http;
-import ballerina/log;
-import ballerina/mime;
-import ballerina/io;
-import ballerina/mysql;
 //import ballerinax/docker;
+import ballerina/http;
+import ballerina/io;
 //import ballerinax/kubernetes;
+import ballerina/log;
+import ballerina/mysql;
 
 //connect the student details table
-endpoint mysql:Client testDB {
+endpoint mysql:Client StudentDetailsDB {
     host: "localhost",
     port: 3306,
-    name: "testdb",
+    name: "StudentDetailsDB",
     username: "root",
-    password: "",
+    password: "wso2123",
     poolOptions: { maximumPoolSize: 5 },
     dbOptions: { useSSL: false }
 };
 //connect the student's results details table
-endpoint mysql:Client testDB1 {
+endpoint mysql:Client StudentResultsDB {
     host: "localhost",
     port: 3306,
-    name: "testdb1",
+    name: "StudentResultsDB",
     username: "root",
-    password: "",
+    password: "wso2123",
     poolOptions: { maximumPoolSize: 5 },
     dbOptions: { useSSL: false }
 };
@@ -51,9 +50,9 @@ endpoint mysql:Client testDB1 {
 //@kubernetes:Deployment {
 //    image:"ballerina.guides.io/message_transformation_service:v1.0",
 //    name:"ballerina-guides-message-transformation-service",
-//    baseImage:"ballerina/ballerina-platform:0.980.0",
+//    baseImage:"ballerina/ballerina-platform:0.981.0",
 //    copyFiles:[{target:"/ballerina/runtime/bre/lib",
-//        source:"/home/saneth/Documents/ballerina/mysql-connector-java-5.1.46.jar"}]
+//        source:"<mysql-connector-path>"}]
 //}
 
 //@docker:Config {
@@ -63,7 +62,7 @@ endpoint mysql:Client testDB1 {
 //    baseImage:"ballerina/ballerina-platform:0.980.0"
 //}
 //@docker:CopyFiles {
-//    files:[{source:"/home/saneth/Documents/ballerina/mysql-connector-java-5.1.46.jar",
+//    files:[{source:"<mysql-connector-path>",
 //        target:"/ballerina/runtime/bre/lib"}]
 //}
 //
@@ -108,9 +107,10 @@ service<http:Service> contentfilter bind contentfilterEP {
         var jsonMsg = req.getJsonPayload();
         match jsonMsg {
             json msg => {
-                //create the student table in the DB
-                var ret = testDB->update(
-                                      "CREATE TABLE student(id INT, name VARCHAR(255), city VARCHAR(255), gender VARCHAR(255))"
+                //create the StudentDetails table in the DB
+                var ret = StudentDetailsDB->update(
+                                      "CREATE TABLE StudentDetails (id INT, name VARCHAR(255), city VARCHAR(255),
+                                      gender VARCHAR(255))"
                 );
                 handleUpdate(ret, "Create the table");
                 //Error handling for the user inputs
@@ -150,7 +150,7 @@ service<http:Service> contentfilter bind contentfilterEP {
                     string cityString = check <string>msg["city"];
                     string genderString = check <string>msg["gender"];
                     //add values to the student details table
-                    ret = testDB->update("INSERT INTO student(id, name, city, gender) values (?, ?, ?, ?)", Idvalue,
+                    ret = StudentDetailsDB->update("INSERT INTO StudentDetails(id, name, city, gender) values (?, ?, ?, ?)", Idvalue,
                         nameString, cityString, genderString);
                     handleUpdate(ret, "Add details to the table");
                     json iddetails= { id: Idvalue };
@@ -254,11 +254,11 @@ service<http:Service> enricher bind contentenricherEP {
                 //get the student's ID value
                 int Idvalue = check <int>msg["id"];
                 //select details from the data table according to the student's ID
-                var selectRet = testDB->select("SELECT * FROM student", ());
+                var selectRet = StudentDetailsDB->select("SELECT * FROM StudentDetails", ());
                 table dt;
                 match selectRet {
                     table tableReturned => dt = tableReturned;
-                    error e => io:println("Select data from student table failed: "
+                    error e => io:println("Select data from StudentDetails table failed: "
                             + e.message);
                 }
                 //convert the details to a jason file
@@ -273,14 +273,15 @@ service<http:Service> enricher bind contentenricherEP {
                     error e => io:println("Error in student table to json conversion");
                 }
                 //drop the student details table
-                var ret = testDB->update("DROP TABLE student");
+                var ret = StudentDetailsDB->update("DROP TABLE StudentDetails");
                 handleUpdate(ret, "Drop table student");
                 //select student's results from the student results data table, according to the student's ID
-                var selectRet1 = testDB1->select("select Com_Maths,Physics,Chemistry from StudentDetails where ID = ?", (), Idvalue);
+                var selectRet1 = StudentResultsDB->select("select Com_Maths,Physics,Chemistry from StudentResults where ID = ?"
+                    , (), Idvalue);
                 table dt1;
                 match selectRet1 {
                     table tableReturned => dt1 = tableReturned;
-                    error e => io:println("Select data from StudentDetails table failed: "
+                    error e => io:println("Select data from StudentResults table failed: "
                             + e.message);
                 }
                 //convert the details to a jason file
@@ -293,7 +294,6 @@ service<http:Service> enricher bind contentenricherEP {
                     }
                     error e => io:println("Error in StudentDetails table to json conversion");
                 }
-                testDB.stop();
 
                 //JSON to JSON conversion to the selected details
                 //define new jason variable

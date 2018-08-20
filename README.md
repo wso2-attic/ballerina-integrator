@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/sanethmaduranga/eip-message-transformation.svg?branch=master)](https://travis-ci.org/sanethmaduranga/eip-message-transformation.svg?branch=master)
+[![Build Status](https://travis-ci.org/sanethmaduranga/message-transformation---ballerina.svg?branch=master)](https://travis-ci.org/sanethmaduranga/message-transformation---ballerina.svg?branch=master)
 
-# eip-message-transformation
-There are different ways of message transformation methods in EIP (Enterprise Integration Patterns). In this guide, we are focusing on *content filter*, *claim check* and *content enricher* message transformation methods between services using an example scenario.
+# message-transformation---ballerina
+There are different ways of message transformation methods in EIP (Enterprise Integration Patterns). In this guide, we are focusing on 'content filter', 'claim check' and 'content enricher' message transformation methods between services using an example scenario.
 
-> This guide describes implementing three message transformation patterns using Ballerina programming language in simple steps.
+> This guide describes implementing three message transformation patterns using Ballerina programming language as simple steps.
 
 The following are the sections available in this guide.
 
@@ -20,14 +20,14 @@ When it comes to the data communication, the major challenge is formats of stora
 ![alt text](images/messagetrasformation.png)
 
 Also, the message producers and consumers use different techniques according to their requirement. So message transformation plays an important role in coupling those message producers and the message consumers. 
-Not only that, the performance impact while message transformation is also an important fact in the real world. Here we discuss main three message transformation patterns in Enterprise Integration as content filter, content enricher, and claim check.
+Additionally,  the performance impact while message transformation is also an important fact in the real world. Here we discuss main three message transformation patterns in Integration as content filter, content enricher, and claim check.
 
 ### Content filter
 The content filter EIP (Enterprise Integration Pattern) important when we need to manage a large message in order to get a few data from it. It removes unimportant data items from a message and leaves only the important ones. In addition to removing data elements, Content Filter can be used to simplify a message structure.
 
 ![alt text](images/contentfilter.png)
 
-In our sample scenario, input request contains a lot of student's details. So, the content filter is used to simplify the input request so that the request contains only the student ID. Additional data such as student name, student's city, and gender will be dropped to ensure the performance of message transformation.
+In our sample scenario, input request contains a lot of student's details. So content filter uses to simplify the input request such as request contains only student ID. Additional data such as student name, student's city, and gender will be dropped to ensure the performance of message transformation.
 
 ### Content Enricher
 The Content Enricher EIP facilitates communication with another system if the message originator does not have all the required data items available. It accesses an external data source to augment a message with missing information.
@@ -77,7 +77,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 Create the above directories in your local machine and also create empty `.bal` files.
 
-Open the terminal and navigate to `# eip-message-transformation/guide` and run the Ballerina project initializing toolkit.
+Open the terminal and navigate to `message-transformation---ballerina/guide` and run the Ballerina project initializing toolkit.
 
 ```bash
    $ ballerina init
@@ -87,7 +87,7 @@ Open the terminal and navigate to `# eip-message-transformation/guide` and run t
 Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntax.
 We can use the schema of the following database to store the student's data and student's results data.
 
-tsetdb database used to store student's data in student table as below.
+The StudentDetailsDB database is used to store the student's data in the StudentDetails table as shown below
 ``` 
 +---------+--------------+------+-----+---------+-------+
 | Field   | Type         | Null | Key | Default | Extra |
@@ -98,7 +98,7 @@ tsetdb database used to store student's data in student table as below.
 | gender  | varchar(255) | YES  |     | NULL    |       |
 +---------+--------------+------+-----+---------+-------+
 ```
-tsetdb1 database used to store student's results data in StudentDetails table as below.
+The  StudentResultsDB database is used to store the student's results data in the StudentResults as shown below
 
 ``` 
 +-----------+------------+------+-----+---------+-------+
@@ -110,7 +110,7 @@ tsetdb1 database used to store student's results data in StudentDetails table as
 | Chemistry | varchar(1) | YES  |     | NULL    |       |
 +-----------+------------+------+-----+---------+-------+
 ```
-In the below service. it added the student's data through the request. But student's results data must be located in the database as below.
+The student's data is added through the request in the following service. However, the student's result data must be located in the database as shown below.
 ```
 +-----+-----------+---------+-----------+
 | ID  | Com_Maths | Physics | Chemistry |
@@ -531,9 +531,9 @@ Test functions should be annotated with `@test:Config`. See the below example.
    }
 ```
 
-This guide contains unit test case for contentfilter service in [message_transformation_test.bal](https://github.com/sanethmaduranga/eip-message-transformation/blob/master/guide/tests/message_transformation_test.bal) file.
+This guide contains unit test case for contentfilter service in [message_transformation_test.bal](https://github.com/sanethmaduranga/Simple-pass-through-messaging-ballerina-/blob/master/guide/tests/passthrough_test.bal) file.
 
-To run the unit tests, navigate to `eip-message-transformation/guide` and run the following command. 
+To run the unit tests, navigate to `message-transformation---ballerina/guide` and run the following command. 
 
 ```bash
    $ ballerina test
@@ -544,7 +544,7 @@ After the development process, you can deploy the services using below methods b
 
 ### Deploying locally
 
-As the first step, you can build Ballerina executable archives (.balx) of the services that you developed above. Navigate to `eip-message-transformation/guide` and run the following command.
+As the first step, you can build Ballerina executable archives (.balx) of the services that you developed above. Navigate to `message-transformation---ballerina/guide` and run the following command.
 
 ```bash
    $ ballerina build
@@ -565,11 +565,11 @@ The successful execution of a service will show us something similar to the foll
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding Docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in the Docker container.   
+You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in the docker container.   
 
-First, let's see how to configure MySQL in the Docker container.
+First, let's see how to configure MySQL in the docker container.
 
-  * Initially, you need to pull the MySQL Docker image using the below command.
+  * Initially, you need to pull the MySQL docker image using the below command.
 ```
     $docker pull mysql:5.7.22
 ```
@@ -693,7 +693,7 @@ service<http:Service> backend bind backendEP {
 ```
 
  - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to the `eip-message-transformation/guide/` folder and run the following command.
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `message-transformation---ballerina/guide/` folder and run the following command.
 
 ```
    $ballerina build message_transformation
@@ -709,15 +709,15 @@ Generating executable
         docker run -d -p 9090:9090 ballerina.guides.io/message_transformation:v1.0
 ```
 
-- Once you successfully build the Docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
 ```   
    $docker run -d -p 9090:9090 ballerina.guides.io/message_transformation:v1.0
 ```
 
-- Here we run the Docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+- Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
-- Verify Docker container is running with the use of `` $ docker ps``. The status of the Docker container should be shown as 'Up'. 
+- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 
 - You can access the service using the same curl commands that we've used above. 
  
@@ -727,18 +727,18 @@ curl -v http://localhost:9090/contentfilter -d '{"id" : 105, "name" : "ballerina
 
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina program on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina program on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
 Since this guide requires MySQL as a prerequisite, you need a couple of more steps to create a MySQL pod and use it with our sample.  
 
-First, let's look at how we can create a MySQL pod in kubernetes. If you are working with minikube, it will be convenient to use the minikube's in-built Docker daemon and push the MySQL Docker image we are about to build to the minikube's Docker registry. This is because during the next steps, in the case of minikube, the Docker image we build for employee_database_service will also be pushed to minikube's Docker registry. Having both images in the same registry will reduce the configuration steps.
-Run the following command to start using minikube's in-built Docker daemon.
+First, let's look at how we can create a MySQL pod in kubernetes. If you are working with minikube, it will be convenient to use the minikube's in-built docker daemon and push the MySQL docker image we are about to build to the minikube's docker registry. This is because during the next steps, in the case of minikube, the docker image we build for employee_database_service will also be pushed to minikube's docker registry. Having both images in the same registry will reduce the configuration steps.
+Run the following command to start using minikube's in-built docker daemon.
 
 ```bash
 minikube docker-env
 ```
     
-   * Navigate to the eip-message-transformation/resources directory and run the below command.
+   * Navigate to the message-transformation---ballerina/resources directory and run the below command.
 ```
      $docker build -t mysql-ballerina:1.0  .
 ```
@@ -858,7 +858,7 @@ service<http:Service> backend bind backendEP {
 .
 }
 ```
-- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name which will be created as part of building this service. `copyFiles` field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
+- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
 - Please note that if you are using minikube it is required to add the `` dockerHost `` and `` dockerCertPath `` configurations under ``  @kubernetes:Deployment ``.
 eg:
 ``` ballerina
@@ -874,10 +874,10 @@ eg:
 ```
 
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
-- In addition, we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and hostname ``ballerina.guides.io``)
+- In addition, we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and hostname ``ballerina.guides.io``).
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ballerina build message_transformation
@@ -896,7 +896,7 @@ This will also create the corresponding Docker image and the Kubernetes artifact
            kubectl apply -f ./target/message_transformation/kubernetes/
 ```
 
-- You can verify that the Docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
+- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/message_transformation/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
@@ -905,7 +905,7 @@ This will also create the corresponding Docker image and the Kubernetes artifact
 
 ```
 
-- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
+- You can verify if Kubernetes deployment, service and ingress are running properly by using following Kubernetes commands. 
 
 ```
    $kubectl get service
@@ -937,7 +937,7 @@ Access the service
 ```
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc. Refer to [how-to-observe-ballerina-code](https://ballerina.io/learn/how-to-observe-ballerina-code/) for more information.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it.
+However, observability is disabled by default via configuration. Observability can be enabled by adding the following configurations to `ballerina.conf` file and then the ballerina service will start to use it.
 
 ```ballerina
 [b7a.observability]
@@ -983,7 +983,7 @@ Run the Jaeger Docker image using the following command.
    -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-Navigate to `eip-message-transformation/guide` and run the `message_transformation` using following command 
+Navigate to `message-transformation---ballerina/guide` and run the `message_transformation` using following command.
 
 ```
    $ ballerina run message_transformation/
@@ -1030,7 +1030,7 @@ Create a file `prometheus.yml` inside the `/tmp/` location. Add the below config
 
 > **NOTE**: Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
    
-Run the Prometheus Docker image using the following command
+Run the Prometheus docker image using the following command
 
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
@@ -1043,20 +1043,20 @@ You can access Prometheus at the following URL.
    http://localhost:19090/
 ```
 
-> **NOTE**: Ballerina will by default have the following metrics for HTTP server connector. You can enter the following expression in Prometheus UI.
+> **NOTE**: By default, Ballerina has the following metrics for HTTP server connector. You can enter the following expression in Prometheus UI.
 >    -  http_requests_total
 >    -  http_response_time
 
 ### Logging
-Ballerina has a log package for logging to the console. You can import `ballerina/log` package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log package for logging into the console. You can import `ballerina/log` package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-Start the Ballerina service with the following command from `eip-message-transformation/guide`
+Start the Ballerina service with the following command from `message-transformation---ballerina/guide`.
 
 ```
    $ nohup ballerina run message_transformation/ &>> ballerina.log&
 ```
 
-> **NOTE**: This writes the console log to the `ballerina.log` file in the `eip-message-transformation/guide` directory.
+> **NOTE**: This writes the console log to the `ballerina.log` file in the `message-transformation---ballerina/guide` directory.
 
 Start Elasticsearch using the following command.
 
@@ -1074,9 +1074,9 @@ Start Kibana plugin for data visualization with Elasticsearch.
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
 
-Configure logstash to format the Ballerina logs.
+* Configure logstash to format the Ballerina logs.
 
-i) Create a file named `logstash.conf` with the following content.
+     1. Create a file named `logstash.conf` with the following content.
 
 ```
 input {  
@@ -1103,9 +1103,9 @@ output {
 }  
 ```
 
-ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`.
+   2. Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`.
      
-iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
+   3. Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
      
 ```
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
@@ -1113,9 +1113,9 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
   
-Configure filebeat to ship the Ballerina logs.
+* Configure filebeat to ship the Ballerina logs.
     
-i) Create a file named `filebeat.yml` with the following content.
+  1. Create a file named `filebeat.yml` with the following content.
 
 ```
 filebeat.prospectors:
@@ -1128,9 +1128,9 @@ output.logstash:
 
 > **NOTE**: Modify the ownership of `filebeat.yml` file using `$chmod go-w filebeat.yml`.
 
-ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
+  2. Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
         
-iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
+  3. Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
      
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
