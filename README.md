@@ -1,5 +1,6 @@
 # messaging-with-activemq
-In this guide we are focusing on building applications to work with ActiveMQ message broker. In this article, we are guiding on creating oneway JMS producer (one way messaging, aka fire and forget mode) and JMS consumer with ActiveMQ message broker.
+
+In this guide, we are focusing on building applications to work with ActiveMQ message broker. In this article, we are guiding on creating one-way JMS producer (one way messaging, aka fire and forget mode) and JMS consumer with ActiveMQ message broker.
 
 > This guide walks you through the process of describing implementing inter-process communication using Ballerina programming language
 
