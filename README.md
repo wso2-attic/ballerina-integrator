@@ -631,8 +631,6 @@ NOTE: This will write the console log to the ballerina.log file in the inter-mic
 
 - Start Elasticsearch using the following command
 
-- Start Elasticsearch using the following command
-
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
@@ -671,6 +669,7 @@ output {
 }  
 ```
 ii) Save the above logstash.conf inside a directory named as {SAMPLE_ROOT}\pipeline
+
 iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
 
 ```
@@ -691,6 +690,7 @@ output.logstash:
 NOTE : Modify the ownership of filebeat.yml file using $chmod go-w filebeat.yml
 
 ii) Save the above filebeat.yml inside a directory named as {SAMPLE_ROOT}\filebeat
+
 iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
