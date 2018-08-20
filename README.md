@@ -1,3 +1,5 @@
+[![Build Status](https://www.travis-ci.org/tdkmalan/messaging-with-activemq.svg?branch=master)](https://www.travis-ci.org/tdkmalan/messaging-with-activemq.svg?branch=master)
+
 # messaging-with-activemq
 
 In this guide, we are focusing on building applications to work with ActiveMQ message broker. In this article, we are guiding on creating one-way JMS producer (one way messaging, aka fire and forget mode) and JMS consumer with ActiveMQ message broker.
