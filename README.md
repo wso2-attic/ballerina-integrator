@@ -209,7 +209,8 @@ service<http:Service> contentfilter bind contentfilterEP {
             json msg => {
                 //create the StudentDetails table in the DB
                 var ret = StudentDetailsDB->update(
-                     "CREATE TABLE StudentDetails (id INT, name VARCHAR(255), city VARCHAR(255), gender VARCHAR(255))"
+                     "CREATE TABLE StudentDetails (id INT, name VARCHAR(255),
+                     city VARCHAR(255), gender VARCHAR(255))"
                 );
                 handleUpdate(ret, "Create the table");
                 http:Response res = new;
@@ -226,7 +227,8 @@ service<http:Service> contentfilter bind contentfilterEP {
                     string genderString = check <string>msg["gender"];
                     //add values to the student details table
                     ret = StudentDetailsDB->update(
-                             "INSERT INTO StudentDetails(id, name, city, gender) values (?, ?, ?, ?)", IdValue,
+                             "INSERT INTO StudentDetails(id, name, city, gender) 
+                             values (?, ?, ?, ?)", IdValue,
                              nameString, cityString, genderString);
                     handleUpdate(ret, "Add details to the table");
                     json iddetails = { id: IdValue };
@@ -365,9 +367,11 @@ service<http:Service> enricher bind contentenricherEP {
                 //drop the student details table
                 var ret = StudentDetailsDB->update("DROP TABLE StudentDetails");
                 handleUpdate(ret, "Drop table student");
-                //select student's results from the student results data table, according to the student's ID
+                //select student's results from the student results data table, according to 
+                //the student's ID
                 var selectRet1 = StudentResultsDB->select(
-                            "select Com_Maths,Physics,Chemistry from StudentResults where ID = ?", (), Idvalue);
+                            "select Com_Maths,Physics,Chemistry from StudentResults where 
+                            ID = ?", (), Idvalue);
                 table dt1;
                 match selectRet1 {
                     table tableReturned => dt1 = tableReturned;
