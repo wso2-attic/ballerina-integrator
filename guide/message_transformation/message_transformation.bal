@@ -11,7 +11,7 @@ endpoint mysql:Client StudentDetailsDB {
     port: 3306,
     name: "StudentDetailsDB",
     username: "root",
-    password: "wso2123",
+    password: "",
     poolOptions: { maximumPoolSize: 5 },
     dbOptions: { useSSL: false }
 };
@@ -21,7 +21,7 @@ endpoint mysql:Client StudentResultsDB {
     port: 3306,
     name: "StudentResultsDB",
     username: "root",
-    password: "wso2123",
+    password: "",
     poolOptions: { maximumPoolSize: 5 },
     dbOptions: { useSSL: false }
 };
