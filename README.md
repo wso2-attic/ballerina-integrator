@@ -4,7 +4,7 @@
 
 In this guide, we are focusing on building applications to work with ActiveMQ message broker and we are guiding on creating one-way JMS producer (one way messaging, aka fire and forget mode) and JMS consumer with ActiveMQ message broker.
 
-> This guide walks you through the process of describing the implementation using Ballerina programming language
+> This guide walks you through the process of describing the implementation using Ballerina programming language.
 
 The following are the sections available in this guide.
 
@@ -628,7 +628,7 @@ NOTE: Ballerina will by default have following metrics for HTTP server connector
 
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from messaging-with-activemq/guide
+- Start the Ballerina Service with the following command from messaging-with-activemq/guide.
 ```
    $ nohup ballerina run order_accepting_service/ &>> ballerina.log&
    ```
