@@ -33,7 +33,7 @@ A Text Editor or an IDE
 
 
 # Implementation
-If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping "Implementation" section.
+If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping the "Implementation" section.
 
 # Create the project structure
 
@@ -65,7 +65,7 @@ messaging-with-activemq
 ```
 # Developing the service
 
-Let's get start with the implementation of the "order_accepting_service.bal", which acts as a http endpoint which accept request from client and publish messages to a JMS destination. "order_dispatcher_service.bal" process the each message recieve to the Order_Queue and route orders to the destinations queues by considering their message content. "retail_order_process_service.bal" and "wholesale_order_process_service.bal" are listner services for the retail_Queue and Wholesale_Queue.
+Let's get started with the implementation of the "order_accepting_service.bal", which acts as an HTTP endpoint which accepts requests from clients and publishes messages to a JMS destination. "order_dispatcher_service.bal" process each message receive to the Order_Queue and route orders to the destinations queues by considering their message content. "retail_order_process_service.bal" and "wholesale_order_process_service.bal" are listener services for the retail_Queue and Wholesale_Queue.
 
 **order_accepting_service.bal**
 ```ballerina
@@ -386,7 +386,7 @@ Once you are done with the development, you can deploy the services using any of
 
 **Deploying locally**
 
-As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to  messaging-with-activemq/guide and run the following command.
+As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to messaging-with-activemq/guide and run the following command.
 ```ballerina
    $ ballerina build
 ```
@@ -406,7 +406,7 @@ ballerina: initiating service(s) in 'wholesale_order_process_service.balx'
 
 **Deploying on Docker**
 
-You can run the service that we developed above as a docker container. As Ballerina platform includes Ballerina_Docker_Extension, which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires ActiveMQ as a prerequisite, you need a couple of more steps to configure it in docker container.
+You can run the service that we developed above as a Docker container. As Ballerina platform includes Ballerina_Docker_Extension, which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires ActiveMQ as a prerequisite, you need a couple of more steps to configure it in the Docker container.
 
 Please follow bleow steps.
 
@@ -534,11 +534,11 @@ enabled=true
 # Flag to enable Tracing
 enabled=true
 ```
-NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
+NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations, default values are load as the other configuration parameters of metrics and tracing.
 
 # Tracing
 
-- You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use Jaeger as the distributed tracing system. Follow the following steps to use tracing with Ballerina.
+- You can monitor ballerina services using inbuilt tracing capabilities of Ballerina. We'll use Jaeger as the distributed tracing system. Follow the following steps to use tracing with Ballerina.
 
 - You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in ballerina.conf as described above.
 ```
