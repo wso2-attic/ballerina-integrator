@@ -1,4 +1,4 @@
-[![Build Status](https://www.travis-ci.org/tdkmalan/messaging-with-activemq.svg?branch=master)](https://www.travis-ci.org/tdkmalan/messaging-with-activemq.svg?branch=master)
+[![Build Status](https://www.travis-ci.org/tdkmalan/messaging-with-activemq.svg?branch=master)](https://www.travis-ci.org/tdkmalan/messaging-with-activemq)
 
 # messaging-with-activemq
 
