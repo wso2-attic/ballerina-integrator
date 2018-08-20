@@ -1,12 +1,7 @@
 # messaging-with-activemq
+In this guide we are focusing on building applications to work with ActiveMQ message broker. In this article, we are guiding on creating oneway JMS producer (one way messaging, aka fire and forget mode) and JMS consumer with ActiveMQ message broker.
 
-This Guide will illustrate how to configure ballerina services as a JMS producer (one way messaging, aka fire and forget mode) and JMS consumer with ActiveMQ message broker.
-
-Let's consider a real-world scenario where online order management system. Clients can place their orders, then Order accepting ballerina service will place that orders into a message broker queue, then Order dispatcher ballerina service will route them to a difference queues by considering the message content( it will check retail order or wholesale order), then respective ballerina services will consume the messages from each queue.
-
-
-![alt text](https://github.com/tdkmalan/messaging-with-activemq/blob/master/JMS_bal_Service.png)
-
+> This guide walks you through the process of describing implementing inter-process communication using Ballerina programming language
 
 The following are the sections available in this guide.
 
@@ -16,6 +11,13 @@ The following are the sections available in this guide.
 - Testing
 - Deployment
 - Observability
+
+
+# What you'll build
+
+Let's consider a real-world scenario where online order management system. Clients can place their orders, then Order accepting ballerina service will place that orders into a message broker queue, then Order dispatcher ballerina service will route them to a difference queues by considering the message content( it will check retail order or wholesale order), then respective ballerina services will consume the messages from each queue.
+
+![alt text](https://github.com/tdkmalan/messaging-with-activemq/blob/master/JMS_bal_Service.png)
 
 # Prerequisites
 
