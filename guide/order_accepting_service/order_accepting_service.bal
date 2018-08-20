@@ -46,7 +46,6 @@ endpoint jms:QueueSender jmsProducer {
     queueName: "Order_Queue"
 };
 
-
 //@docker:Config {
 //    registry: "ballerina.guides.io",
 //    name: "order_accepting_service.bal",
@@ -60,9 +59,9 @@ endpoint jms:QueueSender jmsProducer {
 //        target: "/ballerina/runtime/bre/lib" }] }
 
 //@docker:Expose {}
-//endpoint http:Listener listener {
-//    port: 9090
-//};
+endpoint http:Listener listener {
+    port: 9090
+};
 
 // Order Accepting Service, which allows users to place order online
 @http:ServiceConfig { basePath: "/placeOrder" }
