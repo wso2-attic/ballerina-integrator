@@ -21,14 +21,7 @@ import ballerina/test;
 
 boolean serviceStarted;
 
-function startService() {
-    serviceStarted = test:startServices("message_transformation");
-}
-
-@test:Config {
-    before: "startService",
-    after: "stopService"
-}
+@test:Config
 
 function testMessageTransformation() {
     // Invoking the main function
@@ -50,8 +43,4 @@ function testMessageTransformation() {
         }
         error err => test:assertFail(msg = "Failed to call the endpoint:");
     }
-}
-
-function stopService() {
-    test:stopServices("message_transformation");
 }
