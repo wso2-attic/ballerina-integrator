@@ -715,7 +715,7 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 ```
 * Configure filebeat to ship the Ballerina logs.
 
-  1. Create a file named `filebeat.yml` with the following content.
+1. Create a file named `filebeat.yml` with the following content.
   
 ```
 filebeat.prospectors:
