@@ -15,7 +15,7 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you’ll build
-When it comes to the data communication, the major challenge is formats of storage mechanisms vary among the systems. 
+When it comes to data communication, the major challenge is formats of storage mechanisms vary among the systems. 
 
 ![alt text](images/messagetrasformation.png)
 
