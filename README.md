@@ -32,6 +32,11 @@ Let's consider a real-world scenario where online order management system. Clien
 After installing the JMS broker, copy its .jar files into the <BALLERINA_HOME>/bre/lib folder
 For ActiveMQ 5.12.0: Copy activemq-client-5.12.0.jar, geronimo-j2ee-management_1.1_spec-1.0.1.jar and hawtbuf-1.11.jar
 
+### Optional Requirements
+- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
+- [Docker](https://docs.docker.com/engine/installation/)
+- [Kubernetes](https://kubernetes.io/docs/setup/)
+
 # Implementation
 If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping the "Implementation" section.
 
