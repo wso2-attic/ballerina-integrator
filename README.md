@@ -77,7 +77,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 Create the above directories in your local machine and also create empty `.bal` files.
 
-Open the terminal and navigate to `message-transformation---ballerina/guide` and run the Ballerina project initializing toolkit.
+Open the terminal and navigate to `eip-message-transformation/guide` and run the Ballerina project initializing toolkit.
 
 ```bash
    $ ballerina init
@@ -562,7 +562,7 @@ Test functions should be annotated with `@test:Config`. See the below example.
 
 This guide contains unit test case for contentfilter service in [message_transformation_test.bal](https://github.com/sanethmaduranga/Simple-pass-through-messaging-ballerina-/blob/master/guide/tests/passthrough_test.bal) file.
 
-To run the unit tests, navigate to `message-transformation---ballerina/guide` and run the following command. 
+To run the unit tests, navigate to `eip-message-transformation/guide` and run the following command. 
 
 ```bash
    $ ballerina test
@@ -573,7 +573,7 @@ After the development process, you can deploy the services using below methods b
 
 ### Deploying locally
 
-As the first step, you can build Ballerina executable archives (.balx) of the services that you developed above. Navigate to `message-transformation---ballerina/guide` and run the following command.
+As the first step, you can build Ballerina executable archives (.balx) of the services that you developed above. Navigate to `eip-message-transformation/guide` and run the following command.
 
 ```bash
    $ ballerina build
@@ -722,7 +722,7 @@ service<http:Service> backend bind backendEP {
 ```
 
  - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `message-transformation---ballerina/guide/` folder and run the following command.
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `eip-message-transformation/guide/` folder and run the following command.
 
 ```
    $ballerina build message_transformation
@@ -767,7 +767,7 @@ Run the following command to start using minikube's in-built docker daemon.
 minikube docker-env
 ```
     
-   * Navigate to the message-transformation---ballerina/resources directory and run the below command.
+   * Navigate to the eip-message-transformation/resources directory and run the below command.
 ```
      $docker build -t mysql-ballerina:1.0  .
 ```
@@ -1012,7 +1012,7 @@ Run the Jaeger Docker image using the following command.
    -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-Navigate to `message-transformation---ballerina/guide` and run the `message_transformation` using following command.
+Navigate to `eip-message-transformation/guide` and run the `message_transformation` using following command.
 
 ```
    $ ballerina run message_transformation/
@@ -1079,13 +1079,13 @@ You can access Prometheus at the following URL.
 ### Logging
 Ballerina has a log package for logging into the console. You can import `ballerina/log` package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-Start the Ballerina service with the following command from `message-transformation---ballerina/guide`.
+Start the Ballerina service with the following command from `eip-message-transformation/guide`.
 
 ```
    $ nohup ballerina run message_transformation/ &>> ballerina.log&
 ```
 
-> **NOTE**: This writes the console log to the `ballerina.log` file in the `message-transformation---ballerina/guide` directory.
+> **NOTE**: This writes the console log to the `ballerina.log` file in the `eip-message-transformation/guide` directory.
 
 Start Elasticsearch using the following command.
 
