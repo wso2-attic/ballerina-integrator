@@ -24,15 +24,13 @@ Let's consider a real-world scenario where online order management system. Clien
 
 # Prerequisites
 
-- Ballerina Distribution
+- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
+- A Text Editor or an IDE 
 - Apache ActiveMQ 5.12.0
 
 **Note -**
 After installing the JMS broker, copy its .jar files into the <BALLERINA_HOME>/bre/lib folder
 For ActiveMQ 5.12.0: Copy activemq-client-5.12.0.jar, geronimo-j2ee-management_1.1_spec-1.0.1.jar and hawtbuf-1.11.jar
-
-A Text Editor or an IDE
-
 
 # Implementation
 If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping the "Implementation" section.
