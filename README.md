@@ -377,6 +377,27 @@ curl -d '{"customerID":"C002","productID":"P002","quantity":"40000","orderType":
 ```
 #### Output
 
+The request receives to the `order_accepting_service` and it will print below log.
+
+```
+ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+2018-08-21 08:17:17,701 INFO  [] - New order added to the JMS Queue; customerID: 'C001', productID: 'P001';
+```
+Order dispatcher service routes the messages.
+```
+2018-08-21 08:16:17,704 INFO  [ballerina/jms] - Message receiver created for queue Order_Queue 
+2018-08-21 08:17:17,703 INFO  [] - New order received from the JMS Queue 
+2018-08-21 08:17:17,704 INFO  [] - validating  Details: {"customerID":"C001","productID":"P001","quantity":"4","orderType":"retail"} 
+2018-08-21 08:17:17,959 INFO  [] - New Retail order added to the Retail JMS Queue 
+```
+Retail order service consumes the message
+```
+ballerina: initiating service(s) in 'retail_order_process_service.bal'
+2018-08-21 08:16:28,586 INFO  [ballerina/jms] - Message receiver created for queue Retail_Queue 
+2018-08-21 08:17:17,956 INFO  [] - New order received from the JMS Queue 
+2018-08-21 08:17:18,173 INFO  [] - New retail order has been processed successfully; Order ID: 'C001', Product ID: 'P001', Quantity: '4'; 
+```
+
 ### Writing unit tests
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'. When writing the test functions the below convention should be followed.
