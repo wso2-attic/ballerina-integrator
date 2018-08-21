@@ -16,13 +16,13 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 
-# What you'll build
+## What you'll build
 
 Let's consider a real-world scenario where online order management system. Clients can place their orders, then Order accepting ballerina service will place that orders into a message broker queue, then Order dispatcher ballerina service will route them to a difference queues by considering the message content( it will check retail order or wholesale order), then respective ballerina services will consume the messages from each queue.
 
 ![alt text](https://github.com/tdkmalan/messaging-with-activemq/blob/master/JMS_bal_Service.png)
 
-# Prerequisites
+## Prerequisites
 
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - A Text Editor or an IDE 
@@ -37,10 +37,10 @@ For ActiveMQ 5.12.0: Copy activemq-client-5.12.0.jar, geronimo-j2ee-management_1
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
 
-# Implementation
+## Implementation
 If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping the "Implementation" section.
 
-# Create the project structure
+### Create the project structure
 
 Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
 
@@ -68,7 +68,7 @@ messaging-with-activemq
 ```ballerina
   $ ballerina init
 ```
-# Developing the service
+### Developing the service
 
 Let's get started with the implementation of the "order_accepting_service.bal", which acts as an HTTP endpoint which accepts requests from clients and publishes messages to a JMS destination. "order_dispatcher_service.bal" process each message receive to the Order_Queue and route orders to the destinations queues by considering their message content. "retail_order_process_service.bal" and "wholesale_order_process_service.bal" are listener services for the retail_Queue and Wholesale_Queue.
 
@@ -350,9 +350,9 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
 
 ```
 
-# Testing
+## Testing
 
-**innvoking the service**
+### invoking the service
 
 - First, start the Apache ActiveMQ server by entering the following command in a terminal from <ActiveMQ_BIN_DIRECTORY>.
 
@@ -375,7 +375,9 @@ curl -d '{"customerID":"C001","productID":"P001","quantity":"4","orderType":"ret
 curl -d '{"customerID":"C002","productID":"P002","quantity":"40000","orderType":"wholesale"}' -H "Content-Type: application/json" -X POST http://localhost:9090/placeOrder/place
  
 ```
-# Writing unit tests
+#### Output
+
+### Writing unit tests
 
 In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'. When writing the test functions the below convention should be followed.
 
@@ -385,11 +387,11 @@ Test functions should be annotated with @test:Config. See the below example.
    @test:Config
    function testResourcePickup() {
 ```
-# Deployment
+## Deployment
 
 Once you are done with the development, you can deploy the services using any of the methods that we listed below.
 
-**Deploying locally**
+### Deploying locally
 
 As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to messaging-with-activemq/guide and run the following command.
 ```ballerina
@@ -409,9 +411,9 @@ ballerina: initiating service(s) in 'retail_order_process_service.balx'
 ballerina: initiating service(s) in 'wholesale_order_process_service.balx'
 ```
 
-**Deploying on Docker**
+### Deploying on Docker
 
-You can run the service that we developed above as a Docker container. As Ballerina platform includes Ballerina_Docker_Extension, which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires ActiveMQ as a prerequisite, you need a couple of more steps to configure it in the Docker container.
+You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires ActiveMQ as a prerequisite, you need a couple of more steps to configure it in the Docker container.
 
 Please follow bleow steps.
 
@@ -524,9 +526,10 @@ docker run -d  ballerina.guides.io/retail_order_process_service.bal:v1.0
 curl -d '{"customerID":"C001","productID":"P001","quantity":"4","orderType":"retail"}' -H "Content-Type: application/json" -X POST http://localhost:9090/placeOrder/place
 ```
 
-# Observability
+## Observability
 
-Ballerina is by default observable. Meaning you can easily observe your services, resources, etc. However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to ballerina.conf file in messaging-with-activemq/guide/.
+Ballerina is by default observable. Meaning you can easily observe your services, resources, etc. Refer to [how-to-observe-ballerina-code](https://ballerina.io/learn/how-to-observe-ballerina-code/) for more information.
+However, observability is disabled by default via configuration. Observability can be enabled by adding the following configurations to `ballerina.conf` file in messaging-with-activemq/guide/ and then the Ballerina service will start to use it.
 
 ```
 [b7a.observability]
@@ -539,13 +542,16 @@ enabled=true
 # Flag to enable Tracing
 enabled=true
 ```
-NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations, default values are load as the other configuration parameters of metrics and tracing.
+> **NOTE**: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations, default values are load as the other configuration parameters of metrics and tracing.
 
-# Tracing
+### Tracing
 
-- You can monitor ballerina services using inbuilt tracing capabilities of Ballerina. We'll use Jaeger as the distributed tracing system. Follow the following steps to use tracing with Ballerina.
+You can monitor Ballerina services using inbuilt tracing capabilities of Ballerina. Let's use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 
-- You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in ballerina.conf as described above.
+Follow the steps below to use tracing with Ballerina.
+
+You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+
 ```
    [b7a.observability]
 
@@ -562,27 +568,27 @@ NOTE: The above configuration is the minimum configuration needed to enable trac
    reporter.log.spans=true
    reporter.max.buffer.spans=1000
    ```
-- Run Jaeger docker image using the following command
+Run Jaeger docker image using the following command
 
 ```
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
-- Navigate to messaging-with-activemq/guide and run the order_accepting_service using following command
+Navigate to `messaging-with-activemq/guide` and run the `order_accepting_service` using following command
 
 ```
    $ ballerina run order_accepting_service/
 ```
-- Observe the tracing using Jaeger UI using following URL
+Observe the tracing using Jaeger UI using following URL
 ```
    http://localhost:16686
 ```
 
-# Metrics
-
+### Metrics
 Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool. Follow the below steps to set up Prometheus and view metrics for order_accepting_service service.
 
-- You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in ballerina.conf as described under Observability section.
+You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in ballerina.conf as described under Observability section.
+
 ```
    [b7a.observability.metrics]
    enabled=true
@@ -598,7 +604,7 @@ Metrics and alerts are built-in with ballerina. We will use Prometheus as the mo
    step="PT1M"
 ```
 
-- Create a file prometheus.yml inside /tmp/ location. Add the below configurations to the prometheus.yml file.
+- Create a file `prometheus.yml` inside `/tmp/ location`. Add the below configurations to the `prometheus.yml` file.
 
 ```
    global:
@@ -610,48 +616,49 @@ Metrics and alerts are built-in with ballerina. We will use Prometheus as the mo
        static_configs:
          - targets: ['172.17.0.1:9797']
 ```
-NOTE : Replace 172.17.0.1 if your local docker IP differs from 172.17.0.1
+> **NOTE** : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
 
-- Run the Prometheus docker image using the following command
+Run the Prometheus docker image using the following command
 
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
 - You can access Prometheus at the following URL
+
 ```
    http://localhost:19090/
 ```
-NOTE: Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+> **NOTE**: By default, Ballerina has the following metrics for HTTP server connector. You can enter the following expression in Prometheus UI.
+>    -  http_requests_total
+>    -  http_response_time
 
-- http_requests_total
-- http_response_time
+### Logging
 
-# Logging
+Ballerina has a log package for logging to the console. You can import `ballerina/log` package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
-
-- Start the Ballerina Service with the following command from messaging-with-activemq/guide.
+Start the Ballerina Service with the following command from `messaging-with-activemq/guide`.
 ```
    $ nohup ballerina run order_accepting_service/ &>> ballerina.log&
-   ```
-NOTE: This will write the console log to the ballerina.log file in the inter-microservice-communicaiton/guide directory
+```
+> **NOTE**:  This will write the console log to the ballerina.log file in the inter-microservice-communicaiton/guide directory.
 
-- Start Elasticsearch using the following command
+Start Elasticsearch using the following command.
 
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
-NOTE: Linux users might need to run sudo sysctl -w vm.max_map_count=262144 to increase vm.max_map_count
+> **NOTE**: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`
 
-- Start Kibana plugin for data visualization with Elasticsearch
+Start Kibana plugin for data visualization with Elasticsearch.
 ```
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
-- Configure logstash to format the ballerina logs
-i) Create a file named ``logstash.conf`` with the following content
+* Configure logstash to format the ballerina logs.
+
+  1. Create a file named `logstash.conf` with the following content.
 ```
 input {  
  beats{ 
@@ -676,17 +683,19 @@ output {
  }  
 }  
 ```
-ii) Save the above logstash.conf inside a directory named as {SAMPLE_ROOT}\pipeline
-
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+2. Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`.
+      
+3. Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
 
 ```
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
-Configure filebeat to ship the ballerina logs
-i) Create a file named filebeat.yml with the following content
+* Configure filebeat to ship the Ballerina logs.
+
+  1. Create a file named `filebeat.yml` with the following content.
+  
 ```
 filebeat.prospectors:
 - type: log
@@ -695,18 +704,20 @@ filebeat.prospectors:
 output.logstash:
   hosts: ["logstash:5044"]  
 ```
-NOTE : Modify the ownership of filebeat.yml file using $chmod go-w filebeat.yml
+> **NOTE**: Modify the ownership of `filebeat.yml` file using `$chmod go-w filebeat.yml`.
 
-ii) Save the above filebeat.yml inside a directory named as {SAMPLE_ROOT}\filebeat
-
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+  2. Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
+        
+  3. Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
+  
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
 -v {SAMPLE_ROOT}/guide/order_accepting_service/ballerina.log:/usr/share\
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
 
-- Access Kibana to visualize the logs using following URL
+Access Kibana to visualize the logs using the following URL.
+
 ```
    http://localhost:5601 
 ```
