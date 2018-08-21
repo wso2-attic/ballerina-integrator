@@ -594,9 +594,9 @@ The successful execution of a service will show us something similar to the foll
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in the docker container.   
+You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in the Docker container.   
 
-First, let's see how to configure MySQL in the docker container.
+First, let's see how to configure MySQL in the Docker container.
 
   * Initially, you need to pull the MySQL docker image using the below command.
 ```
