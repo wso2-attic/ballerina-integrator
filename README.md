@@ -18,7 +18,7 @@ The following are the sections available in this guide.
 
 ## What you'll build
 
-To understand how you can use ActiveMQ message broker with Ballerina programming language, let's consider a real-world use case of an online order management system. Users can place their orders through this system, then Order accepting ballerina service will accept the request and place that orders into a message broker queue, then Order dispatcher ballerina service will route them to a difference queues by considering the message content( it will validate the order type using message content and route the message), then respective ballerina services will consume the messages from each queue.
+To understand how you can use ActiveMQ message broker with Ballerina programming language, let's consider a real-world use case of an online order management system. Users can place their orders through this system, then Order accepting ballerina service will accept the request and place that orders into a message broker queue, then Order dispatcher ballerina service will route them to a difference queues by considering the message content (it will validate the order type using message content and route the message), then respective ballerina services will consume the messages from each queue.
 
 ![alt text](https://github.com/tdkmalan/messaging-with-activemq/blob/master/JMS_bal_Service.png)
 
