@@ -1,3 +1,19 @@
+// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+//
+// WSO2 Inc. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 import ballerina/http;
 import ballerina/io;
 import ballerina/log;
@@ -126,8 +142,8 @@ service<http:Service> contentfilter bind contentfilterEP {
                     string genderString = check <string>msg["gender"];
                     //Add values to the student details table
                     ret = studentDetailsDB->update(
-                             "INSERT INTO StudentDetails(id, name, city, gender) values (?, ?, ?, ?)", IdValue,
-                             nameString, cityString, genderString);
+                         "INSERT INTO StudentDetails(id, name, city, gender) values (?, ?, ?, ?)", IdValue,
+                          nameString, cityString, genderString);
                     handleUpdate(ret, "Add details to the table");
                     json iddetails = { id: IdValue };
                     //Set filtered payload to the request
@@ -267,7 +283,7 @@ service<http:Service> enricher bind contentenricherEP {
                 handleUpdate(ret, "Drop table student");
                 //Select student's results from the student results data table, according to the student's ID
                 var selectRet1 = studentResultsDB->select(
-                            "select Com_Maths,Physics,Chemistry from StudentResults where ID = ?", (), Idvalue);
+                       "select Com_Maths,Physics,Chemistry from StudentResults where ID = ?", (), Idvalue);
                 table dt1;
                 match selectRet1 {
                     table tableReturned => dt1 = tableReturned;
