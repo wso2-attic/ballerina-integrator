@@ -658,7 +658,7 @@ Start Kibana plugin for data visualization with Elasticsearch.
 ```
 * Configure logstash to format the ballerina logs.
 
-  1. Create a file named `logstash.conf` with the following content.
+1. Create a file named `logstash.conf` with the following content.
 ```
 input {  
  beats{ 
