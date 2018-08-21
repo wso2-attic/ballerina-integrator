@@ -29,7 +29,7 @@ Let's consider a real-world scenario where online order management system. Clien
 - Apache ActiveMQ 5.12.0
 
 **Note -**
-After installing the JMS broker, copy its .jar files into the <BALLERINA_HOME>/bre/lib folder
+After installing the JMS broker, copy its .jar files into the <BALLERINA_HOME>/bre/lib folder.
 For ActiveMQ 5.12.0: Copy activemq-client-5.12.0.jar, geronimo-j2ee-management_1.1_spec-1.0.1.jar and hawtbuf-1.11.jar
 
 ### Optional Requirements
@@ -498,7 +498,7 @@ service<http:Service> orderAcceptingService bind listener {
         Order newOrder;
 ```
 
-- You may configure other services the same way as above i.e order_dispatcher_service.bal, wholesale_order_process_service.bal, retail_order_process_service.bal what you may need to change @docker:Config names to the respective services
+- You may configure other services the same way as above i.e order_dispatcher_service.bal, wholesale_order_process_service.bal, retail_order_process_service.bal what you may need to change @docker:Config names to the respective services.
 
 - @docker:Config annotation is used to provide the basic docker image configurations for the sample. @docker:CopyFiles is used to copy the JMS broker jar files into the ballerina bre/lib folder. You can provide multiple files as an array to field files of CopyFiles docker annotation. @docker:Expose {} is used to expose the port.
 
@@ -509,7 +509,7 @@ service<http:Service> orderAcceptingService bind listener {
 ballerina build
 
 ```
-Then run below commands to start docker containers
+Then run below commands to start docker containers.
 
 ```
 docker run -d -p 9090:9090 ballerina.guides.io/order_accepting_service.bal:v1.0
@@ -568,18 +568,18 @@ You can add the following configurations for tracing. Note that these configurat
    reporter.log.spans=true
    reporter.max.buffer.spans=1000
    ```
-Run Jaeger docker image using the following command
+Run Jaeger docker image using the following command.
 
 ```
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
-Navigate to `messaging-with-activemq/guide` and run the `order_accepting_service` using following command
+Navigate to `messaging-with-activemq/guide` and run the `order_accepting_service` using following command.
 
 ```
    $ ballerina run order_accepting_service/
 ```
-Observe the tracing using Jaeger UI using following URL
+Observe the tracing using Jaeger UI using following URL.
 ```
    http://localhost:16686
 ```
@@ -618,7 +618,7 @@ You can add the following configurations for metrics. Note that these configurat
 ```
 > **NOTE** : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
 
-Run the Prometheus docker image using the following command
+Run the Prometheus docker image using the following command.
 
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
