@@ -1,19 +1,3 @@
-// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-//
-// WSO2 Inc. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 import ballerina/http;
 import ballerina/io;
 import ballerina/log;
@@ -21,24 +5,24 @@ import ballerina/mysql;
 //import ballerinax/kubernetes;
 //import ballerinax/docker;
 
-//connect the student details table
-endpoint mysql:Client StudentDetailsDB {
+//Connect the student details table
+endpoint mysql:Client studentDetailsDB {
     host: "localhost",
     port: 3306,
     name: "StudentDetailsDB",
     username: "root",
-    password: "",
+    password: "wso2123",
     poolOptions: { maximumPoolSize: 5 },
     dbOptions: { useSSL: false }
 };
 
-//connect the student's results details table
-endpoint mysql:Client StudentResultsDB {
+//Connect the student's results details table
+endpoint mysql:Client studentResultsDB {
     host: "localhost",
     port: 3306,
     name: "StudentResultsDB",
     username: "root",
-    password: "",
+    password: "wso2123",
     poolOptions: { maximumPoolSize: 5 },
     dbOptions: { useSSL: false }
 };
@@ -84,6 +68,7 @@ endpoint mysql:Client StudentResultsDB {
 //}
 //
 //@docker:Expose {}
+//Define end points lister http ports for the service endpoints
 endpoint http:Listener contentfilterEP {
     port: 9090
 };
@@ -96,7 +81,7 @@ endpoint http:Listener contentenricherEP {
 endpoint http:Listener backendEP {
     port: 9093
 };
-//define endpoints for services
+//Define endpoints for services
 endpoint http:Client validatorEP {
     url: "http://localhost:9094/validate"
 };
@@ -107,11 +92,11 @@ endpoint http:Client clientEP {
     url: "http://localhost:9093/backend"
 };
 
-//define the global variables
+//Define the global variables
 public json payload1;
 public json payload2;
 
-//service for the content filter pattern
+//Service for the content filter pattern
 service<http:Service> contentfilter bind contentfilterEP {
     @http:ResourceConfig {
         methods: ["POST"],
@@ -122,8 +107,8 @@ service<http:Service> contentfilter bind contentfilterEP {
         var jsonMsg = req.getJsonPayload();
         match jsonMsg {
             json msg => {
-                //create the StudentDetails table in the DB
-                var ret = StudentDetailsDB->update(
+                //Create the StudentDetails table in the DB
+                var ret = studentDetailsDB->update(
                      "CREATE TABLE StudentDetails (id INT, name VARCHAR(255), city VARCHAR(255), gender VARCHAR(255))"
                 );
                 handleUpdate(ret, "Create the table");
@@ -139,15 +124,15 @@ service<http:Service> contentfilter bind contentfilterEP {
                     string nameString = check <string>msg["name"];
                     string cityString = check <string>msg["city"];
                     string genderString = check <string>msg["gender"];
-                    //add values to the student details table
-                    ret = StudentDetailsDB->update(
+                    //Add values to the student details table
+                    ret = studentDetailsDB->update(
                              "INSERT INTO StudentDetails(id, name, city, gender) values (?, ?, ?, ?)", IdValue,
                              nameString, cityString, genderString);
                     handleUpdate(ret, "Add details to the table");
                     json iddetails = { id: IdValue };
-                    //set filtered payload to the request
+                    //Set filtered payload to the request
                     filteredReq.setJsonPayload(untaint iddetails);
-                    //forward request to the nesxt ID validating service
+                    //Forward request to the nesxt ID validating service
                     var clientResponse = validatorEP->forward("/", filteredReq);
                     match clientResponse {
                         http:Response response => {
@@ -182,7 +167,7 @@ service<http:Service> contentfilter bind contentfilterEP {
     }
 }
 
-//the student ID validate service
+//The student ID validate service
 service<http:Service> validate bind claimvalidateEP {
     @http:ResourceConfig {
         methods: ["POST"],
@@ -190,7 +175,7 @@ service<http:Service> validate bind claimvalidateEP {
     }
     validate(endpoint caller, http:Request filteredReq) {
         http:Request validatededReq = filteredReq;
-        //get the payload in the request (Student ID)
+        //Get the payload in the request (Student ID)
         var jsonMsg = filteredReq.getJsonPayload();
         match jsonMsg {
             json msg => {
@@ -198,9 +183,9 @@ service<http:Service> validate bind claimvalidateEP {
                 //validate the student's ID
                 //In this example student's ID should be in between 100 to 110
                 if ((100 <= Idvalue) && (Idvalue <= 110))  {
-                    //print the validity
+                    //Print the validity
                     io:println("The  Student ID is succussfully validated");
-                    //forward the request to the enricher service
+                    //Forward the request to the enricher service
                     var clientResponse = enricherEP->forward("/", validatededReq);
                     match clientResponse {
                         http:Response res => {
@@ -256,32 +241,32 @@ service<http:Service> enricher bind contentenricherEP {
         var jsonMsg = validatedReq.getJsonPayload();
         match jsonMsg {
             json msg => {
-                //get the student's ID value
+                //Get the student's ID value
                 int Idvalue = check <int>msg["id"];
-                //select details from the data table according to the student's ID
-                var selectRet = StudentDetailsDB->select("SELECT * FROM StudentDetails", ());
+                //Select details from the data table according to the student's ID
+                var selectRet = studentDetailsDB->select("SELECT * FROM StudentDetails", ());
                 table dt;
                 match selectRet {
                     table tableReturned => dt = tableReturned;
                     error e => io:println("Select data from StudentDetails table failed: "
                             + e.message);
                 }
-                //convert the details to a jason file
+                //Convert the details to a jason file
                 io:println("\nConvert the table into json");
                 var jsonConversionRet = <json>dt;
                 match jsonConversionRet {
                     json jsonRes => {
-                        //set student's details to the global variable
+                        //Set student's details to the global variable
                         payload1 = untaint jsonRes;
                         io:println(payload1);
                     }
                     error e => io:println("Error in student table to json conversion");
                 }
-                //drop the student details table
-                var ret = StudentDetailsDB->update("DROP TABLE StudentDetails");
+                //Drop the student details table
+                var ret = studentDetailsDB->update("DROP TABLE StudentDetails");
                 handleUpdate(ret, "Drop table student");
-                //select student's results from the student results data table, according to the student's ID
-                var selectRet1 = StudentResultsDB->select(
+                //Select student's results from the student results data table, according to the student's ID
+                var selectRet1 = studentResultsDB->select(
                             "select Com_Maths,Physics,Chemistry from StudentResults where ID = ?", (), Idvalue);
                 table dt1;
                 match selectRet1 {
@@ -289,27 +274,27 @@ service<http:Service> enricher bind contentenricherEP {
                     error e => io:println("Select data from StudentResults table failed: "
                             + e.message);
                 }
-                //convert the details to a jason file
+                //Convert the details to a jason file
                 io:println("\nConvert the table into json");
                 var jsonConversionRet1 = <json>dt1;
                 match jsonConversionRet1 {
                     json jsonRes1 => {
-                        //set student's result details to the global variable
+                        //Set student's result details to the global variable
                         payload2 = untaint jsonRes1;
                     }
                     error e => io:println("Error in StudentDetails table to json conversion");
                 }
 
                 //jason to jason conversion to the selected details
-                //define new jason variable
+                //Define new jason variable
                 json pay = payload1[0];
-                //add extra values to the jason payload
+                //Add extra values to the jason payload
                 pay.fname = pay.name;
                 //remove values from the jason payload
                 pay.remove("name");
-                //add results to the same payload
+                //Add results to the same payload
                 pay.results = payload2[0];
-                //set enriched payload to the request
+                //Set enriched payload to the request
                 enrichedReq.setJsonPayload(pay);
             }
             error err => {
@@ -322,7 +307,7 @@ service<http:Service> enricher bind contentenricherEP {
                 };
             }
         }
-        //forward enriched request to the client endpoint
+        //Forward enriched request to the client endpoint
         var clientResponse = clientEP->forward("/", enrichedReq);
         match clientResponse {
             http:Response res => {
@@ -344,18 +329,18 @@ service<http:Service> enricher bind contentenricherEP {
     }
 }
 
-//client endpoint service to display the request payload
+//Client endpoint service to display the request payload
 service<http:Service> backend bind backendEP {
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/"
     }
     backendservice(endpoint caller, http:Request enrichedReq) {
-        //get the requset payload
+        //Get the requset payload
         var jsonMsg = enrichedReq.getJsonPayload();
         match jsonMsg {
             json msg => {
-                //send payload as response
+                //Send payload as response
                 http:Response res = new;
                 res.setJsonPayload(untaint msg);
                 caller->respond(res) but {
@@ -376,9 +361,11 @@ service<http:Service> backend bind backendEP {
     }
 }
 
+//Function to handle the user input
 function checkForValidData(json msg, http:Response res) returns boolean {
     boolean returnError = false;
     error err;
+    //Check input through the regular expressions
     if (!(check msg.id.toString().matches("\\d+"))) {
         err = { message: "student ID containts invalid data" };
         returnError = true;
