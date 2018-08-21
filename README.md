@@ -760,7 +760,7 @@ curl -v http://localhost:9090/contentfilter -d '{"id" : 105, "name" : "ballerina
 
 Since this guide requires MySQL as a prerequisite, you need a couple of more steps to create a MySQL pod and use it with our sample.  
 
-First, let's look at how we can create a MySQL pod in kubernetes. If you are working with minikube, it will be convenient to use the minikube's in-built docker daemon and push the MySQL docker image we are about to build to the minikube's docker registry. This is because during the next steps, in the case of minikube, the docker image we build for employee_database_service will also be pushed to minikube's docker registry. Having both images in the same registry will reduce the configuration steps.
+First, let's look at how we can create a MySQL pod in Kubernetes. If you are working with minikube, it will be convenient to use the minikube's in-built docker daemon and push the MySQL docker image we are about to build to the minikube's docker registry. This is because during the next steps, in the case of minikube, the docker image we build for employee_database_service will also be pushed to minikube's docker registry. Having both images in the same registry will reduce the configuration steps.
 Run the following command to start using minikube's in-built docker daemon.
 
 ```bash
@@ -777,7 +777,7 @@ minikube docker-env
       $kubectl create -f ./kubernetes/
 ```
 
-Now we need to import `` ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
+Now we need to import `` ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable Kubernetes deployment for the service we developed above. 
 
 ##### employee_db_service.bal
 
