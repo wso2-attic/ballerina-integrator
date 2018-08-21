@@ -20,7 +20,7 @@ When it comes to the data communication, the major challenge is formats of stora
 ![alt text](images/messagetrasformation.png)
 
 Also, the message producers and consumers use different techniques according to their requirement. So message transformation plays an important role in coupling those message producers and the message consumers. 
-Additionally,  the performance impact while message transformation is also an important fact in the real world. Here we discuss main three message transformation patterns in Integration as content filter, content enricher, and claim check.
+Additionally, the performance impact while message transformation is also an important fact in the real world. Here we discuss main three message transformation patterns in Integration as content filter, content enricher, and claim check.
 
 ### Content filter
 The content filter EIP (Enterprise Integration Pattern) important when we need to manage a large message in order to get a few data from it. It removes unimportant data items from a message and leaves only the important ones. In addition to removing data elements, Content Filter can be used to simplify a message structure.
