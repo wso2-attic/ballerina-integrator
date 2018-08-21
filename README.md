@@ -670,7 +670,7 @@ endpoint mysql:Client testDB1 {
 endpoint http:Listener contentfilterEP {
     port:9090
 };
-endpoint http:Listener claimvaditadeEP {
+endpoint http:Listener claimvalidateEP {
     port:9094
 };
 endpoint http:Listener contentenricherEP {
@@ -680,8 +680,8 @@ endpoint http:Listener backendEP {
     port:9093
 };
 //define endpoints for services
-endpoint http:Client validatorEP {
-    url: "http://localhost:9094/validator"
+endpoint http:Client validateEP {
+    url: "http://localhost:9094/validate"
 };
 endpoint http:Client enricherEP {
     url: "http://localhost:9092/enricher"
@@ -698,8 +698,8 @@ service<http:Service> contentfilter bind contentfilterEP {
 .
 .
 }
-//the student ID validator service
-service<http:Service> validator bind claimvaditadeEP {
+//the student ID validate service
+service<http:Service> validate bind claimvaditadeEP {
 .
 .
 }
@@ -779,7 +779,7 @@ minikube docker-env
 
 Now we need to import `` ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable Kubernetes deployment for the service we developed above. 
 
-##### employee_db_service.bal
+##### message_transformation.bal
 
 ```ballerina
 import ballerina/http;
@@ -821,7 +821,7 @@ endpoint mysql:Client testDB1 {
 }
 @kubernetes:Service {
     serviceType:"NodePort",
-    name:"validator"
+    name:"validate"
 }
 @kubernetes:Service {
     serviceType:"NodePort",
@@ -852,8 +852,8 @@ endpoint http:Listener backendEP {
     port:9093
 };
 //define endpoints for services
-endpoint http:Client validatorEP {
-    url: "http://localhost:9094/validator"
+endpoint http:Client validateEP {
+    url: "http://localhost:9094/validate"
 };
 endpoint http:Client enricherEP {
     url: "http://localhost:9092/enricher"
@@ -871,8 +871,8 @@ service<http:Service> contentfilter bind contentfilterEP {
 .
 .
 }
-//the student ID validator service
-service<http:Service> validator bind claimvaditadeEP {
+//the student ID validate service
+service<http:Service> validate bind claimvaditadeEP {
 .
 .
 }
