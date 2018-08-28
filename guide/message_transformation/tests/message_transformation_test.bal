@@ -17,22 +17,10 @@
 import ballerina/http;
 import ballerina/test;
 
-boolean serviceStarted;
-
-function startService() {
-    serviceStarted = test:startServices("message_transformation");
-}
-
-@test:Config {
-    before: "startService",
-    after: "stopService"
-}
-
+@test:Config {}
 function testMessageTransformation() {
     // Invoking the main function
     endpoint http:Client httpEndpoint { url: "http://localhost:9090" };
-    // Chck whether the server is started
-    test:assertTrue(serviceStarted, msg = "Unable to start the service");
     json payload = { "id": 105, "name": "saneth", "city": "Colombo 03", "gender": "male" };
     json response1 = { "id": 105, "city": "Colombo 03", "gender": "male", "fname": "saneth",
         "results": { "Com_Maths": "A", "Physics": "B", "Chemistry": "C" } };
@@ -48,8 +36,4 @@ function testMessageTransformation() {
         }
         error err => test:assertFail(msg = "Failed to call the endpoint:");
     }
-}
-
-function stopService() {
-    test:stopServices("message_transformation");
 }
