@@ -67,11 +67,10 @@ Ballerina is a complete programming language that supports custom project struct
 
 ```
  └── guide
-     ├── message_transformation
-     │   └── message_transformation.bal
-     │  
-     └── tests
-         └── message_transformation_test.bal
+     └── message_transformation
+         └── message_transformation.bal
+         └── tests
+             └── message_transformation_test.bal
 
 ```
 
