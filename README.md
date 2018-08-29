@@ -86,7 +86,7 @@ Open the terminal and navigate to `eip-message-transformation/guide` and run the
 Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntax.
 We can use the schema of the following database to store the student's data and student's results data.
 
-The StudentDetailsDB database is used to store the student's data in the StudentDetails table as shown below
+The StudentDetailsDB database is used to store the student's data in the StudentDetails table as shown below,
 ``` 
 +---------+--------------+------+-----+---------+-------+
 | Field   | Type         | Null | Key | Default | Extra |
@@ -97,7 +97,7 @@ The StudentDetailsDB database is used to store the student's data in the Student
 | gender  | varchar(255) | YES  |     | NULL    |       |
 +---------+--------------+------+-----+---------+-------+
 ```
-The  StudentResultsDB database is used to store the student's results data in the StudentResults as shown below
+The  StudentResultsDB database is used to store the student's results data in the StudentResults as shown below,
 
 ``` 
 +-----------+------------+------+-----+---------+-------+
@@ -109,7 +109,7 @@ The  StudentResultsDB database is used to store the student's results data in th
 | Chemistry | varchar(1) | YES  |     | NULL    |       |
 +-----------+------------+------+-----+---------+-------+
 ```
-The student's data is added through the request in the following service. However, the student's result data must be located in the database as shown below.
+The student's data is added through the request in the following service. However, the student's result data must be located in the database as shown below,
 ```
 +-----+-----------+---------+-----------+
 | ID  | Com_Maths | Physics | Chemistry |
@@ -130,7 +130,7 @@ The student's data is added through the request in the following service. Howeve
 
 To implement the scenario, let's start by implementing the message_transformation.bal file, which is the main file in the implementation. This file includes 4 main services as contentfilter, validate, enricher, and backend. Refer to the code attached below. Inline comments are added for better understanding.
 
-> In the below service you have to change below configurations according to your mysql configuration details, 
+> In the below service you have to change below configurations according to your MySQL configuration details, 
 >```
 >   host: "localhost",
 >   port: 3306,
@@ -593,7 +593,7 @@ The successful execution of a service will show us something similar to the foll
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in the Docker container.   
+You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running Ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires MySQL as a prerequisite, you need a couple of more steps to configure MySQL in the Docker container.   
 
 First, let's see how to configure MySQL in the Docker container.
 
