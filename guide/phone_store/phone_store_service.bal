@@ -20,57 +20,54 @@ import ballerina/log;
 
 //Deploying on kubernetes
 
-//import ballerinax/kubernetes;
+//import ballerinax /kubernetes;
 
-// Type definition for a phone order
+//Type definition for a phone order
 //json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
-// 'jms:Connection' definition
-// 'jms:Session' definition
-// 'jms:QueueSender' endpoint definition
+//'jms:Connection' definition
+//'jms:Session' definition
+//'jms:QueueSender' endpoint definition
 
 //@kubernetes:Ingress {
-//hostname:"ballerina.guides.io",
-//name:"ballerina-guides-phone_store_service",
-//path:"/"
+//    hostname: "ballerina.guides.io",
+//    name: "ballerina-guides-phone_store_service",
+//    path: "/"
 //}
 
 //@kubernetes:Service {
-//serviceType:"NodePort",
-//name:"ballerina-guides-phone_store_service"
+//    serviceType: "NodePort",
+//    name: "ballerina-guides-phone_store_service"
 //}
 
 //@kubernetes:Deployment {
-//image:"ballerina.guides.io/phone_store_service:v1.0",
-//name:"ballerina-guides-phone_store_service"
+//    image: "ballerina.guides.io/phone_store_service:v1.0",
+//    name: "ballerina-guides-phone_store_service"
 //}
 
 //endpoint http:Listener listener {
-//port:9090
+//    port: 9090
 //};
 
 //Deploying on docker
 
-//import ballerinax/docker;
+//import ballerinax /docker;
 
-// Type definition for a phone order
+//Type definition for a phone order
 //json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
-// 'jms:Connection' definition
-// 'jms:Session' definition
-// 'jms:QueueSender' endpoint definition
+//'jms:Connection' definition
+//'jms:Session' definition
+//'jms:QueueSender' endpoint definition
 
 //@docker:Config {
-//registry:"ballerina.guides.io",
-//name:"phone_store_service",
-//tag:"v1.0",
-//baseImage:"ballerina/ballerina-platform:0.980.0"
+//    registry: "ballerina.guides.io",
+//    name: "phone_store_service",
+//    tag: "v1.0",
+//    baseImage: "ballerina/ballerina-platform:0.980.0"
 //}
 
 //Service endpoint
-//@docker:Expose{}
+//@docker:Expose {}
 
-//endpoint http:Listener listener {
-//port:9090
-//};
 
 // Type definition for a phone order
 type PhoneOrder record {

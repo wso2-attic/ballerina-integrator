@@ -21,57 +21,54 @@ import ballerina/log;
 
 //Deploying on kubernetes
 
-//import ballerinax/kubernetes;
+//import ballerinax /kubernetes;
 
-// Type definition for a Deliver order
+//Type definition for a Deliver order
 //json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
-// 'jms:Connection' definition
-// 'jms:Session' definition
-// 'jms:QueueSender' endpoint definition
+//'jms:Connection' definition
+//'jms:Session' definition
+//'jms:QueueSender' endpoint definition
 
 //@kubernetes:Ingress {
-//hostname:"ballerina.guides.io",
-//name:"ballerina-guides-phone_order_delivery_service",
-//path:"/"
+//    hostname: "ballerina.guides.io",
+//    name: "ballerina-guides-phone_order_delivery_service",
+//    path: "/"
 //}
 
 //@kubernetes:Service {
-//serviceType:"NodePort",
-//name:"ballerina-guides-phone_order_delivery_service"
+//    serviceType: "NodePort",
+//    name: "ballerina-guides-phone_order_delivery_service"
 //}
 
 //@kubernetes:Deployment {
-//image:"ballerina.guides.io/phone_store_service:v1.0",
-//name:"ballerina-guides-phone_order_delivery_service"
+//    image: "ballerina.guides.io/phone_store_service:v1.0",
+//    name: "ballerina-guides-phone_order_delivery_service"
 //}
 
 //endpoint http:Listener listener {
-//port:9091
+//    port: 9091
 //};
 
 //Deploying on docker
 
-//import ballerinax/docker;
+//import ballerinax /docker;
 
-// Type definition for a  Deliver order
+//Type definition for a Deliver order
 //json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
-// 'jms:Connection' definition
-// 'jms:Session' definition
-// 'jms:QueueSender' endpoint definition
+//'jms:Connection' definition
+//'jms:Session' definition
+//'jms:QueueSender' endpoint definition
 
 //@docker:Config {
-//registry:"ballerina.guides.io",
-//name:"phone_order_delivery_service",
-//tag:"v1.0",
-//baseImage:"ballerina/ballerina-platform:0.980.0"
+//    registry: "ballerina.guides.io",
+//    name: "phone_order_delivery_service",
+//    tag: "v1.0",
+//    baseImage: "ballerina/ballerina-platform:0.980.0"
 //}
 
-// Service endpoint
-//@docker:Expose{}
+//Service endpoint
+//@docker:Expose {}
 
-//endpoint http:Listener listener {
-//port:9091
-//};
 
 
 type PhoneDeliver record {

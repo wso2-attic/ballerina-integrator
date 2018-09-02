@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a1848cc9-5859-4a79-a976-6d7a0e194568" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/guide/phone_order_delivery_service/phone_order_delivery_service.bal" beforeDir="false" afterPath="$PROJECT_DIR$/guide/phone_order_delivery_service/phone_order_delivery_service.bal" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/guide/phone_store/phone_store_service.bal" beforeDir="false" afterPath="$PROJECT_DIR$/guide/phone_store/phone_store_service.bal" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,30 +17,30 @@
       <file leaf-file-name="phone_order_delivery_service.bal" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/guide/phone_order_delivery_service/phone_order_delivery_service.bal">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="642">
-              <caret line="206" lean-forward="true" selection-start-line="76" selection-end-line="206" />
+            <state relative-caret-position="374">
+              <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="71" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="phone_store_service.bal" pinned="false" current-in-tab="false">
+      <file leaf-file-name="phone_store_service.bal" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/guide/phone_store/phone_store_service.bal">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="642">
-              <caret line="239" lean-forward="true" selection-start-line="74" selection-end-line="239" />
+            <state relative-caret-position="462">
+              <caret line="69" selection-start-line="69" selection-end-line="69" />
               <folding>
-                <marker date="1535902030488" expanded="true" signature="1745:1894" ph="..." />
+                <marker date="1535904172004" expanded="true" signature="1779:1948" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="647">
-                <caret line="740" column="23" selection-start-line="740" selection-start-column="23" selection-end-line="740" selection-end-column="23" />
+              <first_editor relative-caret-position="97">
+                <caret line="476" column="3" lean-forward="true" selection-start-line="476" selection-start-column="3" selection-end-line="476" selection-end-column="3" />
               </first_editor>
               <second_editor />
             </state>
@@ -77,10 +78,10 @@
       <find>jmsConnection</find>
       <find>sendDelivery</find>
       <find>resPayload</find>
-      <find>placeOrder</find>
-      <find>deliveryDetails</find>
       <find>boo</find>
       <find>book</find>
+      <find>placeOrder</find>
+      <find>deliveryDetails</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -91,9 +92,9 @@
       <list>
         <option value="$PROJECT_DIR$/guide/phone_order_delivery_service/test/phone_order_delivery_test.bal" />
         <option value="$PROJECT_DIR$/guide/phone_store/test/phone_store_service_test.bal" />
-        <option value="$PROJECT_DIR$/guide/phone_order_delivery_service/phone_order_delivery_service.bal" />
-        <option value="$PROJECT_DIR$/guide/phone_store/phone_store_service.bal" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/guide/phone_store/phone_store_service.bal" />
+        <option value="$PROJECT_DIR$/guide/phone_order_delivery_service/phone_order_delivery_service.bal" />
       </list>
     </option>
   </component>
@@ -281,7 +282,7 @@
         <state relative-caret-position="66">
           <caret line="3" column="2" selection-start-line="3" selection-start-column="2" selection-end-line="3" selection-end-column="2" />
           <folding>
-            <marker date="1535902030488" expanded="true" signature="1745:1894" ph="..." />
+            <marker date="1535904172004" expanded="true" signature="1779:1948" ph="..." />
           </folding>
         </state>
       </provider>
@@ -300,30 +301,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/guide/phone_store/phone_store_service.bal">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="642">
-          <caret line="239" lean-forward="true" selection-start-line="74" selection-end-line="239" />
-          <folding>
-            <marker date="1535902030488" expanded="true" signature="1745:1894" ph="..." />
-          </folding>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="97">
+            <caret line="476" column="3" lean-forward="true" selection-start-line="476" selection-start-column="3" selection-end-line="476" selection-end-column="3" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/guide/phone_order_delivery_service/phone_order_delivery_service.bal">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="642">
-          <caret line="206" lean-forward="true" selection-start-line="76" selection-end-line="206" />
+        <state relative-caret-position="374">
+          <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="71" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="FIRST">
-          <first_editor relative-caret-position="647">
-            <caret line="740" column="23" selection-start-line="740" selection-start-column="23" selection-end-line="740" selection-end-column="23" />
-          </first_editor>
-          <second_editor />
+    <entry file="file://$PROJECT_DIR$/guide/phone_store/phone_store_service.bal">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="462">
+          <caret line="69" selection-start-line="69" selection-end-line="69" />
+          <folding>
+            <marker date="1535904172004" expanded="true" signature="1779:1948" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
