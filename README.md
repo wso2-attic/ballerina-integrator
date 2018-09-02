@@ -667,6 +667,10 @@ service<http:Service> phone_store_service bind listener {
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
+If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
+- `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
+- `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
+
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
@@ -687,10 +691,8 @@ service<http:Service> phone_store_service bind listener {
   
    Run following command to deploy kubernetes artifacts:  
    kubectl apply -f ./target/phone_order_delivery_service/kubernetes
-  
-   
+    
 ```
-
 - Use the docker images command to verify whether the Docker image that you specified in `@kubernetes:Deployment` was created 
 - Shall we rephrase this to "The Kubernetes artifacts related to the service are generated in `` ./target/phone_order_delivery_service/kubernetes`` directories."
 - Now you can create the Kubernetes deployment using:
@@ -731,6 +733,23 @@ Node Port:
 Ingress:
 
 Add `/etc/hosts` entry to match hostname. 
+``` 
+   127.0.0.1 ballerina.guides.io
+```
+If you are using Minikube, you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
+```bash
+    $ minikube ip
+    192.168.99.100
+
+    $ kubectl get services
+    NAME                               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+    ballerina-guides-phone_store_service   NodePort    10.100.0.22   <none>        9090:30659/TCP   3h
+```
+The endpoint URL for the above case would be as follows: `http://192.168.99.100:30659/phonestore/placeOrder`
+
+Ingress:
+
+Add `/etc/hosts` entry to match hostname. For Minikube, the IP address should be the IP address of the cluster.
 ``` 
    127.0.0.1 ballerina.guides.io
 ```
