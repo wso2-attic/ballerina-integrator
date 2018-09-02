@@ -623,6 +623,8 @@ service code. Also, it will take care of the creation of the Docker images. So y
 
 - Now let's see how we can deploy the `phone_store_service` on Kubernetes. We need to import `` ballerinax/kubernetes `` and use ``@kubernetes``annotations as shown below to enable kubernetes deployment.
 
+> NOTE: Linux users can use Minikube to try this out locally
+
 #####  phone_store_service.bal
 
 ```ballerina
@@ -730,12 +732,6 @@ Node Port:
    "http://localhost:9090/phonestore/placeOrder" -H "Content-Type:application/json"  
 ```
 
-Ingress:
-
-Add `/etc/hosts` entry to match hostname. 
-``` 
-   127.0.0.1 ballerina.guides.io
-```
 If you are using Minikube, you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
 ```bash
     $ minikube ip
@@ -753,7 +749,6 @@ Add `/etc/hosts` entry to match hostname. For Minikube, the IP address should be
 ``` 
    127.0.0.1 ballerina.guides.io
 ```
-
 Access the service 
 ```bash
     curl -v -X POST -d \
