@@ -44,10 +44,6 @@ import ballerina/log;
 //    name: "ballerina-guides-phone_store_service"
 //}
 
-//endpoint http:Listener listener {
-//    port: 9090
-//};
-
 //Deploying on docker
 
 //import ballerinax /docker;
