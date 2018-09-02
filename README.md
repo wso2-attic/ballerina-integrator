@@ -84,14 +84,12 @@ Refer to the code attached below. Inline comments added for better understanding
 ##### phone_store_service.bal
 
 ```ballerina
-import ballerina/log;
 import ballerina/http;
 import ballerina/jms;
-
-public http:Request backendreq;
+import ballerina/log;
 
 // Type definition for a phone order
-type phoneOrder record {
+type PhoneOrder record {
     string customerName;
     string address;
     string contactNumber;
@@ -104,38 +102,41 @@ json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:4
 // Initialize a JMS connection with the provider
 // 'providerUrl' and 'initialContextFactory' vary based on the JMS provider you use
 // 'Apache ActiveMQ' has been used as the message broker in this example
-jms:Connection jmsConnection = new({
+jms:Connection orderQueueJmsConnectionSend = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
     });
-
 // Initialize a JMS session on top of the created connection
-jms:Session jmsSession = new(jmsConnection, {
+jms:Session orderQueueJmsSessionSend = new(orderQueueJmsConnectionSend, {
         acknowledgementMode: "AUTO_ACKNOWLEDGE"
     });
-
 // Initialize a queue sender using the created session
-endpoint jms:QueueSender jmsProducer {
-    session:jmsSession,
-    queueName:"OrderQueue"
+endpoint jms:QueueSender jmsProducerOrderQueue {
+    session: orderQueueJmsSessionSend,
+    queueName: "OrderQueue"
 };
-
 // Service endpoint
 endpoint http:Listener listener {
-    port:9090
+    port: 9090
 };
 
-// phone store service, which allows users to order phones online for delivery
-@http:ServiceConfig {basePath:"/phonestore"}
-service<http:Service> phone_store_service bind listener {
-    // Resource that allows users to place an order for a phone
-    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"],
-        produces: ["application/json"] }
+//backendreq used to obtain details of order queue
+public http:Request backendreq;
 
+// phone store service, which allows users to order phones online for delivery
+@http:ServiceConfig { basePath: "/phonestore" }
+service<http:Service> phoneStoreService bind listener {
+    // Resource that allows users to place an order for a phone
+    @http:ResourceConfig {
+        methods: ["POST"],
+        consumes: ["application/json"],
+        produces: ["application/json"]
+    }
     placeOrder(endpoint caller, http:Request request) {
-        backendreq= untaint request;
+
+        backendreq = untaint request;
         http:Response response;
-        phoneOrder newOrder;
+        PhoneOrder newOrder;
         json reqPayload;
 
         // Try parsing the JSON payload from the request
@@ -145,12 +146,11 @@ service<http:Service> phone_store_service bind listener {
             // NOT a valid JSON payload
             any => {
                 response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
+                response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+                _ = caller->respond(response);
                 done;
             }
         }
-
         json name = reqPayload.Name;
         json address = reqPayload.Address;
         json contact = reqPayload.ContactNumber;
@@ -159,11 +159,10 @@ service<http:Service> phone_store_service bind listener {
         // If payload parsing fails, send a "Bad Request" message as the response
         if (name == null || address == null || contact == null || phoneName == null) {
             response.statusCode = 400;
-            response.setJsonPayload({"Message":"Bad Request - Invalid payload"});
-            _ = caller -> respond(response);
+            response.setJsonPayload({ "Message": "Bad Request - Invalid payload" });
+            _ = caller->respond(response);
             done;
         }
-
         // Order details
         newOrder.customerName = name.toString();
         newOrder.address = address.toString();
@@ -179,67 +178,58 @@ service<http:Service> phone_store_service bind listener {
                 break;
             }
         }
-
         json responseMessage;
         // If the requested phone is available, then add the order to the 'OrderQueue'
         if (isPhoneAvailable) {
             var phoneOrderDetails = check <json>newOrder;
             // Create a JMS message
-            jms:Message queueMessage = check jmsSession.createTextMessage(phoneOrderDetails.toString());
-
+            jms:Message queueMessage = check orderQueueJmsSessionSend.createTextMessage(phoneOrderDetails.toString());
 
             log:printInfo("order will be added to the order  Queue; CustomerName: '" + newOrder.customerName +
                     "', OrderedPhone: '" + newOrder.orderedPhoneName + "';");
 
-
             // Send the message to the JMS queue
-            _ = jmsProducer -> send(queueMessage);
-
+            _ = jmsProducerOrderQueue->send(queueMessage);
 
             // Construct a success message for the response
-            responseMessage = {"Message":"Your order is successfully placed. Ordered phone will be delivered soon"};
-
+            responseMessage = { "Message": "Your order was successfully placed. Ordered phone will be delivered soon" };
         }
         else {
             // If phone is not available, construct a proper response message to notify user
-            responseMessage = {"Message":"Requested phone not available"};
+            responseMessage = { "Message": "Requested phone not available" };
         }
 
         // Send response to the user
         response.setJsonPayload(responseMessage);
-        _ = caller -> respond(response);
+        _ = caller->respond(response);
     }
-
     // Resource that allows users to get a list of all the available phones
-    @http:ResourceConfig {methods:["GET"], produces:["application/json"]}
+    @http:ResourceConfig { methods: ["GET"], produces: ["application/json"] }
     getPhoneList(endpoint client, http:Request request) {
         http:Response response;
         // Send json array 'phoneInventory' as the response, which contains all the available phones
         response.setJsonPayload(phoneInventory);
-        _ = client -> respond(response);
+        _ = client->respond(response);
     }
 }
-jms:Connection conn = new({
+jms:Connection orderQueueJmsConnectionRecieve = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
     });
 
 // Initialize a JMS session on top of the created connection
-jms:Session jmsSession2 = new(conn, {
+jms:Session orderQueueJmsSessionRecieve = new(orderQueueJmsConnectionRecieve, {
         // Optional property. Defaults to AUTO_ACKNOWLEDGE
         acknowledgementMode: "AUTO_ACKNOWLEDGE"
     });
-
 // Initialize a queue receiver using the created session
-
-endpoint jms:QueueReceiver jmsConsumer {
-    session:jmsSession2,
-    queueName:"OrderQueue"
+endpoint jms:QueueReceiver jmsConsumerOrderQueue {
+    session: orderQueueJmsSessionRecieve,
+    queueName: "OrderQueue"
 };
-
 // JMS service that consumes messages from the JMS queue
 // Bind the created consumer to the listener service
-service<jms:Consumer> orderDeliverySystem bind jmsConsumer {
+service<jms:Consumer> orderDeliverySystem bind jmsConsumerOrderQueue {
     // Triggered whenever an order is added to the 'OrderQueue'
     onMessage(endpoint consumer, jms:Message message) {
         log:printInfo("New order successfilly received from the Order Queue");
@@ -247,22 +237,23 @@ service<jms:Consumer> orderDeliverySystem bind jmsConsumer {
         string stringPayload = check message.getTextMessageContent();
         log:printInfo("Order Details: " + stringPayload);
 
+        //send order queue details to delivery queue
         http:Request enrichedreq = backendreq;
         var clientResponse = phone_order_delivery_serviceEP->forward("/", enrichedreq);
         match clientResponse {
             http:Response res => {
-                log:printInfo("Order Details have sent to phone_order_delivery_service.");
+                log:printInfo("Order details were sent to phone_order_delivery_service.");
             }
             error err => {
-                log:printInfo("forward error..................");
+                log:printError("Order details were not sent to phone_order_delivery_service.");
             }
         }
     }
 }
-
 endpoint http:Client phone_order_delivery_serviceEP {
     url: "http://localhost:9091/deliveryDetails/sendDelivery"
 };
+
 
 ```
 Now let's consider the implementation of `order_delivery_service.bal` which acts as the message Replier.
@@ -270,68 +261,63 @@ Now let's consider the implementation of `order_delivery_service.bal` which acts
 #### order_delivery_service.bal
 
 ```ballerina
-import ballerina/log;
 import ballerina/http;
 import ballerina/jms;
+import ballerina/log;
 
-type phoneDeliver record {
+type PhoneDeliver record {
     string customerName;
     string address;
     string contactNumber;
     string deliveryPhoneName;
 };
-
 json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
 
-jms:Connection jmsConnection = new({
+jms:Connection DeliveryQueueJmsConnectionSend = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
     });
-
 // Initialize a queue sender using the created session
-endpoint jms:QueueSender jmsProducer2 {
-    session:jmsSession,
-    queueName:"DeliveryQueue"
+endpoint jms:QueueSender jmsProducerDeliveryQueue {
+    session: DeliveryQueueJmsSessionSend,
+    queueName: "DeliveryQueue"
 };
-
 // Initialize a JMS session on top of the created connection
-jms:Session jmsSession = new(jmsConnection, {
+jms:Session DeliveryQueueJmsSessionSend = new(DeliveryQueueJmsConnectionSend, {
         acknowledgementMode: "AUTO_ACKNOWLEDGE"
     });
-
 // Service endpoint
 endpoint http:Listener deliveryEP {
-    port:9091
+    port: 9091
 };
 
-@http:ServiceConfig {basePath:"/deliveryDetails"}
-
+@http:ServiceConfig { basePath: "/deliveryDetails" }
 // phone store service, which allows users to order phones online for delivery
-service<http:Service> phone_order_delivery_service bind deliveryEP {
+service<http:Service> phoneOrderDeliveryService bind deliveryEP {
     // Resource that allows users to place an order for a phone
-    @http:ResourceConfig { consumes: ["application/json"],
-        produces: ["application/json"] }
-
+    @http:ResourceConfig {
+        consumes: ["application/json"],
+        produces: ["application/json"]
+    }
     sendDelivery(endpoint caller, http:Request enrichedreq) {
         http:Response response;
-        phoneDeliver newDeliver;
+        PhoneDeliver newDeliver;
         json reqPayload;
 
-        log:printInfo(" Order Details have received from phone_store_service");
+        log:printInfo(" Received order details from the phone store service");
 
         // Try parsing the JSON payload from the request
-        match  enrichedreq.getJsonPayload() {
+        match enrichedreq.getJsonPayload() {
             // Valid JSON payload
             json payload => reqPayload = payload;
             // NOT a valid JSON payload
             any => {
                 response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
+                response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+                _ = caller->respond(response);
                 done;
             }
         }
-
         json name = reqPayload.Name;
         json address = reqPayload.Address;
         json contact = reqPayload.ContactNumber;
@@ -340,11 +326,10 @@ service<http:Service> phone_order_delivery_service bind deliveryEP {
         // If payload parsing fails, send a "Bad Request" message as the response
         if (name == null || address == null || contact == null || phoneName == null) {
             response.statusCode = 400;
-            response.setJsonPayload({"Message":"Bad Request - Invalid payload"});
-            _ = caller -> respond(response);
+            response.setJsonPayload({ "Message": "Bad Request - Invalid payload" });
+            _ = caller->respond(response);
             done;
         }
-
         // Order details
         newDeliver.customerName = name.toString();
         newDeliver.address = address.toString();
@@ -360,62 +345,57 @@ service<http:Service> phone_order_delivery_service bind deliveryEP {
                 break;
             }
         }
-
         json responseMessage;
         // If the requested phone is available, then add the order to the 'OrderQueue'
         if (isPhoneAvailable) {
             var phoneDeliverDetails = check <json>newDeliver;
             // Create a JMS message
 
-            jms:Message queueMessage2 = check jmsSession.createTextMessage(phoneDeliverDetails.toString());
+            jms:Message queueMessage2 = check DeliveryQueueJmsSessionSend.createTextMessage(phoneDeliverDetails.toString
+                ());
 
-            log:printInfo("order Delivery details  added to the delivery  Queue; CustomerName: '" + newDeliver.customerName +
+            log:printInfo("Order delivery details added to the delivery queue'; CustomerName: '" + newDeliver.
+                    customerName +
                     "', OrderedPhone: '" + newDeliver.deliveryPhoneName + "';");
-
             // Send the message to the JMS queue
-            _ = jmsProducer2 -> send(queueMessage2);
-
+            _ = jmsProducerDeliveryQueue->send(queueMessage2);
             // Construct a success message for the response
-            responseMessage = {"Message":"Your order is successfully placed. Ordered phone will be delivered soon"};
+            responseMessage = { "Message": "Your order was successfully placed. Ordered phone will be delivered soon" };
         }
         else {
             // If phone is not available, construct a proper response message to notify user
-            responseMessage = {"Message":"Requested phone not available"};
+            responseMessage = { "Message": "Requested phone not available" };
         }
-
         // Send response to the user
         response.setJsonPayload(responseMessage);
-        _ = caller -> respond(response);
+        _ = caller->respond(response);
     }
 }
-
-jms:Connection conn = new({
+jms:Connection DeliveryQueueJmsConnectionReceive = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
     });
-
 // Initialize a JMS session on top of the created connection
-jms:Session jmsSession2 = new(conn, {
+jms:Session DeliveryQueueJmsSessionReceive = new(DeliveryQueueJmsConnectionReceive, {
         // Optional property. Defaults to AUTO_ACKNOWLEDGE
         acknowledgementMode: "AUTO_ACKNOWLEDGE"
     });
-
 // Initialize a queue receiver using the created session
-endpoint jms:QueueReceiver jmsConsumer2 {
-    session:jmsSession2,
-    queueName:"DeliveryQueue"
+endpoint jms:QueueReceiver jmsConsumerDeliveryQueue {
+    session: DeliveryQueueJmsSessionReceive,
+    queueName: "DeliveryQueue"
 };
-service<jms:Consumer> deliverySystem bind jmsConsumer2 {
+service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
     // Triggered whenever an order is added to the 'OrderQueue'
     onMessage(endpoint consumer, jms:Message message2) {
         log:printInfo("New order successfilly received from the Delivery Queue");
         // Retrieve the string payload using native function
         string stringPayload2 = check message2.getTextMessageContent();
-        log:printInfo("Delivery Details: " + stringPayload2);
-
-        log:printInfo(" Delivery Details sent to the customer successfully");
+        log:printInfo("Delivery details: " + stringPayload2);
+        log:printInfo(" Delivery details sent to the customer successfully");
     }
 }
+
 ```
 
 
