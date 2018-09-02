@@ -22,7 +22,7 @@ import ballerina/test;
 
 function testResourceOrderDelivey() {
 
-    endpoint http:Client httpEndpoint3 { url:"http://localhost:9091/deliveryDetails" };
+    endpoint http:Client httpEndpoint3 { url: "http://localhost:9091/deliveryDetails" };
     // Initialize the empty http request
     http:Request req;
     // Construct a request payload
@@ -39,6 +39,6 @@ function testResourceOrderDelivey() {
     test:assertEquals(response.statusCode, 200, msg = "phonestore service did not respond with 200 OK signal!");
     // Check whether the response is as expected
     json resPayload = check response.getJsonPayload();
-    json expected = { "Message": "Your order is successfully placed. Ordered phone will be delivered soon" };
+    json expected = { "Message": "Your order was successfully placed. Ordered phone will be delivered soon" };
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
 }

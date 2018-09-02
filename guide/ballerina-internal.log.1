@@ -1,0 +1,139 @@
+[2018-09-02 17:33:19,616] ERROR {org.ballerinalang.net.jms.LoggingExceptionListener} - Connection exception received. 
+javax.jms.JMSException: java.io.EOFException
+	at org.apache.activemq.util.JMSExceptionSupport.create(JMSExceptionSupport.java:54)
+	at org.apache.activemq.ActiveMQConnection.onAsyncException(ActiveMQConnection.java:1952)
+	at org.apache.activemq.ActiveMQConnection.onException(ActiveMQConnection.java:1971)
+	at org.apache.activemq.transport.TransportFilter.onException(TransportFilter.java:114)
+	at org.apache.activemq.transport.ResponseCorrelator.onException(ResponseCorrelator.java:126)
+	at org.apache.activemq.transport.TransportFilter.onException(TransportFilter.java:114)
+	at org.apache.activemq.transport.TransportFilter.onException(TransportFilter.java:114)
+	at org.apache.activemq.transport.WireFormatNegotiator.onException(WireFormatNegotiator.java:173)
+	at org.apache.activemq.transport.AbstractInactivityMonitor.onException(AbstractInactivityMonitor.java:345)
+	at org.apache.activemq.transport.TransportSupport.onException(TransportSupport.java:96)
+	at org.apache.activemq.transport.tcp.TcpTransport.run(TcpTransport.java:219)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.io.EOFException
+	at java.io.DataInputStream.readInt(DataInputStream.java:392)
+	at org.apache.activemq.openwire.OpenWireFormat.unmarshal(OpenWireFormat.java:268)
+	at org.apache.activemq.transport.tcp.TcpTransport.readCommand(TcpTransport.java:240)
+	at org.apache.activemq.transport.tcp.TcpTransport.doRun(TcpTransport.java:232)
+	at org.apache.activemq.transport.tcp.TcpTransport.run(TcpTransport.java:215)
+	... 1 more
+ 
+[2018-09-02 17:33:19,625] ERROR {org.ballerinalang.net.jms.LoggingExceptionListener} - Connection exception received. 
+javax.jms.JMSException: java.io.EOFException
+	at org.apache.activemq.util.JMSExceptionSupport.create(JMSExceptionSupport.java:54)
+	at org.apache.activemq.ActiveMQConnection.onAsyncException(ActiveMQConnection.java:1952)
+	at org.apache.activemq.ActiveMQConnection.onException(ActiveMQConnection.java:1971)
+	at org.apache.activemq.transport.TransportFilter.onException(TransportFilter.java:114)
+	at org.apache.activemq.transport.ResponseCorrelator.onException(ResponseCorrelator.java:126)
+	at org.apache.activemq.transport.TransportFilter.onException(TransportFilter.java:114)
+	at org.apache.activemq.transport.TransportFilter.onException(TransportFilter.java:114)
+	at org.apache.activemq.transport.WireFormatNegotiator.onException(WireFormatNegotiator.java:173)
+	at org.apache.activemq.transport.AbstractInactivityMonitor.onException(AbstractInactivityMonitor.java:345)
+	at org.apache.activemq.transport.TransportSupport.onException(TransportSupport.java:96)
+	at org.apache.activemq.transport.tcp.TcpTransport.run(TcpTransport.java:219)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.io.EOFException
+	at java.io.DataInputStream.readInt(DataInputStream.java:392)
+	at org.apache.activemq.openwire.OpenWireFormat.unmarshal(OpenWireFormat.java:268)
+	at org.apache.activemq.transport.tcp.TcpTransport.readCommand(TcpTransport.java:240)
+	at org.apache.activemq.transport.tcp.TcpTransport.doRun(TcpTransport.java:232)
+	at org.apache.activemq.transport.tcp.TcpTransport.run(TcpTransport.java:215)
+	... 1 more
+ 
+[2018-09-02 17:40:55,040] ERROR {org.ballerinalang.net.jms.utils.BallerinaAdapter} - Failed to create message. 
+javax.jms.IllegalStateException: The Session is closed
+	at org.apache.activemq.ActiveMQSession.checkClosed(ActiveMQSession.java:771)
+	at org.apache.activemq.ActiveMQSession.configureMessage(ActiveMQSession.java:759)
+	at org.apache.activemq.ActiveMQSession.createTextMessage(ActiveMQSession.java:440)
+	at org.ballerinalang.net.jms.nativeimpl.endpoint.session.CreateTextMessage.execute(CreateTextMessage.java:74)
+	at org.ballerinalang.util.program.BLangFunctions.invokeNativeCallable(BLangFunctions.java:389)
+	at org.ballerinalang.util.program.BLangFunctions.invokeCallable(BLangFunctions.java:260)
+	at org.ballerinalang.bre.bvm.CPU.invokeVirtualFunction(CPU.java:2888)
+	at org.ballerinalang.bre.bvm.CPU.tryExec(CPU.java:419)
+	at org.ballerinalang.bre.bvm.CPU.exec(CPU.java:153)
+	at org.ballerinalang.bre.bvm.BLangScheduler$WorkerExecutor.run(BLangScheduler.java:256)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2018-09-02 17:40:55,044] ERROR {org.ballerinalang.net.http.HttpUtil} - call failed  
+[2018-09-02 17:41:35,152] ERROR {org.ballerinalang.net.jms.utils.BallerinaAdapter} - Failed to create message. 
+javax.jms.IllegalStateException: The Session is closed
+	at org.apache.activemq.ActiveMQSession.checkClosed(ActiveMQSession.java:771)
+	at org.apache.activemq.ActiveMQSession.configureMessage(ActiveMQSession.java:759)
+	at org.apache.activemq.ActiveMQSession.createTextMessage(ActiveMQSession.java:440)
+	at org.ballerinalang.net.jms.nativeimpl.endpoint.session.CreateTextMessage.execute(CreateTextMessage.java:74)
+	at org.ballerinalang.util.program.BLangFunctions.invokeNativeCallable(BLangFunctions.java:389)
+	at org.ballerinalang.util.program.BLangFunctions.invokeCallable(BLangFunctions.java:260)
+	at org.ballerinalang.bre.bvm.CPU.invokeVirtualFunction(CPU.java:2888)
+	at org.ballerinalang.bre.bvm.CPU.tryExec(CPU.java:419)
+	at org.ballerinalang.bre.bvm.CPU.exec(CPU.java:153)
+	at org.ballerinalang.bre.bvm.BLangScheduler$WorkerExecutor.run(BLangScheduler.java:256)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2018-09-02 17:41:35,154] ERROR {org.ballerinalang.net.http.HttpUtil} - call failed  
+[2018-09-02 17:43:27,123] ERROR {org.ballerinalang.net.jms.utils.BallerinaAdapter} - Failed to create message. 
+javax.jms.IllegalStateException: The Session is closed
+	at org.apache.activemq.ActiveMQSession.checkClosed(ActiveMQSession.java:771)
+	at org.apache.activemq.ActiveMQSession.configureMessage(ActiveMQSession.java:759)
+	at org.apache.activemq.ActiveMQSession.createTextMessage(ActiveMQSession.java:440)
+	at org.ballerinalang.net.jms.nativeimpl.endpoint.session.CreateTextMessage.execute(CreateTextMessage.java:74)
+	at org.ballerinalang.util.program.BLangFunctions.invokeNativeCallable(BLangFunctions.java:389)
+	at org.ballerinalang.util.program.BLangFunctions.invokeCallable(BLangFunctions.java:260)
+	at org.ballerinalang.bre.bvm.CPU.invokeVirtualFunction(CPU.java:2888)
+	at org.ballerinalang.bre.bvm.CPU.tryExec(CPU.java:419)
+	at org.ballerinalang.bre.bvm.CPU.exec(CPU.java:153)
+	at org.ballerinalang.bre.bvm.BLangScheduler$WorkerExecutor.run(BLangScheduler.java:256)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2018-09-02 17:43:27,125] ERROR {org.ballerinalang.net.http.HttpUtil} - call failed  
+[2018-09-02 17:44:24,127] ERROR {org.ballerinalang.net.jms.utils.BallerinaAdapter} - Failed to create message. 
+javax.jms.IllegalStateException: The Session is closed
+	at org.apache.activemq.ActiveMQSession.checkClosed(ActiveMQSession.java:771)
+	at org.apache.activemq.ActiveMQSession.configureMessage(ActiveMQSession.java:759)
+	at org.apache.activemq.ActiveMQSession.createTextMessage(ActiveMQSession.java:440)
+	at org.ballerinalang.net.jms.nativeimpl.endpoint.session.CreateTextMessage.execute(CreateTextMessage.java:74)
+	at org.ballerinalang.util.program.BLangFunctions.invokeNativeCallable(BLangFunctions.java:389)
+	at org.ballerinalang.util.program.BLangFunctions.invokeCallable(BLangFunctions.java:260)
+	at org.ballerinalang.bre.bvm.CPU.invokeVirtualFunction(CPU.java:2888)
+	at org.ballerinalang.bre.bvm.CPU.tryExec(CPU.java:419)
+	at org.ballerinalang.bre.bvm.CPU.exec(CPU.java:153)
+	at org.ballerinalang.bre.bvm.BLangScheduler$WorkerExecutor.run(BLangScheduler.java:256)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2018-09-02 17:44:24,128] ERROR {org.ballerinalang.net.http.HttpUtil} - call failed  
+[2018-09-02 17:45:35,145] ERROR {org.ballerinalang.net.jms.utils.BallerinaAdapter} - Failed to create message. 
+javax.jms.IllegalStateException: The Session is closed
+	at org.apache.activemq.ActiveMQSession.checkClosed(ActiveMQSession.java:771)
+	at org.apache.activemq.ActiveMQSession.configureMessage(ActiveMQSession.java:759)
+	at org.apache.activemq.ActiveMQSession.createTextMessage(ActiveMQSession.java:440)
+	at org.ballerinalang.net.jms.nativeimpl.endpoint.session.CreateTextMessage.execute(CreateTextMessage.java:74)
+	at org.ballerinalang.util.program.BLangFunctions.invokeNativeCallable(BLangFunctions.java:389)
+	at org.ballerinalang.util.program.BLangFunctions.invokeCallable(BLangFunctions.java:260)
+	at org.ballerinalang.bre.bvm.CPU.invokeVirtualFunction(CPU.java:2888)
+	at org.ballerinalang.bre.bvm.CPU.tryExec(CPU.java:419)
+	at org.ballerinalang.bre.bvm.CPU.exec(CPU.java:153)
+	at org.ballerinalang.bre.bvm.BLangScheduler$WorkerExecutor.run(BLangScheduler.java:256)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2018-09-02 17:45:35,146] ERROR {org.ballerinalang.net.http.HttpUtil} - call failed  

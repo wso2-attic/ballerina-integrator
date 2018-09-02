@@ -2,11 +2,11 @@
 
 # Message Construction Patterns
 
-Message construction patterns describes the creation of message content that travel across the messaging system.Java Message 
-Service (JMS) is used to send messages between two or more clients. JMS supports two models: point-to-point model and 
-publish/subscribe model. 
+Message construction patterns describe the creation of message content that travel across messaging systems.It involves the architectural patterns of various constructs, functions, and activities involved in creating and transforming a message between applications.
 
-A JMS synchronous invocation takes place when a JMS producer receives a response to a JMS request produced by it when invoked.
+Java Message Service (JMS) is used to send messages between two or more clients. JMS supports two models: point-to-point model and 
+publish/subscribe model. A JMS synchronous invocation takes place when a JMS producer receives a response to a JMS request produced by it when invoked.
+
 This is a simple example of how to use messaging, implemented in JMS. It shows how to implement Request-Reply, where a requestor application sends a request, a replier application receives the request and returns a reply, and the requestor receives the reply. 
 
 > This guide walks you through the process of using Ballerina to message construction with JMS queues using a message broker.
@@ -22,12 +22,12 @@ The following are the sections available in this guide.
 
 ## What you’ll build
 To understand how you can use JMS queues for messaging, let's consider a real-world use case of a phone store service using which a user can order phones for home delivery. This scenario contains two services.
-- phone_store_service : A Message Endpoint that sends a request message and waits to receive a reply message as a response.
-- phone_order_delivery_service : A Message Endpoint that waits to receive the request message; when it does, it responds by sending the reply message.
+- `phone_store_service` : A Message Endpoint that sends a request message and waits to receive a reply message as a response.
+- `phone_order_delivery_service` : A Message Endpoint that waits to receive the request message; when it does, it responds by sending the reply message.
 
-Once an order is placed, the phone_store_service will add it to a JMS queue named "OrderQueue" if the order is valid. Hence, this phonestore service acts as the message requestor. And phone_order_delivery_service, which acts as the message replier   and gets the order details whenever the queue becomes populated and forward them to delivery queue using phone_order_delivery_service.
+Once an order is placed, the `phone_store_service` will add it to a JMS queue named `OrderQueue` if the order is valid. Hence, this `phone_store_service` acts as the message requestor. And `phone_order_delivery_service`, which acts as the message replier and gets the order details whenever the queue becomes populated and forward them to `DeliveryQueue` using `phone_order_delivery_service`.
 
-As this usecase based on message construction patterns , the scenario use Request-Reply with a pair of Point-to-Point Channels. The request is a Command Message whereas the reply is a Document Message that contains the function's return value or exception.The below diagram illustrates this use case.
+As this use case is based on message construction patterns, the scenario uses Request-Reply with a pair of Point-to-Point Channels. The request is a Command Message whereas the reply is a Document Message that contains the function's return value or exception.The below diagram illustrates this use case.
 
 ![alt text](/images/message_construction_patterns.png)
 
@@ -39,13 +39,13 @@ Producer.
 ## Prerequisites
  
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A JMS Broker (Example: [Apache ActiveMQ](http://activemq.apache.org/getting-started.html))
+- A JMS Broker (e.g.: [Apache ActiveMQ](http://activemq.apache.org/getting-started.html))
   * After installing the JMS broker, copy its .jar files into the `<BALLERINA_HOME>/bre/lib` folder
     * For ActiveMQ 5.15.4: Copy `activemq-client-5.15.4.jar`, `geronimo-j2ee-management_1.1_spec-1.0.1.jar` and `hawtbuf-1.11.jar`
 - A Text Editor or an IDE 
 
 ### Optional Requirements
-- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
+- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
 
@@ -55,7 +55,7 @@ Producer.
 
 ### Create the project structure
 
-Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
+Ballerina is an integration language that supports custom project structures. Use the following package structure for this guide.
 ```
 message_construction_patterns
  └── guide
@@ -70,7 +70,7 @@ message_construction_patterns
 
 ```
 
-- Create the above directories in your local machine and also create empty `.bal` files
+- Create the above directories in your local machine and initialize a Ballerina project.
 
 - Then open the terminal and navigate to `message_construction_patterns/guide` and run Ballerina project initializing toolkit.
 ```bash
@@ -78,7 +78,7 @@ message_construction_patterns
 ```
 ### Developing the service
 
-Let's get started with the implementation of the phone_store_service, which acts as the message Requestor. 
+Let's get started with the implementation of the `phone_store_service`, which acts as the message Requestor. 
 Refer to the code attached below. Inline comments added for better understanding.
 
 ##### phone_store_service.bal
@@ -265,7 +265,7 @@ endpoint http:Client phone_order_delivery_serviceEP {
 };
 
 ```
-Now let's consider the implementation of order_delivery_service.bal which acts as the message Replier.
+Now let's consider the implementation of `order_delivery_service.bal` which acts as the message Replier.
 
 #### order_delivery_service.bal
 
@@ -444,7 +444,7 @@ service<jms:Consumer> deliverySystem bind jmsConsumer2 {
    curl -v -X GET localhost:9090/phonestore/getPhoneList
 ```
 
-  The phone_store_service sends a response similar to the following.
+  The `phone_store_service` sends a response similar to the following.
 ```
    < HTTP/1.1 200 OK
    ["Apple:190000","Samsung:150000","Nokia:80000","HTC:40000","Huawei:100000"]
@@ -460,10 +460,10 @@ service<jms:Consumer> deliverySystem bind jmsConsumer2 {
    
 ```
 
-  The bookstoreService sends a response similar to the following.
+  The `phone_store_service`e sends a response similar to the following.
 ```
    < HTTP/1.1 200 OK
-   {"Message":"Your order is successfully placed. Ordered book will be delivered soon"} 
+   {"Message":"Your order was successfully placed. Ordered book will be delivered soon"} 
 ```
 
   Sample Log Messages:
@@ -496,7 +496,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
    function testResourcePlaceOrder() {
 ```
   
-This guide contains unit test cases for each resource available in the 'bookstore_service' implemented above. 
+This guide contains unit test cases for each resource available in the `phone_store_service` implemented above. 
 
 To run the unit tests, navigate to `message_construction_patterns/guide` and run the following command. 
 ```bash
@@ -533,7 +533,7 @@ As the first step, you can build Ballerina executable archives (.balx) of the se
 ### Deploying on Docker
 
 You can run the service that we developed above as a Docker container.
-As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers,
+As ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers,
 you just need to add the corresponding Docker annotations to your service code.
 Since this guide requires `ActiveMQ` as a prerequisite, you need a couple of more steps to configure it in a Docker container.   
 
@@ -619,7 +619,7 @@ Similar to the `phone_store_service.bal`, We define the `@docker:Config` and `@d
 
    Here we run the Docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
-- Verify docker container is running with the use of `` $ docker ps``. The status of the Docker container should be shown as 'Up'. 
+- Verify Docker container is running with the use of `` $ docker ps``. The status of the Docker container should be shown as 'Up'. 
 
 - You can access the service using the same curl commands that we've used above.
 ```bash
@@ -641,7 +641,7 @@ service code. Also, it will take care of the creation of the Docker images. So y
    $ kubectl create -f ./kubernetes/
 ```
 
-- Now let's see how we can deploy the `phone_store_service` on Kubernetes. We need to import `` ballerinax/kubernetes; `` and use ``@kubernetes``annotations as shown below to enable kubernetes deployment.
+- Now let's see how we can deploy the `phone_store_service` on Kubernetes. We need to import `` ballerinax/kubernetes `` and use ``@kubernetes``annotations as shown below to enable kubernetes deployment.
 
 #####  phone_store_service.bal
 
@@ -711,8 +711,8 @@ service<http:Service> phone_store_service bind listener {
    
 ```
 
-- You can verify that the Docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
-- Also the Kubernetes artifacts related our service, will be generated under `` ./target/phone_store_service/kubernetes`` and ``/target/phone_order_delivery_service/kubernetes``. 
+- Use the docker images command to verify whether the Docker image that you specified in `@kubernetes:Deployment` was created 
+- Shall we rephrase this to "The Kubernetes artifacts related to the service are generated in `` ./target/phone_order_delivery_service/kubernetes`` directories."
 - Now you can create the Kubernetes deployment using:
 
 ```bash
@@ -738,7 +738,7 @@ service<http:Service> phone_store_service bind listener {
    $ kubectl get ingress
 ```
 
-- If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
+- "If all artifacts are successfully deployed, you can invoke the service either via Node port or ingress. 
 
 Node Port:
 ```bash
