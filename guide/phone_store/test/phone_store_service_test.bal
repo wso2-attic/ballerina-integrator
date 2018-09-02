@@ -25,7 +25,7 @@ function testResourceGetPhoneList() {
     http:Request req;
 
     // Send a 'get' request and obtain the response
-    http:Response response = check httpEndpoint->get("/getPhoneList", message = req);
+    http:Response response = check httpEndpoint->get("/getPhoneList");
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200, msg = "phonestore service did not respond with 200 OK signal!");
     // Check whether the response is as expected
