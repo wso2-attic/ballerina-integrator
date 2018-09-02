@@ -438,7 +438,7 @@ service<jms:Consumer> deliverySystem bind jmsConsumer2 {
    $ ballerina run order_delivery_system
 ```
    
-- Invoke the `phone_store_service` by sending a GET request to check the available books.
+- Invoke the `phone_store_service` by sending a GET request to check the available phones.
 
 ```bash
    curl -v -X GET localhost:9090/phonestore/getPhoneList
@@ -463,7 +463,7 @@ service<jms:Consumer> deliverySystem bind jmsConsumer2 {
   The `phone_store_service`e sends a response similar to the following.
 ```
    < HTTP/1.1 200 OK
-   {"Message":"Your order was successfully placed. Ordered book will be delivered soon"} 
+   {"Message":"Your order was successfully placed. Ordered phone will be delivered soon"} 
 ```
 
   Sample Log Messages:
@@ -573,7 +573,7 @@ json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:4
 
 @docker:Config {
     registry:"ballerina.guides.io",
-    name:"bookstore_service",
+    name:"phone_store_service",
     tag:"v1.0"
 }
 
@@ -824,7 +824,7 @@ Follow the following steps to use tracing with Ballerina.
 ```
 ### Metrics
 Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Prometheus and view metrics for bookstore_service service.
+Follow the below steps to set up Prometheus and view metrics for phone_store_service service.
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
 
