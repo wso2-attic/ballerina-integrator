@@ -64,7 +64,6 @@ import ballerina/log;
 //Service endpoint
 //@docker:Expose {}
 
-
 // Type definition for a phone order
 type PhoneOrder record {
     string customerName;
