@@ -19,9 +19,7 @@ import ballerina/test;
 
 // Function to test 'placeOrder' resource
 @test:Config
-
 function testResourceOrderDelivey() {
-
     endpoint http:Client httpEndpoint3 { url: "http://localhost:9091/deliveryDetails" };
     // Initialize the empty http request
     http:Request req;
