@@ -457,11 +457,11 @@ service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
 
   Received order details from phone_store_service.
   
-  INFO  [phone_order_delivery_service] - order Delivery details  added to the delivery  Queue; CustomerName: 'Bob', OrderedPhone: 'Apple:190000'; 
+  INFO  [phone_order_delivery_service] - Order delivery details  added to the delivery  Queue; CustomerName: 'Bob', OrderedPhone: 'Apple:190000'; 
   INFO  [phone_order_delivery_service] - New order successfilly received from the Delivery Queue 
-  INFO  [phone_order_delivery_service] - Order Details: {"customerName":"Bob","address":"20, Palm Grove, Colombo, Sri Lanka","contactNumber":"+94777123456","orderedPhoneName":"Apple:190000"} 
+  INFO  [phone_order_delivery_service] - Order details: {"customerName":"Bob","address":"20, Palm Grove, Colombo, Sri Lanka","contactNumber":"+94777123456","orderedPhoneName":"Apple:190000"} 
   
- Delivery Details sent to the customer successfully
+ Delivery details sent to the customer successfully
  
 ```
 
