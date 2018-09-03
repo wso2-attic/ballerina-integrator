@@ -58,7 +58,6 @@ import ballerina/log;
 //    tag: "v1.0",
 //    baseImage: "ballerina/ballerina-platform:0.980.0"
 //}
-
 //Service endpoint
 //@docker:Expose {}
 
