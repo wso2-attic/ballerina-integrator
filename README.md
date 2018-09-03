@@ -538,16 +538,11 @@ Now let's see how we can deploy the `phone_store_service` and `phone_order_deliv
 ##### phone_store_service.bal
 ```ballerina
 import ballerinax/docker;
-// Other imports
 
 // Type definition for a phone order
-
 json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
-
 // 'jms:Connection' definition
-
 // 'jms:Session' definition
-
 // 'jms:QueueSender' endpoint definition
 
 @docker:Config {
@@ -556,12 +551,10 @@ json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:4
     tag:"v1.0"
 }
 
-
 @docker:Expose{}
 endpoint http:Listener listener {
     port:9090
 };
-
 
 @http:ServiceConfig {basePath:"/phonestore"}
 service<http:Service> phone_store_service bind listener {
@@ -628,16 +621,11 @@ service code. Also, it will take care of the creation of the Docker images. So y
 
 ```ballerina
 import ballerinax/kubernetes;
-// Other imports
 
 // Type definition for a phone order
-
 json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
-
 // 'jms:Connection' definition
-
 // 'jms:Session' definition
-
 // 'jms:QueueSender' endpoint definition
 
 @kubernetes:Ingress {
@@ -720,7 +708,6 @@ If you are using Minikube, you need to set a couple of additional attributes to 
    $ kubectl get pods
    $ kubectl get ingress
 ```
-
 - "If all artifacts are successfully deployed, you can invoke the service either via Node port or ingress. 
 
 Node Port:
@@ -730,7 +717,6 @@ Node Port:
    "ContactNumber":"+94718930874", "PhoneName":"Apple:190000"}' \
    "http://localhost:9090/phonestore/placeOrder" -H "Content-Type:application/json"  
 ```
-
 If you are using Minikube, you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
 ```bash
     $ minikube ip
