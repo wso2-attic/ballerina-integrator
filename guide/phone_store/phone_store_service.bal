@@ -216,7 +216,7 @@ service<jms:Consumer> orderDeliverySystem bind jmsConsumerOrderQueue {
 
         //send order queue details to delivery queue
         http:Request enrichedreq = backendreq;
-        var clientResponse = phone_order_delivery_serviceEP->forward("/", enrichedreq);
+        var clientResponse = phoneOrderDeliveryServiceEP->forward("/", enrichedreq);
         match clientResponse {
             http:Response res => {
                 log:printInfo("Order details were sent to phone_order_delivery_service.");
@@ -227,6 +227,6 @@ service<jms:Consumer> orderDeliverySystem bind jmsConsumerOrderQueue {
         }
     }
 }
-endpoint http:Client phone_order_delivery_serviceEP {
+endpoint http:Client phoneOrderDeliveryServiceEP {
     url: "http://localhost:9091/deliveryDetails/sendDelivery"
 };
