@@ -455,7 +455,7 @@ service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
   
   Order details were sent to phone_order_delivery_service
 
-  Order Details have received from phone_store_service
+  Received order details from phone_store_service.
   
   INFO  [phone_order_delivery_service] - order Delivery details  added to the delivery  Queue; CustomerName: 'Bob', OrderedPhone: 'Apple:190000'; 
   INFO  [phone_order_delivery_service] - New order successfilly received from the Delivery Queue 
