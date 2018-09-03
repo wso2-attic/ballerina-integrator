@@ -62,8 +62,6 @@ import ballerina/log;
 //Service endpoint
 //@docker:Expose {}
 
-
-
 type PhoneDeliver record {
     string customerName;
     string address;
