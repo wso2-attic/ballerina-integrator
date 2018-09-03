@@ -64,7 +64,7 @@ message_construction_patterns
       │    └── tests
       │         └── phone_store_service.bal
       └── phone_order_delivery_service
-           ├──order_delivery_service.bal
+           ├──phone_order_delivery_service.bal
            └── tests
                 └── phone_order_delivery_service_test.bal
 
