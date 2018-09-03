@@ -147,10 +147,7 @@ service<http:Service> phoneOrderDeliveryService bind deliveryEP {
         if (isPhoneAvailable) {
             var phoneDeliverDetails = check <json>newDeliver;
             // Create a JMS message
-
-            jms:Message queueMessage2 = check DeliveryQueueJmsSessionSend.createTextMessage(phoneDeliverDetails.toString
-                ());
-
+            jms:Message queueMessage2 = check DeliveryQueueJmsSessionSend.createTextMessage(phoneDeliverDetails.toString());
             log:printInfo("Order delivery details added to the delivery queue'; CustomerName: '" + newDeliver.
                     customerName +
                     "', OrderedPhone: '" + newDeliver.deliveryPhoneName + "';");
