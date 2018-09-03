@@ -453,8 +453,7 @@ service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
   INFO  [phone_store_service] - New order successfilly received from the Order Queue 
   INFO  [phone_store_service] - Order Details: {"customerName":"John","address":"20, Palm Grove, Colombo, Sri Lanka","contactNumber":"+94718930874","orderedPhoneName":"Apple:190000"} 
   
-  Order Details have sent to phone_order_delivery_service.
-
+  Order details were sent to phone_order_delivery_service
 
   Order Details have received from phone_store_service
   
