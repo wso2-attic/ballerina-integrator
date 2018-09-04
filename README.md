@@ -508,7 +508,7 @@ To run the unit tests, open your terminal and navigate to `backend-for-frontend/
    $ ballerina test
 ```
 
-> The source code for the tests can be found at [mobile_bff_service_test.bal](https://github.com/ranga-siriwardena/backend-for-frontend/blob/master/guide/mobile-bff/tests/mobile_bff_service_test.bal) and [desktop_bff_service_test.bal](https://github.com/ranga-siriwardena/backend-for-frontend/blob/master/guide/desktop-bff/tests/desktop_bff_service_test.bal).
+> The source code for the tests can be found at [mobile_bff_service_test.bal](guide/mobile-bff/tests/mobile_bff_service_test.bal) and [desktop_bff_service_test.bal](guide/desktop-bff/tests/desktop_bff_service_test.bal).
 
 
 ## Deployment
