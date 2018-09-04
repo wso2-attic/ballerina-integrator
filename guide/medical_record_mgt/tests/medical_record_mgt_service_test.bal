@@ -43,4 +43,3 @@ function testResourceGetMedicalRecords() {
         "{\"MedicalRecords\":[{\"ID\":\"MED01\",\"Name\":\"Test Record\",\"Description\":\"Test\"}]}",
         msg = "Response mismatch!");
 }
-
