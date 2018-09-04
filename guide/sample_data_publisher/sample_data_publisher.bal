@@ -6,25 +6,21 @@ import ballerina/log;
 // Client endpoint to communicate with appointment management service
 endpoint http:Client appointmentEP {
     url: "http://localhost:9092/appointment-mgt"
-    //url: "http://ballerina.guides.io/appointment-mgt"
 };
 
 // Client endpoint to communicate with medical record service
 endpoint http:Client medicalRecordEP {
     url: "http://localhost:9093/medical-records"
-    //url: "http://ballerina.guides.io/medical-records"
 };
 
 // Client endpoint to communicate with notification management service
 endpoint http:Client notificationEP {
     url: "http://localhost:9094/notification-mgt"
-    //url: "http://ballerina.guides.io/notification-mgt"
 };
 
 // Client endpoint to communicate with message management service
 endpoint http:Client messageEP {
     url: "http://localhost:9095/message-mgt"
-    //url: "http://ballerina.guides.io/message-mgt"
 };
 
 
