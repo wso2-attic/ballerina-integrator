@@ -387,7 +387,7 @@ service<http:Service> desktop_bff_service bind listener {
 
 ### Invoking the service
 
-Navigate to BFF/guide and run following commands in separate terminals to start all downstream services. These commands will start appointment_mgt_service, appointment_mgt_service, notification_mgt_service and notification_mgt_service on ports 9092, 9093, 9094 and 9095 respectively. 
+Navigate to BFF/guide and run following commands in separate terminals to start all downstream services. These commands will start appointment_mgt_service, medical_record_mgt_service, notification_mgt_service and message_mgt_service on ports 9092, 9093, 9094 and 9095 respectively. 
 
 ```bash
    $ ballerina run appointment_mgt 
