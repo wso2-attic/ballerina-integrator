@@ -25,7 +25,6 @@ import ballerinax/kubernetes;
 //    dockerHost:"tcp://192.168.99.100:2376"
 //}
 
-
 // Docker related config. Uncomment for Docker deployment.
 // *******************************************************
 
@@ -37,7 +36,6 @@ import ballerinax/kubernetes;
 
 //@docker:Expose{}
 
-
 endpoint http:Listener listener {
     port: 9093
 };
@@ -45,7 +43,6 @@ endpoint http:Listener listener {
 // Medical Record management is done using an in-memory map.
 // Add some sample Medical Records to 'medicalRecordMap' at startup.
 map<json> medicalRecordMap;
-
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/medical-records" }
@@ -78,7 +75,6 @@ service<http:Service> medical_record_mgt_service bind listener {
         };
     }
 
-
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/medical-record/list"
@@ -106,5 +102,5 @@ service<http:Service> medical_record_mgt_service bind listener {
                            "Error sending response", err = e)
         };
     }
-
 }
+

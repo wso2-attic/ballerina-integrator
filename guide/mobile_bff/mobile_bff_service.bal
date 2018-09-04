@@ -25,7 +25,6 @@ import ballerinax/kubernetes;
 //    dockerHost:"tcp://192.168.99.100:2376"
 //}
 
-
 // Docker related config. Uncomment for Docker deployment.
 // *******************************************************
 
@@ -37,11 +36,9 @@ import ballerinax/kubernetes;
 
 //@docker:Expose{}
 
-
 endpoint http:Listener listener {
     port: 9090
 };
-
 
 // Client endpoint to communicate with appointment management service
 endpoint http:Client appointmentEP {
@@ -67,7 +64,6 @@ endpoint http:Client messageEP {
     // url: "http://message-mgt-container:9095/message-mgt"
 };
 
-
 // RESTful service.
 @http:ServiceConfig { basePath: "/mobile-bff" }
 service<http:Service> mobile_bff_service bind listener {
@@ -89,7 +85,6 @@ service<http:Service> mobile_bff_service bind listener {
         // Call Message API and get unread message list
         json unreadMessageList = sendGetRequest(messageEP, "/unread-message/list");
 
-
         // Aggregate the responses to a JSON
         json profileJson = {};
         profileJson.Appointments = appointmentList.Appointments;
@@ -99,7 +94,6 @@ service<http:Service> mobile_bff_service bind listener {
         // Set JSON payload to response
         http:Response response;
         response.setJsonPayload(untaint profileJson);
-
 
         // Send response to the client.
         _ = client->respond(response) but {
@@ -137,8 +131,5 @@ function sendGetRequest(http:Client httpClient1, string context) returns (json) 
             log:printError(err.message, err = err);
         }
     }
-
     return value;
 }
-
-

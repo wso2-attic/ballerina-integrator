@@ -12,10 +12,10 @@ function testResourceAddNotification() {
     // Initialize the empty http request.
     http:Request req = new;
     // Construct the request payload.
-    json payload = { "Notification": { "ID": "NOT01", "Name": "Test Notification", "Description": "Test"}};
+    json payload = { "Notification": { "ID": "NOT01", "Name": "Test Notification", "Description": "Test" } };
     req.setJsonPayload(payload);
     // Send 'POST' request and obtain the response.
-    http:Response response = check clientEP -> post("/notification", req);
+    http:Response response = check clientEP->post("/notification", req);
     // Expected response code is 201.
     test:assertEquals(response.statusCode, 201,
         msg = "addNotification resource did not respond with expected response code!");
@@ -26,12 +26,12 @@ function testResourceAddNotification() {
 }
 
 @test:Config {
-    dependsOn:["testResourceAddNotification"]
+    dependsOn: ["testResourceAddNotification"]
 }
 // Function to test PUT resource 'updateOrder'.
 function testResourceGetNotifications() {
     // Send 'GET' request and obtain the response.
-    http:Response response = check clientEP -> get("/notification/list");
+    http:Response response = check clientEP->get("/notification/list");
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "getNotifications resource did not respond with expected response code!");
@@ -41,3 +41,4 @@ function testResourceGetNotifications() {
         "{\"Notifications\":[{\"ID\":\"NOT01\",\"Name\":\"Test Notification\",\"Description\":\"Test\"}]}",
         msg = "Response mismatch!");
 }
+

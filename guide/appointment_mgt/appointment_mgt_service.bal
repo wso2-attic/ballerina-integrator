@@ -25,7 +25,6 @@ import ballerinax/kubernetes;
 //    dockerHost:"tcp://192.168.99.100:2376"
 //}
 
-
 // Docker related config. Uncomment for Docker deployment.
 // *******************************************************
 
@@ -37,7 +36,6 @@ import ballerinax/kubernetes;
 
 //@docker:Expose{}
 
-
 endpoint http:Listener listener {
     port: 9092
 };
@@ -45,7 +43,6 @@ endpoint http:Listener listener {
 // Appointment management is done using an in-memory map.
 // Add some sample appointments to 'appointmetMap' at startup.
 map<json> appointmentMap;
-
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/appointment-mgt" }
@@ -78,7 +75,6 @@ service<http:Service> appointment_mgt_service bind listener {
         };
     }
 
-
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/appointment/list"
@@ -108,6 +104,4 @@ service<http:Service> appointment_mgt_service bind listener {
                            "Error sending response", err = e)
         };
     }
-
-
 }

@@ -25,7 +25,6 @@ import ballerinax/kubernetes;
 //    dockerHost:"tcp://192.168.99.100:2376"
 //}
 
-
 // Docker related config. Uncomment for Docker deployment.
 // *******************************************************
 
@@ -37,7 +36,6 @@ import ballerinax/kubernetes;
 
 //@docker:Expose{}
 
-
 endpoint http:Listener listener {
     port: 9094
 };
@@ -45,7 +43,6 @@ endpoint http:Listener listener {
 // Notification management is done using an in-memory map.
 // Add some sample notifications to 'notificationMap' at startup.
 map<json> notificationMap;
-
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/notification-mgt" }
@@ -78,7 +75,6 @@ service<http:Service> notification_mgt_service bind listener {
         };
     }
 
-
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/notification/list"
@@ -107,6 +103,4 @@ service<http:Service> notification_mgt_service bind listener {
                            "Error sending response", err = e)
         };
     }
-
-
 }

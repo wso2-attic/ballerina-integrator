@@ -25,7 +25,6 @@ import ballerinax/kubernetes;
 //    dockerHost:"tcp://192.168.99.100:2376"
 //}
 
-
 // Docker related config. Uncomment for Docker deployment.
 // *******************************************************
 
@@ -37,7 +36,6 @@ import ballerinax/kubernetes;
 
 //@docker:Expose{}
 
-
 endpoint http:Listener listener {
     port: 9095
 };
@@ -45,7 +43,6 @@ endpoint http:Listener listener {
 // Message management is done using an in-memory map.
 // Add some sample messages to 'messageMap' at startup.
 map<json> messageMap;
-
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/message-mgt" }
@@ -77,7 +74,6 @@ service<http:Service> message_mgt_service bind listener {
                            "Error sending response", err = e)
         };
     }
-
 
     @http:ResourceConfig {
         methods: ["GET"],
@@ -132,7 +128,6 @@ service<http:Service> message_mgt_service bind listener {
                 messageResponse.Messages[i] = messageValue;
                 i++;
             }
-
         }
 
         // Set the JSON payload in the outgoing response message.
@@ -144,5 +139,4 @@ service<http:Service> message_mgt_service bind listener {
                            "Error sending response", err = e)
         };
     }
-
 }

@@ -24,7 +24,6 @@ import ballerinax/kubernetes;
 //    dockerHost:"tcp://192.168.99.100:2376"
 //}
 
-
 // Docker related config. Uncomment for Docker deployment.
 // *******************************************************
 
@@ -36,11 +35,9 @@ import ballerinax/kubernetes;
 
 //@docker:Expose{}
 
-
 endpoint http:Listener listener {
     port: 9091
 };
-
 
 // Client endpoint to communicate with appointment management service
 endpoint http:Client appointmentEP {
@@ -64,7 +61,6 @@ endpoint http:Client notificationEP {
 
     // URL for Docker deployment
     // url: "http://notification-mgt-container:9094/notification-mgt"
-
 };
 
 // Client endpoint to communicate with message management service
@@ -74,7 +70,6 @@ endpoint http:Client messageEP {
     // URL for Docker deployment
     // url: "http://message-mgt-container:9095/message-mgt"
 };
-
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/desktop-bff" }
@@ -193,6 +188,5 @@ function sendGetRequest(http:Client httpClient1, string context) returns (json) 
             log:printError(err.message, err = err);
         }
     }
-
     return value;
 }

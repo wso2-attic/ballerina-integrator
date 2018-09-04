@@ -13,10 +13,10 @@ function testResourceAddMedicalRecord() {
     http:Request req = new;
     // Construct the request payload.
     json payload = { "MedicalRecord": { "ID": "MED01", "Name": "Test Record",
-        "Description": "Test"}};
+        "Description": "Test" } };
     req.setJsonPayload(payload);
     // Send 'POST' request and obtain the response.
-    http:Response response = check clientEP -> post("/medical-record", req);
+    http:Response response = check clientEP->post("/medical-record", req);
     // Expected response code is 201.
     test:assertEquals(response.statusCode, 201,
         msg = "addMedicalRecord resource did not respond with expected response code!");
@@ -28,12 +28,12 @@ function testResourceAddMedicalRecord() {
 }
 
 @test:Config {
-    dependsOn:["testResourceAddMedicalRecord"]
+    dependsOn: ["testResourceAddMedicalRecord"]
 }
 // Function to test PUT resource 'updateOrder'.
 function testResourceGetMedicalRecords() {
     // Send 'GET' request and obtain the response.
-    http:Response response = check clientEP -> get("/medical-record/list");
+    http:Response response = check clientEP->get("/medical-record/list");
     // Expected response code is 200.
     test:assertEquals(response.statusCode, 200,
         msg = "getMedicalRecords resource did not respond with expected response code!");
