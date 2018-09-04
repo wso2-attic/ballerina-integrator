@@ -41,4 +41,3 @@ function testResourceGetNotifications() {
         "{\"Notifications\":[{\"ID\":\"NOT01\",\"Name\":\"Test Notification\",\"Description\":\"Test\"}]}",
         msg = "Response mismatch!");
 }
-
