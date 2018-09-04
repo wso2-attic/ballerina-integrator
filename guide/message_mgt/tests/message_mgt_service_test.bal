@@ -43,4 +43,3 @@ function testResourceGetMessages() {
         ,
         msg = "Response mismatch!");
 }
-
