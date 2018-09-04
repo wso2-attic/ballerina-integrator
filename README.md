@@ -300,7 +300,7 @@ service<http:Service> mobile_bff_service bind listener {
 
 ```
 
-Desktop BFF(desktop_bff_service) is a shim used to support Desktop application user experience in this use case. When loading desktop application home page, it can offered to do multiple calls to its desktop_bff_service and retrieve comparatively large amount of data as per desktop application requirements.  In this use case, Desktop application will call Desktop BFF separately to retrieve appointments and medical records. Also it will call Desktop BFF to retrieve Messages and Notifications in a single call. 
+Desktop BFF(desktop_bff_service) is a shim used to support Desktop application user experience in this use case. When loading desktop application home page, it can afford to do multiple calls to its desktop_bff_service and retrieve comparatively large amount of data as per desktop application requirements.  In this use case, Desktop application will call Desktop BFF separately to retrieve appointments and medical records. Also it will call Desktop BFF to retrieve Messages and Notifications in a single call. 
 
 ##### Skeleton code for desktop_bff_service.bal
 ```ballerina
