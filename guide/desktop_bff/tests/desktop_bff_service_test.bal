@@ -33,4 +33,3 @@ function testResourceGetMedicalRecords() {
     test:assertEquals(response.statusCode, 200,
         msg = "getMedicalRecords resource did not respond with expected response code!");
 }
-
