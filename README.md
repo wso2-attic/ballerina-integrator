@@ -30,8 +30,8 @@ In this example, the Ballerina Kafka Connector is used to connect Ballerina to A
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - [Apache Kafka 1.1.0](https://kafka.apache.org/downloads)
   * Download the binary distribution and extract the contents
-- [Ballerina Kafka Connector](https://github.com/wso2-ballerina/package-kafka)
-  * After downloading and extracting, build it using maven and copy its .jar files into the `<BALLERINA_HOME>/bre/lib` folder
+- [Ballerina Kafka Connector](https://github.com/wso2-ballerina/package-kafka/releases)
+  * Extract `wso2-kafka-<version>.zip`. Run the install.{sh/bat} script to install the package.
 - A Text Editor or an IDE 
 
 ### Optional Requirements
@@ -286,9 +286,11 @@ service<http:Service> productAdminService bind listener {
 ```bash
    $ ballerina run product_admin_portal
 ```
-- Navigate to `messaging-with-kafka/guide` and run the following command in separate terminals to start the topic subscribers.
+- Navigate to `messaging-with-kafka/guide` and run the following commands in separate terminals to start the topic subscribers.
 ```bash
-   $ ballerina run <subscriber_package_name>
+   $ ballerina run inventory_control_system
+   $ ballerina run franchisee1
+   $ ballerina run franchisee2   
 ```
    
 - Invoke the `productAdminService` by sending a valid POST request.
