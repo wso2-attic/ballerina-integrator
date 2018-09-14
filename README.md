@@ -41,9 +41,9 @@ For the scenario In this guide, you will use `Apache ActiveMQ` as the JMS broker
 ## Prerequisites
 
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A JMS Broker (e.g.: [Apache ActiveMQ](http://activemq.apache.org/getting-started.html))
-  * After you install the JMS broker, copy the .jar files from the `ActiveMQ_HOME>/lib` directory to the `<BALLERINA_HOME>/bre/lib` directory.
-    * If you use ActiveMQ version 5.15.4, you only have to copy `activemq-client-5.15.4.jar`, `geronimo-j2ee-management_1.1_spec-1.0.1.jar` and `hawtbuf-1.11.jar` from the `ActiveMQ_HOME>/lib` directory to the `<BALLERINA_HOME>/bre/lib` directory.
+- [Apache ActiveMQ](http://activemq.apache.org/getting-started.html))
+  * After you install ActiveMQ, copy the .jar files from the `<AMQ_HOME>/lib` directory to the `<BALLERINA_HOME>/bre/lib` directory.
+   * If you use ActiveMQ version 5.15.4, you only have to copy `activemq-client-5.15.4.jar`, `geronimo-j2ee-management_1.1_spec-1.0.1.jar` and `hawtbuf-1.11.jar` from the `<AMQ_HOME>/lib` directory to the `<BALLERINA_HOME>/bre/lib` directory.
 - A Text Editor or an IDE 
 
 ### Optional Requirements
@@ -263,7 +263,7 @@ endpoint http:Client phone_order_delivery_serviceEP {
 
 
 ```
-Next, you need to implement the `order_delivery_service.bal` to act as the message replier. 
+Next, implement the `order_delivery_service.bal` to act as the message replier. 
 Take a look at the sample code below to understand how to implement the service.
 
 #### order_delivery_service.bal
@@ -470,7 +470,7 @@ The order details in the above log message will be sent to the phone_order_deliv
   INFO  [phone_order_delivery_service] - New order successfilly received from the Delivery Queue 
   INFO  [phone_order_delivery_service] - Order details: {"customerName":"Bob","address":"20, Palm Grove, Colombo, Sri Lanka","contactNumber":"+94777123456","orderedPhoneName":"Apple:190000"} 
   
- Finally, the delivery details are sent to the customer successfully.
+ Then the delivery details are sent to the customer successfully.
  
 ```
 
@@ -491,7 +491,7 @@ To run the unit tests, navigate to `message_construction_patterns/guide` and exe
    $ ballerina test
 ```
 
-When you run the unit tests, make sure that the JMS broker is up and running.
+When you run unit tests, make sure that the JMS broker is up and running.
 
 ## Deployment
 
@@ -784,14 +784,16 @@ To start the ballerina service using the configuration file, execute the followi
 ```
    $ ballerina run --config phone_store_service/ballerina.conf phone_store_service/
 ```
-NOTE: The above configuration is the minimum configuration required to enable tracing and metrics. With these configurations, the default values load as configuration parameters of metrics and tracing.
+> NOTE: The above configuration is the minimum configuration required to enable tracing and metrics. With these configurations, the default values load as configuration parameters of metrics and tracing.
 
 ### Tracing 
 
 You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 Follow the following steps to use tracing with Ballerina.
 
-- You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+- You can add the following configurations for tracing. 
+> NOTE: These configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+
 ```
    [b7a.observability]
 
