@@ -413,7 +413,7 @@ service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
 
 Follow the steps below to invoke the service.
 
-- On a new terminal, navigate to `<ActiveMQ_HOME>/bin`, and execute the following command to start the ActiveMQ server.
+- On a new terminal, navigate to `<AMQ_HOME>/bin`, and execute the following command to start the ActiveMQ server.
 
 ```bash
    $ ./activemq start
@@ -451,7 +451,7 @@ Follow the steps below to invoke the service.
    
 ```
 
-  Once you place the order, you will see that the `phone_store_service` sends a response similar to the following:
+  Once you place an order, you will see that the `phone_store_service` sends a response similar to the following:
 ```
    < HTTP/1.1 200 OK
    {"Message":"Your order was successfully placed. Ordered phone will be delivered soon"} 
@@ -504,9 +504,9 @@ To deploy locally, navigate to `message_construction_patterns/guide` and execute
 ```bash
    $ ballerina build
 ```
-This build a Ballerina executable archive (.balx) of the services that you developed. 
+This builds a Ballerina executable archive (.balx) of the services that you developed. 
 
-- Once the .balx files are created inside the target folder, you can use the following commands to run the .balx files:
+- Once the .balx files are created inside the target folder, you can use the following command to run the .balx files:
 
 ```bash
    $ ballerina run target/<Exec_Archive_File_Name>
