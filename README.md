@@ -788,11 +788,11 @@ To start the Ballerina service using the configuration file, execute the followi
 
 ### Tracing 
 
-You can monitor Ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
-Follow the following steps to use tracing with Ballerina.
+You can monitor Ballerina services using the built-in tracing capabilities of Ballerina. You can use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+Follow the steps below to use tracing with Ballerina.
 
 - You can add the following configurations for tracing. 
-> NOTE: These configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+> NOTE: These configurations are optional if you already have the basic configuration in the `ballerina.conf` file as described in the [Observability](#observability) section.
 
 ```
    [b7a.observability]
