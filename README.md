@@ -524,7 +524,7 @@ This builds a Ballerina executable archive (.balx) of the services that you deve
 
 If necessary you can run the service that you developed above as a Docker container.
 
-The Ballerina language includes a [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support to run ballerina programs on containers.
+The Ballerina language includes a [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support to run Ballerina programs on containers.
 
 To run a service as a Docker container, add the corresponding Docker annotations to your service code.
 
@@ -765,7 +765,7 @@ Access the service
 ```
 ## Observability 
 Ballerina is observable by default. This means that you can easily observe your services and resources using Ballerina.
-However, observability is disabled by default via configuration. To enable observability, you should add the following configurations to the `ballerina.conf` file and start the ballerina service. 
+However, observability is disabled by default via configuration. To enable observability, you should add the following configurations to the `ballerina.conf` file and start the Ballerina service. 
 You can find a sample configuration file in `message_construction_patterns/guide/phone_store_service`.
 
 ```ballerina
@@ -780,7 +780,7 @@ enabled=true
 enabled=true
 ```
 
-To start the ballerina service using the configuration file, execute the following command:
+To start the Ballerina service using the configuration file, execute the following command:
 ```
    $ ballerina run --config phone_store_service/ballerina.conf phone_store_service/
 ```
@@ -788,7 +788,7 @@ To start the ballerina service using the configuration file, execute the followi
 
 ### Tracing 
 
-You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+You can monitor Ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 Follow the following steps to use tracing with Ballerina.
 
 - You can add the following configurations for tracing. 
@@ -827,7 +827,7 @@ Follow the following steps to use tracing with Ballerina.
    http://localhost:16686
 ```
 ### Metrics
-Metrics and alerts are built-in with ballerina. You can use Prometheus as the monitoring tool.
+Metrics and alerts are built-in with Ballerina. You can use Prometheus as the monitoring tool.
 Follow the steps below to set up Prometheus and view metrics for the phone_store_service.
 
 - You can add the following configurations for metrics. 
@@ -878,8 +878,7 @@ Follow the steps below to set up Prometheus and view metrics for the phone_store
 -  http_response_time
 
 ### Logging
-
-Ballerina has a log package that allows printing log messages on the console. You can import the ballerina/log package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
+The Ballerina log package provides various functions that you can use to print log messages on the console depending on your requirement. You can import the ballerina/log package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Navigate to `message_construction_patterns/guide` and start the Ballerina service using the following command:
 ```
@@ -901,7 +900,7 @@ Ballerina has a log package that allows printing log messages on the console. Yo
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
 
-- Follow the steps below to configure logstash to format ballerina logs:
+- Follow the steps below to configure logstash to format Ballerina logs:
 
 i) Create a file named `logstash.conf` with the following content:
 ```
@@ -941,7 +940,7 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
   
- - Follow the steps below to configure filebeat to ship ballerina logs:
+ - Follow the steps below to configure filebeat to ship Ballerina logs:
     
 i) Create a file named `filebeat.yml` with the following content:
 ```
