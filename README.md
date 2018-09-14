@@ -56,7 +56,7 @@ For the scenario In this guide, you will use `Apache ActiveMQ` as the JMS broker
 > If you want to skip the basics and move directly to the [Testing](#testing) section, you can download the project from git and skip the implementation instructions.
    
 
-### Create the project structure
+### Creating the project structure
 
 Ballerina is an integration language that supports custom project structures. 
 
@@ -81,9 +81,9 @@ message_construction_patterns
 ```bash
    $ ballerina init
 ```
-Now that you have created the project structure, the next step is to implement the service.
+Now that you have created the project structure, the next step is to develop the service.
 
-### Develop the service
+### Developing the service
 
 First, you need to implement the `phone_store_service` to act as the message requestor. 
 Take a look at the sample code below to understand how to implement the service. 
@@ -409,7 +409,7 @@ service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
 
 ## Testing 
 
-### Invoke the service
+### Invoking the service
 
 Follow the steps below to invoke the service.
 
@@ -474,7 +474,7 @@ The order details in the above log message will be sent to the phone_order_deliv
  
 ```
 
-### Write unit tests 
+### Writing unit tests 
 
 In Ballerina, unit test cases should be in the same package inside a folder named `tests`.  When writing test functions, follow the below convention:
 - Annotate test functions with `@test:Config`. See the following example:
@@ -497,7 +497,7 @@ When you run unit tests, make sure that the JMS broker is up and running.
 
 Once you are done with the development, you can deploy the services using any of the methods listed below. 
 
-### Deploy locally
+### Deploying locally
 
 To deploy locally, navigate to `message_construction_patterns/guide` and execute the following command:
 
@@ -520,7 +520,7 @@ This build a Ballerina executable archive (.balx) of the services that you devel
    ballerina: initiating service(s) in 'phone_order_delivery_service.balx' 
    ballerina: started HTTP/WS endpoint 0.0.0.0:9091
 ```
-### Deploy on Docker
+### Deploying on Docker
 
 If necessary you can run the service that you developed above as a Docker container.
 
@@ -618,7 +618,7 @@ Here you need to run the Docker image with the `` -p <host_port>:<container_port
    "ContactNumber":"+94718930874", "PhoneName":"Apple:190000"}' \
    "http://localhost:9090/phonestore/placeOrder" -H "Content-Type:application/json"
 ```
-### Deploy on Kubernetes
+### Deploying on Kubernetes
 
 - If necessary, you can run the developed service on Kubernetes. The Ballerina language offers native support to run a Ballerina program on Kubernetes. 
 To run a Ballerina program on Kubernetes, add the corresponding Kubernetes annotations to your 
