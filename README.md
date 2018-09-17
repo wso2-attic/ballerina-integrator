@@ -1,8 +1,8 @@
-# Backend For Frontend
+# Backend for Frontend
 
-Backend For Frontend(BFF) is a service design pattern with the core idea of creating separate backend service for specific frontend application. This pattern will allow  each type of user experience to have separate backend service layer(shim). The design pattern has its own advantages and disadvantages and the usage is very much depending on the use case and the requirements [[1](https://samnewman.io/patterns/architectural/bff/)] ,[[2](http://philcalcado.com/2015/09/18/the_back_end_for_front_end_pattern_bff.html)]. 
+Backend for frontend(BFF) is a service design pattern that provides the core idea to create separate back-end services for specific front-end applications. This pattern allows you to have separate back-end service layers(shim) depending on the user experience you expect to have in the front-end application. The BFF design pattern has its own advantages and disadvantages. The usage of the pattern depends on your use case and requirements. For more information on the BFF design pattern, see [(https://samnewman.io/patterns/architectural/bff/)] and [(http://philcalcado.com/2015/09/18/the_back_end_for_front_end_pattern_bff.html)]. 
 
-> In this guide you will learn about using  Backend For Frontend(BFF) design pattern with Ballerina. 
+> Let’s take a look at a sample scenario to understand how to apply the BFF design pattern when working with Ballerina. 
 
 The following are the sections available in this guide.
 
@@ -14,11 +14,13 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you’ll build
-Let’s take a real world use case of online healthcare management system to understand how BFF works. A health care provider have a Desktop Application and a Mobile Application for their users to have better online experience. Once the user login to the Desktop application the home page information shown in Desktop application and Mobile application may vary. Specially the resource limitations in mobile device such as screen size, battery life and data usage cause the mobile application to show minimal viable information to the end user. Same time the Desktop counterpart can afford more information and do multiple network calls to get required data in place. Different requirements in each application will lead to have a separate BFF for each application. Here the BFF layer consumes existing downstream services and act as a shim to translate the required information for each user experience. Following diagram demonstrates the use case with two BFF services.
+Let’s take a real world use case of an online healthcare management system to understand how BFF works. Assume that the healthcare provider needs to have a desktop application as well as a mobile application to provide users a quality online experience. The manner in which information is displayed to a user can vary depending on whether the user signs in to the desktop application or mobile application. This is because the resource limitations such as screen size, battery life and data usage in mobile device can cause the mobile application to show minimal viable information to an end user, whereas when it comes to desktop applications, it is possible to display more information and allow multiple network calls to get the required information. The difference in requirements when it comes to each application leads to the need to have a separate BFF for each application. Here, the BFF layer will consumes existing downstream services and act as a shim to translate the required information depending on the user experience.  
+
+The following diagram illustrates the scenario:
 
 ![BFF Design](images/bff_architecture.jpeg "BFF Design")
 
-In this use case we have two applications called Desktop Application and Mobile Application. For each application, there is specific backend service (BFF) called Desktop BFF and Mobile BFF respectively. These BFFs consumes set of downstream services called Appointment Management Service, Medical Record Management Service, Notification Management Service and Message Management Service.  In this guide, Ballerina is used to build both BFF layer and downstream service layer.
+For this scenario, you need to have two applications called desktop application and mobile application. For each application, there should be a specific back-end service (BFF) called desktop BFF and mobile BFF respectively. These BFFs should consume a set of downstream services called appointment management service, medical record management service, notification management service and message management service.  In this guide, Ballerina is used to build both the BFF layer and the downstream service layer.
 
 ## Prerequisites
 
@@ -32,55 +34,58 @@ In this use case we have two applications called Desktop Application and Mobile 
 
 ## Implementation
 
-> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping  "Implementation" section.
+> If you want to skip the basics and move directly to the [Testing](#testing) section, you can download the project from git and skip the [Implementation](#implementation) instructions.
 
-### Create the project structure
+### Creating the project structure
 
-Ballerina is a complete programming language that supports custom project structures. Let's use the following package structure for this guide.
+Ballerina is a complete programming language that supports custom project structures. 
+
+To implement the scenario in this guide, you can use the following package structure:
 
 ```
 backend-for-frontend
   └── guide
       ├── appointment_mgt
-      │   ├── appointment_mgt_service.bal
-      │   └── tests
-      │       └── appointment_mgt_service_test.bal
+      │   ├── appointment_mgt_service.bal
+      │   └── tests
+      │       └── appointment_mgt_service_test.bal
       ├── medical_record_mgt
-      │   ├── medical_record_mgt_service.bal
-      │   └── tests
-      │       └── medical_record_mgt_service_test.bal
+      │   ├── medical_record_mgt_service.bal
+      │   └── tests
+      │       └── medical_record_mgt_service_test.bal
       ├── notification_mgt
-      │   ├── notification_mgt_service.bal
-      │   └── tests
-      │       └── notification_mgt_service_test.bal
+      │   ├── notification_mgt_service.bal
+      │   └── tests
+      │       └── notification_mgt_service_test.bal
       ├── message_mgt
-      │   ├── message_mgt_service.bal
-      │   └── tests
-      │       └── message_mgt_service_test.bal
+      │   ├── message_mgt_service.bal
+      │   └── tests
+      │       └── message_mgt_service_test.bal
       ├── mobile_bff
-      │   ├── mobile_bff_service.bal
-      │   └── tests
-      │       └── mobile_bff_service_test.bal
+      │   ├── mobile_bff_service.bal
+      │   └── tests
+      │       └── mobile_bff_service_test.bal
       ├── desktop_bff
-      │   ├── desktop_bff_service.bal
+      │   ├── desktop_bff_service.bal
       │   └── tests
       │       └── desktop_bff_service_test.bal
       └── sample_data_publisher
           └── sample_data_publisher.bal
 ```
 
-- Create the above directories in your local machine and also create empty `.bal` files.
+- Create the above directories in your local machine and also create the empty `.bal` files.
+- Then open a terminal, navigate to `backend-for-frontend/guide`, and then run the Ballerina project initializing toolkit.
 
-- Then open the terminal and navigate to `backend-for-frontend/guide` and run Ballerina project initializing toolkit.
 ```bash
    $ ballerina init
 ```
+Now that you have created the project structure, the next step is to develop the services.
 
 ### Developing the service
 
-Let's implement the set of downstream services first.  
+First let’s implement the set of downstream services.  
 
-Appointment Management Service (appointment_mgt_service) is a REST API developed to manage health appointments for the members. For demonstration purpose it has a in-memory map to hold appointment data. It has capability to add appointments and retrieve appointments. 
+Appointment Management Service (appointment_mgt_service) is a REST API to manage health appointments for members. For demonstration purpose it should have an in-memory map to hold appointment data, and should also have the capability to add appointments as well as retrieve appointments. 
 
 ##### Skeleton code for appointment_mgt_service.bal
 ```ballerina
@@ -117,7 +122,7 @@ service<http:Service> appointment_service bind listener {
 }
 ```
 
-Medical Record Management Service (medical_record_mgt_service) is a REST API developed to manage medical records for the members. For demonstration purpose it has a in-memory map to hold medical record.  It has capability to add medical records and retrieve them. 
+Medical Record Management Service (medical_record_mgt_service) is a REST API to manage medical records for members. For demonstration purpose it should have an in-memory map to hold medical records, and should also have the capability to add medical records and retrieve medical records. 
 
 ##### Skeleton code for medical_record_mgt_service.bal
 ```ballerina
@@ -155,7 +160,7 @@ service<http:Service> medical_record_service bind listener {
 
 ```
 
-Notification Management Service (notification_mgt_service) is a REST API developed to manage notifications. For demonstration purpose it has a in-memory map to hold notifications.  It has capability to add notifications and retrieve them. 
+Notification Management Service (notification_mgt_service) is a REST API to manage notifications. For demonstration purpose it should have an in-memory map to hold notifications,and should also have the capability to add notifications and retrieve notifications. 
 
 ##### Skeleton code for notification_mgt_service.bal
 ```ballerina
@@ -196,7 +201,7 @@ service<http:Service> notification_service bind listener {
 
 ```
 
-Message Management Service (message_mgt_service) is a REST API developed to manage messages. For demonstration purpose it has a in-memory map to hold messages.  It has capability to add messages, retrieve all messages and retrieve unread messages. 
+Message Management Service (message_mgt_service) is a REST API to manage messages. For demonstration purpose it should have an in-memory map to hold messages, and should also have the capability to add messages, retrieve all messages as well as retrieve unread messages. 
 
 ##### Skeleton code for message_mgt_service.bal
 ```ballerina
@@ -244,7 +249,7 @@ service<http:Service> message_service bind listener {
 
 ```
 
-Now let’s move into the key implementation of this guide which is the BFF implementation. 
+Now let’s move to the key implementation of BFF services. 
 
 Mobile BFF(mobile_bff_service) is a shim used to support Mobile user experience in this use case. When loading mobile application home page, it calls a single resource in Mobile BFF and retrieve appointments, medical records and messages. This will reduce number of backend calls and help to load the home pages in much efficient way. Also the mobile apps having different method of sending notifications hence home page loading does not need to involve notification management service. 
 
@@ -300,7 +305,7 @@ service<http:Service> mobile_bff_service bind listener {
 
 ```
 
-Desktop BFF(desktop_bff_service) is a shim used to support Desktop application user experience in this use case. When loading desktop application home page, it can afford to do multiple calls to its desktop_bff_service and retrieve comparatively large amount of data as per desktop application requirements.  In this use case, Desktop application will call Desktop BFF separately to retrieve appointments and medical records. Also it will call Desktop BFF to retrieve Messages and Notifications in a single call. 
+In the sample scenario, the desktop BFF(desktop_bff_service) is a shim used to support desktop application user experience. When a user loads the desktop application home page, there can be multiple calls to the desktop_bff_service to retrieve comparatively large amounts of data based on the desktop application requirement.  The desktop application can call desktop BFF separately to retrieve appointments and medical records. The desktop application can also call desktop BFF to retrieve messages and notifications in a single call. 
 
 ##### Skeleton code for desktop_bff_service.bal
 ```ballerina
@@ -387,7 +392,8 @@ service<http:Service> desktop_bff_service bind listener {
 
 ### Invoking the service
 
-Navigate to BFF/guide and run following commands in separate terminals to start all downstream services. These commands will start appointment_mgt_service, medical_record_mgt_service, notification_mgt_service and message_mgt_service on ports 9092, 9093, 9094 and 9095 respectively. 
+Navigate to BFF/guide and execute the following commands via separate terminals to start all downstream services:
+These commands will start appointment_mgt_service, medical_record_mgt_service, notification_mgt_service and message_mgt_service on ports 9092, 9093, 9094 and 9095 respectively. 
 
 ```bash
    $ ballerina run appointment_mgt 
@@ -404,8 +410,9 @@ Navigate to BFF/guide and run following commands in separate terminals to start 
 ```bash
    $ ballerina run message_mgt
 ```
+The commands start appointment_mgt_service, medical_record_mgt_service, notification_mgt_service and message_mgt_service on ports 9092, 9093, 9094 and 9095 respectively. 
 
-Similarly run bellow commands to start the BFF layer services. These commands will start mobile_bff_service and desktop_bff_service on ports 9090 and 9091 respectively. 
+Similarly, execute the following commands via separate terminals to start the BFF layer services: 
 
 
 ```bash
@@ -415,16 +422,18 @@ Similarly run bellow commands to start the BFF layer services. These commands wi
 ```bash
    $ ballerina run desktop_bff
 ```
+The commands start mobile_bff_service and desktop_bff_service on ports 9090 and 9091 respectively. 
 
-For demonstration purpose let’s add some data to downstream services. Use following command to load some appointments, medical records, notifications and messages to the services. 
+For demonstration purpose let’s add sample data to the downstream services. Execute the following command to load sample appointments, medical records, notifications and messages to the services. 
 
 ```bash
    $ ballerina run sample_data_publisher
 ```
 
-Now we have some data loaded into the downstream services hence we can call the BFF layer to retrieve the data as per the requirement. 
+Now that you have sample data loaded to the downstream services, you can call the BFF layer to retrieve the data based on the requirement. 
 
-Mobile application can call Mobile BFF to retrieve the user profile using a single API call. Following is a sample CURL commands. 
+The mobile application can call mobile BFF to retrieve the user profile using a single API call. 
+Following is a sample curl command: 
 
 ```bash
    $ curl -v -X GET http://localhost:9090/mobile-bff/profile
@@ -444,7 +453,9 @@ Mobile application can call Mobile BFF to retrieve the user profile using a sing
   
 ```
 
-Desktop application can call Desktop BFF to render user profile using few API calls. Following are set of CURL commands which can use to invoke Desktop BFF. 
+The desktop application can call the desktop BFF to render the user profile using a few API calls. 
+
+Following are curl commands that you can use to invoke the desktop BFF. 
 
 ```bash
    $ curl -v -X GET http://localhost:9091/desktop-bff/appointments
@@ -491,24 +502,25 @@ Desktop application can call Desktop BFF to render user profile using few API ca
 
 ```
 
-
 ### Writing unit tests
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'. When writing the test functions, follow the convention given below.
-- Test functions should be annotated with `@test:Config`. See the following example.
+In Ballerina, unit test cases should be in the same package inside a directory named `tests`.  When writing test functions, follow the below convention:
+
+- Annotate test functions with `@test:Config`. See the following example:
+
 ```ballerina
    @test:Config
    function testResourceGetUserProfile() {
 ```
 
-The source code for this guide contains unit test cases for each resource available in the BFF services implemented above.
+> **NOTE**: The source code of this guide contains unit test cases for each resource available in the BFF services implemented above.
 
-To run the unit tests, open your terminal and navigate to `backend-for-frontend/guide`, and run the following command.
+To run the unit tests, open your terminal and navigate to `backend-for-frontend/guide`, and then run the following command:
 ```bash
    $ ballerina test
 ```
 
-> The source code for the tests can be found at [mobile_bff_service_test.bal](guide/mobile_bff/tests/mobile_bff_service_test.bal) and [desktop_bff_service_test.bal](guide/desktop_bff/tests/desktop_bff_service_test.bal).
+> You can find the source code for the tests at [mobile_bff_service_test.bal](guide/mobile_bff/tests/mobile_bff_service_test.bal) and [desktop_bff_service_test.bal](guide/desktop_bff/tests/desktop_bff_service_test.bal).
 
 
 ## Deployment
@@ -517,17 +529,20 @@ Once you are done with the development, you can deploy the services using any of
 
 ### Deploying locally
 
-- As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `backend-for-frontend/guide` and run the following command.
+- To deploy locally, navigate to `backend-for-frontend/guide`, and execute the following command:
+
 ```bash
    $ ballerina build <Package_Name>
 ```
+This builds a Ballerina executable archive (.balx) of the services that you developed. 
 
-- Once the .balx files are created inside the target folder, you can run them using the following command.
+- Once the .balx files are created inside the target folder, you can use the following command to run the .balx files:
+
 ```bash
    $ ballerina run target/<Exec_Archive_File_Name>
 ```
 
-- The successful execution of a services will show us something similar to the following output.
+- Successful execution of a service displays an output similar to the following:
 ```
    ballerina: initiating service(s) in 'target/<Exec_Archive_File_Name>'
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
@@ -535,11 +550,17 @@ Once you are done with the development, you can deploy the services using any of
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding Docker annotations on your service code.
+If necessary you can run the service that you developed above as a Docker container.
 
-Let’s deploy the four downstream services to Docker first. 
+The Ballerina language includes a [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support to run Ballerina programs on containers.
 
- - In our downstream services(appointment_mgt_service, medical_record_mgt_service, notification_mgt_service, and message_mgt_service) we need to import ballerinax/docker and use the annotation @docker:Config as shown below to enable Docker image generation during the build time. We will use appointment_mgt_service as a example here and you need to follow the same step for all four services. 
+To run a service as a Docker container, add the corresponding Docker annotations to your service code.
+
+Let’s deploy the four downstream services to Docker. 
+
+ - In your downstream services(appointment_mgt_service, medical_record_mgt_service, notification_mgt_service, and message_mgt_service), you need to import ballerinax/docker and use the annotation @docker:Config as shown below to enable Docker image generation during build time. 
+
+Let’s use the appointment_mgt_service as an example here. You need to follow the same steps for all four services. 
 
 ##### Skeleton code for appointment_mgt_service.bal
 ```ballerina
@@ -568,6 +589,9 @@ service<http:Service> appointment_mgt_service bind listener {
 
 Now you can build Ballerina executable archives (.balx) of the services that we developed above, using following commands. This will also create the corresponding Docker images using the Docker annotations that you have configured above. Navigate to backend-for-frontend/guide and run the following command.
 
+- Now navigate to messaging-with-activemq/guide, and execute the following command to build a Ballerina executable archive (.balx) of the services that you developed:
+> **NOTE**: This also creates the corresponding Docker image using the Docker annotations that you have configured.
+
 ```
    $ballerina build appointment_mgt
 
@@ -575,13 +599,16 @@ Now you can build Ballerina executable archives (.balx) of the services that we 
 
    Generating executable
     ./target/appointment_mgt.balx
-	@docker 		 - complete 3/3 
+@docker - complete 3/3 
 
-	Run following command to start docker container:
-	docker run -d -p 9092:9092 ballerina.guides.io/appointment_mgt_service:v1.0
+Execute the following command to start the Docker container:
+docker run -d -p 9092:9092 ballerina.guides.io/appointment_mgt_service:v1.0
 ```
 
-- Once you successfully build the Docker images, you can run them with the `` docker run`` command that is shown in the previous step output section. Here we run the Docker images with flag`` -p <host_port>:<container_port>`` argument to map host port with container port which will allow you to access the services through the host port. Also we can use ``–name`` argument to define container name which will later allow BFF Docker containers to communicate with downstream services. Following are the sample commands to start all services in Docker. 
+- Once you successfully build the Docker images, you can execute the `` docker run`` command to run the services on Docker. Here you need to run the Docker images with the `` -p <host_port>:<container_port>`` argument to map the host port with the container port so that you can access the services through the host port. 
+You should also use the ``–name`` argument to define the container name that will later allow BFF Docker containers to communicate with downstream services. 
+
+Following are the sample commands to start all services on Docker:
 
 
 ```bash
@@ -693,10 +720,10 @@ service<http:Service> desktop_bff_service bind listener {
    
    Generating executable
     ./target/mobile_bff.balx
-	@docker 		 - complete 3/3 
+@docker - complete 3/3 
 
-	Run following command to start docker container:
-	docker run -d -p 9090:9090 ballerina.guides.io/mobile_bff_service:v1.0
+Run following command to start docker container:
+docker run -d -p 9090:9090 ballerina.guides.io/mobile_bff_service:v1.0
 ```
 
 ```
@@ -724,7 +751,8 @@ service<http:Service> desktop_bff_service bind listener {
 ```
 
 
-- Verify Docker container is running with the use of `` $ docker ps`` command. The status of the Docker container should be shown as 'Up'.
+- Verify Docker container is running with the use of `` $ docker ps`` command. The status of the Docker container should be shown as ‘Up'.
+- You can execute the $ docker ps command to verify whether the Docker container is running. The status of the Docker container should be shown as 'Up'.
 
 ```bash
    $ docker ps
@@ -741,13 +769,13 @@ service<http:Service> desktop_bff_service bind listener {
 
 ```
 
-- Now we can publish some data to downstream services so that we consume from BFF layer.  
+- Now you can publish some data to downstream services so that you consume from the BFF layer.  
 
 ```bash
    $ ballerina run sample_data_publisher
 ```
 
-- You can access the service using the same curl commands that we've used above.
+- You can access the service using the same curl commands that you used above.
 
 ```bash
    $ curl -v -X GET http://localhost:9090/mobile-bff/profile
@@ -761,13 +789,16 @@ service<http:Service> desktop_bff_service bind listener {
 
 ### Deploying on Kubernetes
 
-- You can run the services that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs.
+- If necessary, you can run the developed service on Kubernetes. The Ballerina language offers native support to run Ballerina programs on Kubernetes. 
+To run a Ballerina program on Kubernetes, you need to add the relevant Kubernetes annotations to your 
+service code. 
+> **NOTE**: You do not need to explicitly create Docker images prior to deploying a service on Kubernetes. See [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-- Let's now see how we can deploy our BFFs on Kubernetes. When invoking this service make sure that the other four services (appointment_mgt_service, medical_record_mgt_service, notification_mgt_service, and message_mgt_service) are also up and running.
+Let’s take a look at how to deploy the BFF services on Kubernetes. When you invoke this service make sure that the other four services (appointment_mgt_service, medical_record_mgt_service, notification_mgt_service, and message_mgt_service) are also up and running.
 
-- First we need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the services we developed above.
+- First you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable kubernetes deployment for the services you developed above.
 
-> NOTE: You can use Minikube to try this out locally.
+> **NOTE**: You can use Minikube to try this out locally.
 
 ##### Skeleton code for mobile_bff_service.bal
 ```ballerina
@@ -836,15 +867,17 @@ service<http:Service> desktop_bff_service bind listener {
 ....
 ```
 
-- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name that will be created as part of building this service.
-- We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.
-- In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
+- Here you use ``  @kubernetes:Deployment `` to specify the Docker image name that will be created as part of building the service. 
+- You need to specify `` @kubernetes:Service `` so that it can create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
+- You need to use `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
-If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
+If you are using Minikube, you need to set a few additional attributes to the `@kubernetes:Deployment` annotation.
 - `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
-- `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
+- `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). 
+> **NOTE**:  If you want to obtain the IP address of the cluster, execute the `minikube ip` command.
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+- Now you can use the following command to build a Ballerina executable archive (.balx) of the service that you developed: 
+> **NOTE**: This also creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured.
 
 ```
    $ ballerina build mobile_bff
@@ -862,9 +895,9 @@ If you are using Minikube, you need to set a couple of additional attributes to 
      kubectl apply -f ./target/kubernetes/desktop_bff
 ```
 
-- You can verify that the Docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``.
-- Also the Kubernetes artifacts related our service, will be generated under `` ./target/kubernetes``.
-- Now you can create the Kubernetes deployment using:
+- Use the Docker images command to verify whether the Docker image that you specified in `@kubernetes:Deployment` is created.
+- The Kubernetes artifacts related to the service should be generated in the`` ./target/kubernetes`` directory.
+- Now you can execute the following command to create the Kubernetes deployment:
 
 ```bash
    $ kubectl apply -f ./target/kubernetes/mobile_bff
@@ -886,7 +919,7 @@ If you are using Minikube, you need to set a couple of additional attributes to 
    service "ballerina-guides-desktop-bff-service" configured
 ```
 
-- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands.
+- You can use the following commands to verify whether the Kubernetes deployment, service, and ingress are running properly:
 
 ```bash
    $ kubectl get service
@@ -895,7 +928,7 @@ If you are using Minikube, you need to set a couple of additional attributes to 
    $ kubectl get ingress
 ```
 
-- If everything is successfully deployed, you can invoke the service either via Node port or ingress.
+- If all artifacts are successfully deployed, you can invoke the service either via Node port or ingress. 
 
 Node Port:
 ```bash
@@ -925,7 +958,13 @@ Access the service
 
 ## Observability
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it. A sample configuration file can be found in `backend-for-frontend/guide/mobile_bff/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the Ballerina service using it. A sample configuration file can be found in `backend-for-frontend/guide/mobile_bff/`.
+
+Ballerina is observable by default. This means that you can easily observe your services and resources using Ballerina. For more information, see [how-to-observe-ballerina-code](https://ballerina.io/learn/how-to-observe-ballerina-code/).
+> **NOTE**: Observability is disabled by default via configuration in Ballerina. 
+However, observability is disabled by default via configuration. 
+To enable observability, add the following configurations to the `ballerina.conf` file, and start the Ballerina service using it. You can find a sample configuration file in `backend-for-frontend/guide/mobile_bff/`.
+
 
 ```ballerina
 [b7a.observability]
@@ -939,7 +978,7 @@ enabled=true
 enabled=true
 ```
 
-To start the ballerina services using the configuration file, run the following command
+To start the ballerina services using the configuration file, execute the following command:
 
 ```
    $ ballerina run --config mobile_bff/ballerina.conf mobile_bff
@@ -947,14 +986,18 @@ To start the ballerina services using the configuration file, run the following 
 ```
    $ ballerina run --config desktop_bff/ballerina.conf desktop_bff
 ```
-NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
+> **NOTE**: The above configuration is the minimum configuration required to enable tracing and metrics. With these configurations, the default values load as configuration parameters of metrics and tracing.
+
 
 ### Tracing
 
-You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
-Follow the following steps to use tracing with Ballerina.
+You can monitor Ballerina services using the built-in tracing capabilities of Ballerina. You can use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 
-- You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+Follow the steps below to use tracing with Ballerina.
+
+- Add the following configurations for tracing: 
+> **NOTE**: The following configurations are optional if you already have the basic configuration in the `ballerina.conf` file as described in the [Observability](#observability) section.
+
 ```
    [b7a.observability]
 
@@ -972,13 +1015,14 @@ Follow the following steps to use tracing with Ballerina.
    reporter.max.buffer.spans=1000
 ```
 
-- Run Jaeger Docker image using the following command
+- Execute the following command to run the Jaeger Docker image:
+
 ```bash
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
      -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `backend-for-frontend/guide` and run the `mobile_bff_service` and `desktop_bff_service` using the following command
+- Navigate to `backend-for-frontend/guide` and execute the following command to run `mobile_bff_service` and `desktop_bff_service`:
 ```
    $ ballerina run --config mobile_bff/ballerina.conf mobile_bff
 ```
@@ -986,16 +1030,17 @@ Follow the following steps to use tracing with Ballerina.
    $ ballerina run --config desktop_bff/ballerina.conf desktop_bff
 ```
 
-- Observe the tracing using Jaeger UI using following URL
+- Use the Jaeger UI via the following URL to observe tracing:
 ```
    http://localhost:16686
 ```
 
 ### Metrics
-Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Prometheus and view metrics for BFF services.
+Metrics and alerts are built-in with Ballerina. You can use Prometheus as the monitoring tool.
+Follow the steps below to set up Prometheus and view metrics for BFF service.
 
-- You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
+- You can add the following configurations for metrics. 
+ > **NOTE**: The following configurations are optional if you already have the basic configuration in the `ballerina.conf` file as described in the [Observability](#observability) section.
 
 ```
    [b7a.observability.metrics]
@@ -1007,7 +1052,7 @@ Follow the below steps to set up Prometheus and view metrics for BFF services.
    host="0.0.0.0"
 ```
 
-- Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
+- Create a file named `prometheus.yml` inside the `/tmp/` directory, and add the following configurations to the `prometheus.yml` file:
 ```
    global:
      scrape_interval:     15s
@@ -1019,9 +1064,10 @@ Follow the below steps to set up Prometheus and view metrics for BFF services.
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE : Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
+> **NOTE** : Be sure to replace `172.17.0.1` if your local Docker IP is different from `172.17.0.1`
 
-- Run the Prometheus Docker image using the following command
+- Execute the following command to run the Prometheus Docker image:
+
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
@@ -1036,12 +1082,12 @@ Follow the below steps to set up Prometheus and view metrics for BFF services.
 ```
 
 
-- You can access Prometheus at the following URL
+- You can access Prometheus via the following URL:
 ```
    http://localhost:19090/
 ```
 
-NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+> **NOTE**: Ballerina has the following metrics by default for the HTTP server connector. You can enter the following expression in the Prometheus UI:
 -  http_requests_total
 -  http_response_time
 
@@ -1049,32 +1095,32 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+The Ballerina log package provides various functions that you can use to print log messages on the console, depending on your requirement. You can import the ballerina/log package and start logging. The following section describes how to search, analyze, and visualise logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `backend-for-frontend/guide`
+- Navigate to `backend-for-frontend/guide` and execute the following command to start the Ballerina service:
 ```
    $ nohup ballerina run mobile_bff > ballerina.log &
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `backend-for-frontend/guide` directory
+   > **NOTE**: This writes console logs to the `ballerina.log` file in the `backend-for-frontend/guide` directory.
 
-- Start Elasticsearch using the following command
+- Execute the following command to start Elasticsearch:
 
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2
 ```
 
-   NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`
+  > **NOTE**: Linux users may need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`
   
-- Start Kibana plugin for data visualization with Elasticsearch
+- Execute the following command to start the Kibana plugin for data visualisation with Elasticsearch:
 ```
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2    
 ```
 
-- Configure logstash to format the ballerina logs
+- Follow the steps below to configure logstash to format Ballerina logs:
 
-i) Create a file named `logstash.conf` with the following content
+1. Create a file named `logstash.conf` with the following content:
 ```
 input { 
  beats{
@@ -1100,19 +1146,21 @@ output {
 } 
 ```
 
-ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`
-    
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+2. Save the `logstash.conf` file inside a directory named `{SAMPLE_ROOT}\pipeline`
 
+3. Execute the following command to start the logstash container:
+> **NOTE**: Be sure to replace {SAMPLE_ROOT} with your directory name.
+    
 ```
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
  
- - Configure filebeat to ship the ballerina logs
+ - Follow the steps below to configure filebeat to ship Ballerina logs:
 
-i) Create a file named `filebeat.yml` with the following content
+1. Create a file named `filebeat.yml` with the following content:
+
 ```
 filebeat.prospectors:
 - type: log
@@ -1121,11 +1169,13 @@ filebeat.prospectors:
 output.logstash:
   hosts: ["logstash:5044"] 
 ```
-NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml`
+> **NOTE**: You can use the `$chmod go-w filebeat.yml` command to modify the ownership of the `filebeat.yml` file. 
 
-ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`  
 
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+2. Save the `filebeat.yml` file inside a directory named `{SAMPLE_ROOT}\filebeat`.
+
+3. Execute the following command to start the logstash container.
+> **NOTE**: Be sure to replace {SAMPLE_ROOT} with your directory name.
 
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
@@ -1133,8 +1183,7 @@ $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
 
- - Access Kibana to visualize the logs using following URL
+ - Execute the following URL to access Kibana and visualize logs:
 ```
    http://localhost:5601
 ```
-
