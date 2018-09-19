@@ -1,11 +1,13 @@
 [![Build Status](https://www.travis-ci.org/tdkmalan/messaging-with-activemq.svg?branch=master)](https://www.travis-ci.org/tdkmalan/messaging-with-activemq)
 
-# messaging-with-activemq
-In this guide, we are focusing on building applications to work with ActiveMQ message broker and we are guiding on creating one-way JMS producer (one way messaging, aka fire and forget mode) and JMS consumer with ActiveMQ message broker.
+# Messaging with ActiveMQ
+This guide demonstrates how to use ActiveMQ as the message broker for messaging in Ballerina.
 
-> This guide walks you through the process of describing the implementation using Ballerina programming language.
+> Let’s take a look at a sample scenario to understand how to do the following using ActiveMQ as the message broker in Ballerina:
+> - Create a one-way JMS producer (i.e., one way messaging, also known as fire and forget mode).
+> - Create a JMS consumer.
 
-The following are the sections available in this guide.
+The high level sections of this guide are as follows:
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
@@ -16,29 +18,35 @@ The following are the sections available in this guide.
 
 
 ## What you'll build
-To understand how you can use ActiveMQ message broker with Ballerina programming language, let's consider a real-world use case of an online order management system. Users can place their orders through this system, then Order accepting ballerina service will accept the request and place that orders into a message broker queue, then Order dispatcher ballerina service will route them to a difference queues by considering the message content (it will validate the order type using message content and route the message), then respective ballerina services will consume the messages from each queue.
+As the sample scenario let’s consider a real-world use case of an online order management system where the general message flow is as follows:
+1. Users place their orders through the system.
+2. A Ballerina service accepts the order requests that are placed, and sends the requests to a message broker queue. 
+3. An order dispatcher Ballerina service routes the order requests to appropriate queues depending on the message content (i.e., the dispatcher validates the order type using message content and routes the message)
+4. The respective Ballerina service consumes messages from each queue.
+
+The following diagram illustrates the scenario:
 
 ![alt text](https://github.com/tdkmalan/messaging-with-activemq/blob/master/JMS_bal_Service.png)
 
 ## Prerequisites
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-- Apache ActiveMQ 5.12.0
+- A Text Editor or an IDE
+- [Apache ActiveMQ](http://activemq.apache.org/getting-started.html))
+  * After you install ActiveMQ, copy the .jar files from the `<AMQ_HOME>/lib` directory to the `<BALLERINA_HOME>/bre/lib` directory.
+   * If you use ActiveMQ version 5.12.0, you only have to copy `activemq-client-5.12.0.jar`, `geronimo-j2ee-management_1.1_spec-1.0.1.jar`, and `hawtbuf-1.11.jar` from the `<AMQ_HOME>/lib` directory to the `<BALLERINA_HOME>/bre/lib` directory.
 
-**Note -**
-After installing the JMS broker, copy its .jar files into the <BALLERINA_HOME>/bre/lib folder.
-For ActiveMQ 5.12.0: Copy activemq-client-5.12.0.jar, geronimo-j2ee-management_1.1_spec-1.0.1.jar and hawtbuf-1.11.jar
 
 ### Optional Requirements
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
-- [Kubernetes](https://kubernetes.io/docs/setup/)
 
 ## Implementation
-If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping the "Implementation" section.
+> If you want to skip the basics and move directly to the [Testing](#testing) section, you can download the project from git and skip the [Implementation](#implementation) instructions.
 
-### Create the project structure
-Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
+### Creating the project structure
+Ballerina is a complete programming language that supports custom project structures. 
+
+To implement the scenario in this guide, you can use the following package structure:
 
 ```
 messaging-with-activemq
@@ -54,18 +62,24 @@ messaging-with-activemq
       └── retail_order_process_service
       │    └── retail_order_process_service.bal
       │ 
-      └── retail_order_process_service
+      └── wholesale_order_process_service
 	       └── wholesale_order_process_service.bal	
 ```
      
-- Create the above directories in your local machine and also create empty .bal files.
-- Then open the terminal and navigate to messaging-with-activemq/guide and run Ballerina project initializing toolkit.
+- Create the above directories in your local machine and also create the empty .bal files.
+- Then open a terminal, navigate to messaging-with-activemq/guide, and run the Ballerina project initializing toolkit.
 
 ```ballerina
   $ ballerina init
 ```
+Now that you have created the project structure, the next step is to develop the service.
+
 ### Developing the service
-Let's get started with the implementation of the "order_accepting_service.bal", which acts as an HTTP endpoint which accepts requests from clients and publishes messages to a JMS destination. "order_dispatcher_service.bal" process each message receive to the Order_Queue and route orders to the destinations queues by considering their message content. "retail_order_process_service.bal" and "wholesale_order_process_service.bal" are listener services for the retail_Queue and Wholesale_Queue.
+First you need to implement `order_accepting_service.bal` to act as an HTTP endpoint that accepts requests from clients, and then publishes the request messages to a JMS destination. 
+Then implement `order_dispatcher_service.bal` to process each message that the `Order_Queue` receives, and route orders to the appropriate destination queues depending on the message content. 
+Next, implement `retail_order_process_service.bal` and `wholesale_order_process_service.bal` as listener services for the `retail_Queue` and `Wholesale_Queue` respectively.
+
+Take a look at the code samples below to understand how to implement each service. 
 
 **order_accepting_service.bal**
 ```ballerina
@@ -74,7 +88,7 @@ import ballerina/http;
 import ballerina/jms;
 import ballerinax/docker;
 
-// Type definition for a order
+// Type definition for an order
 type Order record {
     string customerID;
     string productID;
@@ -83,8 +97,8 @@ type Order record {
 };
 
 // Initialize a JMS connection with the provider
-// 'providerUrl' and 'initialContextFactory' vary based on the JMS provider you use
-// 'Apache ActiveMQ' has been used as the message broker in this example
+// ‘providerUrl' and 'initialContextFactory' can vary depending on the JMS provider you use
+// Use ‘Apache ActiveMQ' as the message broker
 jms:Connection jmsConnection = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
@@ -105,7 +119,7 @@ endpoint http:Listener listener {
     port: 9090
 };
 
-// Order Accepting Service, which allows users to place order online
+// Order accepting service that allows users to place orders online
 @http:ServiceConfig { basePath: "/placeOrder" }
 service<http:Service> orderAcceptingService bind listener {
     // Resource that allows users to place an order 
@@ -116,7 +130,7 @@ service<http:Service> orderAcceptingService bind listener {
         Order newOrder;
         json reqPayload;
 
-        // Try parsing the JSON payload from the request
+        // Parse the JSON payload from the request
         match request.getJsonPayload() {
             // Valid JSON payload
             json payload => reqPayload = payload;
@@ -159,7 +173,7 @@ service<http:Service> orderAcceptingService bind listener {
         log:printInfo("New order added to the JMS Queue; customerID: '" + newOrder.customerID +
                 "', productID: '" + newOrder.productID + "';");
 
-        // Send response to the user
+        // Send a response to the user
         response.setJsonPayload(responseMessage);
         _ = caller->respond(response);
     }
@@ -332,13 +346,15 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
 
 ## Testing
 
-### invoking the service
-- First, start the Apache ActiveMQ server by entering the following command in a terminal from <ActiveMQ_BIN_DIRECTORY>.
+### Invoking the service
+Follow the steps below to invoke the service.
+
+- On a new terminal, navigate to `<AMQ_HOME>/bin`, and execute the following command to start the ActiveMQ server.
 
 ```
    $ ./activemq start
 ```
-- run following commands in seperate terminals.
+- Navigate to messaging-with-activemq/guide, and execute the following commands via separate terminals to start each service:
  
 ```ballerina
    $ ballerina run order_accepting_service.bal
@@ -346,7 +362,7 @@ service<jms:Consumer> orderDispatcherService bind jmsConsumer {
    $ ballerina run retail_order_process_service.bal
    $ ballerina run wholesale_order_process_service.bal
 ```
-- You can use below requests to simulate retail and wholesale order placing.
+- You can use the following requests to simulate placing retail and wholesale orders:
 
 ```
 curl -d '{"customerID":"C001","productID":"P001","quantity":"4","orderType":"retail"}' -H "Content-Type: application/json" -X POST http://localhost:9090/placeOrder/place
@@ -355,7 +371,7 @@ curl -d '{"customerID":"C002","productID":"P002","quantity":"40000","orderType":
  
 ```
 #### Output
-The request receives to the `order_accepting_service` and it will print below log.
+You will see the following log, which confirms that the `order_accepting_service` has received the request.
 
 ```
 ballerina: started HTTP/WS endpoint 0.0.0.0:9090
@@ -377,28 +393,31 @@ ballerina: initiating service(s) in 'retail_order_process_service.bal'
 ```
 
 ### Writing unit tests
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'. When writing the test functions the below convention should be followed.
+In Ballerina, unit test cases should be in the same package inside a directory named `tests`.  When writing test functions, follow the below convention:
 
-Test functions should be annotated with @test:Config. See the below example.
+- Annotate test functions with `@test:Config`. See the following example:
 
 ```ballerina
    @test:Config
    function testResourcePickup() {
 ```
 ## Deployment
-Once you are done with the development, you can deploy the services using any of the methods that we listed below.
+Once you are done with the development, you can deploy the services using any of the methods listed below. 
 
 ### Deploying locally
-As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to messaging-with-activemq/guide and run the following command.
+To deploy locally, navigate to messaging-with-activemq/guide, and execute the following command.
+
 ```ballerina
    $ ballerina build
 ```
-Once the .balx files are created inside the target folder, you can run them using the following command.
+This builds a Ballerina executable archive (.balx) of the services that you developed. 
+
+Once the .balx files are created inside the target folder, you can use the following command to run the .balx files:
 
 ```ballerina
    $ ballerina run <Exec_Archive_File_Name>
 ```
-The successful execution of a service will show us something similar to the following output.
+Successful execution of a service displays an output similar to the following:
 
 ```
 ballerina: initiating service(s) in 'order_accepting_service.balx'
@@ -408,28 +427,37 @@ ballerina: initiating service(s) in 'wholesale_order_process_service.balx'
 ```
 
 ### Deploying on Docker
-You can run the service that we developed above as a Docker container. As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding docker annotations on your service code. Since this guide requires ActiveMQ as a prerequisite, you need a couple of more steps to configure it in the Docker container.
+If necessary you can run the service that you developed above as a Docker container.
 
-Please follow bleow steps.
+The Ballerina language includes a [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support to run Ballerina programs on containers.
 
-- pull the ActiveMQ 5.12.0 docker image.
+To run a service as a Docker container, add the corresponding Docker annotations to your service code.
+
+Since `ActiveMQ` is a prerequisite in this guide, there are a few more steps you need follow to run the service you developed in a Docker container. The steps are as follows: 
+
+- Execute the following command to pull the ActiveMQ 5.12.0 Docker image.
 
 ```
 docker pull consol/activemq-5.12
 ```
 
-- Launch the docker image
+- Execute the following command to launch the Docker image:
 
 ```
 docker run -d --name='activemq' -it --rm -P consol/activemq-5.12:latest
 ```
-- then execte ``` docker ps ``` command and check ActiveMQ container is up and ruuning.
+- Execute the following command to check whether the ActiveMQ container is up and ruining.
+
+``` 
+docker ps 
+``` 
+You will see an output similar to the following:
 
 ```
 f80fa55fe8c9        consol/activemq-5.12:latest   "/bin/sh -c '/opt/ap…"   8 hours ago         Up 8 hours          0.0.0.0:32779->1883/tcp, 0.0.0.0:32778->5672/tcp, 0.0.0.0:32777->8161/tcp, 0.0.0.0:32776->61613/tcp, 0.0.0.0:32775->61614/tcp, 0.0.0.0:32774->61616/tcp   activemq
 ```
-Now let's see how we can deploy the order_acepting_service we developed above on docker. We need to import ballerinax/docker and use the annotation @docker:Config as shown below to enable docker image generation during the build time.
-
+Now you can deploy the `order_acepting_service` on Docker. 
+You need to import `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable Docker image generation at build time. 
 
 **order_acepting_service**
 ```ballerina
@@ -492,18 +520,23 @@ service<http:Service> orderAcceptingService bind listener {
         Order newOrder;
 ```
 
-- You may configure other services the same way as above i.e order_dispatcher_service.bal, wholesale_order_process_service.bal, retail_order_process_service.bal what you may need to change @docker:Config names to the respective services.
+- Follow the same approach to configure the other services. i.e order_dispatcher_service.bal, wholesale_order_process_service.bal, retail_order_process_service.bal 
+> **NOTE**: You may need to change @docker:Config names depending on the respective services.
 
-- @docker:Config annotation is used to provide the basic docker image configurations for the sample. @docker:CopyFiles is used to copy the JMS broker jar files into the ballerina bre/lib folder. You can provide multiple files as an array to field files of CopyFiles docker annotation. @docker:Expose {} is used to expose the port.
+-Use the `@docker:Config` annotation to provide the basic Docker image configurations for the sample.
+-Use the `@docker:CopyFiles` annotation to copy the JMS broker jar files into the Ballerina bre/lib folder.
+> **NOTE**: You can provide multiple files as an array to field files of the CopyFiles Docker annotation,
+-Use the `@docker:Expose {}` annotation to expose the port. 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to messaging-with-activemq/guide and run the following command.
+- Next, navigate to `messaging-with-activemq/guide` and execute the following command to build a Ballerina executable archive (.balx) of the service that you developed above. 
 
 ```ballerina
 
 ballerina build
 
 ```
-Then run below commands to start docker containers.
+This also creates the corresponding Docker image using the Docker annotations that you have configured.  
+Then execute the following commands to start the Docker containers:
 
 ```
 docker run -d -p 9090:9090 ballerina.guides.io/order_accepting_service.bal:v1.0
@@ -512,17 +545,19 @@ docker run -d  ballerina.guides.io/wholesale_order_process_service.bal:v1.0
 docker run -d  ballerina.guides.io/retail_order_process_service.bal:v1.0
 ```
 
-- Verify docker container is running with the use of $ docker ps. The status of the docker container should be shown as 'Up'.
+-  Execute the `` $ docker ps`` command to verify that the Docker container is running. The status of the Docker container should display as ‘Up’. 
 
-- You can access the service using the same curl commands that we've used above.
+- If necessary you can access the service using the same curl commands that you used before.
 
 ```
 curl -d '{"customerID":"C001","productID":"P001","quantity":"4","orderType":"retail"}' -H "Content-Type: application/json" -X POST http://localhost:9090/placeOrder/place
 ```
 
 ## Observability
-Ballerina is by default observable. Meaning you can easily observe your services, resources, etc. Refer to [how-to-observe-ballerina-code](https://ballerina.io/learn/how-to-observe-ballerina-code/) for more information.
-However, observability is disabled by default via configuration. Observability can be enabled by adding the following configurations to `ballerina.conf` file in messaging-with-activemq/guide/ and then the Ballerina service will start to use it.
+Ballerina is observable by default. This means that you can easily observe your services and resources using Ballerina. For more information, see [how-to-observe-ballerina-code](https://ballerina.io/learn/how-to-observe-ballerina-code/).
+> **NOTE**: Observability is disabled by default via configuration in Ballerina. 
+However, observability is disabled by default via configuration. 
+To enable observability, add the following configurations to the `ballerina.conf` file in messaging-with-activemq/guide, and then start the Ballerina service.
 
 ```
 [b7a.observability]
@@ -535,15 +570,15 @@ enabled=true
 # Flag to enable Tracing
 enabled=true
 ```
-> **NOTE**: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations, default values are load as the other configuration parameters of metrics and tracing.
+> **NOTE**: The above configuration is the minimum configuration required to enable tracing and metrics. With these configurations, the default values load as configuration parameters of metrics and tracing.
 
 ### Tracing
-You can monitor Ballerina services using inbuilt tracing capabilities of Ballerina. Let's use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+You can monitor Ballerina services using the built-in tracing capabilities of Ballerina. You can use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
 
 Follow the steps below to use tracing with Ballerina.
 
-You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
-
+- Add the following configurations for tracing: 
+> **NOTE**: The following configurations are optional if you already have the basic configuration in the `ballerina.conf` file as described in the [Observability](#observability) section.
 ```
    [b7a.observability]
 
@@ -560,26 +595,28 @@ You can add the following configurations for tracing. Note that these configurat
    reporter.log.spans=true
    reporter.max.buffer.spans=1000
    ```
-Run Jaeger docker image using the following command.
+- Execute the following command to run the Jaeger Docker image:
 
 ```
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
-Navigate to `messaging-with-activemq/guide` and run the `order_accepting_service` using following command.
+- Navigate to `messaging-with-activemq/guide` and execute the following command to run the `order_accepting_service`: 
 
 ```
    $ ballerina run order_accepting_service/
 ```
-Observe the tracing using Jaeger UI using following URL.
+Use the Jaeger UI via the following URL to observe tracing:
 ```
    http://localhost:16686
 ```
 
 ### Metrics
-Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool. Follow the below steps to set up Prometheus and view metrics for `order_accepting_service` service.
+Metrics and alerts are built-in with Ballerina. You can use Prometheus as the monitoring tool.
+Follow the steps below to set up Prometheus and view metrics for the `order_accepting_service` service.
 
-You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in ballerina.conf as described under Observability section.
+You can add the following configurations for metrics. 
+> **NOTE**: The following configurations are optional if you already have the basic configuration in the `ballerina.conf` file as described in the [Observability](#observability) section.
 
 ```
    [b7a.observability.metrics]
@@ -596,7 +633,7 @@ You can add the following configurations for metrics. Note that these configurat
    step="PT1M"
 ```
 
-- Create a file `prometheus.yml` inside `/tmp/ location`. Add the below configurations to the `prometheus.yml` file.
+- Create a file named `prometheus.yml` inside the `/tmp/` directory, and add the following configurations to the `prometheus.yml` file:
 
 ```
    global:
@@ -608,48 +645,49 @@ You can add the following configurations for metrics. Note that these configurat
        static_configs:
          - targets: ['172.17.0.1:9797']
 ```
-> **NOTE** : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+> **NOTE** : Be sure to replace `172.17.0.1` if your local Docker IP is different from `172.17.0.1`
 
-Run the Prometheus docker image using the following command.
+- Execute the following command to run the Prometheus Docker image:
 
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
-- You can access Prometheus at the following URL
+You can access Prometheus via the following URL:
 
 ```
    http://localhost:19090/
 ```
-> **NOTE**: By default, Ballerina has the following metrics for HTTP server connector. You can enter the following expression in Prometheus UI.
+> **NOTE**: Ballerina has the following metrics by default for the HTTP server connector. You can enter following expression in the Prometheus UI:
 >    -  http_requests_total
 >    -  http_response_time
 
 ### Logging
-Ballerina has a log package for logging to the console. You can import `ballerina/log` package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+The Ballerina log package provides various functions that you can use to print log messages on the console depending on your requirement. You can import the ballerina/log package and start logging. The following section describes how to search, analyze, and visualise logs in real time using Elastic Stack.
 
-Start the Ballerina Service with the following command from `messaging-with-activemq/guide`.
+Navigate to `messaging-with-activemq/guide` and start the Ballerina service using the following command:
+
 ```
    $ nohup ballerina run order_accepting_service/ &>> ballerina.log&
 ```
-> **NOTE**:  This will write the console log to the ballerina.log file in the inter-microservice-communicaiton/guide directory.
+> **NOTE**: This writes console logs to the `ballerina.log` file in the `messaging-with-activemq/guide` directory.
 
-Start Elasticsearch using the following command.
+Execute the following command to start Elasticsearch:
 
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
-> **NOTE**: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`
+> **NOTE**: Linux users may need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`
 
-Start Kibana plugin for data visualization with Elasticsearch.
+Execute the following command to start the Kibana plugin for data visualisation with Elasticsearch:
 ```
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
-* Configure logstash to format the ballerina logs.
+* Follow the steps below to configure logstash to format Ballerina logs:
 
-1. Create a file named `logstash.conf` with the following content.
+1. Create a file named `logstash.conf` with the following content:
 ```
 input {  
  beats{ 
@@ -660,8 +698,8 @@ input {
 filter {  
  grok{  
      match => { 
-	 "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
-	 \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
+"message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
+\[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
      }  
  }  
 }   
@@ -674,18 +712,19 @@ output {
  }  
 }  
 ```
-2. Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`.
+2. Save the `logstash.conf` file inside a directory named `{SAMPLE_ROOT}\pipeline`
       
-3. Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
+3. Execute the following command to start the logstash container.
+> **NOTE**: Be sure to replace {SAMPLE_ROOT} with your directory name.
 
 ```
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
-* Configure filebeat to ship the Ballerina logs.
+* Follow the steps below to configure filebeat to ship Ballerina logs:
 
-1. Create a file named `filebeat.yml` with the following content.
+1. Create a file named `filebeat.yml` with the following content:
   
 ```
 filebeat.prospectors:
@@ -695,11 +734,12 @@ filebeat.prospectors:
 output.logstash:
   hosts: ["logstash:5044"]  
 ```
-> **NOTE**: Modify the ownership of `filebeat.yml` file using `$chmod go-w filebeat.yml`.
+> **NOTE**: You can use the `$chmod go-w filebeat.yml` command to modify the ownership of the `filebeat.yml` file. 
 
-  2. Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
+  2. Save the `filebeat.yml` file inside a directory named `{SAMPLE_ROOT}\filebeat`.
         
-  3. Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name.
+  3. Execute the following command to start the logstash container.
+> **NOTE**: Be sure to replace {SAMPLE_ROOT} with your directory name.
   
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
@@ -707,7 +747,7 @@ $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
 
-Access Kibana to visualize the logs using the following URL.
+- Use the following URL to access Kibana and visualize logs:
 
 ```
    http://localhost:5601 
