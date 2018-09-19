@@ -2,16 +2,18 @@
 
 # Message Construction Patterns
 
-Message construction patterns describe the creation of message content that travel across messaging systems.It involves the architectural patterns of various constructs, functions, and activities involved in creating and transforming a message between applications.
+Message construction patterns describe the various forms of message content that travel across messaging systems. Message construction involves the architectural patterns of various constructs, functions, and activities involved in creating and transforming a message between applications.
 
-Java Message Service (JMS) is used to send messages between two or more clients. JMS supports two models: point-to-point model and 
-publish/subscribe model. A JMS synchronous invocation takes place when a JMS producer receives a response to a JMS request produced by it when invoked.
+Java Message Service (JMS) is a messaging standard that is used to send messages between two or more clients. JMS supports two models for messaging as follows:
+- Point-to-point model
+- Publish/subscribe model
+A JMS synchronous invocation takes place when a JMS producer receives a response to a JMS request produced by it when invoked.
 
-This is a simple example of how to use messaging, implemented in JMS. It shows how to implement Request-Reply, where a requestor application sends a request, a replier application receives the request and returns a reply, and the requestor receives the reply. 
+This guide described how to use messaging implemented in JMS and also describes how to implement request-reply where a requestor application sends a request, a replier application receives the request and returns a reply, and finally the requestor application receives the reply. 
 
-> This guide walks you through the process of using Ballerina to message construction with JMS queues using a message broker.
+> Let’s take a look at a sample real world scenario to understand how to use Ballerina for message construction with JMS queues using a message broker.
 
-The following are the sections available in this guide.
+The high level sections of this guide are as follows:
 
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
@@ -21,27 +23,27 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you’ll build
-To understand how you can use JMS queues for messaging, let's consider a real-world use case of a phone store service using which a user can order phones for home delivery. This scenario contains two services.
-- `phone_store_service` : A Message Endpoint that sends a request message and waits to receive a reply message as a response.
-- `phone_order_delivery_service` : A Message Endpoint that waits to receive the request message; when it does, it responds by sending the reply message.
+To understand how to use JMS queues for messaging, let’s consider a mobile phone store that allows you to order mobile phones and also does home delivery. 
+The mobile phone store should have the following services:
+- `phone_store_service` : The message endpoint that sends a request message and waits to receive a response.
+- `phone_order_delivery_service` : A message endpoint that waits to receive the request message, and when received, it sends a  response.
+When a valid order is placed, the `phone_store_service` adds the order to a JMS queue named `OrderQueue`. Here, the `phone_store_service` acts as the message requestor, and the `phone_order_delivery_service` acts as the message replier. The `phone_order_delivery_service`gets the order details whenever the queue is populated, and forwards the details to the `DeliveryQueue` via the `phone_order_delivery_service`.
 
-Once an order is placed, the `phone_store_service` will add it to a JMS queue named `OrderQueue` if the order is valid. Hence, this `phone_store_service` acts as the message requestor. And `phone_order_delivery_service`, which acts as the message replier and gets the order details whenever the queue becomes populated and forward them to `DeliveryQueue` using `phone_order_delivery_service`.
+As this use case is based on message construction patterns, the scenario uses request-reply with a pair of Point-to-Point Channels. The request is a command message, whereas the reply is a document message that contains either the return value of the function or an exception. 
 
-As this use case is based on message construction patterns, the scenario uses Request-Reply with a pair of Point-to-Point Channels. The request is a Command Message whereas the reply is a Document Message that contains the function's return value or exception.The below diagram illustrates this use case.
+The following diagram illustrates the scenario:
 
 ![alt text](/images/message_construction_patterns.png)
 
 
-In this example `Apache ActiveMQ` has been used as the JMS broker. Ballerina JMS Connector is used to connect Ballerina 
-and JMS Message Broker. With this JMS Connector, Ballerina can act as both JMS Message Consumer and JMS Message  
-Producer.
+For the scenario In this guide, you will use `Apache ActiveMQ` as the JMS broker. You will also use Ballerina JMS connector to connect Ballerina with the JMS message broker. When you use the Ballerina JMS connector, Ballerina can act as a JMS message consumer as well as a JMS message producer.
 
 ## Prerequisites
- 
+
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A JMS Broker (e.g.: [Apache ActiveMQ](http://activemq.apache.org/getting-started.html))
-  * After installing the JMS broker, copy its .jar files into the `<BALLERINA_HOME>/bre/lib` folder
-    * For ActiveMQ 5.15.4: Copy `activemq-client-5.15.4.jar`, `geronimo-j2ee-management_1.1_spec-1.0.1.jar` and `hawtbuf-1.11.jar`
+- [Apache ActiveMQ](http://activemq.apache.org/getting-started.html))
+  * After you install ActiveMQ, copy the .jar files from the `<AMQ_HOME>/lib` directory to the `<BALLERINA_HOME>/bre/lib` directory.
+   * If you use ActiveMQ version 5.15.4, you only have to copy `activemq-client-5.15.4.jar`, `geronimo-j2ee-management_1.1_spec-1.0.1.jar` and `hawtbuf-1.11.jar` from the `<AMQ_HOME>/lib` directory to the `<BALLERINA_HOME>/bre/lib` directory.
 - A Text Editor or an IDE 
 
 ### Optional Requirements
@@ -51,35 +53,40 @@ Producer.
 
 ## Implementation
 
-> If you want to skip the basics, you can download the source from the Git repo and directly move to the "Testing" section by skipping the "Implementation" section.    
+> If you want to skip the basics and move directly to the [Testing](#testing) section, you can download the project from git and skip the implementation instructions.
+   
 
-### Create the project structure
+### Creating the project structure
 
-Ballerina is an integration language that supports custom project structures. Use the following package structure for this guide.
+Ballerina is an integration language that supports custom project structures. 
+
+To implement the scenario in this guide, you can use the following package structure:
 ```
 message_construction_patterns
  └── guide
       ├── phone_store_service
-      │    ├── phone_store_service.bal
-      │    └── tests
-      │         └── phone_store_service.bal
+      │    ├── phone_store_service.bal
+      │    └── tests
+      │         └── phone_store_service.bal
       └── phone_order_delivery_service
            ├──phone_order_delivery_service.bal
            └── tests
-                └── phone_order_delivery_service_test.bal
+                └── phone_order_delivery_service_test.bal
 
 ```
 
 - Create the above directories in your local machine and initialize a Ballerina project.
 
-- Then open the terminal and navigate to `message_construction_patterns/guide` and run Ballerina project initializing toolkit.
+- Then open the terminal and navigate to `message_construction_patterns/guide` and run the Ballerina project initializing toolkit.
 ```bash
    $ ballerina init
 ```
+Now that you have created the project structure, the next step is to develop the service.
+
 ### Developing the service
 
-Let's get started with the implementation of the `phone_store_service`, which acts as the message Requestor. 
-Refer to the code attached below. Inline comments added for better understanding.
+First, you need to implement the `phone_store_service` to act as the message requestor. 
+Take a look at the sample code below to understand how to implement the service. 
 
 ##### phone_store_service.bal
 
@@ -256,7 +263,8 @@ endpoint http:Client phone_order_delivery_serviceEP {
 
 
 ```
-Now let's consider the implementation of `order_delivery_service.bal` which acts as the message Replier.
+Next, implement the `order_delivery_service.bal` to act as the message replier. 
+Take a look at the sample code below to understand how to implement the service.
 
 #### order_delivery_service.bal
 
@@ -403,13 +411,16 @@ service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
 
 ### Invoking the service
 
-- First, start the `Apache ActiveMQ` server by entering the following command in a terminal from `<ActiveMQ_BIN_DIRECTORY>`.
+Follow the steps below to invoke the service.
+
+- On a new terminal, navigate to `<AMQ_HOME>/bin`, and execute the following command to start the ActiveMQ server.
 
 ```bash
    $ ./activemq start
 ```
 
-- Navigate to `message_construction_patterns/guide` and run the following commands in separate terminals to start both `phone_store_service` and `order_delivery_service`.
+- Navigate to `message_construction_patterns/guide` and run the following commands via separate terminals to start the `phone_store_service` and the `order_delivery_service`.
+
 ```bash
    $ ballerina run phone_store_service.bal
 ```
@@ -418,19 +429,19 @@ service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
    $ ballerina run order_delivery_system
 ```
    
-- Invoke the `phone_store_service` by sending a GET request to check the available phones.
+- To check for available mobile phones, send a GET request to the `phone_store_service`.
 
 ```bash
    curl -v -X GET localhost:9090/phonestore/getPhoneList
 ```
 
-  The `phone_store_service` sends a response similar to the following.
+  Once you send a GET request, the `phone_store_service` should send a response similar to the following:
 ```
    < HTTP/1.1 200 OK
    ["Apple:190000","Samsung:150000","Nokia:80000","HTC:40000","Huawei:100000"]
 ```
    
-- Place an order using the following command.
+- Execute the following command to place an order:
 
 ```bash
    curl -v -X POST -d \
@@ -440,49 +451,47 @@ service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
    
 ```
 
-  The `phone_store_service`e sends a response similar to the following.
+  Once you place an order, you will see that the `phone_store_service` sends a response similar to the following:
 ```
    < HTTP/1.1 200 OK
    {"Message":"Your order was successfully placed. Ordered phone will be delivered soon"} 
 ```
 
-  Sample Log Messages:
+  You will also see sample log messages similar to the following:
 ```bash
 
   INFO  [phone_store_service] - order will be added to the order  Queue; CustomerName: 'Bob', OrderedPhone: 'Apple:190000'; 
   INFO  [phone_store_service] - New order successfilly received from the Order Queue 
   INFO  [phone_store_service] - Order Details: {"customerName":"John","address":"20, Palm Grove, Colombo, Sri Lanka","contactNumber":"+94718930874","orderedPhoneName":"Apple:190000"} 
   
-  Order details were sent to phone_order_delivery_service
-
-  Received order details from phone_store_service.
+The order details in the above log message will be sent to the phone_order_delivery_service, and the log messages on the phone_order_delivery_service will be as follows:
   
   INFO  [phone_order_delivery_service] - Order delivery details  added to the delivery  Queue; CustomerName: 'Bob', OrderedPhone: 'Apple:190000'; 
   INFO  [phone_order_delivery_service] - New order successfilly received from the Delivery Queue 
   INFO  [phone_order_delivery_service] - Order details: {"customerName":"Bob","address":"20, Palm Grove, Colombo, Sri Lanka","contactNumber":"+94777123456","orderedPhoneName":"Apple:190000"} 
   
- Delivery details sent to the customer successfully
+ Then the delivery details are sent to the customer successfully.
  
 ```
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named `tests`.  When writing the test functions the below convention should be followed.
-- Test functions should be annotated with `@test:Config`. See the below example.
+In Ballerina, unit test cases should be in the same package inside a folder named `tests`.  When writing test functions, follow the below convention:
+- Annotate test functions with `@test:Config`. See the following example:
 
 ```ballerina
    @test:Config
    function testResourcePlaceOrder() {
 ```
   
-This guide contains unit test cases for each resource available in the `phone_store_service` implemented above. 
+This guide includes unit test cases for each resource available in the `phone_store_service` implemented above. 
 
-To run the unit tests, navigate to `message_construction_patterns/guide` and run the following command. 
+To run the unit tests, navigate to `message_construction_patterns/guide` and execute the following command:
 ```bash
    $ ballerina test
 ```
 
-When running these unit tests, make sure that the JMS Broker is up and running.
+When you run unit tests, make sure that the JMS broker is up and running.
 
 ## Deployment
 
@@ -490,18 +499,20 @@ Once you are done with the development, you can deploy the services using any of
 
 ### Deploying locally
 
-As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `message_construction_patterns/guide` and run the following command.
+To deploy locally, navigate to `message_construction_patterns/guide` and execute the following command:
 
 ```bash
    $ ballerina build
 ```
+This builds a Ballerina executable archive (.balx) of the services that you developed. 
 
-- Once the .balx files are created inside the target folder, you can run them using the following command. 
+- Once the .balx files are created inside the target folder, you can use the following command to run the .balx files:
+
 ```bash
    $ ballerina run target/<Exec_Archive_File_Name>
 ```
 
-- The successful execution of a service will show us something similar to the following output.
+- The successful execution of a service will display an output similar to the following:
 ```
    ballerina: initiating service(s) in 'phone_store.balx' 
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
@@ -511,29 +522,33 @@ As the first step, you can build Ballerina executable archives (.balx) of the se
 ```
 ### Deploying on Docker
 
-You can run the service that we developed above as a Docker container.
-As ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers,
-you just need to add the corresponding Docker annotations to your service code.
-Since this guide requires `ActiveMQ` as a prerequisite, you need a couple of more steps to configure it in a Docker container.   
+If necessary you can run the service that you developed above as a Docker container.
 
-First let's see how to configure `ActiveMQ` in a Docker container.
+The Ballerina language includes a [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support to run Ballerina programs on containers.
 
-- Initially, you need to pull the `ActiveMQ` Docker image using the following command.
+To run a service as a Docker container, add the corresponding Docker annotations to your service code.
+
+Since `ActiveMQ` is a prerequisite in this guide, there are a few more steps you need follow to run the service you developed in a Docker container. The steps are as follows:  
+
+- Configure `ActiveMQ` in a Docker container. You can use the following command to pull the `ActiveMQ` Docker image:
+
 ```bash
    $ docker pull webcenter/activemq
 ```
 
-- Then launch the pulled image using the following command. This will start the `ActiveMQ` server in Docker with default configurations.
+- Use the following command to launch the pulled image: 
 ```bash
    $ docker run -d --name='activemq' -it --rm -P webcenter/activemq:latest
 ```
+This starts the `ActiveMQ` server in Docker with default configurations.
 
-- Check whether the `ActiveMQ` container is up and running using the following command.
+- Use the following command to check whether the `ActiveMQ` container is up and running:
 ```bash
    $ docker ps
 ```
 
-Now let's see how we can deploy the `phone_store_service` and `phone_order_delivery_service` on Docker. We need to import `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable Docker image generation at build time. 
+Now, let’s see how to deploy the `phone_store_service` and `phone_order_delivery_service` on Docker. 
+You need to import `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable Docker image generation at build time. 
 
 ##### phone_store_service.bal
 ```ballerina
@@ -559,12 +574,13 @@ endpoint http:Listener listener {
 @http:ServiceConfig {basePath:"/phonestore"}
 service<http:Service> phone_store_service bind listener {
 ``` 
-Similar to the `phone_store_service.bal`, We define the `@docker:Config` and `@docker:Expose {}` in  `phone_order_delivery_service` for Docker deployment.
+Similar to the `phone_store_service.bal`, you need to define the `@docker:Config` and `@docker:Expose {}` in  `phone_order_delivery_service` for Docker deployment.
 
-- `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample.`@docker:Expose {}` is used to expose the port. 
+-Use the `@docker:Config` annotation to provide the basic Docker image configurations for the sample.
+-Use the `@docker:Expose {}` annotation to expose the port. 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `message_construction_patterns/guide` and run the following command.  
-  
+- Next, navigate to `message_construction_patterns/guide` and execute the following command to build a Ballerina executable archive (.balx) of the service that you developed above. 
+
 ```
    $ballerina build 
   
@@ -581,19 +597,21 @@ Similar to the `phone_store_service.bal`, We define the `@docker:Config` and `@d
         docker run -d -p 9091:9091 ballerina.guides.io/phone_order_delivery_service:v1.0
 
 ```
-
-- Once you successfully build the Docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+This also creates the corresponding Docker image using the Docker annotations that you have configured.  
+  
+- Once you successfully build the Docker image,  use the `` docker run`` command to run it.
+   
 
 ```bash
   docker run -d -p 9090:9090 ballerina.guides.io/phone_store_service:v1.0
   docker run -d -p 9091:9091 ballerina.guides.io/phone_order_delivery_service:v1.0  
 ```
 
-   Here we run the Docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+Here you need to run the Docker image with the `` -p <host_port>:<container_port>`` flag to use the host port 9090 and the container port 9090 so that you can access the service through the host port. 
 
-- Verify Docker container is running with the use of `` $ docker ps``. The status of the Docker container should be shown as 'Up'. 
+-  Execute the `` $ docker ps`` command to verify whether the Docker container is running. The status of the Docker container should be displayed as ‘Up’. 
 
-- You can access the service using the same curl commands that we've used above.
+- If necessary you can access the service using the same curl commands that you used before.
 ```bash
     curl -v -X POST -d \
    '{"Name":"John", "Address":"20, Palm Grove, Colombo, Sri Lanka", 
@@ -602,20 +620,23 @@ Similar to the `phone_store_service.bal`, We define the `@docker:Config` and `@d
 ```
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support to run a Ballerina program on Kubernetes, with the use of Kubernetes annotations that you can include as part of your 
-service code. Also, it will take care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
+- If necessary, you can run the developed service on Kubernetes. The Ballerina language offers native support to run a Ballerina program on Kubernetes. 
+To run a Ballerina program on Kubernetes, add the corresponding Kubernetes annotations to your 
+service code. 
+> NOTE: You do not need to explicitly create Docker images prior to deploying the service on Kubernetes. See [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-- Since this guide requires `ActiveMQ` as a prerequisite, you need an additional step to create a pod for `ActiveMQ` and use it with our sample.  
+Since this guide requires `ActiveMQ` as a prerequisite, you need an additional step as follows to create a pod for `ActiveMQ` to use it with the sample.  
 
-- Navigate to `message_construction_patterns/resources` directory and run the below command to create the ActiveMQ pod by creating a deployment and service for ActiveMQ. You can find the deployment descriptor and service descriptor in the `./resources/kubernetes` folder.
+- Navigate to the `message_construction_patterns/resources` directory and run the following command:  
 
 ```bash
    $ kubectl create -f ./kubernetes/
 ```
+This creates the ActiveMQ pod by creating a deployment and service for ActiveMQ. You can find the deployment descriptor and service descriptor in the `./resources/kubernetes` directory.
 
-- Now let's see how we can deploy the `phone_store_service` on Kubernetes. We need to import `` ballerinax/kubernetes `` and use ``@kubernetes``annotations as shown below to enable kubernetes deployment.
+- Now let's see how to deploy the `phone_store_service` on Kubernetes. You need to import `` ballerinax/kubernetes `` and use ``@kubernetes``annotations as shown below to enable the kubernetes deployment.
 
-> NOTE: Linux users can use Minikube to try this out locally
+> NOTE: Linux users can use Minikube to try this out locally.
 
 #####  phone_store_service.bal
 
@@ -652,15 +673,16 @@ port:9090
 service<http:Service> phone_store_service bind listener {
 ``` 
 
-- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name which will be created as part of building this service. 
-- We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
-- In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
+- Here you use ``  @kubernetes:Deployment `` to specify the Docker image name that will be created as part of building the service. 
+- You need to specify `` @kubernetes:Service `` so that it can create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
+- You need to use `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
 If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
 - `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
 - `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+- Now you can use the following command to build a Ballerina executable archive (.balx) of the service that you developed: 
+> NOTE: This also creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured.
   
 ```
    $ ballerina build 
@@ -670,7 +692,7 @@ If you are using Minikube, you need to set a couple of additional attributes to 
    @kubernetes:Docker                       - complete 3/3 
    @kubernetes:Deployment                   - complete 1/1
   
-   Run following command to deploy kubernetes artifacts:  
+   Run the following command to deploy kubernetes artifacts:  
    kubectl apply -f ./target/phone_store_service/kubernetes
    
    @kubernetes:Service                      - complete 1/1
@@ -678,13 +700,13 @@ If you are using Minikube, you need to set a couple of additional attributes to 
    @kubernetes:Docker                       - complete 3/3 
    @kubernetes:Deployment                   - complete 1/1
   
-   Run following command to deploy kubernetes artifacts:  
+   Run the following command to deploy kubernetes artifacts:  
    kubectl apply -f ./target/phone_order_delivery_service/kubernetes
     
 ```
-- Use the docker images command to verify whether the Docker image that you specified in `@kubernetes:Deployment` was created 
-- Shall we rephrase this to "The Kubernetes artifacts related to the service are generated in `` ./target/phone_order_delivery_service/kubernetes`` directories."
-- Now you can create the Kubernetes deployment using:
+- Use the docker images command to verify whether the Docker image that you specified in `@kubernetes:Deployment` is created.
+- The Kubernetes artifacts related to the service should be generated in the`` ./target/phone_order_delivery_service/kubernetes`` directory.
+- Now you can execute the following command to create the Kubernetes deployment:
 
 ```bash
    $ kubectl apply -f ./target/phone_store_service/kubernetes
@@ -700,7 +722,7 @@ If you are using Minikube, you need to set a couple of additional attributes to 
    service "ballerina-guides-phone_order_delivery_service" created
 ```
 
-- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
+- You can use the following commands to verify whether the Kubernetes deployment, service, and ingress are running properly:
 
 ```bash
    $ kubectl get service
@@ -717,7 +739,7 @@ Node Port:
    "ContactNumber":"+94718930874", "PhoneName":"Apple:190000"}' \
    "http://localhost:9090/phonestore/placeOrder" -H "Content-Type:application/json"  
 ```
-If you are using Minikube, you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
+If you are using Minikube, you should use the IP address of the Minikube cluster that you can obtain by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
 ```bash
     $ minikube ip
     192.168.99.100
@@ -730,7 +752,7 @@ The endpoint URL for the above case would be as follows: `http://192.168.99.100:
 
 Ingress:
 
-Add `/etc/hosts` entry to match hostname. For Minikube, the IP address should be the IP address of the cluster.
+Add the `/etc/hosts` entry to match hostname. For Minikube, the IP address should be the IP address of the cluster.
 ``` 
    127.0.0.1 ballerina.guides.io
 ```
@@ -742,8 +764,9 @@ Access the service
    "http://localhost:9090/phonestore/placeOrder" -H "Content-Type:application/json" 
 ```
 ## Observability 
-Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it. A sample configuration file can be found in `message_construction_patterns/guide/phone_store_service`.
+Ballerina is observable by default. This means that you can easily observe your services and resources using Ballerina.
+However, observability is disabled by default via configuration. To enable observability, you should add the following configurations to the `ballerina.conf` file and start the Ballerina service. 
+You can find a sample configuration file in `message_construction_patterns/guide/phone_store_service`.
 
 ```ballerina
 [b7a.observability]
@@ -757,18 +780,20 @@ enabled=true
 enabled=true
 ```
 
-To start the ballerina service using the configuration file, run the following command
+To start the Ballerina service using the configuration file, execute the following command:
 ```
    $ ballerina run --config phone_store_service/ballerina.conf phone_store_service/
 ```
-NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
+> NOTE: The above configuration is the minimum configuration required to enable tracing and metrics. With these configurations, the default values load as configuration parameters of metrics and tracing.
 
 ### Tracing 
 
-You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
-Follow the following steps to use tracing with Ballerina.
+You can monitor Ballerina services using the built-in tracing capabilities of Ballerina. You can use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+Follow the steps below to use tracing with Ballerina.
 
-- You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+- You can add the following configurations for tracing. 
+> NOTE: These configurations are optional if you already have the basic configuration in the `ballerina.conf` file as described in the [Observability](#observability) section.
+
 ```
    [b7a.observability]
 
@@ -802,10 +827,11 @@ Follow the following steps to use tracing with Ballerina.
    http://localhost:16686
 ```
 ### Metrics
-Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Prometheus and view metrics for phone_store_service service.
+Metrics and alerts are built-in with Ballerina. You can use Prometheus as the monitoring tool.
+Follow the steps below to set up Prometheus and view metrics for the phone_store_service.
 
-- You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
+- You can add the following configurations for metrics. 
+> NOTE:  The following configurations are optional if you already have the basic configuration in `ballerina.conf` as described in the `Observability` section.
 
 ```
    [b7a.observability.metrics]
@@ -817,7 +843,7 @@ Follow the below steps to set up Prometheus and view metrics for phone_store_ser
    host="0.0.0.0"
 ```
 
-- Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
+- Create a file named `prometheus.yml` inside the `/tmp/` directory and add the following configurations to the `prometheus.yml` file:
 ```
    global:
      scrape_interval:     15s
@@ -829,57 +855,54 @@ Follow the below steps to set up Prometheus and view metrics for phone_store_ser
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE : Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
+ > NOTE: Be sure to replace `172.17.0.1` if your local Docker IP is different from `172.17.0.1`
    
-- Run the Prometheus Docker image using the following command
+- Execute the following command to run the Prometheus Docker image:
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
 
-- Navigate to `message_construction_patterns/guide` and run the `phone_store_service` using the following command
+- Navigate to `message_construction_patterns/guide` and run the `phone_store_service` using the following command:
 ```
    $ ballerina run --config phone_store_service/ballerina.conf phone_store_service/
 ```
 
-- You can access Prometheus at the following URL
+- You can access Prometheus via the following URL:
 ```
    http://localhost:19090/
 ```
 
-NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+> NOTE: Ballerina has the following metrics by default for the HTTP server connector. You can enter following expression in the Prometheus UI:
 -  http_requests_total
 -  http_response_time
 
 ### Logging
+The Ballerina log package provides various functions that you can use to print log messages on the console depending on your requirement. You can import the ballerina/log package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
-
-- Start the Ballerina Service with the following command from `message_construction_patterns/guide`
+- Navigate to `message_construction_patterns/guide` and start the Ballerina service using the following command:
 ```
    $ nohup ballerina run phone_store_service/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `message_construction_patterns/guide` directory
+ > NOTE: This writes console logs to the `ballerina.log` file in the `message_construction_patterns/guide` directory.
 
-- Start Elasticsearch using the following command
-
-- Start Elasticsearch using the following command
+- Execute the following command to start Elasticsearch:
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
 
-   NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
+ > NOTE: Linux users may need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
    
-- Start Kibana plugin for data visualization with Elasticsearch
+- Execute the following command to start the Kibana plugin for data visualisation with Elasticsearch:
 ```
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
 
-- Configure logstash to format the ballerina logs
+- Follow the steps below to configure logstash to format Ballerina logs:
 
-i) Create a file named `logstash.conf` with the following content
+i) Create a file named `logstash.conf` with the following content:
 ```
 input {  
  beats{ 
@@ -890,8 +913,8 @@ input {
 filter {  
  grok{  
      match => { 
-	 "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
-	 \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
+"message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
+\[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
      }  
  }  
 }   
@@ -905,9 +928,11 @@ output {
 }  
 ```
 
-ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`
+ii) Save the `logstash.conf` file inside a directory named `{SAMPLE_ROOT}\pipeline`
      
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+iii) Execute the following command to start the logstash container.
+
+> NOTE: Be sure to replace {SAMPLE_ROOT} with your directory name.
      
 ```
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
@@ -915,9 +940,9 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
   
- - Configure filebeat to ship the ballerina logs
+ - Follow the steps below to configure filebeat to ship Ballerina logs:
     
-i) Create a file named `filebeat.yml` with the following content
+i) Create a file named `filebeat.yml` with the following content:
 ```
 filebeat.prospectors:
 - type: log
@@ -926,11 +951,13 @@ filebeat.prospectors:
 output.logstash:
   hosts: ["logstash:5044"]  
 ```
-NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
+> NOTE: You can use the `$chmod go-w filebeat.yml` command to modify the ownership of the filebeat.yml file. 
 
-ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
+ii) Save the `filebeat.yml` file inside a directory named `{SAMPLE_ROOT}\filebeat`.  
         
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+iii) Execute the following command to start the logstash container.
+
+> NOTE: Be sure to replace {SAMPLE_ROOT} with your directory name.
      
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
@@ -938,8 +965,7 @@ $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
- - Access Kibana to visualize the logs using following URL
+ - Use the following URL to access Kibana and visualize logs:
 ```
    http://localhost:5601 
 ```
-
