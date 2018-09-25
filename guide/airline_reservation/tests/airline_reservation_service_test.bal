@@ -25,10 +25,6 @@ json requestPayload = {
     "To":"Changi"
 };
 
-@test:BeforeSuite
-function beforeFunc () {
-}
-
 // Client endpoint
 endpoint http:Client clientEP {
     url:"http://localhost:9091/airline"
@@ -92,8 +88,4 @@ function testResourceFlightEmirates () {
         "\"From\":\"Colombo\", \"To\":\"Changi\", \"Price\":273}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
-}
-
-@test:AfterSuite
-function afterFunc () {
 }
