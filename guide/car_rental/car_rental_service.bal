@@ -80,7 +80,7 @@ service<http:Service> carRentalService bind carEP {
         json preferredType = reqPayload.Preference;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (name == null || arrivalDate == null || departDate == null || preferredType == null) {
+        if (name == () || arrivalDate == () || departDate == () || preferredType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);

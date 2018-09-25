@@ -81,7 +81,7 @@ service<http:Service> hotelReservationService bind hotelEP {
         json preferredRoomType = reqPayload.Preference;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (name == null || arrivalDate == null || departDate == null || preferredRoomType == null) {
+        if (name == () || arrivalDate == () || departDate == () || preferredRoomType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(response);
