@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/sanethmaduranga/eip-message-transformation.svg?branch=master)](https://travis-ci.org/sanethmaduranga/eip-message-transformation.svg?branch=master)
+[![Build Status](https://travis-ci.org/ballerina-guides/eip-message-transformation.svg?branch=master)](https://travis-ci.org/ballerina-guides/eip-message-transformation)
 
 # EIP-Message-Transformation
 There are different ways of message transformation methods in EIP (Enterprise Integration Patterns). In this guide, we are focusing on 'content filter', 'claim check' and 'content enricher' message transformation methods between services using an example scenario.
