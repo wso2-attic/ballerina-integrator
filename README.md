@@ -174,9 +174,9 @@ json hotelPreference = inReqPayload.Preference.Accommodation;
 json carPreference = inReqPayload.Preference.Car;
 
 // If payload parsing fails, send a "Bad Request" message as the response
-if (outReqPayload.Name == null || outReqPayload.ArrivalDate == null ||
-    outReqPayload.DepartureDate == null || airlinePreference == null ||
-    hotelPreference == null || carPreference == null) {
+if (outReqPayload.Name == () || outReqPayload.ArrivalDate == () ||
+    outReqPayload.DepartureDate == () || airlinePreference == () ||
+    hotelPreference == () || carPreference == ()) {
     outResponse.statusCode = 400;
     outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
     _ = client -> respond(outResponse);
