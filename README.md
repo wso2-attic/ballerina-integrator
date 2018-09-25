@@ -1,4 +1,4 @@
-[![Build Status](https://www.travis-ci.org/tdkmalan/messaging-with-activemq.svg?branch=master)](https://www.travis-ci.org/tdkmalan/messaging-with-activemq)
+[![Build Status](https://travis-ci.org/ballerina-guides/messaging-with-activemq.svg?branch=master)](https://travis-ci.org/ballerina-guides/messaging-with-activemq)
 
 # Messaging with ActiveMQ
 This guide demonstrates how to use ActiveMQ as the message broker for messaging in Ballerina.
