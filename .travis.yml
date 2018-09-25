@@ -13,54 +13,42 @@
 # limitations under the License.
 
 script:
-# Declare STRING variables
-- STRING="Downloading Ballerina..."
-- STRING1="Downloading ActiveMQ..."
+- BALLERINA_VERSION="${VERSION:-0.981.2-SNAPSHOT}"
+- echo -e "\033[36m${BALLERINA_VERSION}\033[m"
 
-# Declare variable for Ballerina version
-- BALLERINA_VERSION=0.980.0-SNAPSHOT
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
+- echo -e "\033[36m${DISTRIBUTION_NAME}\033[m"
 
-# Declare variable for ActiveMQ version
-- ACTIVEMQ_VERSION="apache-activemq-5.15.4"
+- DOWNLOAD_CHANNEL="${CHANNEL:-nightly}"
+- echo -e "\033[36m${DOWNLOAD_CHANNEL}\033[m"
 
-# Print STRING variable
-- echo $STRING
+- DOWNLOAD_LOCATION="${URL:-https://product-dist.ballerina.io}"
+- echo -e "\033[36m${DOWNLOAD_LOCATION}\033[m"
 
-# Download Ballerina dist
-- wget https://product-dist.ballerina.io/nightly/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
+- echo -e "\033[36m$DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip\033[m"
+- wget $DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
 
-# Unzip the zip file
 - unzip -q $DISTRIBUTION_NAME.zip
 
-# Add Ballerina to the path variable
 - export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
 
-# Print Ballerina version
 - ballerina version
 
-# Print STRING1 variable
-- echo $STRING1
+- ACTIVEMQ_VERSION="apache-activemq-5.12.0"
 
-# Download ActiveMQ
-- wget https://archive.apache.org/dist/activemq/5.15.4/$ACTIVEMQ_VERSION-bin.tar.gz
+- echo -e "\033[36mhttps://archive.apache.org/dist/activemq/5.12.0/$ACTIVEMQ_VERSION-bin.tar.gz\033[m"
+- wget https://archive.apache.org/dist/activemq/5.12.0/$ACTIVEMQ_VERSION-bin.tar.gz
 
-# Untar the tar file
 - tar xzf $ACTIVEMQ_VERSION-bin.tar.gz
 
-# Start ActiveMQ
 - ./$ACTIVEMQ_VERSION/bin/activemq start
 
-# Copy ActiveMQ jars into Ballerina lib folder
-- cp $ACTIVEMQ_VERSION/lib/activemq-client-5.15.4.jar $DISTRIBUTION_NAME/bre/lib
+- cp $ACTIVEMQ_VERSION/lib/activemq-client-5.12.0.jar $DISTRIBUTION_NAME/bre/lib
 - cp $ACTIVEMQ_VERSION/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar $DISTRIBUTION_NAME/bre/lib
 - cp $ACTIVEMQ_VERSION/lib/hawtbuf-1.11.jar $DISTRIBUTION_NAME/bre/lib
 
-# Change the directory
-- cd guide/
+- cd guide
 
-# Initialize the Ballerina project
 - ballerina init
 
-# Run tests
 - ballerina test
