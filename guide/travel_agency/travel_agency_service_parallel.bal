@@ -93,8 +93,8 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         json location = inReqPayload.Location;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || fromPlace == null || toPlace == null ||
-            vehicleType == null || location == null) {
+        if (arrivalDate == () || departureDate == () || fromPlace == () || toPlace == () ||
+            vehicleType == () || location == ()) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = client -> respond(outResponse);
@@ -161,7 +161,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             int emiratesPrice;
 
             // Get the response and price for airline 'Qatar Airways'
-            if (airlineResponses["qatarWorker"] != null) {
+            if (airlineResponses["qatarWorker"] != ()) {
                 var resQatar = check <http:Response>(airlineResponses["qatarWorker"]);
                 jsonFlightResponseQatar = check resQatar.getJsonPayload();
                 match jsonFlightResponseQatar.Price {
@@ -171,7 +171,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             }
 
             // Get the response and price for airline 'Asiana'
-            if (airlineResponses["asianaWorker"] != null) {
+            if (airlineResponses["asianaWorker"] != ()) {
                 var resAsiana = check <http:Response>(airlineResponses["asianaWorker"]);
                 jsonFlightResponseAsiana = check resAsiana.getJsonPayload();
                 match jsonFlightResponseAsiana.Price {
@@ -181,7 +181,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             }
 
             // Get the response and price for airline 'Emirates'
-            if (airlineResponses["emiratesWorker"] != null) {
+            if (airlineResponses["emiratesWorker"] != ()) {
                 var resEmirates = check <http:Response>(airlineResponses["emiratesWorker"]);
                 jsonFlightResponseEmirates = check resEmirates.getJsonPayload();
                 match jsonFlightResponseEmirates.Price {
@@ -249,7 +249,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             int elizabethDistance;
 
             // Get the response and distance to the preferred location from the hotel 'Miramar'
-            if (hotelResponses["miramar"] != null) {
+            if (hotelResponses["miramar"] != ()) {
                 var responseMiramar = check <http:Response>(hotelResponses["miramar"]);
                 miramarJsonResponse = check responseMiramar.getJsonPayload();
                 match miramarJsonResponse.DistanceToLocation {
@@ -259,7 +259,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             }
 
             // Get the response and distance to the preferred location from the hotel 'Aqueen'
-            if (hotelResponses["aqueen"] != null) {
+            if (hotelResponses["aqueen"] != ()) {
                 var responseAqueen = check <http:Response>(hotelResponses["aqueen"]);
                 aqueenJsonResponse = check responseAqueen.getJsonPayload();
                 match aqueenJsonResponse.DistanceToLocation {
@@ -269,7 +269,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             }
 
             // Get the response and distance to the preferred location from the hotel 'Elizabeth'
-            if (hotelResponses["elizabeth"] != null) {
+            if (hotelResponses["elizabeth"] != ()) {
                 var responseElizabeth = check <http:Response>(hotelResponses["elizabeth"]);
                 elizabethJsonResponse = check responseElizabeth.getJsonPayload();
                 match elizabethJsonResponse.DistanceToLocation {
@@ -332,16 +332,16 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         } join (some 1) (map vehicleResponses) {
             // Get the first responding worker
 
-            // Get the response from company 'DriveSg' if not null
-            if (vehicleResponses["driveSg"] != null) {
+            // Get the response from company 'DriveSg' if not ()
+            if (vehicleResponses["driveSg"] != ()) {
                 var responseDriveSg = check <http:Response>(vehicleResponses["driveSg"]);
                 jsonVehicleResponse = check responseDriveSg.getJsonPayload();
-            } else if (vehicleResponses["dreamCar"] != null) {
-                // Get the response from company 'DreamCar' if not null
+            } else if (vehicleResponses["dreamCar"] != ()) {
+                // Get the response from company 'DreamCar' if not ()
                 var responseDreamCar = check <http:Response>(vehicleResponses["dreamCar"]);
                 jsonVehicleResponse = check responseDreamCar.getJsonPayload();
-            } else if (vehicleResponses["sixt"] != null) {
-                // Get the response from company 'Sixt' if not null
+            } else if (vehicleResponses["sixt"] != ()) {
+                // Get the response from company 'Sixt' if not ()
                 var responseSixt = check <http:Response>(vehicleResponses["sixt"]);
                 jsonVehicleResponse = check responseSixt.getJsonPayload();
             }

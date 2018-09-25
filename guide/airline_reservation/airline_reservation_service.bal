@@ -77,7 +77,7 @@ service<http:Service> airlineReservationService bind airlineEP {
         json toPlace = reqPayload.To;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || fromPlace == null || toPlace == null) {
+        if (arrivalDate == () || departureDate == () || fromPlace == () || toPlace == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
@@ -126,7 +126,7 @@ service<http:Service> airlineReservationService bind airlineEP {
         json toPlace = reqPayload.To;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || arrivalDate == null || fromPlace == null || toPlace == null) {
+        if (arrivalDate == () || arrivalDate == () || fromPlace == () || toPlace == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
@@ -175,7 +175,7 @@ service<http:Service> airlineReservationService bind airlineEP {
         json toPlace = reqPayload.To;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || fromPlace == null || toPlace == null) {
+        if (arrivalDate == () || departureDate == () || fromPlace == () || toPlace == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);

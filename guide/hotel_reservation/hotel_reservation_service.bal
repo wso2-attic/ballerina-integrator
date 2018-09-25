@@ -76,7 +76,7 @@ service<http:Service> hotelReservationService bind hotelEP {
         json location = reqPayload.Location;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || location == null) {
+        if (arrivalDate == () || departureDate == () || location == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
@@ -122,7 +122,7 @@ service<http:Service> hotelReservationService bind hotelEP {
         json location = reqPayload.Location;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || location == null) {
+        if (arrivalDate == () || departureDate == () || location == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
@@ -168,7 +168,7 @@ service<http:Service> hotelReservationService bind hotelEP {
         json location = reqPayload.Location;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || location == null) {
+        if (arrivalDate == () || departureDate == () || location == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
