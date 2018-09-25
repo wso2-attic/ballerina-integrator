@@ -178,7 +178,7 @@ fork {
     int emiratesPrice;
 
     // Get the response and price for airline 'Qatar Airways'
-    if (airlineResponses["qatarWorker"] != null) {
+    if (airlineResponses["qatarWorker"] != ()) {
         var resQatar = check <http:Response>(airlineResponses["qatarWorker"]);
         jsonFlightResponseQatar = check resQatar.getJsonPayload();
         match jsonFlightResponseQatar.Price {
@@ -188,7 +188,7 @@ fork {
     }
 
     // Get the response and price for airline 'Asiana'
-    if (airlineResponses["asianaWorker"] != null) {
+    if (airlineResponses["asianaWorker"] != ()) {
         var resAsiana = check <http:Response>(airlineResponses["asianaWorker"]);
         jsonFlightResponseAsiana = check resAsiana.getJsonPayload();
         match jsonFlightResponseAsiana.Price {
@@ -198,7 +198,7 @@ fork {
     }
 
     // Get the response and price for airline 'Emirates'
-    if (airlineResponses["emiratesWorker"] != null) {
+    if (airlineResponses["emiratesWorker"] != ()) {
         var resEmirates = check <http:Response>(airlineResponses["emiratesWorker"]);
         jsonFlightResponseEmirates = check resEmirates.getJsonPayload();
         match jsonFlightResponseEmirates.Price {
@@ -276,7 +276,7 @@ fork {
     int elizabethDistance;
 
     // Get the response and distance to the preferred location from hotel 'Miramar'
-    if (hotelResponses["miramar"] != null) {
+    if (hotelResponses["miramar"] != ()) {
         var responseMiramar = check <http:Response>(hotelResponses["miramar"]);
         miramarJsonResponse = check responseMiramar.getJsonPayload();
         match miramarJsonResponse.DistanceToLocation {
@@ -286,7 +286,7 @@ fork {
     }
 
     // Get the response and distance to the preferred location from hotel 'Aqueen'
-    if (hotelResponses["aqueen"] != null) {
+    if (hotelResponses["aqueen"] != ()) {
         var responseAqueen = check <http:Response>(hotelResponses["aqueen"]);
         aqueenJsonResponse = check responseAqueen.getJsonPayload();
         match aqueenJsonResponse.DistanceToLocation {
@@ -296,7 +296,7 @@ fork {
     }
 
     // Get the response and distance to the preferred location from hotel 'Elizabeth'
-    if (hotelResponses["elizabeth"] != null) {
+    if (hotelResponses["elizabeth"] != ()) {
         var responseElizabeth = check <http:Response>(hotelResponses["elizabeth"]);
         elizabethJsonResponse = check responseElizabeth.getJsonPayload();
         match elizabethJsonResponse.DistanceToLocation {
@@ -367,16 +367,16 @@ fork {
 } join (some 1) (map vehicleResponses) {
     // Get the first responding worker
 
-    // Get the response from company 'DriveSg' if not null
-    if (vehicleResponses["driveSg"] != null) {
+    // Get the response from company 'DriveSg' if not ()
+    if (vehicleResponses["driveSg"] != ()) {
         var responseDriveSg = check <http:Response>(vehicleResponses["driveSg"]);
         jsonVehicleResponse = check responseDriveSg.getJsonPayload();
-    } else if (vehicleResponses["dreamCar"] != null) {
-        // Get the response from company 'DreamCar' if not null
+    } else if (vehicleResponses["dreamCar"] != ()) {
+        // Get the response from company 'DreamCar' if not ()
         var responseDreamCar = check <http:Response>(vehicleResponses["dreamCar"]);
         jsonVehicleResponse = check responseDreamCar.getJsonPayload();
-    } else if (vehicleResponses["sixt"] != null) {
-        // Get the response from company 'Sixt' if not null
+    } else if (vehicleResponses["sixt"] != ()) {
+        // Get the response from company 'Sixt' if not ()
         var responseSixt = check <http:Response>(vehicleResponses["sixt"]);
         jsonVehicleResponse = check responseSixt.getJsonPayload();
     }
