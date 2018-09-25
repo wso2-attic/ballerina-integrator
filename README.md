@@ -155,7 +155,7 @@ You can test the functionality of the `passed_student_filter_service` by sending
 **Filter Student's marks**
 
 ```bash
-curl -X POST -v -d '{"name":"Sam","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science", "marks":70}]}' 
+curl -X POST -v -d '{"name":"Sam","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science", "marks":70}]}' \
 http://localhost:9090/filterService/filterMarks -H 'content-type: application/json'
 
 Output :  
@@ -252,9 +252,6 @@ Now you can build a Ballerina executable archive (.balx) of the service that we 
 
 ```
    $ ballerina build message-filtering
-
-   Run following command to start docker container: 
-   docker run -d -p 9090:9090 ballerina.guides.io/passed_student_filter_service:v1.0
 ```
 
 Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.  
@@ -328,9 +325,6 @@ Now you can build a Ballerina executable archive (.balx) of the service that you
   
 ```
    $ ballerina build message-filtering
-  
-   Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/kubernetes/message-filtering
 ```
 
 You can verify that the Docker image that you specified in `@kubernetes:Deployment` is created, by using `$ docker images`. 
