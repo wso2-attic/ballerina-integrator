@@ -170,6 +170,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
 
                 responseStr = check resp.getTextPayload();
                 // Add the response from the `/GOOG` endpoint to the `responseJson` file.
+                
                 responseJson["GOOG"] = responseStr;
             }
             error err => {
@@ -181,6 +182,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         var response2 = await f2;
         match response2 {
             http:Response resp => {
+                
                 responseStr = check resp.getTextPayload();
                 // Add the response from `/APPL` endpoint to `responseJson` file.
                 responseJson["APPL"] = responseStr;
