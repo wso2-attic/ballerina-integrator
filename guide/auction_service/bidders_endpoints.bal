@@ -68,11 +68,11 @@ service<http:Service> bidService bind biddersEP {
         }
 
         //Check the item condition and set the appropriate bid value
-        if (Condition == "good"){
+        if (Condition == "good") {
             bid = 350000;
         }
 
-        if (Condition == "bad"){
+        if (Condition == "bad") {
             bid = 33000;
         }
 
@@ -120,11 +120,11 @@ service<http:Service> bidService bind biddersEP {
         }
 
         //Check the item condition and set the appropriate bid value
-        if (Condition == "good"){
+        if (Condition == "good") {
             bid = 470000;
         }
 
-        if (Condition == "bad"){
+        if (Condition == "bad") {
             bid = 42000;
         }
 
@@ -172,11 +172,11 @@ service<http:Service> bidService bind biddersEP {
         }
 
         //Check the item condition and set the appropriate bid value
-        if (Condition == "good"){
+        if (Condition == "good") {
             bid = 440000;
         }
 
-        if (Condition == "bad"){
+        if (Condition == "bad") {
             bid = 43000;
         }
 

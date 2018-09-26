@@ -339,14 +339,10 @@ The above code shows how the auction service initiates a request to all bidders 
 
 ### Invoking the service
 
-Navigate to `scatter-gather-messaging/guide` and run the following commands in separate terminals to start two HTTP services. This will start the `auctionService` and  `bidService` services in ports 9091 and 9092 respectively.
+Navigate to `scatter-gather-messaging/guide` and run the following commands in separate terminals to start two HTTP services. This will start the `auctionService` and  `bidService` services in ports 9091 and 9090 respectively.
 
 ```bash
-$ ballerina run auction_service/auction_service.bal
-```
-
-```bash
-$ ballerina run auction_service/bidders_endpoints.bal
+$ ballerina run auction_service/auction_service
 ```
    
 Invoke the auction service by sending a POST request to get the highest bid.
@@ -405,7 +401,7 @@ $ ballerina run target/auction_service.balx
 The successful execution of a service will show us something similar to the following output. 
 
 ```
-ballerina: initiating service(s) in 'target/auction_service.balx'
+Initiating service(s) in 'target/auction_service.balx'
 ballerina: started HTTP/WS endpoint 0.0.0.0:9091
 ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 ```
@@ -425,9 +421,9 @@ import ballerina/http;
 import ballerinax/docker;
 
 @docker:Config {
-    registry:"ballerina.guides.io",
-    name:"auction_service",
-    tag:"v1.0"
+    registry: "ballerina.guides.io",
+    name: "auction_service",
+    tag: "v1.0"
 }
 
 @docker:Expose{}
@@ -438,7 +434,7 @@ endpoint http:Listener auctionEP {
 
 //Client endpoint to communicate with bidders
 endpoint http:Client biddersEP1 {
-    url:"http://localhost:9091/bidders"
+    url: "http://localhost:9091/bidders"
 };
 
 // Auction service to get highest bid from bidders
@@ -490,19 +486,19 @@ import ballerinax/kubernetes;
 
 
 @kubernetes:Ingress {
-    hostname:"ballerina.guides.io",
-    name:"ballerina-guides-auction-service",
-    path:"/"
+    hostname: "ballerina.guides.io",
+    name: "ballerina-guides-auction-service",
+    path: "/"
 }
 
 @kubernetes:Service {
-    serviceType:"NodePort",
-    name:"ballerina-guides-auction-service"
+    serviceType: "NodePort",
+    name: "ballerina-guides-auction-service"
 }
 
 @kubernetes:Deployment {
-    image:"ballerina.guides.io/auction_service:v1.0",
-    name:"ballerina-guides-auction-service"
+    image: "ballerina.guides.io/auction_service:v1.0",
+    name: "ballerina-guides-auction-service"
 }
 // Service endpoint
 endpoint http:Listener
@@ -516,7 +512,7 @@ endpoint http:Client biddersEP1 {
 };
 
 // Auction service to get highest bid from bidders
-@http:ServiceConfig {basePath:"/auction"}
+@http:ServiceConfig {basePath: "/auction"}
 service<http:Service> auctionService bind auctionEP {  
 ```
 
