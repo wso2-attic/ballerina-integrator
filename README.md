@@ -112,7 +112,7 @@ endpoint http:Listener asyncServiceEP {
 
 # This service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
-    basePath:"/quote-summary"
+    basePath: "/quote-summary"
 }
 service<http:Service> AsyncInvoker bind asyncServiceEP {
 
@@ -121,13 +121,13 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
     # + caller - Represents the remote client's endpoint
     # + req - Represents the client request
     @http:ResourceConfig {
-        methods:["GET"],
-        path:"/"
+        methods: ["GET"],
+        path: "/"
     }
     getQuote(endpoint caller, http:Request req) {
         // The endpoint for the Stock Quote Backend service.
         endpoint http:Client nasdaqServiceEP {
-            url:"http://localhost:9095"
+            url: "http://localhost:9095"
         };
         http:Response finalResponse = new;
         string responseStr;
