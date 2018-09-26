@@ -18,7 +18,7 @@ script:
 - STRING1="Downloading ActiveMQ..."
 
 # Declare variable for Ballerina version
-- BALLERINA_VERSION=0.980.0-SNAPSHOT
+- BALLERINA_VERSION="${VERSION:-0.980.2-SNAPSHOT}"
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
 
 # Declare variable for ActiveMQ version
