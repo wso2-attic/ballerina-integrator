@@ -2,18 +2,21 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/runtime;
 
-@Description {value:"Attributes associated with the service endpoint is defined here."}
+# Attributes associated with the service endpoint is defined here.
 endpoint http:Listener asyncServiceEP {
     port:9090
 };
 
-@Description {value:"Service is to be exposed via HTTP/1.1."}
+# Service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
     basePath:"/quote-summary"
 }
 service<http:Service> AsyncInvoker bind asyncServiceEP {
 
-    @Description {value:"Resource for the GET requests of quote service"}
+    # Resource for the GET requests of quote service.
+    #
+    # + caller - Represents the remote client's endpoint
+    # + req - Represents the client request
     @http:ResourceConfig {
         methods:["GET"],
         path:"/"

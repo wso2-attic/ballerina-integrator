@@ -105,19 +105,21 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/runtime;
 
-@Description {value:"Attributes associated with the service endpoint are defined here."}
+# Attributes associated with the service endpoint are defined here.
 endpoint http:Listener asyncServiceEP {
     port: 9090
 };
 
-@Description {value:"This service is to be exposed via HTTP/1.1."}
+# This service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
     basePath: "/quote-summary"
 }
 service<http:Service> AsyncInvoker bind asyncServiceEP {
 
-    @Description {value:"The resource for the GET requests of the quote service."}
-
+    # The resource for the GET requests of the quote service.
+    #
+    # + caller - Represents the remote client's endpoint
+    # + req - Represents the client request
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/"
@@ -129,10 +131,9 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         };
         http:Response finalResponse = new;
         string responseStr;
-
         // This initializes empty json to add results from the backend call.
         json  responseJson = {};
-        
+
         io:println(" >> Invoking services asynchrnounsly...");
 
         // 'start' allows you to invoke a functions  asynchronously. Following three
@@ -181,7 +182,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         var response2 = await f2;
         match response2 {
             http:Response resp => {
-            
+
                 responseStr = check resp.getTextPayload();
                 // Add the response from `/APPL` endpoint to `responseJson` file.
                 responseJson["APPL"] = responseStr;
@@ -209,7 +210,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         // Send the response back to the client.
         finalResponse.setJsonPayload(untaint responseJson);
         io:println(" >> Response : " + responseJson.toString());
-        _ = caller->respond(finalResponse);
+        _ = caller -> respond(finalResponse);
     }
 }
 ```
@@ -355,7 +356,7 @@ endpoint http:Listener listener {
     port:9090
 };
 
-@Description { value: "Service is to be exposed via HTTP/1.1." }
+# Service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
     basePath: "/quote-summary"
 }
@@ -421,7 +422,7 @@ endpoint http:Listener listener {
     port:9090
 };
 
-@Description { value: "Service is to be exposed via HTTP/1.1." }
+# Service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
     basePath: "/quote-summary"
 }
