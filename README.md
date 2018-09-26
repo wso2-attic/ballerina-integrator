@@ -339,7 +339,7 @@ The above code shows how the auction service initiates a request to all bidders 
 
 ### Invoking the service
 
-Navigate to `scatter-gather-messaging/guide` and run the following commands in separate terminals to start two HTTP services. This will start the `auctionService` and  `bidService` services in ports 9091 and 9090 respectively.
+Navigate to `scatter-gather-messaging/guide` and run the following commands in a separate terminal to start two HTTP services. This will start the `auctionService` and  `bidService` services in ports 9091 and 9090 respectively.
 
 ```bash
 $ ballerina run auction_service/auction_service
