@@ -105,18 +105,18 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/runtime;
 
-# Attributes associated with the service endpoint is defined here.
+# Attributes associated with the service endpoint are defined here.
 endpoint http:Listener asyncServiceEP {
     port:9090
 };
 
-# Service is to be exposed via HTTP/1.1.
+# This service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
     basePath:"/quote-summary"
 }
 service<http:Service> AsyncInvoker bind asyncServiceEP {
 
-    # Resource for the GET requests of quote service.
+    # The resource for the GET requests of the quote service.
     #
     # + caller - Represents the remote client's endpoint
     # + req - Represents the client request
@@ -125,13 +125,13 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         path:"/"
     }
     getQuote(endpoint caller, http:Request req) {
-        // Endpoint for the stock quote backend service
+        // The endpoint for the Stock Quote Backend service.
         endpoint http:Client nasdaqServiceEP {
             url:"http://localhost:9095"
         };
         http:Response finalResponse = new;
         string responseStr;
-        // Initialize empty json to add results from backed call
+        // This initializes empty json to add results from the backend call.
         json  responseJson = {};
 
         io:println(" >> Invoking services asynchrnounsly...");
@@ -139,36 +139,37 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         // 'start' allows you to invoke a functions  asynchronously. Following three
         // remote invocation returns without waiting for response.
 
-        // Calling the backend to get the stock quote for GOOG asynchronously
+        // This calls the backend to get the stock quote for GOOG asynchronously.
         future <http:Response|error> f1 = start nasdaqServiceEP
         -> get("/nasdaq/quote/GOOG");
 
         io:println(" >> Invocation completed for GOOG stock quote! Proceed without
         blocking for a response.");
 
-        // Calling the backend to get the stock quote for APPL asynchronously
+        // This calls the backend to get the stock quote for APPL asynchronously.
         future <http:Response|error> f2 = start nasdaqServiceEP
         -> get("/nasdaq/quote/APPL");
 
         io:println(" >> Invocation completed for APPL stock quote! Proceed without
         blocking for a response.");
 
-        // Calling the backend to get the stock quote for MSFT asynchronously
+        // This calls the backend to get the stock quote for MSFT asynchronously.
         future <http:Response|error> f3 = start nasdaqServiceEP
         -> get("/nasdaq/quote/MSFT");
 
         io:println(" >> Invocation completed for MSFT stock quote! Proceed without
         blocking for a response.");
 
-        // ‘await` blocks until the previously started async function returns.
-        // Append the results from all the responses of stock data backend
+        // The ‘await` keyword blocks until the previously started async function returns.
+        // Append the results from all the responses of the stock data backend.
         var response1 = await f1;
-        // Use `match` to check the responses are available, if not available get error
+        // Use `match` to check whether the responses are available.
+        // If a response is not available, an error is generated.
         match response1 {
             http:Response resp => {
 
                 responseStr = check resp.getTextPayload();
-                // Add the response from /GOOG endpoint to responseJson file
+                // Add the response from the `/GOOG` endpoint to the `responseJson` file.
                 responseJson["GOOG"] = responseStr;
             }
             error err => {
@@ -181,7 +182,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         match response2 {
             http:Response resp => {
                 responseStr = check resp.getTextPayload();
-                // Add the response from /APPL endpoint to responseJson file
+                // Add the response from `/APPL` endpoint to `responseJson` file.
                 responseJson["APPL"] = responseStr;
             }
             error err => {
@@ -194,7 +195,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         match response3 {
             http:Response resp => {
                 responseStr = check resp.getTextPayload();
-                // Add the response from /MSFT endpoint to responseJson file
+                // Add the response from the `/MSFT` endpoint to the `responseJson` file.
                 responseJson["MSFT"] = responseStr;
 
             }
@@ -204,7 +205,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
             }
         }
 
-        // Send the response back to the client
+        // Send the response back to the client.
         finalResponse.setJsonPayload(untaint responseJson);
         io:println(" >> Response : " + responseJson.toString());
         _ = caller -> respond(finalResponse);
