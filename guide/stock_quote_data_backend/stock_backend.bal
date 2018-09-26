@@ -2,16 +2,19 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/runtime;
 
-@Description {value:"Attributes associated with the service endpoint are defined here."}
+# Attributes associated with the service endpoint are defined here.
 endpoint http:Listener listener {
     port:9095
 };
 
-@Description {value:"By default Ballerina assumes that the service is to be exposed via HTTP/1.1."}
+# By default Ballerina assumes that the service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {basePath:"/nasdaq/quote"}
 service<http:Service> StockDataService bind listener {
 
-    @Description {value:"Resource to handle GET requests for GOOG stock quote"}
+    # Resource to handle GET requests for GOOG stock quote.
+    #
+    # + caller - Represents the remote client's endpoint
+    # + request - Represents the client request
     @http:ResourceConfig {
         path:"/GOOG", methods:["GET"]
     }
@@ -22,7 +25,10 @@ service<http:Service> StockDataService bind listener {
         _ = caller -> respond(response);
     }
 
-    @Description {value:"Resource to handle GET requests for APPL stock quote"}
+    # Resource to handle GET requests for APPL stock quote.
+    #
+    # + caller - Represents the remote client's endpoint
+    # + request - Represents the client request
     @http:ResourceConfig {
         path:"/APPL", methods:["GET"]
     }
@@ -33,7 +39,10 @@ service<http:Service> StockDataService bind listener {
         _ = caller -> respond(response);
     }
 
-    @Description {value:"Resource to handle GET requests for MSFT stock quote"}
+    # Resource to handle GET requests for MSFT stock quote.
+    #
+    # + caller - Represents the remote client's endpoint
+    # + request - Represents the client request
     @http:ResourceConfig {
         path:"/MSFT", methods:["GET"]
     }
