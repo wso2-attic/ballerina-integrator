@@ -268,7 +268,7 @@ Output :
 < Content-Type: application/json
 < Location: http://localhost:9090/ordermgt/order/100500
 < content-length: 46
-< server: ballerina/0.981.0
+< server: ballerina/0.982.0
 
 {"status":"Order Created.","orderId":"100500"} 
 ```
@@ -335,7 +335,7 @@ Once you are done with the development, you can deploy the service using any of 
 
 - Successful startup of the service results in the following output.
 ```
-   ballerina: initiating service(s) in 'target/restful_service.balx'
+   Initiating service(s) in 'target/restful_service.balx'
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
@@ -384,7 +384,6 @@ service<http:Service> orderMgt bind listener {
    Running tests
        restful_service:0.0.0
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
-   ballerina: stopped HTTP/WS endpoint 0.0.0.0:9090
             [pass] testResourceAddOrder
             [pass] testResourceUpdateOrder
             [pass] testResourceFindOrder
@@ -482,7 +481,6 @@ This creates the corresponding Docker image and the Kubernetes artifacts using t
    Running tests
        restful_service:0.0.0
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
-   ballerina: stopped HTTP/WS endpoint 0.0.0.0:9090
             [pass] testResourceAddOrder
             [pass] testResourceUpdateOrder
             [pass] testResourceFindOrder
