@@ -107,7 +107,7 @@ import ballerina/runtime;
 
 # Attributes associated with the service endpoint are defined here.
 endpoint http:Listener asyncServiceEP {
-    port:9090
+    port: 9090
 };
 
 # This service is to be exposed via HTTP/1.1.
@@ -170,7 +170,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
 
                 responseStr = check resp.getTextPayload();
                 // Add the response from the `/GOOG` endpoint to the `responseJson` file.
-                
+
                 responseJson["GOOG"] = responseStr;
             }
             error err => {
@@ -182,7 +182,7 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         var response2 = await f2;
         match response2 {
             http:Response resp => {
-                
+
                 responseStr = check resp.getTextPayload();
                 // Add the response from `/APPL` endpoint to `responseJson` file.
                 responseJson["APPL"] = responseStr;
