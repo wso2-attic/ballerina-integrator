@@ -36,42 +36,41 @@ import ballerina/io;
 //@docker:Expose {}
 //
 
-endpoint http:Listener comEP{
+endpoint http:Listener comEP {
     port: 9091
 };
 
 //Client endpoint to communicate with company recruitment service
-endpoint http:Client locationEP{
+endpoint http:Client locationEP {
     url: "http://localhost:9090/companies"
 };
 
 //Service is invoked using basePath value "/checkVacancies"
-@http:ServiceConfig{
+@http:ServiceConfig {
     basePath: "/checkVacancies"
 }
 
-//"comapnyRecruitmentsAgency" route requests to relevant endpoints and get their responses.
-service<http:Service> comapnyRecruitmentsAgency  bind comEP{
+//"comapnyRecruitmentsAgency" routes requests to relevant endpoints and gets their responses.
+service<http:Service> comapnyRecruitmentsAgency bind comEP {
 
-    // POST requests is directed to a specific company using,/checkVacancies/company.
-    @http:ResourceConfig{
+    // POST requests is directed to a specific company using, /checkVacancies/company.
+    @http:ResourceConfig {
         methods: ["POST"],
         path: "/company"
     }
-
-    comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req){
+    comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req) {
         //Get the JSON payload from the request message.
         var jsonMsg = req.getJsonPayload();
-        
-       //Parsing the JSON payload from the request
-        match jsonMsg{
-            json msg =>{
+
+        //Parsing the JSON payload from the request
+        match jsonMsg {
+            json msg => {
                 //Get the string value relevant to the key `name`.
                 string nameString;
 
                 nameString = check <string>msg["Name"];
 
-                //The http response can be either error|empty|clientResponse
+                //The HTTP response can be either error|empty|clientResponse
                 (http:Response|error|()) clientResponse;
 
                 if (nameString == "John and Brothers (pvt) Ltd"){
@@ -79,29 +78,27 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                     clientResponse =
                     locationEP->get("/John-and-Brothers-(pvt)-Ltd");
 
-                }else if(nameString == "ABC Company"){
+                } else if (nameString == "ABC Company"){
                     clientResponse =
                     locationEP->get("/ABC-Company");
 
-                }else if(nameString == "Smart Automobile"){
+                } else if (nameString == "Smart Automobile"){
                     clientResponse =
                     locationEP->get("/Smart-Automobile");
 
-                }else {
-
+                } else {
                     clientResponse = log:printError("Company Not Found!");
-
                 }
 
                 //Use respond() to send the client response back to the caller.
-                //when the request was successful, response is returned.
-                //sends back the clientResponse to the caller if no any error is found.
+                //When the request is successful, the response is returned.
+                //Sends back the clientResponse to the caller if no error is found.
                 match clientResponse {
-                    http:Response respone =>{
+                    http:Response respone => {
                         CompanyEP->respond(respone) but { error e =>
                         log:printError("Error sending response", err = e) };
                     }
-                    error conError =>{
+                    error conError => {
                         error err = {};
                         http:Response res = new;
                         res.statusCode = 500;
@@ -113,8 +110,8 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 }
             }
 
-            error err =>{
-            //500 error response is constructed and sent back to the client.
+            error err => {
+                //500 error response is constructed and sent back to the client.
                 http:Response res = new;
                 res.statusCode = 500;
                 res.setPayload(untaint err.message);
