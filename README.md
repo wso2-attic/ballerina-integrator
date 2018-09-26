@@ -73,35 +73,35 @@ import ballerina/log;
 import ballerina/mime;
 import ballerina/io;
 
-endpoint http:Listener comEP{
+endpoint http:Listener comEP {
     port: 9091
 };
 
 //Client endpoint to communicate with company recruitment service
-endpoint http:Client locationEP{
+endpoint http:Client locationEP {
     url: "http://localhost:9090/companies"
 };
 
 //Service is invoked using basePath value "/checkVacancies"
-@http:ServiceConfig{
+@http:ServiceConfig {
     basePath: "/checkVacancies"
 }
 
 //"comapnyRecruitmentsAgency" routes requests to relevant endpoints and gets their responses.
-service<http:Service> comapnyRecruitmentsAgency  bind comEP{
+service<http:Service> comapnyRecruitmentsAgency bind comEP {
 
     // POST requests is directed to a specific company using, /checkVacancies/company.
-    @http:ResourceConfig{
+    @http:ResourceConfig {
         methods: ["POST"],
         path: "/company"
     }
-    comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req){
+    comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req) {
         //Get the JSON payload from the request message.
         var jsonMsg = req.getJsonPayload();
-        
-       //Parsing the JSON payload from the request
-        match jsonMsg{
-            json msg =>{
+
+        //Parsing the JSON payload from the request
+        match jsonMsg {
+            json msg => {
                 //Get the string value relevant to the key `name`.
                 string nameString;
 
@@ -115,16 +115,15 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                     clientResponse =
                     locationEP->get("/John-and-Brothers-(pvt)-Ltd");
 
-                }else if(nameString == "ABC Company"){
+                } else if (nameString == "ABC Company"){
                     clientResponse =
                     locationEP->get("/ABC-Company");
 
-                }else if(nameString == "Smart Automobile"){
+                } else if (nameString == "Smart Automobile"){
                     clientResponse =
                     locationEP->get("/Smart-Automobile");
 
-                }else {
-
+                } else {
                     clientResponse = log:printError("Company Not Found!");
                 }
 
@@ -132,11 +131,11 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                 //When the request is successful, the response is returned.
                 //Sends back the clientResponse to the caller if no error is found.
                 match clientResponse {
-                    http:Response respone =>{
+                    http:Response respone => {
                         CompanyEP->respond(respone) but { error e =>
                         log:printError("Error sending response", err = e) };
                     }
-                    error conError =>{
+                    error conError => {
                         error err = {};
                         http:Response res = new;
                         res.statusCode = 500;
@@ -147,11 +146,12 @@ service<http:Service> comapnyRecruitmentsAgency  bind comEP{
                     () => {}
                 }
             }
-            error err =>{
-            //500 error response is constructed and sent back to the client.
+
+            error err => {
+                //500 error response is constructed and sent back to the client.
                 http:Response res = new;
                 res.statusCode = 500;
-                res.setPayload(err.message);
+                res.setPayload(untaint err.message);
                 CompanyEP->respond(res) but { error e =>
                 log:printError("Error sending response", err = e) };
             }
@@ -174,13 +174,11 @@ endpoint http:Listener listener {
 // Company data management is done using an in memory map.
 map<json> companyDataMap;
 
-
 // RESTful service.
 @http:ServiceConfig { basePath: "/companies" }
 service<http:Service> orderMgt bind listener {
-
-    // Resource that handles the HTTP GET requests that are directed to specific
-    // company data using path '/John-and-Brothers-(pvt)-Ltd'
+    // Resource that handles the HTTP GET requests that are directed to data of a specific
+    // company using path '/John-and-Brothers-(pvt)-Ltd'
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/John-and-Brothers-(pvt)-Ltd"
@@ -189,9 +187,9 @@ service<http:Service> orderMgt bind listener {
         json? payload = {
             Name: "John and Brothers (pvt) Ltd",
             Total_number_of_Vacancies: 12,
-            Available_job_roles : "Senior Software Engineer = 3 ,Marketing Executives =5 Management Trainees=4",
-            CV_Closing_Date: "17/06/2018" ,
-            ContactNo: 01123456 ,
+            Available_job_roles: "Senior Software Engineer = 3 ,Marketing Executives =5 Management Trainees=4",
+            CV_Closing_Date: "17/06/2018",
+            ContactNo: 1123456,
             Email_Address: "careersjohn@jbrothers.com"
         };
 
@@ -207,19 +205,19 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    // Resource that handles the HTTP GET requests that are directed to specific
-    // company data using path '/ABC-Company'
+    // Resource that handles the HTTP GET requests that are directed to data
+    // of a specific company using path '/ABC-Company'
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/ABC-Company"
     }
     findAbcCompany(endpoint client, http:Request req) {
         json? payload = {
-            Name:"ABC Company",
+            Name: "ABC Company",
             Total_number_of_Vacancies: 10,
-            Available_job_roles : "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=2",
-            CV_Closing_Date: "20/07/2018" ,
-            ContactNo: 0112774 ,
+            Available_job_roles: "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=2",
+            CV_Closing_Date: "20/07/2018",
+            ContactNo: 112774,
             Email_Address: "careers@abc.com"
         };
 
@@ -235,19 +233,19 @@ service<http:Service> orderMgt bind listener {
         _ = client->respond(response);
     }
 
-    // Resource that handles the HTTP GET requests that are directed to specific
-    // company data using path '/Smart-Automobile'
+    // Resource that handles the HTTP GET requests that are directed to a specific
+    // company data of company using path '/Smart-Automobile'
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/Smart-Automobile"
     }
     findSmartAutomobile(endpoint client, http:Request req) {
         json? payload = {
-            Name:"Smart Automobile",
+            Name: "Smart Automobile",
             Total_number_of_Vacancies: 11,
-            Available_job_roles : "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=3",
-            CV_Closing_Date: "20/07/2018" ,
-            ContactNo: 0112774 ,
+            Available_job_roles: "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=3",
+            CV_Closing_Date: "20/07/2018",
+            ContactNo: 112774,
             Email_Address: "careers@smart.com"
         };
 
@@ -304,7 +302,7 @@ You can test the functionality of the `company_recruitment_agency_service` by se
 * upload completely sent off: 40 out of 40 bytes
 < HTTP/1.1 200 OK
 < Content-Type: application/json
-< server: ballerina/0.981.0
+< server: ballerina/0.982.0
 < content-length: 268
 
 {
@@ -336,7 +334,7 @@ Output :
 * upload completely sent off: 40 out of 40 bytes
 < HTTP/1.1 200 OK
 < Content-Type: application/json
-< server: ballerina/0.981.0
+< server: ballerina/0.982.0
 < content-length: 230
 
 {
@@ -370,7 +368,7 @@ Output :
 * upload completely sent off: 29 out of 29 bytes
 < HTTP/1.1 200 OK
 < Content-Type: application/json
-< server: ballerina/0.981.0
+< server: ballerina/0.982.0
 < content-length: 237
 
 {
@@ -413,21 +411,26 @@ Once you are done with the development, you can deploy the service using any of 
 As the first step, you can build a Ballerina executable archive (.balx) of the service that you developed above. Navigate to `/content-based-routing/guide` and run the following command. 
 
 ```bash
-   $ ballerina build company_recruitment_agency_service
+   $ ballerina build
 ```
 
 Once the `company_recruitment_agency_service.balx` file is created inside the target folder, you can run that with the following command. 
 
 ```bash
    $ ballerina run target/company_recruitment_agency_service.balx
+   $ ballerina run target/company_data_service.balx 
 ```
 
-The successful execution of the service will show us the following output. 
+The successful execution of the service will show us the following outputs. 
 
+```bash
+    Initiating service(s) in 'target/company_recruitment_agency_service.balx'
+    ballerina: started HTTP/WS endpoint 0.0.0.0:9091
 ```
-   ballerina: initiating service(s) in 'target/company_recruitment_agency_service.balx'
-	ballerina: started HTTP/WS endpoint 0.0.0.0:9091
-	ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+and 
+```bash
+    Initiating service(s) in 'target/company_data_service.balx'
+    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ### Deploying on Docker
