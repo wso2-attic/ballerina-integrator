@@ -26,12 +26,12 @@ import ballerina/log;
 
 //@docker:Expose {}
 endpoint http:Listener OnlineShoppingEP {
-    port:9090
+    port: 9090
 };
 
 //@docker:Expose {}
 endpoint http:Listener LocalShopEP {
-    port:9091
+    port: 9091
 };
 
 
