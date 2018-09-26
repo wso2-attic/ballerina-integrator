@@ -178,34 +178,28 @@ fork {
     int emiratesPrice;
 
     // Get the response and price for airline 'Qatar Airways'
-    if (airlineResponses["qatarWorker"] != null) {
-        var resQatar = check <http:Response>(airlineResponses["qatarWorker"]);
-        jsonFlightResponseQatar = check resQatar.getJsonPayload();
-        match jsonFlightResponseQatar.Price {
-            int intVal => qatarPrice = intVal;
-            any otherVals => qatarPrice = -1;
-        }
-    }
+    var resQatar = check <http:Response>(airlineResponses["qatarWorker"]);
+    jsonFlightResponseQatar = check resQatar.getJsonPayload();
+    qatarPrice = jsonFlightResponseQatar.Price but {
+        int price => price,
+        any otherVals => -1
+    };
 
     // Get the response and price for airline 'Asiana'
-    if (airlineResponses["asianaWorker"] != null) {
-        var resAsiana = check <http:Response>(airlineResponses["asianaWorker"]);
-        jsonFlightResponseAsiana = check resAsiana.getJsonPayload();
-        match jsonFlightResponseAsiana.Price {
-            int intVal => asianaPrice = intVal;
-            any otherVals => asianaPrice = -1;
-        }
-    }
+    var resAsiana = check <http:Response>(airlineResponses["asianaWorker"]);
+    jsonFlightResponseAsiana = check resAsiana.getJsonPayload();
+    asianaPrice = jsonFlightResponseAsiana.Price but {
+        int price => price,
+        any otherVals => -1
+    };
 
     // Get the response and price for airline 'Emirates'
-    if (airlineResponses["emiratesWorker"] != null) {
-        var resEmirates = check <http:Response>(airlineResponses["emiratesWorker"]);
-        jsonFlightResponseEmirates = check resEmirates.getJsonPayload();
-        match jsonFlightResponseEmirates.Price {
-            int intVal => emiratesPrice = intVal;
-            any otherVals => emiratesPrice = -1;
-        }
-    }
+    var resEmirates = check <http:Response>(airlineResponses["emiratesWorker"]);
+    jsonFlightResponseEmirates = check resEmirates.getJsonPayload();
+    emiratesPrice = jsonFlightResponseEmirates.Price but {
+        int price => price,
+        any otherVals => -1
+    };
 
     // Select the airline with the least price
     if (qatarPrice < asianaPrice) {
@@ -275,35 +269,29 @@ fork {
     int aqueenDistance;
     int elizabethDistance;
 
-    // Get the response and distance to the preferred location from hotel 'Miramar'
-    if (hotelResponses["miramar"] != null) {
-        var responseMiramar = check <http:Response>(hotelResponses["miramar"]);
-        miramarJsonResponse = check responseMiramar.getJsonPayload();
-        match miramarJsonResponse.DistanceToLocation {
-            int intVal => miramarDistance = intVal;
-            any otherVals => miramarDistance = -1;
-        }
-    }
+    // Get the response and distance to the preferred location from the hotel 'Miramar'
+    var responseMiramar = check <http:Response>(hotelResponses["miramar"]);
+    miramarJsonResponse = check responseMiramar.getJsonPayload();
+    miramarDistance = miramarJsonResponse.DistanceToLocation but {
+        int distance => distance,
+        any otherVals => -1
+    };
 
-    // Get the response and distance to the preferred location from hotel 'Aqueen'
-    if (hotelResponses["aqueen"] != null) {
-        var responseAqueen = check <http:Response>(hotelResponses["aqueen"]);
-        aqueenJsonResponse = check responseAqueen.getJsonPayload();
-        match aqueenJsonResponse.DistanceToLocation {
-            int intVal => aqueenDistance = intVal;
-            any otherVals => aqueenDistance = -1;
-        }
-    }
+    // Get the response and distance to the preferred location from the hotel 'Aqueen'
+    var responseAqueen = check <http:Response>(hotelResponses["aqueen"]);
+    aqueenJsonResponse = check responseAqueen.getJsonPayload();
+    aqueenDistance = aqueenJsonResponse.DistanceToLocation but {
+        int distance => distance,
+        any otherVals => -1
+    };
 
-    // Get the response and distance to the preferred location from hotel 'Elizabeth'
-    if (hotelResponses["elizabeth"] != null) {
-        var responseElizabeth = check <http:Response>(hotelResponses["elizabeth"]);
-        elizabethJsonResponse = check responseElizabeth.getJsonPayload();
-        match elizabethJsonResponse.DistanceToLocation {
-            int intVal => elizabethDistance = intVal;
-            any otherVals => elizabethDistance = -1;
-        }
-    }
+    // Get the response and distance to the preferred location from the hotel 'Elizabeth'
+    var responseElizabeth = check <http:Response>(hotelResponses["elizabeth"]);
+    elizabethJsonResponse = check responseElizabeth.getJsonPayload();
+    elizabethDistance = elizabethJsonResponse.DistanceToLocation but {
+        int distance => distance,
+        any otherVals => -1
+    };
 
     // Select the hotel with the lowest distance
     if (miramarDistance < aqueenDistance) {
@@ -367,16 +355,16 @@ fork {
 } join (some 1) (map vehicleResponses) {
     // Get the first responding worker
 
-    // Get the response from company 'DriveSg' if not null
-    if (vehicleResponses["driveSg"] != null) {
+    // Get the response from company 'DriveSg' if not ()
+    if (vehicleResponses["driveSg"] != ()) {
         var responseDriveSg = check <http:Response>(vehicleResponses["driveSg"]);
         jsonVehicleResponse = check responseDriveSg.getJsonPayload();
-    } else if (vehicleResponses["dreamCar"] != null) {
-        // Get the response from company 'DreamCar' if not null
+    } else if (vehicleResponses["dreamCar"] != ()) {
+        // Get the response from company 'DreamCar' if not ()
         var responseDreamCar = check <http:Response>(vehicleResponses["dreamCar"]);
         jsonVehicleResponse = check responseDreamCar.getJsonPayload();
-    } else if (vehicleResponses["sixt"] != null) {
-        // Get the response from company 'Sixt' if not null
+    } else if (vehicleResponses["sixt"] != ()) {
+        // Get the response from company 'Sixt' if not ()
         var responseSixt = check <http:Response>(vehicleResponses["sixt"]);
         jsonVehicleResponse = check responseSixt.getJsonPayload();
     }

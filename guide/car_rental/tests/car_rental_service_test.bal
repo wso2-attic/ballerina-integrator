@@ -24,10 +24,6 @@ json requestPayload = {
     "VehicleType":"Car"
 };
 
-@test:BeforeSuite
-function beforeFunc () {
-}
-
 // Client endpoint
 endpoint http:Client clientEP {
     url:"http://localhost:9093/car"
@@ -88,8 +84,4 @@ function testResourceSixt () {
         "\"ToDate\":\"13-04-2018\", \"PricePerDay\":7}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
-}
-
-@test:AfterSuite
-function afterFunc () {
 }

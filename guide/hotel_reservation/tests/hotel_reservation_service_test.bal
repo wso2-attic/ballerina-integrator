@@ -24,10 +24,6 @@ json requestPayload = {
     "Location":"Changi"
 };
 
-@test:BeforeSuite
-function beforeFunc () {
-}
-
 // Client endpoint
 endpoint http:Client clientEP {
     url:"http://localhost:9092/hotel"
@@ -91,8 +87,4 @@ function testResourceElizabeth () {
         "\"ToDate\":\"13-04-2018\", \"DistanceToLocation\":2}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
-}
-
-@test:AfterSuite
-function afterFunc () {
 }

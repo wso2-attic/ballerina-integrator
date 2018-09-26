@@ -76,7 +76,7 @@ service<http:Service> carRentalService bind carEP {
         json vehicleType = reqPayload.VehicleType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || vehicleType == null) {
+        if (arrivalDate == () || departureDate == () || vehicleType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
@@ -123,7 +123,7 @@ service<http:Service> carRentalService bind carEP {
         json vehicleType = reqPayload.VehicleType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || vehicleType == null) {
+        if (arrivalDate == () || departureDate == () || vehicleType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
@@ -170,7 +170,7 @@ service<http:Service> carRentalService bind carEP {
         json vehicleType = reqPayload.VehicleType;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (arrivalDate == null || departureDate == null || vehicleType == null) {
+        if (arrivalDate == () || departureDate == () || vehicleType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 script:
-- BALLERINA_VERSION="${VERSION:-0.980.2-SNAPSHOT}"
+- BALLERINA_VERSION="${VERSION:-0.981.2-SNAPSHOT}"
 - echo -e "\033[36m${BALLERINA_VERSION}\033[m"
 
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
@@ -39,6 +39,4 @@ script:
 - ballerina init
 
 # Run tests
-- ballerina test airline_reservation
-- ballerina test hotel_reservation
-- ballerina test car_rental
+- ballerina test
