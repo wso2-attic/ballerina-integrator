@@ -178,33 +178,27 @@ fork {
     int emiratesPrice;
 
     // Get the response and price for airline 'Qatar Airways'
-    if (airlineResponses["qatarWorker"] != ()) {
-        var resQatar = check <http:Response>(airlineResponses["qatarWorker"]);
-        jsonFlightResponseQatar = check resQatar.getJsonPayload();
-        match jsonFlightResponseQatar.Price {
-            int intVal => qatarPrice = intVal;
-            any otherVals => qatarPrice = -1;
-        }
+    var resQatar = check <http:Response>(airlineResponses["qatarWorker"]);
+    jsonFlightResponseQatar = check resQatar.getJsonPayload();
+    match jsonFlightResponseQatar.Price {
+        int intVal => qatarPrice = intVal;
+        any otherVals => qatarPrice = -1;
     }
 
     // Get the response and price for airline 'Asiana'
-    if (airlineResponses["asianaWorker"] != ()) {
-        var resAsiana = check <http:Response>(airlineResponses["asianaWorker"]);
-        jsonFlightResponseAsiana = check resAsiana.getJsonPayload();
-        match jsonFlightResponseAsiana.Price {
-            int intVal => asianaPrice = intVal;
-            any otherVals => asianaPrice = -1;
-        }
+    var resAsiana = check <http:Response>(airlineResponses["asianaWorker"]);
+    jsonFlightResponseAsiana = check resAsiana.getJsonPayload();
+    match jsonFlightResponseAsiana.Price {
+        int intVal => asianaPrice = intVal;
+        any otherVals => asianaPrice = -1;
     }
 
     // Get the response and price for airline 'Emirates'
-    if (airlineResponses["emiratesWorker"] != ()) {
-        var resEmirates = check <http:Response>(airlineResponses["emiratesWorker"]);
-        jsonFlightResponseEmirates = check resEmirates.getJsonPayload();
-        match jsonFlightResponseEmirates.Price {
-            int intVal => emiratesPrice = intVal;
-            any otherVals => emiratesPrice = -1;
-        }
+    var resEmirates = check <http:Response>(airlineResponses["emiratesWorker"]);
+    jsonFlightResponseEmirates = check resEmirates.getJsonPayload();
+    match jsonFlightResponseEmirates.Price {
+        int intVal => emiratesPrice = intVal;
+        any otherVals => emiratesPrice = -1;
     }
 
     // Select the airline with the least price
@@ -276,33 +270,27 @@ fork {
     int elizabethDistance;
 
     // Get the response and distance to the preferred location from hotel 'Miramar'
-    if (hotelResponses["miramar"] != ()) {
-        var responseMiramar = check <http:Response>(hotelResponses["miramar"]);
-        miramarJsonResponse = check responseMiramar.getJsonPayload();
-        match miramarJsonResponse.DistanceToLocation {
-            int intVal => miramarDistance = intVal;
-            any otherVals => miramarDistance = -1;
-        }
+    var responseMiramar = check <http:Response>(hotelResponses["miramar"]);
+    miramarJsonResponse = check responseMiramar.getJsonPayload();
+    match miramarJsonResponse.DistanceToLocation {
+        int intVal => miramarDistance = intVal;
+        any otherVals => miramarDistance = -1;
     }
 
     // Get the response and distance to the preferred location from hotel 'Aqueen'
-    if (hotelResponses["aqueen"] != ()) {
-        var responseAqueen = check <http:Response>(hotelResponses["aqueen"]);
-        aqueenJsonResponse = check responseAqueen.getJsonPayload();
-        match aqueenJsonResponse.DistanceToLocation {
-            int intVal => aqueenDistance = intVal;
-            any otherVals => aqueenDistance = -1;
-        }
+    var responseAqueen = check <http:Response>(hotelResponses["aqueen"]);
+    aqueenJsonResponse = check responseAqueen.getJsonPayload();
+    match aqueenJsonResponse.DistanceToLocation {
+        int intVal => aqueenDistance = intVal;
+        any otherVals => aqueenDistance = -1;
     }
 
     // Get the response and distance to the preferred location from hotel 'Elizabeth'
-    if (hotelResponses["elizabeth"] != ()) {
-        var responseElizabeth = check <http:Response>(hotelResponses["elizabeth"]);
-        elizabethJsonResponse = check responseElizabeth.getJsonPayload();
-        match elizabethJsonResponse.DistanceToLocation {
-            int intVal => elizabethDistance = intVal;
-            any otherVals => elizabethDistance = -1;
-        }
+    var responseElizabeth = check <http:Response>(hotelResponses["elizabeth"]);
+    elizabethJsonResponse = check responseElizabeth.getJsonPayload();
+    match elizabethJsonResponse.DistanceToLocation {
+        int intVal => elizabethDistance = intVal;
+        any otherVals => elizabethDistance = -1;
     }
 
     // Select the hotel with the lowest distance
