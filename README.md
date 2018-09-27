@@ -49,6 +49,7 @@ So, messaging between 'OnlineShopping' and 'LocalShop' services act as pass-thro
 Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
 
 ```
+pass-through-messaging
  └── guide
      ├── passthrough
      │   └── passthrough.bal
@@ -60,7 +61,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 Create the above directories in your local machine and also create empty `.bal` files.
 
-Open the terminal and navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the Ballerina project initializing toolkit.
+Open the terminal and navigate to `pass-through-messaging/guide` and run the Ballerina project initializing toolkit.
 
 ```bash
    $ ballerina init
@@ -147,10 +148,10 @@ service<http:Service> LocalShop bind LocalShopEP {
 
 ### Invoking the service
 
-Navigate to `pass-through` and run the following command in the command line to start `passthrough.bal`.
+Navigate to `pass-through-messaging/guide` and run the following command in the command line to start the services in  `passthrough.bal`.
 
 ```bash
-   $ ballerina run passthrough.bal
+   $ ballerina run passthrough
 ```
    
 Send a request to the online shopping service.
@@ -168,7 +169,7 @@ When connecting to the online shopping, the output will be "Welcome to Local Sho
 < HTTP/1.1 200 OK
 < content-type: text/plain
 < date: Sat, 23 Jun 2018 05:45:17 +0530
-< server: ballerina/0.970.1
+< server: ballerina/0.982.0
 < content-length: 54
 < 
 * Connection #0 to host localhost left intact
@@ -194,9 +195,9 @@ Test functions should be annotated with `@test:Config`. See the below example.
    }
 ```
 
-This guide contains unit test case for 'LKSubOffice' service and 'UKSubOffice' service in [passthrough_test.bal](https://github.com/sanethmaduranga/Simple-pass-through-messaging-ballerina-/blob/master/guide/tests/passthrough_test.bal) file.
+This guide contains unit test case for 'LKSubOffice' service and 'UKSubOffice' service in [passthrough_test.bal](https://github.com/ballerina-guides/pass-through-messaging/blob/master/guide/passthrough/tests/passthrough_test.bal) file.
 
-To run the unit tests, navigate to `Simple-pass-through-messaging-ballerina-/guide/` and run the following command. 
+To run the unit tests, navigate to `pass-through-messaging/guide/` and run the following command. 
 
 ```bash
    $ ballerina test
@@ -223,8 +224,9 @@ Once the .balx files are created inside the target folder, you can run them usin
 The successful execution of a service will show us something similar to the following output.
 
 ```
-   ballerina: initiating service(s) in 'target/passthrough.balx'
-   
+   Initiating service(s) in 'target/passthrough.balx'
+   ballerina: started HTTP/WS endpoint 0.0.0.0:9091
+   ballerina: started HTTP/WS endpoint 0.0.0.0:9090   
 ```
 
 ### Deploying on Docker
@@ -244,11 +246,11 @@ import ballerinax/docker;
 
 @docker:Expose {}
 endpoint http:Listener OnlineShoppingEP {
-    port:9090
+    port: 9090
 };
 @docker:Expose {}
 endpoint http:Listener LocalShopEP {
-    port:9091
+    port: 9091
 };
 //Define end-point for the local shop as online shop link
 endpoint http:Client clientEP {
@@ -271,21 +273,21 @@ service<http:Service> LocalShop bind LocalShopEP {
 }
 ``` 
 
-Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This also creates the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the following command.  
+Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This also creates the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `pass-through-messaging/guide` and run the following command.  
   
 ```
-   $ballerina build passthrough
-  
-  
+   $ballerina build
+  .
+  .
    Run following command to start docker container:
-   docker run -d -p 9090:9090 -p 9091:9091 ballerina.guides.io/passthrough:v1.0
+   docker run -d -p 9090:9090 -p 9091:9091 passthrough:latest
 
 ```
 
 Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.  
 
 ```bash
-   $ docker run -d -p 9090:9090 -p 9091:9091 ballerina.guides.io/passthrough:v1.0
+   $ docker run -d -p 9090:9090 -p 9091:9091 passthrough:latest
 ```
 
 You can run the Docker image with the flag `-p <host_port>:<container_port>` so that we use the host port 9090 and the container port 9090. Therefore, you can access the service through the host port. 
@@ -413,7 +415,7 @@ Access the service.
 
 
 ## Observability 
-Ballerina is by default observable. This means you can easily observe your services, resources, etc. However, observability is disabled by default via configuration. Observability can be enabled by adding the following configurations to the `ballerina.conf` file in `Simple-pass-through-messaging-ballerina-/guide/`.
+Ballerina is by default observable. This means you can easily observe your services, resources, etc. However, observability is disabled by default via configuration. Observability can be enabled by adding the following configurations to the `ballerina.conf` file in `pass-through-messaging/guide/`.
 
 ```ballerina
 [b7a.observability]
@@ -461,7 +463,7 @@ Run the Jaeger Docker image using the following command.
    -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the `passthrough` using following command 
+Navigate to `pass-through-messaging/guide` and run the `passthrough` using following command 
 
 ```
    $ ballerina run passthrough/
@@ -530,13 +532,13 @@ You can access Prometheus at the following URL.
 
 Ballerina has a log package for logging to the console. You can import `ballerina/log` package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-Start the Ballerina service with the following command from `Simple-pass-through-messaging-ballerina-/guide`
+Start the Ballerina service with the following command from `pass-through-messaging/guide`
 
 ```
    $ nohup ballerina run trip-management/ &>> ballerina.log&
 ```
 
-> **NOTE**: This writes the console log to the `ballerina.log` file in the `Simple-pass-through-messaging-ballerina-/guide` directory.
+> **NOTE**: This writes the console log to the `ballerina.log` file in the `pass-through-messaging/guide` directory.
 
 Start Elasticsearch using the following command.
 
