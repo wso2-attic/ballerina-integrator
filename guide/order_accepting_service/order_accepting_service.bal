@@ -17,7 +17,6 @@
 import ballerina/log;
 import ballerina/http;
 import ballerina/jms;
-import ballerinax/docker;
 
 // Type definition for a order
 type Order record {
