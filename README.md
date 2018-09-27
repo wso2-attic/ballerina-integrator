@@ -88,6 +88,8 @@ We can use the following database schema to store employee data.
 ```
 The following Ballerina code is the employee data service with resources to add, retrieve, update and delete employee data.
 
+##### employee_db_service.bal
+
 ```ballerina
 import ballerina/config;
 import ballerina/http;
@@ -302,7 +304,7 @@ You can implement custom functions in Ballerina that do specific tasks. For this
 ## Testing 
 
 ### Before you begin
-* Download & Run the SQL script `initializeDataBase.sql` from [here](resources/initializeDataBase.sql), to initialize the database and to create the required table.
+* Download & run the SQL script [initializeDataBase.sql](resources/initializeDataBase.sql), to initialize the database and to create the required table.
 ```
    $mysql -u username -p <initializeDataBase.sql 
 ``` 
@@ -362,20 +364,21 @@ Output:
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
+In Ballerina, the unit test cases should be in the same package inside a folder named as `test`.  When writing the test functions the below convention should be followed.
 - Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
    @test:Config
    function testAddEmployeeResource() {
+   ...
 ```
-This guide contains unit test cases to test the resources available in the employee_data_service we implemented above.
-To run the unit tests, go to the guide directory and run the following command.
-Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file.
-```bash
-$ ballerina test --config ./ballerina.conf
-```
-NOTE: To check the implementation of the test file, refer to the [employee_db_service_test.bal](guide/data_backed_service/test/employee_db_service_test.bal).
+You can download the [employee_db_service_test.bal](guide/data_backed_service/test/employee_db_service_test.bal) sample, which contains unit test cases to test the resources available in the employee_data_service we implemented above.
 
+To run the unit tests, go to the `guide` directory and run the following command.
+Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file.
+
+```bash
+$ ballerina test --config ../ballerina.conf
+```
 
 ## Deployment
 
