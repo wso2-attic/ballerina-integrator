@@ -37,7 +37,7 @@ public function createAccount(string name) returns (int) {
     // Get the primary key of the last insertion (Auto incremented value).
     table dt = check bankDB->select("SELECT LAST_INSERT_ID() AS ACCOUNT_ID from ACCOUNT where ?", (), 1);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling.
-    var jsonResult = check <json>dt;
+    json jsonResult = check <json>dt;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling.
     match jsonResult[0]["ACCOUNT_ID"] {
         int intVal => accId = intVal;
@@ -56,7 +56,7 @@ public function verifyAccount(int accId) returns (boolean) {
     // Select query to check whether account exists.
     table dt = check bankDB->select("SELECT COUNT(*) AS COUNT FROM ACCOUNT WHERE ID = ?", (), accId);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling.
-    var jsonResult = check <json>dt;
+    json jsonResult = check <json>dt;
     boolean isAccountExists = false;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling.
     match jsonResult[0]["COUNT"] {
@@ -79,7 +79,7 @@ public function checkBalance(int accId) returns (int|error) {
     // Select query to get balance.
     table dt = check bankDB->select("SELECT BALANCE FROM ACCOUNT WHERE ID = ?", (), accId);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling.
-    var jsonResult = check <json>dt;
+    json jsonResult = check <json>dt;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling.
     match jsonResult[0]["BALANCE"] {
         int intVal => balance = intVal;
