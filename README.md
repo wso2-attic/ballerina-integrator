@@ -35,7 +35,12 @@ Basically, this service will deal with a MySQL database and expose the data oper
 * [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 * MySQL version 5.6 or later
 * [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL
-  * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
+  * Copy the downloaded JDBC driver to the `<BALLERINA_HOME>/bre/lib` folder.   
+  
+    > **E.g.**   
+    > _On Linux:_ `mysql-connector-java-8.x.x.jar -> user/lib/Ballerina/ballerina-x.xx.x/bre/lib/`      
+    > _On Mac:_ `mysql-connector-java-8.x.x.jar -> Library/Ballerina/ballerina-x.xx.x/bre/lib/`   
+    > _On Windows:_ `mysql-connector-java-8.x.x.jar -> C:\Program Files\Ballerina\ballerina-x.xx.x\bre\lib\`
 * A Text Editor or an IDE
 
 ### Optional requirements
@@ -83,6 +88,8 @@ We can use the following database schema to store employee data.
 ```
 The following Ballerina code is the employee data service with resources to add, retrieve, update and delete employee data.
 
+##### employee_db_service.bal
+
 ```ballerina
 import ballerina/config;
 import ballerina/http;
@@ -91,10 +98,10 @@ import ballerina/mysql;
 import ballerina/sql;
 
 type Employee record {
-    string name,
-    int age,
-    int ssn,
-    int employeeId,
+    string name;
+    int age;
+    int ssn;
+    int employeeId;
 };
 
 // Create SQL endpoint to MySQL database
@@ -297,11 +304,10 @@ You can implement custom functions in Ballerina that do specific tasks. For this
 ## Testing 
 
 ### Before you begin
-* Run the SQL script `initializeDataBase.sql` provided in the resources folder, to initialize the database and to create the required table.
+* Download & run the SQL script [initializeDataBase.sql](resources/initializeDataBase.sql), to initialize the database and to create the required table.
 ```
    $mysql -u username -p <initializeDataBase.sql 
 ``` 
-NOTE : You can find the SQL script(`initializeDataBase.sql`) [here](resources/initializeDataBase.sql)
 
 - Add database configurations to the `ballerina.conf` file
    - `ballerina.conf` file can be used to provide external configurations to the Ballerina programs. Since this guide needs MySQL database integration, a Ballerina coniguration file is used to provide the database connection properties to our Ballerina program.
@@ -358,20 +364,21 @@ Output:
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'test'.  When writing the test functions the below convention should be followed.
+In Ballerina, the unit test cases should be in the same package inside a folder named as `test`.  When writing the test functions the below convention should be followed.
 - Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
    @test:Config
    function testAddEmployeeResource() {
+   ...
 ```
-This guide contains unit test cases to test the resources available in the employee_data_service we implemented above.
-To run the unit tests, go to the guide directory and run the following command.
-Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file.
-```bash
-$ ballerina test --config ./ballerina.conf
-```
-NOTE: To check the implementation of the test file, refer to the [employee_db_service_test.bal](guide/data_backed_service/test/employee_db_service_test.bal).
+You can download the [employee_db_service_test.bal](guide/data_backed_service/test/employee_db_service_test.bal) sample, which contains unit test cases to test the resources available in the employee_data_service we implemented above.
 
+To run the unit tests, go to the `guide` directory and run the following command.
+Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file.
+
+```bash
+$ ballerina test --config ../ballerina.conf
+```
 
 ## Deployment
 
