@@ -279,9 +279,11 @@ Let's now look at some important log statements we will get as the response for 
 INFO  [banking_application] - Transfer $300 from Alice's account to Bob's account 
 INFO  [banking_application] - Expected: Transaction to be successful 
 INFO  [banking_application] - Initiating transaction 
+INFO  [banking_application] - Verifying whether account ID 1 exists
 INFO  [banking_application] - Available balance in account ID 1: 500
 INFO  [banking_application] - Withdrawing money from account ID: 1 
 INFO  [banking_application] - $300 has been withdrawn from account ID 1 
+INFO  [banking_application] - Verifying whether account ID 2 exists
 INFO  [banking_application] - Depositing money to account ID: 2 
 INFO  [banking_application] - $300 has been deposited to account ID 2 
 INFO  [banking_application] - Transaction committed 
@@ -295,9 +297,11 @@ INFO  [banking_application] - Successfully transferred $300 from account ID 1 to
 INFO  [banking_application] - Again try to transfer $500 from Alice's account to Bob's account
 INFO  [banking_application] - Expected: Transaction to fail as Alice now only has a balance of $200 in account
 INFO  [banking_application] - Initiating transaction 
+INFO  [banking_application] - Verifying whether account ID 1 exists
 INFO  [banking_application] - Available balance in account ID 1: 200
-INFO  [banking_application] - Error while withdrawing the money: Error: Not enough balance
-INFO  [banking_application] - Failed to transfer money from account ID 1 to account ID 2
+ERROR [banking_application] - Error while withdrawing the money: Error: Not enough balance
+ERROR [banking_application] - Failed to transfer money from account ID 1 to account ID 2
+INFO  [banking_application] - Transaction aborted
 ```
 
 - For the `scenario 3` where 'Bob' tries to transfer $500 to account ID 1234, the transaction is expected to fail as account ID 1234 does not exist
@@ -307,14 +311,15 @@ INFO  [banking_application] - Failed to transfer money from account ID 1 to acco
 INFO  [banking_application] - Try to transfer $500 from Bob's account to a non existing account ID
 INFO  [banking_application] - Expected: Transaction to fail as account ID of recipient is invalid
 INFO  [banking_application] - Initiating transaction 
-INFO  [banking_application] - vailable balance in account ID 2: 1300
+INFO  [banking_application] - Verifying whether account ID 2 exists
+INFO  [banking_application] - Available balance in account ID 2: 1300
 INFO  [banking_application] - Withdrawing money from account ID: 2 
 INFO  [banking_application] - $500 has been withdrawn from account ID 2 
-INFO  [banking_application] - Depositing money to account ID: 1234 
 INFO  [banking_application] - Verifying whether account ID 1234 exists 
 ERROR [banking_application] - Error while depositing the money: Error: Account does not exist
-INFO  [banking_application] - Failed to transfer money from account ID 2 to account ID 1234
+ERROR [banking_application] - Failed to transfer money from account ID 2 to account ID 1234
 INFO  [banking_application] - Check balance for Bob's account
+INFO  [banking_application] - Verifying whether account ID 2 exists
 INFO  [banking_application] - Available balance in account ID 2: 1300
 INFO  [banking_application] - You should see $1300 balance in Bob's account (NOT $800)
 INFO  [banking_application] - Explanation: 

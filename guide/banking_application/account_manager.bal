@@ -37,7 +37,7 @@ public function createAccount(string name) returns (int) {
     // Get the primary key of the last insertion (Auto incremented value).
     table dt = check bankDB->select("SELECT LAST_INSERT_ID() AS ACCOUNT_ID from ACCOUNT where ?", (), 1);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling.
-    var jsonResult = check <json>dt;
+    json jsonResult = check <json>dt;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling.
     match jsonResult[0]["ACCOUNT_ID"] {
         int intVal => accId = intVal;
@@ -45,6 +45,7 @@ public function createAccount(string name) returns (int) {
     }
     log:printInfo("Account ID for user: '" + name + "': " + accId);
     // Return the primary key, which will be the account number of the account.
+    dt.close();
     return accId;
 }
 
@@ -55,13 +56,16 @@ public function verifyAccount(int accId) returns (boolean) {
     // Select query to check whether account exists.
     table dt = check bankDB->select("SELECT COUNT(*) AS COUNT FROM ACCOUNT WHERE ID = ?", (), accId);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling.
-    var jsonResult = check <json>dt;
+    json jsonResult = check <json>dt;
+    boolean isAccountExists = false;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling.
     match jsonResult[0]["COUNT"] {
         // Return a boolean, which will be true if account exists; false otherwise.
-        int count => return <boolean>count;
-        any otherVals => return false;
+        int count => isAccountExists =  <boolean>count;
+        any otherVals => isAccountExists = false;
     }
+    dt.close();
+    return isAccountExists;
 }
 
 // Function to check balance in an account.
@@ -75,7 +79,7 @@ public function checkBalance(int accId) returns (int|error) {
     // Select query to get balance.
     table dt = check bankDB->select("SELECT BALANCE FROM ACCOUNT WHERE ID = ?", (), accId);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling.
-    var jsonResult = check <json>dt;
+    json jsonResult = check <json>dt;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling.
     match jsonResult[0]["BALANCE"] {
         int intVal => balance = intVal;
@@ -83,6 +87,7 @@ public function checkBalance(int accId) returns (int|error) {
     }
     log:printInfo("Available balance in account ID " + accId + ": " + balance);
     // Return the balance.
+    dt.close();
     return balance;
 }
 
@@ -169,10 +174,10 @@ public function transferMoney(int fromAccId, int toAccId, int amount) returns (b
 
 // Printed oncommit
 function commitFunc(string transactionId) {
-    log:printInfo("Transaction: " + transactionId + " aborted");
+    log:printInfo("Transaction: " + transactionId + " committed");
 }
 
 // Printed onabort
 function abortFunc(string transactionId) {
-    log:printInfo("Transaction: " + transactionId + " committed");
+    log:printInfo("Transaction: " + transactionId + " aborted");
 }
