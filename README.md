@@ -18,7 +18,7 @@ Let’s take a real world use case of an online healthcare management system to 
 
 The following diagram illustrates the scenario:
 
-![BFF Design](images/bff_architecture.jpeg "BFF Design")
+![BFF Design](images/backend-for-frontend.svg "BFF Design")
 
 For this scenario, you need to have two applications called desktop application and mobile application. For each application, there should be a specific back-end service (BFF) called desktop BFF and mobile BFF respectively. These BFFs should consume a set of downstream services called appointment management service, medical record management service, notification management service and message management service.  In this guide, Ballerina is used to build both the BFF layer and the downstream service layer.
 
