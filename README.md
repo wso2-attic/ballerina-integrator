@@ -33,7 +33,7 @@ As this use case is based on message construction patterns, the scenario uses re
 
 The following diagram illustrates the scenario:
 
-![alt text](/images/message_construction_patterns.png)
+![alt text](/images/message_construction_patterns.svg)
 
 
 For the scenario In this guide, you will use `Apache ActiveMQ` as the JMS broker. You will also use Ballerina JMS connector to connect Ballerina with the JMS message broker. When you use the Ballerina JMS connector, Ballerina can act as a JMS message consumer as well as a JMS message producer.
