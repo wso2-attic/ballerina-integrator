@@ -23,7 +23,7 @@ endpoint http:Client messageEP {
     url: "http://localhost:9095/message-mgt"
 };
 
-function main(string... args) {
+public function main(string... args) {
 
     log:printInfo("Publishing sample data to services...");
 

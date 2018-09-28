@@ -23,7 +23,7 @@ function testResourceAddMedicalRecord() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"status\":\"Medical Record Created.\",\"medicalRecordId\":\"MED01\"}"
+        "{\"status\":\"Medical Record Created.\", \"medicalRecordId\":\"MED01\"}"
         , msg = "Response mismatch!");
 }
 
@@ -40,6 +40,6 @@ function testResourceGetMedicalRecords() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"MedicalRecords\":[{\"ID\":\"MED01\",\"Name\":\"Test Record\",\"Description\":\"Test\"}]}",
+        "{\"MedicalRecords\":[{\"ID\":\"MED01\", \"Name\":\"Test Record\", \"Description\":\"Test\"}]}",
         msg = "Response mismatch!");
 }

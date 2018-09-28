@@ -22,7 +22,7 @@ function testResourceAddNotification() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"status\":\"Notification Created.\",\"notificationId\":\"NOT01\"}", msg = "Response mismatch!");
+        "{\"status\":\"Notification Created.\", \"notificationId\":\"NOT01\"}", msg = "Response mismatch!");
 }
 
 @test:Config {
@@ -38,6 +38,6 @@ function testResourceGetNotifications() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"Notifications\":[{\"ID\":\"NOT01\",\"Name\":\"Test Notification\",\"Description\":\"Test\"}]}",
+        "{\"Notifications\":[{\"ID\":\"NOT01\", \"Name\":\"Test Notification\", \"Description\":\"Test\"}]}",
         msg = "Response mismatch!");
 }
