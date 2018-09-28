@@ -23,7 +23,7 @@ function testResourceAddMessage() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"status\":\"Message Sent.\",\"messageId\":\"MSG01\"}", msg = "Response mismatch!");
+        "{\"status\":\"Message Sent.\", \"messageId\":\"MSG01\"}", msg = "Response mismatch!");
 }
 
 @test:Config {
@@ -39,7 +39,8 @@ function testResourceGetMessages() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"Messages\":[{\"ID\":\"MSG01\",\"From\":\"Dr. Carl\",\"Subject\":\"Test Msg\",\"Content\":\"Test\",\"Status\":\"Read\"}]}"
+        "{\"Messages\":[{\"ID\":\"MSG01\", \"From\":\"Dr. Carl\", \"Subject\":\"Test Msg\", " +
+        "\"Content\":\"Test\", \"Status\":\"Read\"}]}"
         ,
         msg = "Response mismatch!");
 }

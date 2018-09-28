@@ -1,5 +1,6 @@
 import ballerina/test;
 import ballerina/http;
+import ballerina/io;
 
 // Client endpoint to communicate with appointment management service
 endpoint http:Client clientEP {
@@ -22,8 +23,9 @@ function testResourceAddAppointment() {
         msg = "addAppointment resource did not respond with expected response code!");
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
+    io:print(resPayload.toString());
     test:assertEquals(resPayload.toString(),
-        "{\"status\":\"Appointment Created.\",\"appointmentId\":\"APT01\"}", msg = "Response mismatch!");
+        "{\"status\":\"Appointment Created.\", \"appointmentId\":\"APT01\"}", msg = "Response mismatch!");
 }
 
 @test:Config {
@@ -39,7 +41,8 @@ function testResourceGetAppointments() {
     // Check whether the response is as expected.
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(),
-        "{\"Appointments\":[{\"ID\":\"APT01\",\"Name\":\"Test Appointment\",\"Location\":\"Test Location\",\"Time\":\"2018-08-23, 08.30AM\",\"Description\":\"Test\"}]}"
+        "{\"Appointments\":[{\"ID\":\"APT01\", \"Name\":\"Test Appointment\", \"Location\":\"Test Location\", "+
+         "\"Time\":\"2018-08-23, 08.30AM\", \"Description\":\"Test\"}]}"
         ,
         msg = "Response mismatch!");
 }
