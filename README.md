@@ -587,9 +587,7 @@ service<http:Service> appointment_mgt_service bind listener {
 ....
 ```
 
-Now you can build Ballerina executable archives (.balx) of the services that we developed above, using following commands. This will also create the corresponding Docker images using the Docker annotations that you have configured above. Navigate to backend-for-frontend/guide and run the following command.
-
-- Now navigate to messaging-with-activemq/guide, and execute the following command to build a Ballerina executable archive (.balx) of the services that you developed:
+Now navigate to the backend-for-frontend/guide, and execute the following command to build a Ballerina executable archive (.balx) of the services that you developed:
 > **NOTE**: This also creates the corresponding Docker image using the Docker annotations that you have configured.
 
 ```
@@ -751,8 +749,7 @@ docker run -d -p 9090:9090 ballerina.guides.io/mobile_bff_service:v1.0
 ```
 
 
-- Verify Docker container is running with the use of `` $ docker ps`` command. The status of the Docker container should be shown as ‘Up'.
-- You can execute the $ docker ps command to verify whether the Docker container is running. The status of the Docker container should be shown as 'Up'.
+- Execute the `$ docker ps` command to verify whether the Docker container is running. The status of the Docker container should be shown as 'Up'.
 
 ```bash
    $ docker ps
