@@ -104,6 +104,7 @@ Let's now see the complete implementation of the `inventory_control_system`, whi
 ```ballerina
 import ballerina/log;
 import wso2/kafka;
+import ballerina/internal;
 
 // Kafka consumer endpoint
 endpoint kafka:SimpleConsumer consumer {
@@ -124,15 +125,15 @@ service<kafka:Consumer> kafkaService bind consumer {
     onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
         foreach entry in records {
-            blob serializedMsg = entry.value;
+            byte[] serializedMsg = entry.value;
             // Convert the serialized message to string message
-            string msg = serializedMsg.toString("UTF-8");
+            string msg = internal:byteArrayToString(serializedMsg, "UTF-8");
             log:printInfo("New message received from the product admin");
             // log the retrieved Kafka record
             log:printInfo("Topic: " + entry.topic + "; Received Message: " + msg);
             // Mock logic
             // Update the database with the new price for the specified product
-            log:printInfo("Database updated with the new price for the product");
+            log:printInfo("Database updated with the new price of the product");
         }
     }
 }
@@ -202,7 +203,7 @@ service<http:Service> productAdminService bind listener {
             // NOT a valid JSON payload
             any => {
                 response.statusCode = 400;
-                response.setJsonPayload({"Message":"Not a valid JSON payload"});
+                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
                 _ = client -> respond(response);
                 done;
             }
@@ -214,10 +215,9 @@ service<http:Service> productAdminService bind listener {
         json newPrice = reqPayload.Price;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (username == null || password == null || productName == null ||
-            newPrice == null) {
+        if (username == null || password == null || productName == null || newPrice == null) {
             response.statusCode = 400;
-            response.setJsonPayload({"Message":"Bad Request - Invalid payload"});
+            response.setJsonPayload({"Message":"Bad Request: Invalid payload"});
             _ = client->respond(response);
             done;
         }
@@ -238,8 +238,7 @@ service<http:Service> productAdminService bind listener {
 
         // If the credentials does not match with the admin credentials,
         // send an "Access Forbidden" response message
-        if (username.toString() != ADMIN_USERNAME ||
-            password.toString() != ADMIN_PASSWORD) {
+        if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
             response.statusCode = 403;
             response.setJsonPayload({"Message":"Access Forbidden"});
             _ = client->respond(response);
@@ -248,7 +247,7 @@ service<http:Service> productAdminService bind listener {
 
         // Construct and serialize the message to be published to the Kafka topic
         json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPriceAmount};
-        blob serializedMsg = priceUpdateInfo.toString().toBlob("UTF-8");
+        byte[] serializedMsg = priceUpdateInfo.toString().toByteArray("UTF-8");
 
         // Produce the message and publish it to the Kafka topic
         kafkaProducer->send(serializedMsg, "product-price", partition = 0);
