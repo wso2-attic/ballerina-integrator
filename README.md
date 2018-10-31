@@ -342,7 +342,7 @@ The above code shows how the auction service initiates a request to all bidders 
 Navigate to `scatter-gather-messaging/guide` and run the following commands in a separate terminal to start two HTTP services. This will start the `auctionService` and  `bidService` services in ports 9091 and 9090 respectively.
 
 ```bash
-$ ballerina run auction_service/auction_service
+$ ballerina run auction_service
 ```
    
 Invoke the auction service by sending a POST request to get the highest bid.
@@ -444,11 +444,11 @@ service<http:Service> auctionService bind auctionEP {
 
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `scatter-gather-messaging/guide` and run the following command.  
   
-```
+```bash
 $ ballerina build auction_service
   
 Run following command to start docker container:
-docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
+$ docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
 ```
 
 Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.  
