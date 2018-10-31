@@ -282,7 +282,7 @@ First you need to import `ballerinax/kubernetes` and use `@kubernetes` annotatio
 
 > NOTE: Linux users can use Minikube to try this out locally.
 
-##### passed_student_filter_service.bal
+#### passed_student_filter_service.bal
 
 ```ballerina
 import ballerina/http;]
@@ -318,8 +318,8 @@ service<http:Service> filterService bind filterServiceEP {
 - `@kubernetes:Ingress` is used as the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
 
 If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
-- `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
-- `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
+- `dockerCertPath`: The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
+- `dockerHost`: The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
 
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This also creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
