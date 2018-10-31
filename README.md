@@ -58,11 +58,11 @@ Ballerina is a complete programming language that can have any custom project st
 ```
 data-backed-service
  └── guide
-     └── data_backed_service
-     |    ├── employee_db_service.bal
-     |    └── test
-     |        └── employee_db_service_test.bal
-     └──ballerina.conf
+      └── data_backed_service
+      |    ├── employee_db_service.bal
+      |    └── test
+      |        └── employee_db_service_test.bal
+      └── ballerina.conf
 ```
 
 - Create the above directories in your local machine and also create empty `.bal` and `.conf` files.
@@ -377,7 +377,7 @@ To run the unit tests, go to the `guide` directory and run the following command
 Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file.
 
 ```bash
-$ ballerina test --config ../ballerina.conf
+$ ballerina test --config ballerina.conf
 ```
 
 ## Deployment
