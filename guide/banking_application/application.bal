@@ -16,7 +16,7 @@
 
 import ballerina/log;
 
-public function main (string... args) {
+public function main () {
     log:printInfo("----------------------------------------------------------------------------------");
     // Create two new accounts
     log:printInfo("Create two new accounts for users 'Alice' and 'Bob'");
