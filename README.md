@@ -59,7 +59,7 @@ The following figure illustrates the scenario of the Stock Quote Summary service
 
 ### Create the project structure
 
-Ballerina is a complete programming language that can have any custom project structure that you require. For this example, let's use the following package structure.
+Ballerina is a complete programming language that can have any custom project structure that you require. For this example, let's use the following module structure.
 
 ```
 asynchronous-invocation
@@ -277,14 +277,14 @@ Output :
 
 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+In Ballerina, the unit test cases should be in the same module inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
 - Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
    @test:Config
    function testQuoteService() {
 ```
   
-This guide contains unit test cases for all the packages inside the `asynchronous-invocation/guide` directory.
+This guide contains unit test cases for all the modules inside the `asynchronous-invocation/guide` directory.
 
 
 To check the implementation of the test file, refer tests folder in the [git repository](https://github.com/ballerina-guides/asynchronous-invocation).
@@ -604,7 +604,7 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log module for logging to the console. You can import ballerina/log module and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina Service with the following command from `asynchronous-invocation/guide`
 ```
