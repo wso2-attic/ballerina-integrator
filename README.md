@@ -19,7 +19,7 @@ The following are the sections available in this guide.
 
 ## What you’ll build
 
-To understand how you can build a content-based routing system using Ballerina, let's consider a real-world use case of a company recruitment agency service that provides recruitment details of companies. When a company recruitment agency service sends a request that includes the company name (e.g., ABC Company), that particular request will be routed to its respective endpoint. After receiving the request from the content-based router (`company_recruitment_agency_service`), the relevant company's endpoint sends the response back to the caller. The following diagram illustrates this use case clearly.
+To understand how you can build a content-based routing system using Ballerina, let's consider a real-world use case of a company recruitment agency service that provides recruitment details of companies. When a company recruitment agency service sends a request that includes the company name (e.g., ABC Company), that particular request is routed to its respective endpoint. After receiving the request from the content-based router (`company_recruitment_agency_service`), the relevant company's endpoint sends the response back to the caller. The following diagram illustrates this use case clearly.
 
 ![alt text](/images/content-based-routing.svg)
 
@@ -61,7 +61,7 @@ Create the above directories in your local machine and also create empty `.bal` 
 ```
 
 ### Developing the service
-Let's look at the implementation of the `company_recruitment_agency_service`, which acts as the Content-Based Router.
+Let's look at the implementation of the `company_recruitment_agency_service` that acts as the Content-Based Router.
 
 Let's consider that a request comes to the company recruitment agency service with specific content. The `company_recruitment_agency_service` receives the request message, reads it, and routes the request to one of the recipients according to the message's content.
 
@@ -421,7 +421,7 @@ Once the `company_recruitment_agency_service.balx` file is created inside the ta
    $ ballerina run target/company_data_service.balx 
 ```
 
-The successful execution of the service will show us the following outputs. 
+The successful execution of the service shows us the following outputs. 
 
 ```bash
     Initiating service(s) in 'target/company_recruitment_agency_service.balx'
@@ -435,11 +435,59 @@ and
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a Docker container. As the Ballerina platform includes a [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers, you just need to put the corresponding Docker annotations on your service code. 
+You can run the service that we developed above as a Docker container. As Ballerina includes a [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running Ballerina programs on containers, you just need to put the corresponding Docker annotations on your service code.
+ 
+#### company_data_service.bal
+
+In the `company_data_service.bal`, you need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable Docker image generation during the build time. 
+
+```ballerina
+import ballerina/http;
+import ballerinax/docker;
+
+@docker:Config{
+    registry:"ballerina.guides.io",
+    name:"company_data_service.bal",
+    tag:"v1.0"
+}
+
+@docker:Expose {}
+
+endpoint http:Listener listener {
+port: 9090
+};
+
+// Company data management is done using an in memory map.
+map<json> companyDataMap;
+
+// RESTful service.
+@http:ServiceConfig { basePath: "/companies" }
+service<http:Service> orderMgt bind listener {
+```
+The `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port. 
+
+Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This also creates the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `/content-based-routing/guide` and run the following command.  
 
 In the `company_recruitment_agency_service`, you need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable Docker image generation during the build time. 
 
-##### company_recruitment_agency_service.bal
+```bash
+$ ballerina build company_data_service/
+ .
+ .
+ @docker                  - complete 3/3 
+
+        Run the following command to start a Docker container:
+        docker run -d -p 9090:9090 ballerina.guides.io/company_data_service.bal:v1.0
+```
+- Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.  
+```bash
+$ docker run -d -p 9090:9090 ballerina.guides.io/company_data_service.bal:v1.0
+```
+
+- Verify Docker container is running with the use of `$ docker ps`. The status of the Docker container should be shown as 'Up'.
+- Find the IP of the container using `$ docker inspect <container_id>`
+
+#### company_recruitment_agency_service.bal
 
 ```ballerina
 
@@ -461,7 +509,7 @@ endpoint http:Listener comEP{
 
 //Client endpoint to communicate with company recruitment service
 endpoint http:Client locationEP{
-    url: "http://localhost:9090/companies"
+    url: "http://<IP_ADDRESS_OF_THE_CONTAINER>:9090/companies"
 };
 
 //Service is invoked using basePath value "/checkVacancies"
@@ -472,14 +520,14 @@ endpoint http:Client locationEP{
 service<http:Service> comapnyRecruitmentsAgency  bind comEP {
 
 ```
+Make sure to change the `url` of the client from `localhost` to the ip address of the container in which the `company_data_service.bal` is running.
 
-The `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port. 
-
-Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `/content-based-routing/guide` and run the following command.  
+Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This also creates the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `/content-based-routing/guide` and run the following command.  
 
 ```
    $ ballerina build company_recruitment_agency_service
-   
+    .
+    .   
     @docker                  - complete 3/3 
 
    Run following command to start docker container: 
@@ -519,15 +567,83 @@ You can access the service using the same cURL commands that you used above.
 
 ### Deploying on Kubernetes
 
-You can run the service that you developed above on Kubernetes. The Ballerina language offers native support for running Ballerina programs on Kubernetes with the use of Kubernetes annotations you can include as part of your service code. Also, it will take care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. 
+You can run the service that you developed above on Kubernetes. The Ballerina language offers native support for running Ballerina programs on Kubernetes with the use of Kubernetes annotations you can include as part of your service code. Also, it takes care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. 
 
-Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
+Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs.
+
+#### company_recruitment_agency_service.bal
+
+Let's now see how we can deploy our `company_data_service` on Kubernetes.
+ 
+First you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service you developed above.
+
+```ballerina
+import ballerinax/kubernetes;
+
+@kubernetes:Ingress {
+    hostname: "ballerina.guides.io",
+    name: "ballerina-guides-company_data_service",
+    path: "/"
+}
+
+@kubernetes:Service {
+    serviceType: "NodePort",
+    name: "ballerina-guides-company_data_service"
+}
+
+@kubernetes:Deployment {
+    image: "ballerina.guides.io/company_data_service:v1.0",
+    name: "ballerina-guides-company_data_service"
+}
+endpoint http:Listener listener {
+    port: 9090
+};
+
+// Company data management is done using an in memory map.
+map<json> companyDataMap;
+
+// RESTful service.
+@http:ServiceConfig { basePath: "/companies" }
+service<http:Service> orderMgt bind listener {
+``` 
+- Here we have used the `@kubernetes:Deployment` annotation to specify the name of the Docker image that is created as part of building this service.
+- We have also specified `@kubernetes:Service` so that it creates a Kubernetes service that exposes the Ballerina service running on a Pod.
+- The `@kubernetes:Ingress` annotation is for the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
+
+If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
+- `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
+- `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
+
+Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+  
+```
+   $ ballerina build company_data_service
+   
+   @kubernetes:Service                      - complete 1/1
+   @kubernetes:Ingress                      - complete 1/1
+   @kubernetes:Docker                       - complete 3/3 
+   @kubernetes:Deployment                   - complete 1/1
+  
+   Run following command to deploy Kubernetes artifacts:  
+   kubectl apply -f ./target/kubernetes/company_data_service
+```
+You can verify Kubernetes deployment, service and Ingress are running properly, by using following Kubernetes commands.
+
+```bash
+   $ kubectl get service
+   $ kubectl get deploy
+   $ kubectl get pods
+   $ kubectl get ingress
+```
+
+
+#### company_recruitment_agency_service.bal
 
 Let's now see how we can deploy our `company_recruitment_agency_service` on Kubernetes.
 
-First you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service you developed above. 
+First you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service you developed above.
 
-##### company_recruitment_agency_service.bal
+If you are using Minikube, for the `<NODE_IP>` and `<NODE_PORT>`  you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command for the company_data_service above.
 
 ```ballerina
 import ballerina/http;
@@ -555,7 +671,7 @@ endpoint http:Listener comEP{
 
 //Client endpoint to communicate with company recruitment service
 endpoint http:Client locationEP{
-    url: "http://localhost:9090/companies"
+    url: "http://<NODE_IP>:<NODE_PORT>/companies"
 };
 
 //Service is invoked using basePath value "/checkVacancies"
@@ -567,14 +683,7 @@ endpoint http:Client locationEP{
 service<http:Service> comapnyRecruitmentsAgency  bind comEP {
 
 ``` 
-
-Here you have used `@kubernetes:Deployment` to specify the Docker image name that will be created as part of building this service. 
-
-You have also specified `@kubernetes:Service` so that it creates a Kubernetes service that exposes the Ballerina service that is running on a Pod.  
-
-Additionally, you have used `@kubernetes:Ingress` which is the external interface to access your service (with path `/` and host name `ballerina.guides.io`).
-
-Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ ballerina build company_recruitment_agency_service
@@ -584,25 +693,25 @@ Now you can build a Ballerina executable archive (.balx) of the service that you
    @kubernetes:Docker                       - complete 3/3 
    @kubernetes:Deployment                   - complete 1/1
   
-   Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/company_recruitment_agency_service/kubernetes
+   Run following command to deploy Kubernetes artifacts:  
+   kubectl apply -f ./target/kubernetes/company_recruitment_agency_service
 ```
 
 You can verify that the Docker image that you specified in `@kubernetes:Deployment` is created, by using `$ docker images`. 
 
-Also the Kubernetes artifacts related your service will be generated in `./target/company_recruitment_agency_service/kubernetes`. 
+Also the Kubernetes artifacts related your service is generated in `./target/kubernetes/company_recruitment_agency_service`. 
 
 Now you can create the Kubernetes deployment using:
 
 ```bash
-   $ kubectl apply -f ./target/company_recruitment_agency_service/kubernetes 
+   $ kubectl apply -f ./target/kubernetes/company_recruitment_agency_service 
  
    deployment.extensions "ballerina-guides-company_recruitment_agency_service" created
    ingress.extensions "ballerina-guides-company_recruitment_agency_service" created
    service "ballerina-guides-company_recruitment_agency_service" created
 ```
 
-You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands.
+You can verify Kubernetes deployment, service, and Ingress are running properly, by using following Kubernetes commands.
 
 ```bash
    $ kubectl get service
@@ -624,12 +733,12 @@ Node port:
 **Request when "Name"="ABC Company"**
 
 ```bash
-    $ curl -v http://localhost:<Node_Port>/checkVacancies/company -d '{"Name" :"ABC Company"}' -H "Content- Type:application/json"
+    $ curl -v http://<NODE_IP>:<Node_Port>/checkVacancies/company -d '{"Name" :"ABC Company"}' -H "Content- Type:application/json"
 ```
 **Request when "Name"="Smart Automobile**
 
 ```bash
-    $ curl -v http://localhost:<Node_Port>/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
+    $ curl -v http://<NODE_IP>:<Node_Port>/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
 ```
 
 Ingress:
@@ -703,7 +812,7 @@ Follow the steps below to use tracing with Ballerina.
    reporter.max.buffer.spans=1000
 ```
 
-- Run Jaeger docker image using the following command.
+- Run Jaeger Docker image using the following command.
 
 ```bash
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
@@ -723,7 +832,7 @@ Follow the steps below to use tracing with Ballerina.
 ```
 
 ### Metrics
-Metrics and alerts are built-in with Ballerina. We will use Prometheus as the monitoring tool. Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
+Metrics and alerts are built-in with Ballerina. Let's use Prometheus as the monitoring tool. Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
 
@@ -784,7 +893,7 @@ Start the Ballerina Service with the following command from the `/content-based-
    $ nohup ballerina runcompany_recruitment_agency_service/ &>> ballerina.log&
 ```
 
-> **NOTE**: This will write the console log to the `ballerina.log` file in the `/content-based-routing/guide` directory.
+> **NOTE**: This writes the console log to the `ballerina.log` file in the `/content-based-routing/guide` directory.
 
 Start Elasticsearch using the following command
 
@@ -841,7 +950,7 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
   
- - Configure filebeat to ship the ballerina logs
+ - Configure filebeat to ship the Ballerina logs
     
 i) Create a file named `filebeat.yml` with the following content.
 
