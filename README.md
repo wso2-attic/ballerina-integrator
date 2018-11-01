@@ -48,10 +48,8 @@ scatter-gather-messaging
            ├── auction_service
            │   ├── auction_service.bal	
            │   ├── bidders_endpoints.bal
-           │    
-           ├── tests
-                └── auction_service_test.bal
-
+           │   ├── tests
+                     └── auction_service_test.bal
 ```
 
 Create the above directories in your local machine and also create empty `.bal` files.
