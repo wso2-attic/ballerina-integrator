@@ -6,7 +6,7 @@ import ballerina/http;
 @test:BeforeSuite
 function beforeSuiteFunc() {
     // Start the 'auctionService' before running the test
-    _ = test:startServices("auction_service");
+    _ = test:startServices("auction");
 
     // 'auctionService' needs to communicate with bidders
     // Therefore, start these three services before running the test
@@ -50,7 +50,7 @@ function testAuctionService() {
 @test:AfterSuite
 function afterSuiteFunc() {
     // Stop the 'auctionService' after running the test
-    test:stopServices("auction_service");
+    test:stopServices("auction");
 
     // Stop the 'bidService'
     test:stopServices("bidders");

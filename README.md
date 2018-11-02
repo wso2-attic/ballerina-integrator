@@ -48,10 +48,8 @@ scatter-gather-messaging
            ├── auction_service
            │   ├── auction_service.bal	
            │   ├── bidders_endpoints.bal
-           │    
-           ├── tests
-                └── auction_service_test.bal
-
+           │   ├── tests
+                     └── auction_service_test.bal
 ```
 
 Create the above directories in your local machine and also create empty `.bal` files.
@@ -59,7 +57,7 @@ Create the above directories in your local machine and also create empty `.bal` 
 Open the terminal and navigate to `scatter-gather-messaging/guide` and run the Ballerina project initializing toolkit.
 
 ```bash
-$ ballerina init
+   $ ballerina init
 ```
 
 ### Developing the service
@@ -70,13 +68,13 @@ In this implementation to get a best bid value, the auction service requires com
 
 Sample request payload:
 
-```bash
+```
 {"Item":"car","Condition":"good"};
 ```
 
 Sample response payload:
 
-```bash
+```
 {"Bidder Name":"Bidder 2","Bid":470000}
 ```
 
@@ -342,19 +340,19 @@ The above code shows how the auction service initiates a request to all bidders 
 Navigate to `scatter-gather-messaging/guide` and run the following commands in a separate terminal to start two HTTP services. This will start the `auctionService` and  `bidService` services in ports 9091 and 9090 respectively.
 
 ```bash
-$ ballerina run auction_service/auction_service
+   $ ballerina run auction_service
 ```
    
 Invoke the auction service by sending a POST request to get the highest bid.
 
 ```bash
-curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" \
--H "Content-Type:application/json"
+   $ curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" \
+   -H "Content-Type:application/json"
 ```
 
 The auction service sends a response similar to the following. That means ‘Bidder 3’ is the bidder that makes the highest bid for that particular item.
     
-```bash
+```
 < HTTP/1.1 200 OK
 {"Bidder Name":"Bidder 3", "Bid":470000}
 ```
@@ -375,7 +373,7 @@ This guide contains unit test cases for each service implemented above.
 To run the tests, open your terminal, navigate to `scatter-gather-messaging/guide`, and run the following command.
 
 ```bash
-$ ballerina test
+   $ ballerina test
 ```
 
 To check the implementations of these test files, refer to the [auction_service_test.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/tests/auction_service_test.bal).
@@ -389,13 +387,13 @@ Once you are done with the development, you can deploy the services using any of
 As the first step, you can build Ballerina executable archives (.balx) of the services that you developed above. Navigate to `scatter-gather-messaging/guide` and run the following command. 
 
 ```bash
-$ ballerina build auction_service
+   $ ballerina build auction_service
 ```
 
 Once the .balx files are created inside the target folder, you can run them using the following command. 
 
 ```bash
-$ ballerina run target/auction_service.balx  
+   $ ballerina run target/auction_service.balx  
 ```
 
 The successful execution of a service will show us something similar to the following output. 
@@ -444,17 +442,17 @@ service<http:Service> auctionService bind auctionEP {
 
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `scatter-gather-messaging/guide` and run the following command.  
   
-```
-$ ballerina build auction_service
+```bash
+   $ ballerina build auction_service
   
 Run following command to start docker container:
-docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
+   $ docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
 ```
 
 Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.  
 
 ```bash
-$ docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
+   $ docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
 ```
 
 Here we run the Docker image with flag `-p <host_port>:<container_port>` so that we use the host port 9090 and the container port 9090. Therefore, you can access the service through the host port. 
@@ -464,8 +462,8 @@ Verify the Docker container is running with the use of `$ docker ps`. The status
 You can access the service using the same cURL commands that you used above. 
  
 ```bash
-curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" \
--H "Content-Type:application/json"
+   $ curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" \
+   -H "Content-Type:application/json"
 ```
 
 ### Deploying on Kubernetes
@@ -524,11 +522,11 @@ In addition, you have used `@kubernetes:Ingress`, which is the external interfac
 
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
 
-```
-$ ballerina build auction_service
+```bash
+   $ ballerina build auction_service
   
 Run following command to deploy kubernetes artifacts:  
-kubectl apply -f ./target/auction_service/kubernetes
+   $ kubectl apply -f ./target/auction_service/kubernetes
 ```
 
 You can verify that the Docker image that you specified in `@kubernetes:Deployment` is created using `docker images`. 
@@ -538,7 +536,7 @@ Also, the Kubernetes artifacts related our service are generated under `./target
 Now you can create the Kubernetes deployment using the following command.
 
 ```bash
-$ kubectl apply -f ./target/auction_service/kubernetes 
+   $ kubectl apply -f ./target/kubernetes/auction_service
  
 deployment.extensions "ballerina-guides-auction-service" created
 ingress.extensions "ballerina-guides-auction-service" created
@@ -548,10 +546,10 @@ service "ballerina-guides-auction-service" created
 You can verify if the Kubernetes deployment, service and ingress are running properly by using following Kubernetes commands. 
 
 ```bash
-$ kubectl get service
-$ kubectl get deploy
-$ kubectl get pods
-$ kubectl get ingress
+   $ kubectl get service
+   $ kubectl get deploy
+   $ kubectl get pods
+   $ kubectl get ingress
 ```
 
 If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
@@ -559,8 +557,8 @@ If everything is successfully deployed, you can invoke the service either via No
 Node Port:
 
 ```bash
-curl -v -X POST -d '{"Item":"car","Condition":"good"}' \
-"http://localhost:<Node_Port>/auction/setAuction" -H "Content-Type:application/json" 
+   $ curl -v -X POST -d '{"Item":"car","Condition":"good"}' \
+   "http://localhost:<Node_Port>/auction/setAuction" -H "Content-Type:application/json" 
 ```
 
 Ingress:
@@ -574,8 +572,8 @@ Add `/etc/hosts` entry to match hostname.
 Access the service .
 
 ```bash
-curl -v -X POST -d '{"Item":"car","Condition":"good"}' \
-"http://ballerina.guides.io/auction/setAuction" -H "Content-Type:application/json" 
+   $ curl -v -X POST -d '{"Item":"car","Condition":"good"}' \
+   "http://ballerina.guides.io/auction/setAuction" -H "Content-Type:application/json" 
 ```
 
 ## Observability 
@@ -624,14 +622,14 @@ reporter.max.buffer.spans=1000
 Run Jaeger Docker image using the following command.
 
 ```bash
-$ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
--p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
+   $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 \
+   -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
 Navigate to `scatter-gather-messaging/guide` and run the `auction_service` using the following command.
 
-```
-$ ballerina run auction_service/
+```bash
+   $ ballerina run auction_service/
 ```
 
 Observe the tracing using Jaeger UI using following URL.
@@ -679,9 +677,9 @@ scrape_configs:
    
 Run the Prometheus Docker image using the following command.
 
-```
-$ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
-prom/prometheus
+```bash
+   $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
+   prom/prometheus
 ```
    
 You can access Prometheus at the following URL.
@@ -701,26 +699,26 @@ Ballerina has a log package for logging to the console. You can import `ballerin
 
 Start the Ballerina Service with the following command from `scatter-gather-messaging/guide`.
 
-```
-$ nohup ballerina run auction_service/ &>> ballerina.log&
+```bash
+   $ nohup ballerina run auction_service/ &>> ballerina.log&
 ```
 
 > **NOTE**: This writes the console log to the `ballerina.log` file in the `scatter-gather-messaging/guide` directory.
 
 Start Elasticsearch using the following command.
 
-```
-$ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
-elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
+```bash
+   $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
+   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
 
 > **NOTE**: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`.
    
 Start Kibana plugin for data visualization with Elasticsearch.
 
-```
-$ docker run -p 5601:5601 -h kibana --name kibana --link \
-elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
+```bash
+   $ docker run -p 5601:5601 -h kibana --name kibana --link \
+   elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
 
 Configure logstash to format the Ballerina logs.
@@ -756,10 +754,10 @@ ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pi
      
 iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name.
      
-```
-$ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
--it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
--p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
+```bash
+   $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
+   -it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
+   -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
 ```
   
 Configure filebeat to ship the Ballerina logs.
