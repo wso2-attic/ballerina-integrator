@@ -43,9 +43,12 @@ public function createAccount(string name) returns (int) {
         int intVal => accId = intVal;
         any otherVals => accId = 0;
     }
+    // Since we are not fully iterating the json value converted from the table we need to explicitly close the table
+    // to avoid connection leak. If the json was fully iterated, the table would also have been fully iterated and
+    // streamed out and then the connection would have been automatically closed.
+    _ = dt.close();
     log:printInfo("Account ID for user: '" + name + "': " + accId);
     // Return the primary key, which will be the account number of the account.
-    dt.close();
     return accId;
 }
 
@@ -57,15 +60,18 @@ public function verifyAccount(int accId) returns (boolean) {
     table dt = check bankDB->select("SELECT COUNT(*) AS COUNT FROM ACCOUNT WHERE ID = ?", (), accId);
     // convert the table to json - Failure will not happen in this case; Hence omitting the error handling.
     json jsonResult = check <json>dt;
-    boolean isAccountExists = false;
+    boolean accountExists = false;
     // convert the json to int - Failure will not happen in this case; Hence omitting the error handling.
     match jsonResult[0]["COUNT"] {
         // Return a boolean, which will be true if account exists; false otherwise.
-        int count => isAccountExists =  <boolean>count;
-        any otherVals => isAccountExists = false;
+        int count => accountExists =  <boolean>count;
+        any otherVals => accountExists = false;
     }
+    // Since we are not fully iterating the json value converted from the table we need to explicitly close the table
+    // to avoid connection leak. If the json was fully iterated, the table would also have been fully iterated and
+    // streamed out and then the connection would have been automatically closed.
     dt.close();
-    return isAccountExists;
+    return accountExists;
 }
 
 // Function to check balance in an account.
@@ -85,9 +91,12 @@ public function checkBalance(int accId) returns (int|error) {
         int intVal => balance = intVal;
         any otherVals => balance = 0;
     }
+    // Since we are not fully iterating the json value converted from the table we need to explicitly close the table
+    // to avoid connection leak. If the json was fully iterated, the table would also have been fully iterated and
+    // streamed out and then the connection would have been automatically closed.
+    _ = dt.close();
     log:printInfo("Available balance in account ID " + accId + ": " + balance);
     // Return the balance.
-    dt.close();
     return balance;
 }
 
@@ -140,7 +149,7 @@ public function transferMoney(int fromAccId, int toAccId, int amount) returns (b
     boolean isSuccessful;
     log:printInfo("Initiating transaction");
     // Transaction block - Ensures the 'ACID' properties.
-    // Withdraw and deposit should happen as a transaction when transfer money from one account to another.
+    // Withdraw and deposit should happen as a transaction when transferring money from one account to another.
     // Here, the reason for switching off the 'retries' option is, in failing scenarios almost all the time
     // transaction fails due to erroneous operations triggered by the users.
     transaction with retries = 0, oncommit = commitFunc, onabort = abortFunc {

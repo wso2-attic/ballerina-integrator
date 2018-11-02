@@ -185,7 +185,7 @@ public function withdrawMoney(int accId, int amount) returns (error|()) {
 }
 
 // Function to transfer money from one account to another
-public function transferMoney(int fromAcc, int toAcc, int amount) returns (boolean) {
+public function transferMoney(int fromAccId, int toAccId, int amount) returns (boolean) {
     // Implementation
     // Return a boolean, which is true if transaction is successful; false otherwise
 }
@@ -211,7 +211,7 @@ Skeleton of `application.bal` file attached below.
 ```ballerina
 // Imports
 
-function main (string[] args) {
+public function main () {
     // Create two new accounts
     int accIdUser1 = createAccount("Alice");
     int accIdUser2 = createAccount("Bob");
