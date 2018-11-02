@@ -42,7 +42,7 @@ The following diagram illustrates all the required functionality of the Order Ma
 
 ### Create the project structure
 
-Let's use the following package structure for this project.
+Let's use the following module structure for this project.
 
 ```
 restful-service
@@ -283,7 +283,7 @@ Output :
 
 **Update Order** 
 ```bash
-curl -X PUT -d '{ "Order": {"Name": "XYZ", "Description": "Updated order."}}' \
+$ curl -X PUT -d '{ "Order": {"Name": "XYZ", "Description": "Updated order."}}' \
 "http://localhost:9090/ordermgt/order/100500" -H "Content-Type:application/json"
 
 Output: 
@@ -292,7 +292,7 @@ Output:
 
 **Cancel Order** 
 ```bash
-curl -X DELETE "http://localhost:9090/ordermgt/order/100500"
+$ curl -X DELETE "http://localhost:9090/ordermgt/order/100500"
 
 Output:
 "Order : 100500 removed."
@@ -300,7 +300,7 @@ Output:
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'. When writing the test functions, follow the convention given below.
+In Ballerina, the unit test cases should be in the same module inside a folder named as 'tests'. When writing the test functions, follow the convention given below.
 - Test functions should be annotated with `@test:Config`. See the following example.
 ```ballerina
    @test:Config
@@ -378,12 +378,9 @@ service<http:Service> orderMgt bind listener {
    Compiling source
        restful_service:0.0.0
 
-   Compiling tests
-       restful_service:0.0.0
-
    Running tests
        restful_service:0.0.0
-   ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+   [ballerina/http]  started HTTP/WS endpoint 0.0.0.0:9090
             [pass] testResourceAddOrder
             [pass] testResourceUpdateOrder
             [pass] testResourceFindOrder
@@ -392,7 +389,7 @@ service<http:Service> orderMgt bind listener {
             4 passing
             0 failing
             0 skipped
-
+   [ballerina/http] stopped HTTP/WS endpoint 0.0.0.0:9090
    Generating executable
        ./target/restful_service.balx
    	@docker 		 - complete 3/3
@@ -475,9 +472,6 @@ This creates the corresponding Docker image and the Kubernetes artifacts using t
    Compiling source
        restful_service:0.0.0
 
-   Compiling tests
-       restful_service:0.0.0
-
    Running tests
        restful_service:0.0.0
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
@@ -490,15 +484,22 @@ This creates the corresponding Docker image and the Kubernetes artifacts using t
             0 failing
             0 skipped
 
+   [ballerina/http] stopped HTTP/WS endpoint 0.0.0.0:9090
    Generating executable
        ./target/restful_service.balx
             @kubernetes:Service 			 - complete 1/1
             @kubernetes:Ingress 			 - complete 1/1
             @kubernetes:Deployment 			 - complete 1/1
             @kubernetes:Docker 			 - complete 3/3
+            @kubernetes:Helm      - complete 1/1
 
-            Run following command to deploy kubernetes artifacts:
+
+            Run the following command to deploy the Kubernetes artifacts: 
             kubectl apply -f /home/ballerina/restful-service/guide/target/kubernetes/restful_service
+            
+            Run the following command to install the application using Helm: 
+            helm install --name ballerina-guides-restful-service /home/ballerina/restful-service/guide/target/kubernetes/restful_service/ballerina-guides-restful-service
+            
 ```
 
 - Use the `docker images` command to verify whether the Docker image that you specified in `@kubernetes:Deployment` was created.
@@ -508,8 +509,8 @@ This creates the corresponding Docker image and the Kubernetes artifacts using t
 ```bash
    $ kubectl apply -f ./target/kubernetes/restful_service
  
-   deployment.extensions "ballerina-guides-restful-service" created
-   ingress.extensions "ballerina-guides-restful-service" created
+   deployment "ballerina-guides-restful-service" created
+   ingress "ballerina-guides-restful-service" created
    service "ballerina-guides-restful-service" created
 ```
 
@@ -676,7 +677,7 @@ Follow the below steps to set up Prometheus and view metrics for the `restful_se
 
 ### Logging
 
-Ballerina has a log package that allows you to log messages to the console. You can import the `ballerina/log` package and start logging.
+Ballerina has a log module that allows you to log messages to the console. You can import the `ballerina/log` module and start logging.
 The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina service with the following command from `restful-service/guide`
