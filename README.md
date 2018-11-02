@@ -57,7 +57,7 @@ Create the above directories in your local machine and also create empty `.bal` 
 Open the terminal and navigate to `scatter-gather-messaging/guide` and run the Ballerina project initializing toolkit.
 
 ```bash
-$ ballerina init
+   $ ballerina init
 ```
 
 ### Developing the service
@@ -68,13 +68,13 @@ In this implementation to get a best bid value, the auction service requires com
 
 Sample request payload:
 
-```bash
+```
 {"Item":"car","Condition":"good"};
 ```
 
 Sample response payload:
 
-```bash
+```
 {"Bidder Name":"Bidder 2","Bid":470000}
 ```
 
@@ -340,19 +340,19 @@ The above code shows how the auction service initiates a request to all bidders 
 Navigate to `scatter-gather-messaging/guide` and run the following commands in a separate terminal to start two HTTP services. This will start the `auctionService` and  `bidService` services in ports 9091 and 9090 respectively.
 
 ```bash
-$ ballerina run auction_service
+   $ ballerina run auction_service
 ```
    
 Invoke the auction service by sending a POST request to get the highest bid.
 
 ```bash
-curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" \
--H "Content-Type:application/json"
+   $ curl -v -X POST -d '{"Item":"car","Condition":"good"}' "http://0.0.0.0:9090/auction/setAuction" \
+   -H "Content-Type:application/json"
 ```
 
 The auction service sends a response similar to the following. That means ‘Bidder 3’ is the bidder that makes the highest bid for that particular item.
     
-```bash
+```
 < HTTP/1.1 200 OK
 {"Bidder Name":"Bidder 3", "Bid":470000}
 ```
@@ -373,7 +373,7 @@ This guide contains unit test cases for each service implemented above.
 To run the tests, open your terminal, navigate to `scatter-gather-messaging/guide`, and run the following command.
 
 ```bash
-$ ballerina test
+   $ ballerina test
 ```
 
 To check the implementations of these test files, refer to the [auction_service_test.bal](https://github.com/HisharaPerera/scatter-gather-messaging/blob/master/guide/tests/auction_service_test.bal).
@@ -387,13 +387,13 @@ Once you are done with the development, you can deploy the services using any of
 As the first step, you can build Ballerina executable archives (.balx) of the services that you developed above. Navigate to `scatter-gather-messaging/guide` and run the following command. 
 
 ```bash
-$ ballerina build auction_service
+   $ ballerina build auction_service
 ```
 
 Once the .balx files are created inside the target folder, you can run them using the following command. 
 
 ```bash
-$ ballerina run target/auction_service.balx  
+   $ ballerina run target/auction_service.balx  
 ```
 
 The successful execution of a service will show us something similar to the following output. 
@@ -443,16 +443,16 @@ service<http:Service> auctionService bind auctionEP {
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `scatter-gather-messaging/guide` and run the following command.  
   
 ```bash
-$ ballerina build auction_service
+   $ ballerina build auction_service
   
 Run following command to start docker container:
-$ docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
+   $ docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
 ```
 
 Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.  
 
 ```bash
-$ docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
+   $ docker run -d -p 9090:9090 ballerina.guides.io/auction_service:v1.0
 ```
 
 Here we run the Docker image with flag `-p <host_port>:<container_port>` so that we use the host port 9090 and the container port 9090. Therefore, you can access the service through the host port. 
@@ -526,7 +526,7 @@ Now you can build a Ballerina executable archive (.balx) of the service that you
    $ ballerina build auction_service
   
 Run following command to deploy kubernetes artifacts:  
-kubectl apply -f ./target/auction_service/kubernetes
+   $ kubectl apply -f ./target/auction_service/kubernetes
 ```
 
 You can verify that the Docker image that you specified in `@kubernetes:Deployment` is created using `docker images`. 
@@ -536,7 +536,7 @@ Also, the Kubernetes artifacts related our service are generated under `./target
 Now you can create the Kubernetes deployment using the following command.
 
 ```bash
-   $ kubectl apply -f ./target/auction_service/kubernetes 
+   $ kubectl apply -f ./target/kubernetes/auction_service
  
 deployment.extensions "ballerina-guides-auction-service" created
 ingress.extensions "ballerina-guides-auction-service" created
