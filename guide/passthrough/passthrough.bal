@@ -14,10 +14,6 @@ import ballerina/log;
 //    serviceType:"NodePort",
 //    name:"OnlineShopping"
 //}
-//@kubernetes:Service {
-//    serviceType:"NodePort",
-//    name:"LocalShop"
-//}
 //
 //@kubernetes:Deployment {
 //    image: "ballerina.guides.io/passthrough:v1.0",
@@ -29,6 +25,10 @@ endpoint http:Listener OnlineShoppingEP {
     port: 9090
 };
 
+//@kubernetes:Service {
+//    serviceType:"NodePort",
+//    name:"LocalShop"
+//}
 //@docker:Expose {}
 endpoint http:Listener LocalShopEP {
     port: 9091
@@ -39,7 +39,6 @@ endpoint http:Listener LocalShopEP {
 endpoint http:Client clientEP {
     url: "http://localhost:9091/LocalShop"
 };
-
 
 //@docker:Config {
 //    registry:"ballerina.guides.io",
@@ -53,7 +52,6 @@ service<http:Service> OnlineShopping bind OnlineShoppingEP {
     @http:ResourceConfig {
         path: "/"
     }
-
     passthrough(endpoint caller, http:Request req) {
         // set log message as "the request will be directed to another service" in pass-through method.
         log:printInfo("You will be redirected to Local Shop  .......");

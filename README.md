@@ -74,15 +74,17 @@ To implement the scenario, let's start by implementing the passthrough.bal file,
 ##### passthrough.bal
 
 ```ballerina
-
 import ballerina/http;
 import ballerina/log;
+
 endpoint http:Listener OnlineShoppingEP {
     port:9090
 };
+
 endpoint http:Listener LocalShopEP {
     port:9091
 };
+
 //Define endpoint for the local shop as online shop link.
 endpoint http:Client clientEP {
     url: "http://localhost:9091/LocalShop"
@@ -93,7 +95,6 @@ service<http:Service> OnlineShopping bind OnlineShoppingEP {
     @http:ResourceConfig {
         path: "/"
     }
-
     passthrough(endpoint caller, http:Request req) {
         // Set log message as "the request will be directed to another service" in the pass-through method.
         log:printInfo("You will be redirected to Local Shop  .......");
@@ -158,7 +159,7 @@ Send a request to the online shopping service.
 
 ```bash
 
- $ curl -v http://localhost:9090/OnlineShopping -X GET
+ $ curl -v http://localhost:9090/OnlineShopping
 
 ```
 #### Output
@@ -248,20 +249,22 @@ import ballerinax/docker;
 endpoint http:Listener OnlineShoppingEP {
     port: 9090
 };
+
 @docker:Expose {}
 endpoint http:Listener LocalShopEP {
     port: 9091
 };
+
 //Define end-point for the local shop as online shop link
 endpoint http:Client clientEP {
     url: "http://localhost:9091/LocalShop"
 };
+
 @docker:Config {
     registry:"ballerina.guides.io",
     name:"passthrough",
     tag:"v1.0"
 }
-
 service<http:Service> OnlineShopping bind OnlineShoppingEP {
 .
 .
@@ -280,14 +283,14 @@ Now you can build a Ballerina executable archive (.balx) of the service that you
   .
   .
    Run following command to start docker container:
-   docker run -d -p 9090:9090 -p 9091:9091 passthrough:latest
+   docker run -d -p 9090:9090 -p 9091:9091 ballerina.guides.io/passthrough:v1.0
 
 ```
 
 Once you successfully build the Docker image, you can run it with the `docker run` command that is shown in the previous step.  
 
 ```bash
-   $ docker run -d -p 9090:9090 -p 9091:9091 passthrough:latest
+   $ docker run -d -p 9090:9090 -p 9091:9091 ballerina.guides.io/passthrough:v1.0
 ```
 
 You can run the Docker image with the flag `-p <host_port>:<container_port>` so that we use the host port 9090 and the container port 9090. Therefore, you can access the service through the host port. 
@@ -297,14 +300,16 @@ Verify if the Docker container is running with the use of `$ docker ps`. The sta
 You can access 'OnlineShopping' service, using the same cURL commands that you've used above. 
 
 ```bash
-    curl -v http://localhost:9090/OnlineShopping -X GET
+    curl -v http://localhost:9090/OnlineShopping
 ```
 
 ### Deploying on Kubernetes
 
 You can run the service that you developed above on Kubernetes. The Ballerina language offers native support for running Ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-Let's now see how to deploy `passthrough` on Kubernetes. First, you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service you developed above. 
+Let's now see how to deploy `passthrough` on Kubernetes. First, you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service you developed above.
+
+> NOTE: Linux users can use Minikube to try this out locally.
 
 ##### passthrough.bal
 
@@ -322,10 +327,6 @@ import ballerinax/kubernetes;
     serviceType:"NodePort",
     name:"OnlineShopping"
 }
-@kubernetes:Service {
-    serviceType:"NodePort",
-    name:"LocalShop"
-}
 @kubernetes:Deployment {
     image: "ballerina.guides.io/passthrough:v1.0",
     name: "ballerina-guides-pass-through-messaging"
@@ -333,6 +334,11 @@ import ballerinax/kubernetes;
 endpoint http:Listener OnlineShoppingEP {
     port:9090
 };
+
+@kubernetes:Service {
+    serviceType:"NodePort",
+    name:"LocalShop"
+}
 endpoint http:Listener LocalShopEP {
     port:9091
 };
@@ -358,6 +364,10 @@ You have also specified `@kubernetes:Service` so that it will create a Kubernete
 
 In addition, you have used `@kubernetes:Ingress`, which is the external interface to access your service (with path `/` and hostname `ballerina.guides.io`)
 
+If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
+- `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
+- `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
+
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
@@ -377,9 +387,10 @@ Now you can create the Kubernetes deployment using:
 ```bash
    $ kubectl apply -f /home/saneth/Documents/ballerina/sample_pass-through/guide/target/kubernetes/ 
  
-   deployment.extensions "ballerina-guides-pass-through-messaging" created
-   ingress.extensions "passthrough" created
-   service "passthrough" created
+   deployment.extensions "ballerina-guides-passt-hrough-messaging" configured
+   ingress.extensions "passthrough" configured
+   service "onlineshopping" configured
+   service "localshop" configured
 ```
 
 You can verify that the Kubernetes deployment, service, and ingress are running properly, by using following Kubernetes commands. 
@@ -391,15 +402,29 @@ You can verify that the Kubernetes deployment, service, and ingress are running 
    $ kubectl get ingress
 ```
 
-If everything is successfully deployed, you can invoke the service either via Node port or ingress. The cURL request for the 'OnlineShopping' service is mentioned below to get the results.
- 
-Node Port:
+If everything is successfully deployed, you can invoke the service either via Node port or ingress.
 
-```bash
-   curl -v http://localhost:<Node_Port>/OnlineShopping -X GET  
+Node Port:
+ 
+```
+  curl -v http://localhost:<Node_Port>/OnlineShopping 
 ```
 
+If you are using Minikube, you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
+```bash
+    $ minikube ip
+    192.168.99.100
+
+    $ kubectl get services
+    NAME                               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+    ballerina-guides-order-service   NodePort    10.100.226.129     <none>        9090:30659/TCP   3h
+```
+
+The endpoint URL for the above case would be as follows: `http://192.168.99.100:30659/OnlineShopping` 
+
 Ingress:
+
+- Make sure that Nginx backend and controller deployed as mentioned in [here](https://github.com/ballerinax/kubernetes/tree/master/samples#setting-up-nginx).
 
 Add `/etc/hosts` entry to match hostname. 
 
@@ -410,7 +435,7 @@ Add `/etc/hosts` entry to match hostname.
 Access the service.
 
 ```bash
-   curl -v http://ballerina.guides.io/OnlineShopping -X GET
+   curl -v http://ballerina.guides.io/OnlineShopping
 ```
 
 
