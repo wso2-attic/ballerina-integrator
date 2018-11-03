@@ -1,30 +1,31 @@
 import ballerina/http;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
+//
+//@docker:Config {
+//    registry: "ballerina.guides.io",
+//    name: "passed_student_filter_service",
+//    tag: "v1.0"
+//}
+//
+//@docker:Expose {}
 
-// @docker:Config {
-//     registry:"ballerina.guides.io",
-//     name:"passed_student_filter_service",
-//     tag:"v1.0"
-// }
-
-//  @docker:Expose{}
-
-// @kubernetes:Ingress {
-//     hostname:"ballerina.guides.io",
-//     name:"ballerina-guides-passed_student_filter_service",
-//     path:"/"
-// }
-
-// @kubernetes:Service {
-//     serviceType:"NodePort",
-//     name:"ballerina-guides-passed_student_filter_service"
-// }
-
-// @kubernetes:Deployment {
-//     image:"ballerina.guides.io/passed_student_filter_service:v1.0",
-//     name:"ballerina-guides-passed_student_filter_service"
-// }
+//
+//@kubernetes:Ingress {
+//    hostname: "ballerina.guides.io",
+//    name: "ballerina-guides-passed_student_filter_service",
+//    path: "/"
+//}
+//
+//@kubernetes:Service {
+//    serviceType: "NodePort",
+//    name: "ballerina-guides-passed_student_filter_service"
+//}
+//
+//@kubernetes:Deployment {
+//    image: "ballerina.guides.io/passed_student_filter_service:v1.0",
+//    name: "ballerina-guides-passed_student_filter_service"
+//}
 
 endpoint http:Listener filterServiceEP {
     port: 9090
