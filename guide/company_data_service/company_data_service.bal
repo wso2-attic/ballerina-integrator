@@ -1,5 +1,35 @@
 import ballerina/http;
+//import ballerinax/docker;
+//import ballerinax/kubernetes;
 
+//Deploying on Docker
+
+//@docker:Config {
+//    registry: "ballerina.guides.io",
+//    name: "company_data_service.bal",
+//    tag: "v1.0"
+//}
+//
+//@docker:Expose {}
+
+//Deploying on Kubernetes
+
+//
+//@kubernetes:Ingress {
+//    hostname: "ballerina.guides.io",
+//    name: "ballerina-guides-company_data_service",
+//    path: "/"
+//}
+//
+//@kubernetes:Service {
+//    serviceType: "NodePort",
+//    name: "ballerina-guides-company_data_service"
+//}
+//
+//@kubernetes:Deployment {
+//    image: "ballerina.guides.io/company_data_service:v1.0",
+//    name: "ballerina-guides-company_data_service"
+//}
 endpoint http:Listener listener {
     port: 9090
 };

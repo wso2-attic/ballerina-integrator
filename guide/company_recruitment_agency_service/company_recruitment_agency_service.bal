@@ -3,39 +3,38 @@ import ballerina/log;
 import ballerina/mime;
 import ballerina/io;
 
-//Deploying on kubernetes
 
-//import ballerinax/kubernetes;
-
-//@kubernetes:Ingress{
-//    hostname:"ballerina.guides.io",
-//    name:"ballerina-guides-company_recruitment_agency_service",
-//    path:"/"
-//}
-//
-//@kubernetes:Service{
-//    serviceType:"NodePort",
-//    name:"ballerina-guides-company_recruitment_agency_service"
-//}
-//
-//@kubernetes:Deployment{
-//    image:"ballerina.guides.io/company_recruitment_agency_service:v1.0",
-//    name:"ballerina-guides-company_recruitment_agency_service"
-//}
-
-//Deploying on docker
+//Deploying on Docker
 
 //import ballerinax/docker;
-
-//@docker:Config{
-//    registry:"ballerina.guides.io",
-//    name:"company_recruitment_agency_service",
-//    tag:"v1.0"
+//
+//@docker:Config {
+//    registry: "ballerina.guides.io",
+//    name: "company_recruitment_agency_service",
+//    tag: "v1.0"
 //}
 //
 //@docker:Expose {}
-//
 
+//Deploying on Kubernetes
+
+//import ballerinax/kubernetes;
+//
+//@kubernetes:Ingress {
+//    hostname: "ballerina.guides.io",
+//    name: "ballerina-guides-company_recruitment_agency_service",
+//    path: "/"
+//}
+//
+//@kubernetes:Service {
+//    serviceType: "NodePort",
+//    name: "ballerina-guides-company_recruitment_agency_service"
+//}
+//
+//@kubernetes:Deployment {
+//    image: "ballerina.guides.io/company_recruitment_agency_service:v1.0",
+//    name: "ballerina-guides-company_recruitment_agency_service"
+//}
 endpoint http:Listener comEP {
     port: 9091
 };
