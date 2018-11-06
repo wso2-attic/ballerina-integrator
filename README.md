@@ -37,7 +37,8 @@ Travel agency is the service that acts as the composition initiator. The other t
 
 ### Create the project structure
 
-Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
+Ballerina is a complete programming language that supports custom project structures. Use the following module structure
+ for this guide.
 
 ```
 service-composition
@@ -301,7 +302,8 @@ As shown above, the travel agency service rents a car for the requested user by 
       
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+In Ballerina, the unit test cases should be in the same module inside a folder named as 'tests'.  When writing the test
+functions the below convention should be followed.
 - Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
    @test:Config
@@ -325,7 +327,7 @@ Once you are done with the development, you can deploy the services using any of
 
 - As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `service-composition/guide` and run the following command. 
 ```bash
-   $ ballerina build <Package_Name>
+   $ ballerina build <Module_Name>
 ```
 
 - Once the .balx files are created inside the target folder, you can run them using the following command. 
@@ -335,8 +337,8 @@ Once you are done with the development, you can deploy the services using any of
 
 - The successful execution of a service will show us something similar to the following output. 
 ```
-   ballerina: initiating service(s) in 'target/travel_agency.balx'
-   ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+   Initiating service(s) in 'target/travel_agency.balx'
+   [ballerina/http] started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ### Deploying on Docker
@@ -618,7 +620,8 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log module for logging to the console. You can import ballerina/log module and start logging. The
+following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina Service with the following command from `service-composition/guide`
 ```
