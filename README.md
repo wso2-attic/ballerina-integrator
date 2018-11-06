@@ -46,7 +46,8 @@ Travel agency is the service that acts as the service orchestration initiator. T
 
 ### Create the project structure
 
-Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
+Ballerina is a complete programming language that supports custom project structures. Use the following module structure
+ for this guide.
 
 ```
 parallel-service-orchestration
@@ -477,7 +478,8 @@ To see the complete implementation of the above file, refer to the [travel_agenc
    
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+In Ballerina, the unit test cases should be in the same module inside a folder named as 'tests'.  When writing the test
+functions the below convention should be followed.
 - Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
    @test:Config
@@ -502,7 +504,7 @@ Once you are done with the development, you can deploy the services using any of
 
 - As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `parallel-service-orchestration/guide` and run the following command. 
 ```bash
-   $ ballerina build <Package_Name>
+   $ ballerina build <Module_Name>
 ```
 
 - Once the .balx files are created inside the target folder, you can run them using the following command. 
@@ -512,8 +514,8 @@ Once you are done with the development, you can deploy the services using any of
 
 - The successful execution of a service will show us something similar to the following output. 
 ```
-   ballerina: initiating service(s) in 'target/travel_agency.balx'
-   ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+   Initiating service(s) in 'target/travel_agency.balx'
+   [ballerina/http] started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ### Deploying on Docker
@@ -701,7 +703,7 @@ enabled=true
 To start the ballerina service using the configuration file, run the following command
 
 ```
-   $ ballerina run --config travel_agency/ballerina.conf <package_name>
+   $ ballerina run --config travel_agency/ballerina.conf <module_name>
 ```
 
 ### Tracing 
@@ -715,7 +717,7 @@ Follow the following steps to use tracing with Ballerina.
 
 - Navigate to `parallel-service-orchestration/guide/` and start all services using the following command
 ```
-   $ ballerina run --config travel_agency/ballerina.conf <package_name>
+   $ ballerina run --config travel_agency/ballerina.conf <module_name>
 ```
    
 - Observe the tracing using Jaeger UI using following URL
@@ -765,10 +767,10 @@ Follow the below steps to set up Prometheus and view metrics for travel_agency s
 
 - Navigate to `parallel-service-orchestration/guide/` and start all services using the following command
 ```
-   $ ballerina run --config travel_agency/ballerina.conf <package_name>
+   $ ballerina run --config travel_agency/ballerina.conf <module_name>
 ```
 
-   NOTE: First start the `travel_agency` package since it's the main orchestrator for other services(also we are going
+   NOTE: First start the `travel_agency` module since it's the main orchestrator for other services(also we are going
     to trace from traval agency service hence do not use the config file for other services)
    
 - You can access Prometheus at the following URL
@@ -786,7 +788,8 @@ Follow the below steps to set up Prometheus and view metrics for travel_agency s
    ![promethues screenshot](images/metrics-screenshot.png "Prometheus UI")
 
 ### Logging
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log module for logging to the console. You can import ballerina/log module and start logging. The
+following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina Service with the following command from `parallel-service-orchestration/guide`
 ```
