@@ -54,15 +54,15 @@ Basically, this service will deal with a MySQL database and expose the data oper
 
 ### Create the project structure
 
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any module structure, use the following module structure for this project to follow this guide.
 ```
 data-backed-service
  └── guide
-     └── data_backed_service
-     |    ├── employee_db_service.bal
-     |    └── test
-     |        └── employee_db_service_test.bal
-     └──ballerina.conf
+      └── data_backed_service
+      |    ├── employee_db_service.bal
+      |    └── test
+      |        └── employee_db_service_test.bal
+      └── ballerina.conf
 ```
 
 - Create the above directories in your local machine and also create empty `.bal` and `.conf` files.
@@ -292,7 +292,7 @@ public function deleteData(int employeeID) returns (json) {
 }
 ```
 
-The `endpoint` keyword in Ballerina refers to a connection with a remote service. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the SQL endpoint. The rest of the code is for preparing SQL queries and executing them by calling the `update` action in the `ballerina/mysql` package.
+The `endpoint` keyword in Ballerina refers to a connection with a remote service. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the SQL endpoint. The rest of the code is for preparing SQL queries and executing them by calling the `update` action in the `ballerina/mysql` module.
 
 You can implement custom functions in Ballerina that do specific tasks. For this scenario, we have included the following functions to interact with the MySQL database.
 
@@ -364,7 +364,7 @@ Output:
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as `test`.  When writing the test functions the below convention should be followed.
+In Ballerina, the unit test cases should be in the same module inside a folder named as `test`.  When writing the test functions the below convention should be followed.
 - Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
    @test:Config
@@ -377,7 +377,7 @@ To run the unit tests, go to the `guide` directory and run the following command
 Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file.
 
 ```bash
-$ ballerina test --config ../ballerina.conf
+$ ballerina test --config ballerina.conf
 ```
 
 ## Deployment
@@ -459,7 +459,7 @@ endpoint mysql:Client employeeDB {
     registry: "ballerina.guides.io",
     name: "employee_database_service",
     tag: "v1.0",
-    baseImage: "ballerina/ballerina-platform:0.981.0"
+    baseImage: "ballerina/ballerina:0.983.0"
 }
 
 @docker:CopyFiles {
@@ -569,7 +569,7 @@ endpoint mysql:Client employeeDB {
 @kubernetes:Deployment {
     image: "ballerina.guides.io/employee_database_service:v1.0",
     name: "ballerina-guides-employee-database-service",
-    baseImage: "ballerina/ballerina-platform:0.981.0",
+    baseImage: "ballerina/ballerina:0.983.0",
     copyFiles: [{ target: "/ballerina/runtime/bre/lib",
                 source: <path_to_JDBC_jar> }]
 }
@@ -591,7 +591,7 @@ eg:
 @kubernetes:Deployment {
     image: "ballerina.guides.io/employee_database_service:v1.0",
     name: "ballerina-guides-employee-database-service",
-    baseImage: "ballerina/ballerina-platform:0.981.0",
+    baseImage: "ballerina/ballerina:0.983.0",
     copyFiles: [{ target: "/ballerina/runtime/bre/lib",
                 source: <path_to_JDBC_jar> }],
     dockerHost: "tcp://<MINIKUBE_IP>:<DOCKER_PORT>",
@@ -773,7 +773,7 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log module for logging to the console. You can import ballerina/log module and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina Service with the following command from `data-backed-service/guide`
 ```
