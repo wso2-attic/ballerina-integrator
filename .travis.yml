@@ -14,48 +14,48 @@
 
 script:
 # Ballerina
-- BALLERINA_VERSION="${VERSION:-0.980.2-SNAPSHOT}"
+- BALLERINA_VERSION=${VERSION:-0.982.1-SNAPSHOT}
 - echo -e "\033[36m${BALLERINA_VERSION}\033[m"
 
-- DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
+- DISTRIBUTION_NAME=ballerina-platform-${BALLERINA_VERSION}
 - echo -e "\033[36m${DISTRIBUTION_NAME}\033[m"
 
-- DOWNLOAD_CHANNEL="${CHANNEL:-nightly}"
+- DOWNLOAD_CHANNEL=${CHANNEL:-nightly}
 - echo -e "\033[36m${DOWNLOAD_CHANNEL}\033[m"
 
-- DOWNLOAD_LOCATION="${URL:-https://product-dist.ballerina.io}"
+- DOWNLOAD_LOCATION=${URL:-https://product-dist.ballerina.io}
 - echo -e "\033[36m${DOWNLOAD_LOCATION}\033[m"
 
-- echo -e "\033[36m$DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip\033[m"
-- wget $DOWNLOAD_LOCATION/$DOWNLOAD_CHANNEL/$BALLERINA_VERSION/$DISTRIBUTION_NAME.zip
+- echo -e "\033[36m${DOWNLOAD_LOCATION}/${DOWNLOAD_CHANNEL}/${BALLERINA_VERSION}/${DISTRIBUTION_NAME}.zip\033[m"
+- wget ${DOWNLOAD_LOCATION}/${DOWNLOAD_CHANNEL}/${BALLERINA_VERSION}/${DISTRIBUTION_NAME}.zip
 
-- unzip -q $DISTRIBUTION_NAME.zip
+- unzip -q ${DISTRIBUTION_NAME}.zip
 
-- export PATH=$PATH:$(pwd)/$DISTRIBUTION_NAME/bin
+- export PATH=${PATH}:$(pwd)/${DISTRIBUTION_NAME}/bin
 
 - ballerina version
 
 # Kafka
 - KAFKA_VERSION=kafka_2.11-1.1.0
 
-- wget http://www-us.apache.org/dist/kafka/1.1.0/$KAFKA_VERSION.tgz
+- wget http://www-us.apache.org/dist/kafka/1.1.0/${KAFKA_VERSION}.tgz
 
-- tar xzf $KAFKA_VERSION.tgz
+- tar xzf ${KAFKA_VERSION}.tgz
 
-- ./$KAFKA_VERSION/bin/zookeeper-server-start.sh -daemon ./$KAFKA_VERSION/config/zookeeper.properties
+- ./${KAFKA_VERSION}/bin/zookeeper-server-start.sh -daemon ./${KAFKA_VERSION}/config/zookeeper.properties
 
-- ./$KAFKA_VERSION/bin/kafka-server-start.sh -daemon ./$KAFKA_VERSION/config/server.properties
+- ./${KAFKA_VERSION}/bin/kafka-server-start.sh -daemon ./${KAFKA_VERSION}/config/server.properties
 
 # Ballerina Kafka Connector
-- KAFKA_CONNECTOR_VERSION="${CONNECTOR_VERSION:-0.97.1}"
-- KAFKA_CONNECTOR_DISTRIBUTION=wso2-kafka-$KAFKA_CONNECTOR_VERSION
+- KAFKA_CONNECTOR_VERSION=${CONNECTOR_VERSION:-0.97.1}
+- KAFKA_CONNECTOR_DISTRIBUTION=wso2-kafka-${KAFKA_CONNECTOR_VERSION}
 
-- wget https://github.com/wso2-ballerina/package-kafka/releases/download/v$KAFKA_CONNECTOR_VERSION/$KAFKA_CONNECTOR_DISTRIBUTION.zip
+- wget https://github.com/wso2-ballerina/package-kafka/releases/download/v${KAFKA_CONNECTOR_VERSION}/${KAFKA_CONNECTOR_DISTRIBUTION}.zip
 
-- unzip -q $KAFKA_CONNECTOR_DISTRIBUTION.zip -d $KAFKA_CONNECTOR_DISTRIBUTION
+- unzip -q ${KAFKA_CONNECTOR_DISTRIBUTION}.zip -d ${KAFKA_CONNECTOR_DISTRIBUTION}
 
-- cp $KAFKA_CONNECTOR_DISTRIBUTION/dependencies/wso2-kafka-package-$KAFKA_CONNECTOR_VERSION.jar $DISTRIBUTION_NAME/bre/lib
-- cp -R $KAFKA_CONNECTOR_DISTRIBUTION/balo/wso2 $DISTRIBUTION_NAME/lib/repo
+- cp ${KAFKA_CONNECTOR_DISTRIBUTION}/dependencies/wso2-kafka-package-${KAFKA_CONNECTOR_VERSION}.jar ${DISTRIBUTION_NAME}/bre/lib
+- cp -R ${KAFKA_CONNECTOR_DISTRIBUTION}/balo/wso2 ${DISTRIBUTION_NAME}/lib/repo
 
 - cd guide
 
