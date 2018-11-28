@@ -18,23 +18,26 @@ import ballerina/log;
 import wso2/kafka;
 import ballerina/internal;
 
-// Kafka consumer endpoint
-endpoint kafka:SimpleConsumer consumer {
+// Kafka consumer listener configurations
+kafka:ConsumerConfig consumerConfig = {
     bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
-    groupId: "inventorySystemd",
+    groupId: "franchisee1",
     // Listen from topic 'product-price'
     topics: ["product-price"],
     // Poll every 1 second
-    pollingInterval:1000
+    pollingInterval: 1000
 };
+
+// Create kafka listener
+listener kafka:SimpleConsumer consumer = new(consumerConfig);
 
 // Kafka service that listens from the topic 'product-price'
 // 'inventoryControlService' subscribed to new product price updates from
 // the product admin and updates the Database.
-service<kafka:Consumer> kafkaService bind consumer {
+service kafkaService on consumer {
     // Triggered whenever a message added to the subscribed topic
-    onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
+    resource function onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
         foreach entry in records {
             byte[] serializedMsg = entry.value;
