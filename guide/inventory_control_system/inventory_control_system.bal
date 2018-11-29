@@ -37,7 +37,7 @@ listener kafka:SimpleConsumer consumer = new(consumerConfig);
 // the product admin and updates the Database.
 service kafkaService on consumer {
     // Triggered whenever a message added to the subscribed topic
-    resource function onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
+    resource function onMessage(kafka:SimpleConsumer simpleConsumer, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
         foreach entry in records {
             byte[] serializedMsg = entry.value;

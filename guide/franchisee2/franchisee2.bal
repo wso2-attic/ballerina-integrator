@@ -36,7 +36,7 @@ listener kafka:SimpleConsumer consumer = new(consumerConfig);
 // 'FranchiseeService2' subscribed to new product price updates from the product admin
 service franchiseeService2 on consumer {
     // Triggered whenever a message added to the subscribed topic
-    resource function onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
+    resource function onMessage(kafka:SimpleConsumer simpleConsumer, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
         foreach entry in records {
             byte[] serializedMsg = entry.value;
