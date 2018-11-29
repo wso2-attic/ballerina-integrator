@@ -18,45 +18,37 @@ import ballerina/http;
 import wso2/kafka;
 
 // Constants to store admin credentials
-@final string ADMIN_USERNAME = "Admin";
-@final string ADMIN_PASSWORD = "Admin";
+final string ADMIN_USERNAME = "Admin";
+final string ADMIN_PASSWORD = "Admin";
 
 // Kafka producer endpoint
-endpoint kafka:SimpleProducer kafkaProducer {
+kafka:ProducerConfig producerConfigs = {
     bootstrapServers: "localhost:9092",
-    clientID:"basic-producer",
-    acks:"all",
-    noRetries:3
+    clientID: "basic-producer",
+    acks: "all",
+    noRetries: 3
 };
+
+kafka:SimpleProducer kafkaProducer = new(producerConfig);
 
 // HTTP service endpoint
-endpoint http:Listener listener {
-    port:9090
-};
+listener http:Listener httpListener = new({ port: 9090 });
 
-@http:ServiceConfig {basePath:"/product"}
-service<http:Service> productAdminService bind listener {
+@http:ServiceConfig { basePath: "/product" }
+service productAdminService on httpListener {
 
-    @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
-        produces:["application/json"]}
-    updatePrice (endpoint client, http:Request request) {
+    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
+    resource function updatePrice(http:Caller caller, http:Request request) {
         http:Response response;
-        json reqPayload;
         float newPriceAmount;
+        json|error reqPayload = request.getJsonPayload();
 
-        // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                done;
-            }
+        if (payload is error) {
+            response.statusCode = 400;
+            response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+            _ = caller->respond(response);
+            done;
         }
-
         json username = reqPayload.Username;
         json password = reqPayload.Password;
         json productName = reqPayload.Product;
@@ -65,42 +57,46 @@ service<http:Service> productAdminService bind listener {
         // If payload parsing fails, send a "Bad Request" message as the response
         if (username == null || password == null || productName == null || newPrice == null) {
             response.statusCode = 400;
-            response.setJsonPayload({"Message":"Bad Request: Invalid payload"});
-            _ = client->respond(response);
+            response.setJsonPayload({ "Message": "Bad Request: Invalid payload" });
+            _ = caller->respond(response);
             done;
         }
 
         // Convert the price value to float
         var result = <float>newPrice.toString();
-        match result {
-            float value => {
-                newPriceAmount = value;
-            }
-            error err => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid amount specified"});
-                _ = client->respond(response);
-                done;
-            }
+        if (result is error) {
+            response.statusCode = 400;
+            response.setJsonPayload({ "Message": "Invalid amount specified" });
+            _ = caller->respond(response);
+            done;
+        } else {
+            newPriceAmount = value;
         }
 
         // If the credentials does not match with the admin credentials,
         // send an "Access Forbidden" response message
         if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
             response.statusCode = 403;
-            response.setJsonPayload({"Message":"Access Forbidden"});
-            _ = client->respond(response);
+            response.setJsonPayload({ "Message": "Access Forbidden" });
+            _ = caller->respond(response);
             done;
         }
 
         // Construct and serialize the message to be published to the Kafka topic
-        json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPriceAmount};
+        json priceUpdateInfo = { "Product": productName, "UpdatedPrice": newPriceAmount };
         byte[] serializedMsg = priceUpdateInfo.toString().toByteArray("UTF-8");
 
         // Produce the message and publish it to the Kafka topic
-        kafkaProducer->send(serializedMsg, "product-price", partition = 0);
+        var sendResult = kafkaProducer->send(serializedMsg, "product-price", partition = 0);
+        // Send internal server error if the sending has failed
+        if (sendResult is error) {
+            response.statusCode = 500;
+            response.setJsonPayload({ "Message": "Kafka producer failed to send data" });
+            _ = caller->respond(response);
+            done;
+        }
         // Send a success status to the admin request
-        response.setJsonPayload({"Status":"Success"});
-        _ = client->respond(response);
+        response.setJsonPayload({ "Status": "Success" });
+        _ = caller->respond(response);
     }
 }
