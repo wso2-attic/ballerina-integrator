@@ -21,7 +21,7 @@ import wso2/kafka;
 final string ADMIN_USERNAME = "Admin";
 final string ADMIN_PASSWORD = "Admin";
 
-// Kafka producer endpoint
+// Kafka producer configurations
 kafka:ProducerConfig producerConfigs = {
     bootstrapServers: "localhost:9092",
     clientID: "basic-producer",
