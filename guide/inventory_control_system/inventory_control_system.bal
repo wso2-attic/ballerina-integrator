@@ -22,7 +22,7 @@ import ballerina/internal;
 kafka:ConsumerConfig consumerConfig = {
     bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
-    groupId: "franchisee1",
+    groupId: "inventorySystem",
     // Listen from topic 'product-price'
     topics: ["product-price"],
     // Poll every 1 second
