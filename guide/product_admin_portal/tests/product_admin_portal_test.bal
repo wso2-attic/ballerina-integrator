@@ -59,9 +59,6 @@ function testProductAdminPortal () {
             } else {
                 json expected = {"Status":"Success"};
                 var result = test:assertEquals(resPayload, expected, msg = "Response mismatch!");
-                if (result is error){
-                    
-                }
             }
         }
     }
