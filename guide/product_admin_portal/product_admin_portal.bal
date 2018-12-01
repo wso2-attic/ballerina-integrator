@@ -40,14 +40,13 @@ service productAdminService on httpListener {
     @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
     resource function updatePrice(http:Caller caller, http:Request request) {
         http:Response response = new;
-        float newPriceAmount;
+        float newPriceAmount = 0.0;
         json|error reqPayload = request.getJsonPayload();
 
         if (reqPayload is error) {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
             _ = caller->respond(response);
-            done;
         } else {
             json username = reqPayload.Username;
             json password = reqPayload.Password;
@@ -59,7 +58,6 @@ service productAdminService on httpListener {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Bad Request: Invalid payload" });
                 _ = caller->respond(response);
-                done;
             }
 
             // Convert the price value to float
@@ -68,7 +66,6 @@ service productAdminService on httpListener {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Invalid amount specified" });
                 _ = caller->respond(response);
-                done;
             } else {
                 newPriceAmount = result;
             }
@@ -79,7 +76,6 @@ service productAdminService on httpListener {
                 response.statusCode = 403;
                 response.setJsonPayload({ "Message": "Access Forbidden" });
                 _ = caller->respond(response);
-                done;
             }
 
             // Construct and serialize the message to be published to the Kafka topic
@@ -93,7 +89,6 @@ service productAdminService on httpListener {
                 response.statusCode = 500;
                 response.setJsonPayload({ "Message": "Kafka producer failed to send data" });
                 _ = caller->respond(response);
-                done;
             }
             // Send a success status to the admin request
             response.setJsonPayload({ "Status": "Success" });

@@ -17,34 +17,52 @@
 import ballerina/test;
 import ballerina/http;
 
-// Client endpoint
-endpoint http:Client clientEP {
-    url:"http://localhost:9090/product"
+type Payload record {
+    string Username;
+    string Password;
+    string Product;
+    float Price;
+    !...
 };
+
+// Client endpoint
+http:Client httpClient = new http:Client("http://localhost:9090/product");
 
 // Function to test 'product_admin_portal' service
 @test:Config
 function testProductAdminPortal () {
     // Initialize empty http request
-    http:Request req;
+    http:Request req = new();
 
     // Test the 'updatePrice' resource
     // Construct a request payload
-    json payload = {
-        "Username":"Admin",
-        "Password":"Admin",
-        "Product":"ABC",
-        "Price":100.00
-    };
+    Payload payload = { Username:"Admin", Password:"Admin", Product:"ABC", Price:100.00 };
+    json|error payloadJson = json.create(payload);
 
-    req.setJsonPayload(payload);
-    // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/updatePrice", req);
-    // Expected response code is 200
-    test:assertEquals(response.statusCode, 200,
-        msg = "product admin service did not respond with 200 OK signal!");
-    // Check whether the response is as expected
-    json resPayload = check response.getJsonPayload();
-    json expected = {"Status":"Success"};
-    test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+    if (payloadJson is error) {
+        var result = test:assertFail;
+    } else {
+
+        req.setJsonPayload(payloadJson);
+        // Send a 'post' request and obtain the response
+        http:Response|error postResponse = httpClient->post("/updatePrice", req);
+
+        if (postResponse is error) {
+            var result = test:assertFail;
+        } else {
+            // Expected response code is 200
+            test:assertEquals(postResponse.statusCode, 200, msg = "product admin service did not respond with 200 OK signal!");
+            // Check whether the response is as expected
+            var resPayload = postResponse.getJsonPayload();
+            if (resPayload is error) {
+                var result = test:assertFail;
+            } else {
+                json expected = {"Status":"Success"};
+                var result = test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+                if (result is error){
+                    
+                }
+            }
+        }
+    }
 }
