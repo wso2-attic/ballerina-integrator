@@ -49,6 +49,7 @@ So, messaging between 'OnlineShopping' and 'LocalShop' services act as pass-thro
 Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
 
 ```
+pass-through-messaging
  └── guide
      ├── passthrough
      │   └── passthrough.bal
@@ -60,7 +61,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 Create the above directories in your local machine and also create empty `.bal` files.
 
-Open the terminal and navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the Ballerina project initializing toolkit.
+Open the terminal and navigate to `pass-through-messaging/guide` and run the Ballerina project initializing toolkit.
 
 ```bash
    $ ballerina init
@@ -73,10 +74,10 @@ To implement the scenario, let's start by implementing the passthrough.bal file,
 ##### passthrough.bal
 
 ```ballerina
-
 import ballerina/http;
 import ballerina/log;
 
+<<<<<<< HEAD
 listener http:Listener OnlineShoppingEP = new(9090);
 
 listener http:Listener LocalShopEP = new(9091);
@@ -94,6 +95,32 @@ service OnlineShopping on OnlineShoppingEP {
         log:printInfo("Request will be forwarded to Local Shop  .......");
         //'Forward()' sends the incoming request unaltered to the backend. Forward function
         //uses the same HTTP method as in the incoming request.
+=======
+endpoint http:Listener OnlineShoppingEP {
+    port:9090
+};
+
+endpoint http:Listener LocalShopEP {
+    port:9091
+};
+
+//Define endpoint for the local shop as online shop link.
+endpoint http:Client clientEP {
+    url: "http://localhost:9091/LocalShop"
+};
+
+service<http:Service> OnlineShopping bind OnlineShoppingEP {
+    // This service is implemented as a passthrough service. So it allows all HTTP methods. So methods are not specified.
+    @http:ResourceConfig {
+        path: "/"
+    }
+    passthrough(endpoint caller, http:Request req) {
+        // Set log message as "the request will be directed to another service" in the pass-through method.
+        log:printInfo("You will be redirected to Local Shop  .......");
+        // 'Forward()' is used to call the backend endpoint created above as pass-through method. In forward function,
+        // it used the same HTTP method, which is used to invoke the primary service.
+        // The `forward()` function returns the response from the backend if there are no errors.
+>>>>>>> c5694e812c342dad6d1cc279c5b81d3706ca9bc7
         var clientResponse = clientEP->forward("/", req);
 
         if (clientResponse is http:Response) {
@@ -134,17 +161,17 @@ service LocalShop on LocalShopEP {
 
 ### Invoking the service
 
-Navigate to `pass-through` and run the following command in the command line to start `passthrough.bal`.
+Navigate to `pass-through-messaging/guide` and run the following command in the command line to start the services in  `passthrough.bal`.
 
 ```bash
-   $ ballerina run passthrough.bal
+   $ ballerina run passthrough
 ```
    
 Send a request to the online shopping service.
 
 ```bash
 
- $ curl -v http://localhost:9090/OnlineShopping -X GET
+ $ curl -v http://localhost:9090/OnlineShopping
 
 ```
 #### Output
@@ -155,7 +182,7 @@ When connecting to the online shopping, the output will be "Welcome to Local Sho
 < HTTP/1.1 200 OK
 < content-type: text/plain
 < date: Sat, 23 Jun 2018 05:45:17 +0530
-< server: ballerina/0.970.1
+< server: ballerina/0.982.0
 < content-length: 54
 < 
 * Connection #0 to host localhost left intact
@@ -181,9 +208,9 @@ Test functions should be annotated with `@test:Config`. See the below example.
    }
 ```
 
-This guide contains unit test case for 'LKSubOffice' service and 'UKSubOffice' service in [passthrough_test.bal](https://github.com/sanethmaduranga/Simple-pass-through-messaging-ballerina-/blob/master/guide/tests/passthrough_test.bal) file.
+This guide contains unit test case for 'LKSubOffice' service and 'UKSubOffice' service in [passthrough_test.bal](https://github.com/ballerina-guides/pass-through-messaging/blob/master/guide/passthrough/tests/passthrough_test.bal) file.
 
-To run the unit tests, navigate to `Simple-pass-through-messaging-ballerina-/guide/` and run the following command. 
+To run the unit tests, navigate to `pass-through-messaging/guide/` and run the following command. 
 
 ```bash
    $ ballerina test
@@ -210,8 +237,9 @@ Once the .balx files are created inside the target folder, you can run them usin
 The successful execution of a service will show us something similar to the following output.
 
 ```
-   ballerina: initiating service(s) in 'target/passthrough.balx'
-   
+   Initiating service(s) in 'target/passthrough.balx'
+   ballerina: started HTTP/WS endpoint 0.0.0.0:9091
+   ballerina: started HTTP/WS endpoint 0.0.0.0:9090   
 ```
 
 ### Deploying on Docker
@@ -230,6 +258,7 @@ import ballerina/log;
 import ballerinax/docker;
 
 @docker:Expose {}
+<<<<<<< HEAD
 listener http:Listener OnlineShoppingEP = new(9090);
 
 @docker:Expose {}
@@ -237,14 +266,33 @@ listener http:Listener LocalShopEP = new(9091);
 
 //Define end-point for the local shop as online shop link
 http:Client clientEP = new("http://localhost:9091/LocalShop");
+=======
+endpoint http:Listener OnlineShoppingEP {
+    port: 9090
+};
+
+@docker:Expose {}
+endpoint http:Listener LocalShopEP {
+    port: 9091
+};
+
+//Define end-point for the local shop as online shop link
+endpoint http:Client clientEP {
+    url: "http://localhost:9091/LocalShop"
+};
+>>>>>>> c5694e812c342dad6d1cc279c5b81d3706ca9bc7
 
 @docker:Config {
     registry:"ballerina.guides.io",
     name:"passthrough",
     tag:"v1.0"
 }
+<<<<<<< HEAD
 
 service OnlineShopping on OnlineShoppingEP {
+=======
+service<http:Service> OnlineShopping bind OnlineShoppingEP {
+>>>>>>> c5694e812c342dad6d1cc279c5b81d3706ca9bc7
 .
 .
 .
@@ -255,12 +303,12 @@ service LocalShop on LocalShopEP {
 }
 ``` 
 
-Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This also creates the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the following command.  
+Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This also creates the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `pass-through-messaging/guide` and run the following command.  
   
 ```
-   $ballerina build passthrough
-  
-  
+   $ballerina build
+  .
+  .
    Run following command to start docker container:
    docker run -d -p 9090:9090 -p 9091:9091 ballerina.guides.io/passthrough:v1.0
 
@@ -279,14 +327,16 @@ Verify if the Docker container is running with the use of `$ docker ps`. The sta
 You can access 'OnlineShopping' service, using the same cURL commands that you've used above. 
 
 ```bash
-    curl -v http://localhost:9090/OnlineShopping -X GET
+    curl -v http://localhost:9090/OnlineShopping
 ```
 
 ### Deploying on Kubernetes
 
 You can run the service that you developed above on Kubernetes. The Ballerina language offers native support for running Ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
 
-Let's now see how to deploy `passthrough` on Kubernetes. First, you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service you developed above. 
+Let's now see how to deploy `passthrough` on Kubernetes. First, you need to import `ballerinax/kubernetes` and use `@kubernetes` annotations as shown below to enable Kubernetes deployment for the service you developed above.
+
+> NOTE: Linux users can use Minikube to try this out locally.
 
 ##### passthrough.bal
 
@@ -304,17 +354,27 @@ import ballerinax/kubernetes;
     serviceType:"NodePort",
     name:"OnlineShopping"
 }
-@kubernetes:Service {
-    serviceType:"NodePort",
-    name:"LocalShop"
-}
 @kubernetes:Deployment {
     image: "ballerina.guides.io/passthrough:v1.0",
     name: "ballerina-guides-pass-through-messaging"
 }
+<<<<<<< HEAD
 listener http:Listener OnlineShoppingEP = new(9090);
 
 listener http:Listener LocalShopEP = new(9091);
+=======
+endpoint http:Listener OnlineShoppingEP {
+    port:9090
+};
+
+@kubernetes:Service {
+    serviceType:"NodePort",
+    name:"LocalShop"
+}
+endpoint http:Listener LocalShopEP {
+    port:9091
+};
+>>>>>>> c5694e812c342dad6d1cc279c5b81d3706ca9bc7
 
 //Define end-point for the local shop as online shop link
 http:Client clientEP = new("http://localhost:9091/LocalShop");
@@ -336,6 +396,10 @@ You have also specified `@kubernetes:Service` so that it will create a Kubernete
 
 In addition, you have used `@kubernetes:Ingress`, which is the external interface to access your service (with path `/` and hostname `ballerina.guides.io`)
 
+If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
+- `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
+- `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
+
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
@@ -355,9 +419,10 @@ Now you can create the Kubernetes deployment using:
 ```bash
    $ kubectl apply -f /home/saneth/Documents/ballerina/sample_pass-through/guide/target/kubernetes/ 
  
-   deployment.extensions "ballerina-guides-pass-through-messaging" created
-   ingress.extensions "passthrough" created
-   service "passthrough" created
+   deployment.extensions "ballerina-guides-passt-hrough-messaging" configured
+   ingress.extensions "passthrough" configured
+   service "onlineshopping" configured
+   service "localshop" configured
 ```
 
 You can verify that the Kubernetes deployment, service, and ingress are running properly, by using following Kubernetes commands. 
@@ -369,15 +434,29 @@ You can verify that the Kubernetes deployment, service, and ingress are running 
    $ kubectl get ingress
 ```
 
-If everything is successfully deployed, you can invoke the service either via Node port or ingress. The cURL request for the 'OnlineShopping' service is mentioned below to get the results.
- 
-Node Port:
+If everything is successfully deployed, you can invoke the service either via Node port or ingress.
 
-```bash
-   curl -v http://localhost:<Node_Port>/OnlineShopping -X GET  
+Node Port:
+ 
+```
+  curl -v http://localhost:<Node_Port>/OnlineShopping 
 ```
 
+If you are using Minikube, you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
+```bash
+    $ minikube ip
+    192.168.99.100
+
+    $ kubectl get services
+    NAME                               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+    ballerina-guides-order-service   NodePort    10.100.226.129     <none>        9090:30659/TCP   3h
+```
+
+The endpoint URL for the above case would be as follows: `http://192.168.99.100:30659/OnlineShopping` 
+
 Ingress:
+
+- Make sure that Nginx backend and controller deployed as mentioned in [here](https://github.com/ballerinax/kubernetes/tree/master/samples#setting-up-nginx).
 
 Add `/etc/hosts` entry to match hostname. 
 
@@ -388,12 +467,12 @@ Add `/etc/hosts` entry to match hostname.
 Access the service.
 
 ```bash
-   curl -v http://ballerina.guides.io/OnlineShopping -X GET
+   curl -v http://ballerina.guides.io/OnlineShopping
 ```
 
 
 ## Observability 
-Ballerina is by default observable. This means you can easily observe your services, resources, etc. However, observability is disabled by default via configuration. Observability can be enabled by adding the following configurations to the `ballerina.conf` file in `Simple-pass-through-messaging-ballerina-/guide/`.
+Ballerina is by default observable. This means you can easily observe your services, resources, etc. However, observability is disabled by default via configuration. Observability can be enabled by adding the following configurations to the `ballerina.conf` file in `pass-through-messaging/guide/`.
 
 ```ballerina
 [b7a.observability]
@@ -441,7 +520,7 @@ Run the Jaeger Docker image using the following command.
    -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-Navigate to `Simple-pass-through-messaging-ballerina-/guide` and run the `passthrough` using following command 
+Navigate to `pass-through-messaging/guide` and run the `passthrough` using following command 
 
 ```
    $ ballerina run passthrough/
@@ -510,13 +589,13 @@ You can access Prometheus at the following URL.
 
 Ballerina has a log package for logging to the console. You can import `ballerina/log` package and start logging. The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-Start the Ballerina service with the following command from `Simple-pass-through-messaging-ballerina-/guide`
+Start the Ballerina service with the following command from `pass-through-messaging/guide`
 
 ```
    $ nohup ballerina run trip-management/ &>> ballerina.log&
 ```
 
-> **NOTE**: This writes the console log to the `ballerina.log` file in the `Simple-pass-through-messaging-ballerina-/guide` directory.
+> **NOTE**: This writes the console log to the `ballerina.log` file in the `pass-through-messaging/guide` directory.
 
 Start Elasticsearch using the following command.
 
