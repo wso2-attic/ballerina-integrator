@@ -77,7 +77,6 @@ To implement the scenario, let's start by implementing the passthrough.bal file,
 import ballerina/http;
 import ballerina/log;
 
-<<<<<<< HEAD
 listener http:Listener OnlineShoppingEP = new(9090);
 
 listener http:Listener LocalShopEP = new(9091);
@@ -95,32 +94,6 @@ service OnlineShopping on OnlineShoppingEP {
         log:printInfo("Request will be forwarded to Local Shop  .......");
         //'Forward()' sends the incoming request unaltered to the backend. Forward function
         //uses the same HTTP method as in the incoming request.
-=======
-endpoint http:Listener OnlineShoppingEP {
-    port:9090
-};
-
-endpoint http:Listener LocalShopEP {
-    port:9091
-};
-
-//Define endpoint for the local shop as online shop link.
-endpoint http:Client clientEP {
-    url: "http://localhost:9091/LocalShop"
-};
-
-service<http:Service> OnlineShopping bind OnlineShoppingEP {
-    // This service is implemented as a passthrough service. So it allows all HTTP methods. So methods are not specified.
-    @http:ResourceConfig {
-        path: "/"
-    }
-    passthrough(endpoint caller, http:Request req) {
-        // Set log message as "the request will be directed to another service" in the pass-through method.
-        log:printInfo("You will be redirected to Local Shop  .......");
-        // 'Forward()' is used to call the backend endpoint created above as pass-through method. In forward function,
-        // it used the same HTTP method, which is used to invoke the primary service.
-        // The `forward()` function returns the response from the backend if there are no errors.
->>>>>>> c5694e812c342dad6d1cc279c5b81d3706ca9bc7
         var clientResponse = clientEP->forward("/", req);
 
         if (clientResponse is http:Response) {
@@ -258,7 +231,6 @@ import ballerina/log;
 import ballerinax/docker;
 
 @docker:Expose {}
-<<<<<<< HEAD
 listener http:Listener OnlineShoppingEP = new(9090);
 
 @docker:Expose {}
@@ -266,33 +238,14 @@ listener http:Listener LocalShopEP = new(9091);
 
 //Define end-point for the local shop as online shop link
 http:Client clientEP = new("http://localhost:9091/LocalShop");
-=======
-endpoint http:Listener OnlineShoppingEP {
-    port: 9090
-};
-
-@docker:Expose {}
-endpoint http:Listener LocalShopEP {
-    port: 9091
-};
-
-//Define end-point for the local shop as online shop link
-endpoint http:Client clientEP {
-    url: "http://localhost:9091/LocalShop"
-};
->>>>>>> c5694e812c342dad6d1cc279c5b81d3706ca9bc7
 
 @docker:Config {
     registry:"ballerina.guides.io",
     name:"passthrough",
     tag:"v1.0"
 }
-<<<<<<< HEAD
 
 service OnlineShopping on OnlineShoppingEP {
-=======
-service<http:Service> OnlineShopping bind OnlineShoppingEP {
->>>>>>> c5694e812c342dad6d1cc279c5b81d3706ca9bc7
 .
 .
 .
@@ -358,23 +311,10 @@ import ballerinax/kubernetes;
     image: "ballerina.guides.io/passthrough:v1.0",
     name: "ballerina-guides-pass-through-messaging"
 }
-<<<<<<< HEAD
+
 listener http:Listener OnlineShoppingEP = new(9090);
 
 listener http:Listener LocalShopEP = new(9091);
-=======
-endpoint http:Listener OnlineShoppingEP {
-    port:9090
-};
-
-@kubernetes:Service {
-    serviceType:"NodePort",
-    name:"LocalShop"
-}
-endpoint http:Listener LocalShopEP {
-    port:9091
-};
->>>>>>> c5694e812c342dad6d1cc279c5b81d3706ca9bc7
 
 //Define end-point for the local shop as online shop link
 http:Client clientEP = new("http://localhost:9091/LocalShop");
