@@ -49,7 +49,6 @@ service OnlineShopping on OnlineShoppingEP {
         //'Forward()' sends the incoming request unaltered to the backend. Forward function
         //uses the same HTTP method as in the incoming request.
         var clientResponse = clientEP->forward("/", req);
-
         if (clientResponse is http:Response) {
             //Sends the client response to the caller.
             var result = caller->respond(clientResponse);
