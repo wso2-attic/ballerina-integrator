@@ -70,17 +70,11 @@ Let's consider that a request comes to the company recruitment agency service wi
 ```ballerina
 import ballerina/http;
 import ballerina/log;
-import ballerina/mime;
-import ballerina/io;
 
-endpoint http:Listener comEP {
-    port: 9091
-};
+listener http:Listener comEP = new http:Listener(9091);
 
 //Client endpoint to communicate with company recruitment service
-endpoint http:Client locationEP {
-    url: "http://localhost:9090/companies"
-};
+http:Client locationEP = new("http://localhost:9090/companies");
 
 //Service is invoked using basePath value "/checkVacancies"
 @http:ServiceConfig {
@@ -88,72 +82,69 @@ endpoint http:Client locationEP {
 }
 
 //"comapnyRecruitmentsAgency" routes requests to relevant endpoints and gets their responses.
-service<http:Service> comapnyRecruitmentsAgency bind comEP {
+service comapnyRecruitmentsAgency on comEP {
 
     // POST requests is directed to a specific company using, /checkVacancies/company.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/company"
     }
-    comapnyRecruitmentsAgency(endpoint CompanyEP, http:Request req) {
+    resource function comapnyRecruitmentsAgency(http:Caller CompanyEP, http:Request req) {
         //Get the JSON payload from the request message.
         var jsonMsg = req.getJsonPayload();
 
         //Parsing the JSON payload from the request
-        match jsonMsg {
-            json msg => {
-                //Get the string value relevant to the key `name`.
-                string nameString;
+        if (jsonMsg is json) {
+            //Get the string value relevant to the key `name`.
+            string nameString;
 
-                nameString = check <string>msg["Name"];
+            nameString = <string>jsonMsg["Name"];
 
-                //The HTTP response can be either error|empty|clientResponse
-                (http:Response|error|()) clientResponse;
+            //The HTTP response can be either error|empty|clientResponse
+            (http:Response|error|()) clientResponse;
 
-                if (nameString == "John and Brothers (pvt) Ltd"){
-                    //Routes the payload to the relevant service.
-                    clientResponse =
-                    locationEP->get("/John-and-Brothers-(pvt)-Ltd");
+            if (nameString == "John and Brothers (pvt) Ltd") {
+                //Routes the payload to the relevant service.
+                clientResponse =
+                locationEP->get("/John-and-Brothers-(pvt)-Ltd");
 
-                } else if (nameString == "ABC Company"){
-                    clientResponse =
-                    locationEP->get("/ABC-Company");
+            } else if (nameString == "ABC Company") {
+                clientResponse =
+                locationEP->get("/ABC-Company");
 
-                } else if (nameString == "Smart Automobile"){
-                    clientResponse =
-                    locationEP->get("/Smart-Automobile");
+            } else if (nameString == "Smart Automobile") {
+                clientResponse =
+                locationEP->get("/Smart-Automobile");
 
-                } else {
-                    clientResponse = log:printError("Company Not Found!");
-                }
-
-                //Use respond() to send the client response back to the caller.
-                //When the request is successful, the response is returned.
-                //Sends back the clientResponse to the caller if no error is found.
-                match clientResponse {
-                    http:Response respone => {
-                        CompanyEP->respond(respone) but { error e =>
-                        log:printError("Error sending response", err = e) };
-                    }
-                    error conError => {
-                        error err = {};
-                        http:Response res = new;
-                        res.statusCode = 500;
-                        res.setPayload(err.message);
-                        CompanyEP->respond(res) but { error e =>
-                        log:printError("Error sending response", err = e) };
-                    }
-                    () => {}
-                }
+            } else {
+                clientResponse = log:printError("Company Not Found!");
             }
 
-            error err => {
-                //500 error response is constructed and sent back to the client.
+            //Use respond() to send the client response back to the caller.
+            //When the request is successful, the response is returned.
+            //Sends back the clientResponse to the caller if no error is found.
+           if(clientResponse is http:Response) {
+                var err = CompanyEP->respond(clientResponse);
+                if (err is error) {
+                    log:printError("Error sending response", err = err);
+                }
+           } else if (clientResponse is error) {
                 http:Response res = new;
                 res.statusCode = 500;
-                res.setPayload(untaint err.message);
-                CompanyEP->respond(res) but { error e =>
-                log:printError("Error sending response", err = e) };
+                res.setPayload(<string>clientResponse.detail().message);
+                var err = CompanyEP->respond(res);
+                if (err is error) {
+                    log:printError("Error sending response", err = err);
+                }
+           }
+        } else if (jsonMsg is error) {
+            //500 error response is constructed and sent back to the client.
+            http:Response res = new;
+            res.statusCode = 500;
+            res.setPayload(untaint <string>jsonMsg.detail().message);
+            var err = CompanyEP->respond(res);
+            if (err is error) {
+                log:printError("Error sending response", err = jsonMsg);
             }
         }
     }
@@ -166,34 +157,33 @@ Let's now look at `company_data_service`, which is responsible for communicating
 
 ```ballerina
 import ballerina/http;
+import ballerina/log;
 
-endpoint http:Listener listener {
-    port: 9090
-};
+listener http:Listener httpListener = new http:Listener(9090);
 
 // Company data management is done using an in memory map.
-map<json> companyDataMap;
+map<json> companyDataMap = {};
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/companies" }
-service<http:Service> orderMgt bind listener {
+service orderMgt on httpListener {
     // Resource that handles the HTTP GET requests that are directed to data of a specific
     // company using path '/John-and-Brothers-(pvt)-Ltd'
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/John-and-Brothers-(pvt)-Ltd"
     }
-    findJohnAndBrothersPvtLtd(endpoint client, http:Request req) {
+    resource function findJohnAndBrothersPvtLtd(http:Caller caller, http:Request req) {
         json? payload = {
             Name: "John and Brothers (pvt) Ltd",
             Total_number_of_Vacancies: 12,
-            Available_job_roles: "Senior Software Engineer = 3 ,Marketing Executives =5 Management Trainees=4",
+            Available_job_roles: "Senior Software Engineer = 3 ,Marketing Executives = 5 Management Trainees = 4",
             CV_Closing_Date: "17/06/2018",
             ContactNo: 1123456,
             Email_Address: "careersjohn@jbrothers.com"
         };
 
-        http:Response response;
+        http:Response response = new;
         if (payload == null) {
             payload = "Data : 'John-and-Brothers-(pvt)-Ltd' cannot be found.";
         }
@@ -201,8 +191,9 @@ service<http:Service> orderMgt bind listener {
         // Set the JSON payload in the outgoing response message.
         response.setJsonPayload(payload);
 
-        // Send response to the client.
-        _ = client->respond(response);
+        // Send response to the caller.
+        var err = caller->respond(response);
+        handleErrorWhenResponding(err);
     }
 
     // Resource that handles the HTTP GET requests that are directed to data
@@ -211,17 +202,17 @@ service<http:Service> orderMgt bind listener {
         methods: ["GET"],
         path: "/ABC-Company"
     }
-    findAbcCompany(endpoint client, http:Request req) {
+    resource function findAbcCompany(http:Caller caller, http:Request req) {
         json? payload = {
             Name: "ABC Company",
             Total_number_of_Vacancies: 10,
-            Available_job_roles: "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=2",
+            Available_job_roles: "Senior Finance Manager = 2 ,Marketing Executives = 6 HR Manager = 2",
             CV_Closing_Date: "20/07/2018",
             ContactNo: 112774,
             Email_Address: "careers@abc.com"
         };
 
-        http:Response response;
+        http:Response response = new;
         if (payload == null) {
             payload = "Data : 'ABC-Company' cannot be found.";
         }
@@ -230,7 +221,8 @@ service<http:Service> orderMgt bind listener {
         response.setJsonPayload(payload);
 
         // Send response to the client.
-        _ = client->respond(response);
+        var err = caller->respond(response);
+        handleErrorWhenResponding(err);
     }
 
     // Resource that handles the HTTP GET requests that are directed to a specific
@@ -239,17 +231,17 @@ service<http:Service> orderMgt bind listener {
         methods: ["GET"],
         path: "/Smart-Automobile"
     }
-    findSmartAutomobile(endpoint client, http:Request req) {
+    resource function findSmartAutomobile(http:Caller caller, http:Request req) {
         json? payload = {
             Name: "Smart Automobile",
             Total_number_of_Vacancies: 11,
-            Available_job_roles: "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=3",
+            Available_job_roles: "Senior Finance Manager = 2 ,Marketing Executives = 6 HR Manager = 3",
             CV_Closing_Date: "20/07/2018",
             ContactNo: 112774,
             Email_Address: "careers@smart.com"
         };
 
-        http:Response response;
+        http:Response response = new;
         if (payload == null) {
             payload = "Data : 'Smart-Automobile' cannot be found.";
         }
@@ -258,7 +250,14 @@ service<http:Service> orderMgt bind listener {
         response.setJsonPayload(payload);
 
         // Send response to the client.
-        _ = client->respond(response);
+        var err = caller->respond(response);
+        handleErrorWhenResponding(err);
+    }
+}
+
+function handleErrorWhenResponding(error? err) {
+    if (err is error) {
+        log:printError("Error when responding", err = err);
     }
 }
 ```
@@ -308,7 +307,7 @@ You can test the functionality of the `company_recruitment_agency_service` by se
 {
     "Name": "John and Brothers (pvt) Ltd",
     "Total_number_of_Vacancies": 12,
-    "Available_job_roles" : "Senior Software Engineer = 3 ,Marketing Executives =5 Management Trainees=4",
+    "Available_job_roles" : "Senior Software Engineer = 3 ,Marketing Executives = 5 Management Trainees = 4",
     "CV_Closing_Date": "17/06/2018" ,
     "ContactNo": 1123456 ,
     "Email_Address": "careersjohn@jbrothers.com"
@@ -340,7 +339,7 @@ Output :
 {
     "Name":"ABC Company",
     "Total_number_of_Vacancies": 10,
-    "Available_job_roles" : "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=2",
+    "Available_job_roles" : "Senior Finance Manager = 2 ,Marketing Executives = 6 HR Manager = 2",
     "CV_Closing_Date": "20/07/2018" ,
     "ContactNo": 112774 ,
     "Email_Address":"careers@abc.com"
@@ -374,7 +373,7 @@ Output :
 {
     "Name":"Smart Automobile",
     "Total_number_of_Vacancies": 11,
-    "Available_job_roles" : "Senior Finance Manager = 2 ,Marketing Executives =6 HR Manager=3",
+    "Available_job_roles" : "Senior Finance Manager = 2 ,Marketing Executives = 6 HR Manager = 3",
     "CV_Closing_Date": "20/07/2018" ,
     "ContactNo": 112774 ,
     "Email_Address": "careers@smart.com"
@@ -453,16 +452,15 @@ import ballerinax/docker;
 
 @docker:Expose {}
 
-endpoint http:Listener listener {
-port: 9090
-};
+listener http:Listener httpListener = new http:Listener(9090);
 
 // Company data management is done using an in memory map.
-map<json> companyDataMap;
+map<json> companyDataMap = {};
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/companies" }
-service<http:Service> orderMgt bind listener {
+service orderMgt on httpListener {
+
 ```
 The `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port. 
 
@@ -502,23 +500,17 @@ import ballerinax/docker;
 
 @docker:Expose {}
 
-
-endpoint http:Listener comEP{
-    port: 9091
-};
+listener http:Listener comEP = new http:Listener(9091);
 
 //Client endpoint to communicate with company recruitment service
-endpoint http:Client locationEP{
-    url: "http://<IP_ADDRESS_OF_THE_CONTAINER>:9090/companies"
-};
+http:Client locationEP = new("http://<IP_ADDRESS_OF_THE_CONTAINER>:9090/companies");
 
 //Service is invoked using basePath value "/checkVacancies"
-@http:ServiceConfig{
+@http:ServiceConfig {
     basePath: "/checkVacancies"
 }
-
-service<http:Service> comapnyRecruitmentsAgency  bind comEP {
-
+//"comapnyRecruitmentsAgency" routes requests to relevant endpoints and gets their responses.
+service comapnyRecruitmentsAgency on comEP {
 ```
 Make sure to change the `url` of the client from `localhost` to the ip address of the container in which the `company_data_service.bal` is running.
 
@@ -549,20 +541,20 @@ You can access the service using the same cURL commands that you used above.
 **Request when "Name"="John and Brothers (pvt) Ltd"**
 
 ```bash
-    $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content- Type:application/json"
+    $ curl -v http://localhost:9091/checkVacancies/company -d'{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content-Type:application/json"
     
 ```
 
 **Request when "Name"="ABC Company"**
 
 ```bash
-    $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" :"ABC Company"}' -H "Content- Type:application/json"
+    $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" : "ABC Company"}' -H "Content-Type:application/json"
 ```
 
 **Request when "Name"="Smart Automobile**
 
 ```bash
-    $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
+    $ curl -v http://localhost:9091/checkVacancies/company -d '{"Name" : "Smart Automobile"}' -H "Content-Type:application/json"
 ```
 
 ### Deploying on Kubernetes
@@ -595,16 +587,14 @@ import ballerinax/kubernetes;
     image: "ballerina.guides.io/company_data_service:v1.0",
     name: "ballerina-guides-company_data_service"
 }
-endpoint http:Listener listener {
-    port: 9090
-};
+listener http:Listener httpListener = new http:Listener(9090);
 
 // Company data management is done using an in memory map.
-map<json> companyDataMap;
+map<json> companyDataMap = {};
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/companies" }
-service<http:Service> orderMgt bind listener {
+service orderMgt on httpListener {
 ``` 
 - Here we have used the `@kubernetes:Deployment` annotation to specify the name of the Docker image that is created as part of building this service.
 - We have also specified `@kubernetes:Service` so that it creates a Kubernetes service that exposes the Ballerina service running on a Pod.
@@ -665,23 +655,17 @@ import ballerinax/kubernetes;
     name:"ballerina-guides-company_recruitment_agency_service"
 }
 
-endpoint http:Listener comEP{
-    port: 9091
-};
+listener http:Listener comEP = new http:Listener(9091);
 
 //Client endpoint to communicate with company recruitment service
-endpoint http:Client locationEP{
-    url: "http://<NODE_IP>:<NODE_PORT>/companies"
-};
+http:Client locationEP = new("http://<NODE_IP>:<NODE_PORT>/companies");
 
 //Service is invoked using basePath value "/checkVacancies"
-@http:ServiceConfig{
+@http:ServiceConfig {
     basePath: "/checkVacancies"
 }
-
-//comapnyRecruitmentsAgency service to route each request to relevent endpoints and get their responses.
-service<http:Service> comapnyRecruitmentsAgency  bind comEP {
-
+//"comapnyRecruitmentsAgency" routes requests to relevant endpoints and gets their responses.
+service comapnyRecruitmentsAgency on comEP {
 ``` 
 Now you can build a Ballerina executable archive (.balx) of the service that you developed above using the following command. This creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
@@ -727,18 +711,18 @@ Node port:
 **Request when "Name"="John and Brothers (pvt) Ltd"**
 
 ```bash
-    $ curl -v http://localhost:<Node_Port>/checkVacancies/company -d '{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content- Type:application/json"
+    $ curl -v http://<NODE_IP>:<Node_Port>/checkVacancies/company -d'{"Name" :"John and Brothers (pvt) Ltd"}' -H "Content-Type:application/json"
 ```
 
 **Request when "Name"="ABC Company"**
 
 ```bash
-    $ curl -v http://<NODE_IP>:<Node_Port>/checkVacancies/company -d '{"Name" :"ABC Company"}' -H "Content- Type:application/json"
+    $ curl -v http://<NODE_IP>:<Node_Port>/checkVacancies/company -d'{"Name" :"ABC Company"}' -H "Content- Type:application/json"
 ```
 **Request when "Name"="Smart Automobile**
 
 ```bash
-    $ curl -v http://<NODE_IP>:<Node_Port>/checkVacancies/company -d '{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
+    $ curl -v http://<NODE_IP>:<Node_Port>/checkVacancies/company -d'{"Name" :"Smart Automobile"}' -H "Content- Type:application/json"
 ```
 
 Ingress:
