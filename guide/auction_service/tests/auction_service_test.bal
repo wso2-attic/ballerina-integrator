@@ -15,15 +15,13 @@ function beforeSuiteFunc() {
 }
 
 // Client endpoint
-endpoint http:Client clientEP1 {
-    url: "http://localhost:9090/auction"
-};
+http:Client clientEP1 = new("http://localhost:9090/auction");
 
 // Test function
 @test:Config
-function testAuctionService() {
+function testAuctionService() returns error? {
     // Initialize the empty http requests and responses
-    http:Request req;
+    http:Request req = new;
 
     // Request Payload
     json requestPayload = {
@@ -44,6 +42,7 @@ function testAuctionService() {
     string expectedResult = "{\"Bidder Name\":\"Bidder 2\", \"Bid\":470000}";
     json resPayload = check response.getJsonPayload();
     test:assertEquals(resPayload.toString(), expectedResult, msg = "Response mismatch!");
+    return ();
 }
 
 // After Suite Function is used to stop the service

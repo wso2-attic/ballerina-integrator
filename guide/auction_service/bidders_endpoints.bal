@@ -28,43 +28,40 @@ import ballerina/http;
 //}
 
 //Service endpoint
-endpoint http:Listener biddersEP {
-    port: 9091
-};
+listener http:Listener biddersEP = new(9091);
 
 // Bidders endpoints service
 @http:ServiceConfig { basePath: "/bidders" }
-service<http:Service> bidService bind biddersEP {
+service bidService on biddersEP {
 
     // Resource 'bidder1', which checks the item condition and set 'bidder 1' bid value
     @http:ResourceConfig { methods: ["POST"], path: "/bidder1", consumes: ["application/json"],
         produces: ["application/json"] }
-    bidder1(endpoint client, http:Request inRequest) {
-        http:Response outResponse;
-        json inReqPayload;
-        int bid;
-
-        match inRequest.getJsonPayload() {
+    resource function bidder1(http:Caller caller, http:Request inRequest) {
+        http:Response outResponse = new;
+        json inReqPayload = {};
+        int bid = 0;
+        var payload = inRequest.getJsonPayload();
+        if (payload is json) {
             // Valid JSON payload
-            json payload => inReqPayload = payload;
+            inReqPayload = payload;
+        } else {
             // NOT a valid JSON payload
-            any => {
-                outResponse.statusCode = 400;
-                outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-                _ = client->respond(outResponse);
-                done;
-            }
+            outResponse.statusCode = 400;
+            outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+            _ = caller->respond(outResponse);
+            return;
         }
 
         string Condition = inReqPayload.Condition.toString();
         json Item = inReqPayload.Item;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (Item == null || Condition == null) {
+        if (Item == null || Condition == "") {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
-            _ = client->respond(outResponse);
-            done;
+            _ = caller->respond(outResponse);
+            return;
         }
 
         //Check the item condition and set the appropriate bid value
@@ -84,39 +81,39 @@ service<http:Service> bidService bind biddersEP {
         // Response payload
         outResponse.setJsonPayload(BidDetails);
         // Send the response to the caller
-        _ = client->respond(outResponse);
-        done;
+        _ = caller->respond(outResponse);
+        return;
     }
 
     // Resource 'bidder2', which checks the item condition and set 'bidder 2' bid value
     @http:ResourceConfig { methods: ["POST"], path: "/bidder2", consumes: ["application/json"],
         produces: ["application/json"] }
-    bidder2(endpoint client, http:Request inRequest) {
-        http:Response outResponse;
-        json inReqPayload;
-        int bid;
-
-        match inRequest.getJsonPayload() {
+    resource function bidder2(http:Caller caller, http:Request inRequest) {
+        http:Response outResponse = new;
+        json inReqPayload = {};
+        int bid = 0;
+        var payload = inRequest.getJsonPayload();
+        if (payload is json) {
             // Valid JSON payload
-            json payload => inReqPayload = payload;
+            inReqPayload = payload;
+        }
+        else {
             // NOT a valid JSON payload
-            any => {
-                outResponse.statusCode = 400;
-                outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-                _ = client->respond(outResponse);
-                done;
-            }
+            outResponse.statusCode = 400;
+            outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+            _ = caller->respond(outResponse);
+            return;
         }
 
         string Condition = inReqPayload.Condition.toString();
         json Item = inReqPayload.Item;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (Item == null || Condition == null) {
+        if (Item == null || Condition == "") {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
-            _ = client->respond(outResponse);
-            done;
+            _ = caller->respond(outResponse);
+            return;
         }
 
         //Check the item condition and set the appropriate bid value
@@ -136,39 +133,38 @@ service<http:Service> bidService bind biddersEP {
         // Response payload
         outResponse.setJsonPayload(BidDetails);
         // Send the response to the caller
-        _ = client->respond(outResponse);
-        done;
+        _ = caller->respond(outResponse);
+        return;
     }
 
     // Resource 'bidder3', which checks the item condition and set 'bidder 3' bid value
     @http:ResourceConfig { methods: ["POST"], path: "/bidder3", consumes: ["application/json"],
         produces: ["application/json"] }
-    bidder3(endpoint client, http:Request inRequest) {
-        http:Response outResponse;
-        json inReqPayload;
-        int bid;
-
-        match inRequest.getJsonPayload() {
+    resource function bidder3(http:Caller caller, http:Request inRequest) {
+        http:Response outResponse = new;
+        json inReqPayload = {};
+        int bid = 0;
+        var payload = inRequest.getJsonPayload();
+        if(payload is json) {
             // Valid JSON payload
-            json payload => inReqPayload = payload;
+            inReqPayload = payload;
+        } else {
             // NOT a valid JSON payload
-            any => {
-                outResponse.statusCode = 400;
-                outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-                _ = client->respond(outResponse);
-                done;
-            }
+            outResponse.statusCode = 400;
+            outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+            _ = caller->respond(outResponse);
+            return;
         }
 
         string Condition = inReqPayload.Condition.toString();
         json Item = inReqPayload.Item;
 
         // If payload parsing fails, send a "Bad Request" message as the response
-        if (Item == null || Condition == null) {
+        if (Item == null || Condition == "") {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
-            _ = client->respond(outResponse);
-            done;
+            _ = caller->respond(outResponse);
+            return;
         }
 
         //Check the item condition and set the appropriate bid value
@@ -188,7 +184,7 @@ service<http:Service> bidService bind biddersEP {
         // Response payload
         outResponse.setJsonPayload(BidDetails);
         // Send the response to the caller
-        _ = client->respond(outResponse);
-        done;
+        _ = caller->respond(outResponse);
+        return;
     }
 }
