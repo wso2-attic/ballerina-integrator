@@ -41,7 +41,7 @@ In this example, the Ballerina Kafka Connector is used to connect Ballerina to A
 
 ## Implementation
 
-> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping "Implementation" section.    
+> If you want to skip the basics, you can [download the git repo](https://github.com/ballerina-guides/messaging-with-kafka/archive/master.zip) and directly move to the "Testing" section by skipping "Implementation" section.    
 
 ### Create the project structure
 
@@ -167,7 +167,7 @@ kafka:ProducerConfig producerConfigs = {
 kafka:SimpleProducer kafkaProducer = new(producerConfigs);
 ```
 
-A Kafka producer in Ballerina needs to consist of a `kafka:SimpleProducer` endpoint with specifying the required configurations for a Kafka publisher. 
+A Kafka producer in Ballerina needs to consist of a `kafka:SimpleProducer` object with specifying the required configurations for a Kafka publisher. 
 
 Let's now see the complete implementation of the `product_admin_portal`, which is a Kafka topic publisher. Inline comments added for better understanding.
 
@@ -206,7 +206,6 @@ service productAdminService on httpListener {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
             _ = caller->respond(response);
-            done;
         } else {
             json username = reqPayload.Username;
             json password = reqPayload.Password;
@@ -218,7 +217,6 @@ service productAdminService on httpListener {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Bad Request: Invalid payload" });
                 _ = caller->respond(response);
-                done;
             }
 
             // Convert the price value to float
@@ -227,7 +225,6 @@ service productAdminService on httpListener {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Invalid amount specified" });
                 _ = caller->respond(response);
-                done;
             } else {
                 newPriceAmount = result;
             }
@@ -238,7 +235,6 @@ service productAdminService on httpListener {
                 response.statusCode = 403;
                 response.setJsonPayload({ "Message": "Access Forbidden" });
                 _ = caller->respond(response);
-                done;
             }
 
             // Construct and serialize the message to be published to the Kafka topic
@@ -252,7 +248,6 @@ service productAdminService on httpListener {
                 response.statusCode = 500;
                 response.setJsonPayload({ "Message": "Kafka producer failed to send data" });
                 _ = caller->respond(response);
-                done;
             }
             // Send a success status to the admin request
             response.setJsonPayload({ "Status": "Success" });
@@ -403,23 +398,22 @@ import ballerinax/docker;
 }
 
 @docker:Expose{}
-endpoint http:Listener listener {
-    port:9090
-};
+http:Listener httpListener = new("9090");
 
 @http:ServiceConfig {basePath:"/product"}
-service<http:Service> productAdminService bind listener {
+service productAdminService on httpListener {
 ``` 
 
 - `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:CopyFiles` is used to copy the Kafka connector jar files into the ballerina bre/lib folder. You can provide multiple files as an array to field `files` of CopyFiles docker annotation. `@docker:Expose {}` is used to expose the port. 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `messaging-with-kafka/guide` and run the following command.  
   
+```bash
+   $ ballerina build product_admin_portal
 ```
-   $ballerina build product_admin_portal
-  
-   Run following command to start docker container: 
-   docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
+   Run following command to start docker container:
+```bash
+   $ docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
 ```
 
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
@@ -451,7 +445,7 @@ service<http:Service> productAdminService bind listener {
    $ kubectl create -f ./kubernetes/
 ```
 
-- Now let's see how we can deploy the `product_admin_portal` on Kubernetes. We need to import `` ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment.
+- Now let's see how we can deploy the `product_admin_portal` on Kubernetes. We need to import `ballerinax/kubernetes;` and use ` @kubernetes` annotations as shown below to enable kubernetes deployment.
 
 ##### product_admin_portal.bal
 
@@ -481,29 +475,27 @@ import ballerinax/kubernetes;
                   source:<path_to_Kafka_connector_jars>}]
 }
 
-endpoint http:Listener listener {
-    port:9090
-};
+http:Listener httpListener = new(9090);
 
 @http:ServiceConfig {basePath:"/product"}
-service<http:Service> productAdminService bind listener {
+service productAdminService on httpListener {
 ``` 
 
-- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the Kafka connector jar files into the ballerina bre/lib folder. You can provide multiple files as an array to this field.
-- We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
-- In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
+- Here we have used `@kubernetes:Deployment` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the Kafka connector jar files into the ballerina bre/lib folder. You can provide multiple files as an array to this field.
+- We have also specified `@kubernetes:Service` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
+- In addition we have used `@kubernetes:Ingress`, which is the external interface to access your service (with path `/` and host name `ballerina.guides.io`)
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+- Now you can build a Ballerina executable archive (`.balx`) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-```
+```bash
    $ ballerina build product_admin_portal
   
    Run following command to deploy kubernetes artifacts:  
    kubectl apply -f ./target/product_admin_portal/kubernetes
 ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
-- Also the Kubernetes artifacts related our service, will be generated under `` ./target/product_admin_portal/kubernetes``. 
+- You can verify that the docker image that we specified in `@kubernetes:Deployment` is created, by using `docker images`. 
+- Also the Kubernetes artifacts related our service, will be generated under `./target/product_admin_portal/kubernetes`. 
 - Now you can create the Kubernetes deployment using:
 
 ```bash
@@ -564,7 +556,7 @@ enabled=true
 ```
 
 To start the ballerina service using the configuration file, run the following command
-```
+```bash
    $ ballerina run --config product_admin_portal/ballerina.conf product_admin_portal
 ```
 
@@ -600,7 +592,7 @@ Follow the following steps to use tracing with Ballerina.
 ```
 
 - Navigate to `messaging-with-kafka/guide` and run the `product_admin_portal` using the following command
-```
+```bash
    $ ballerina run --config product_admin_portal/ballerina.conf product_admin_portal
 ```
 
@@ -626,7 +618,7 @@ Follow the below steps to set up Prometheus and view metrics for product_admin_p
 ```
 
 - Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
-```
+```yaml
    global:
      scrape_interval:     15s
      evaluation_interval: 15s
@@ -640,13 +632,13 @@ Follow the below steps to set up Prometheus and view metrics for product_admin_p
    NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
    
 - Run the Prometheus docker image using the following command
-```
+```bash
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
 
 - Navigate to `messaging-with-kafka/guide` and run the `product_admin_portal` using the following command
-```
+```bash
    $ ballerina run --config product_admin_portal/ballerina.conf product_admin_portal
 ```
 
@@ -662,18 +654,16 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log package for logging to the console. You can import `ballerina/log` package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina Service with the following command from `messaging-with-kafka/guide`
-```
+```bash
    $ nohup ballerina run product_admin_portal/ &>> ballerina.log&
 ```
    NOTE: This will write the console log to the `ballerina.log` file in the `messaging-with-kafka/guide` directory
 
 - Start Elasticsearch using the following command
-
-- Start Elasticsearch using the following command
-```
+```bash
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
@@ -681,7 +671,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
    NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
    
 - Start Kibana plugin for data visualization with Elasticsearch
-```
+```bash
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
@@ -691,26 +681,26 @@ Ballerina has a log package for logging to the console. You can import ballerina
 i) Create a file named `logstash.conf` with the following content
 ```
 input {  
- beats{ 
-     port => 5044 
- }  
+  beats { 
+    port => 5044 
+  }  
 }
 
 filter {  
- grok{  
-     match => { 
-	 "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
-	 \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
-     }  
- }  
+  grok {  
+    match => { 
+	  "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
+	  \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
+    }  
+  }  
 }   
 
-output {  
- elasticsearch{  
-     hosts => "elasticsearch:9200"  
-     index => "store"  
-     document_type => "store_logs"  
- }  
+output {
+  elasticsearch {  
+    hosts => "elasticsearch:9200"  
+    index => "store"  
+    document_type => "store_logs"  
+  }  
 }  
 ```
 
@@ -718,7 +708,7 @@ ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pi
      
 iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
      
-```
+```bash
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
@@ -727,7 +717,7 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
  - Configure filebeat to ship the ballerina logs
     
 i) Create a file named `filebeat.yml` with the following content
-```
+```yaml
 filebeat.prospectors:
 - type: log
   paths:
@@ -739,9 +729,9 @@ NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml
 
 ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
         
-iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name
+iii) Start the `logstash` container, replace the {SAMPLE_ROOT} with your directory name
      
-```
+```bash
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
 -v {SAMPLE_ROOT}/guide/product_admin_portal/ballerina.log:/usr/share\
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
