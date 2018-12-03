@@ -18,28 +18,20 @@ import ballerina/test;
 import ballerina/http;
 
 // Client endpoint
-endpoint http:Client clientEP {
-    url: "http://localhost:9090/travel"
-};
+http:Client clientEP = new("http://localhost:9090/travel");
 
 // Mock airline service endpoint
-endpoint http:Listener airlineEP {
-    port: 9091
-};
+listener http:Listener airlineEP = new(9091);
 
 // Mock hotel service endpoint
-endpoint http:Listener hotelEP {
-    port: 9092
-};
+listener http:Listener hotelEP = new(9092);
 
 // Mock car service endpoint
-endpoint http:Listener carEP {
-    port: 9093
-};
+listener http:Listener carEP = new(9093);
 
 // Function to test Travel agency service
 @test:Config
-function testTravelAgencyService() {
+function testTravelAgencyService() returns error? {
     // Initialize the empty http requests and responses
     http:Request req;
 
@@ -60,6 +52,7 @@ function testTravelAgencyService() {
     json resPayload = check response.getJsonPayload();
     json expected = {"Message":"Congratulations! Your journey is ready!!"};
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+    return ();
 }
 
 // Travel agency service depends on three external services.
@@ -68,30 +61,30 @@ function testTravelAgencyService() {
 
 // Airline reservation mock service
 @http:ServiceConfig { basePath: "/airline" }
-service<http:Service> airlineReservationService bind airlineEP {
+service airlineReservationService on airlineEP {
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/reserve" }
-    reserveTicket(endpoint client, http:Request request) {
-        _ = client -> respond({"Status":"Success"});
+    resource function reserveTicket(http:Caller caller, http:Request request) {
+        _ = caller->respond({"Status":"Success"});
     }
 }
 
 // Hotel reservation mock service
 @http:ServiceConfig { basePath: "/hotel" }
-service<http:Service> hotelReservationService bind hotelEP {
+service hotelReservationService on hotelEP {
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/reserve" }
-    reserveRoom(endpoint client, http:Request request) {
-        _ = client -> respond({"Status":"Success"});
+    resource function reserveRoom(http:Caller caller, http:Request request) {
+        _ = caller->respond({"Status":"Success"});
     }
 }
 
 // Car rental mock service
 @http:ServiceConfig { basePath: "/car" }
-service<http:Service> carRentalService bind carEP {
+service carRentalService on carEP {
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/rent" }
-    rentCar(endpoint client, http:Request request) {
-        _ = client -> respond({"Status":"Success"});
+    resource function rentCar(http:Caller caller, http:Request request) {
+        _ = caller->respond({"Status":"Success"});
     }
 }

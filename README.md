@@ -101,35 +101,27 @@ Refer to the [travel_agency_service.bal](https://github.com/ballerina-guides/ser
 import ballerina/http;
 
 // Service endpoint
-endpoint http:Listener travelAgencyEP {
-    port:9090
-};
+listener http:Listener travelAgencyEP = new(9090);
 
 // Client endpoint to communicate with Airline reservation service
-endpoint http:Client airlineReservationEP {
-    url:"http://localhost:9091/airline"
-};
+http:Client airlineReservationEP = new("http://localhost:9091/airline");
 
 // Client endpoint to communicate with Hotel reservation service
-endpoint http:Client hotelReservationEP {
-    url:"http://localhost:9092/hotel"
-};
+http:Client hotelReservationEP = new("http://localhost:9092/hotel");
 
 // Client endpoint to communicate with Car rental service
-endpoint http:Client carRentalEP {
-    url:"http://localhost:9093/car"
-};
+http:Client carRentalEP = new("http://localhost:9093/car");
 
 // Travel agency service to arrange a complete tour for a user
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP {
+service travelAgencyService on travelAgencyEP {
 
     // Resource to arrange a tour
     @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
         produces:["application/json"]}
-    arrangeTour(endpoint client, http:Request inRequest) {
-        http:Response outResponse;
-        json inReqPayload;
+    resource function arrangeTour(http:Caller caller, http:Request inRequest) {
+        http:Response outResponse = new;
+        json inReqPayload = {};
 
         // JSON payload format for an HTTP OUT request
         json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"",
@@ -145,7 +137,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
 
         // If all three response positive status, send a successful message to the user
         outResponse.setJsonPayload({"Message":"Congrats! Your journey is ready!"});
-        _ = client -> respond(outResponse);
+        _ = caller->respond(outResponse);
     }
 }
 ```
@@ -154,17 +146,16 @@ Let's now look at the code segment that is responsible for parsing the JSON payl
 
 ```ballerina
 // Try parsing the JSON payload from the user request
-match inRequest.getJsonPayload() {
+var payload = inRequest.getJsonPayload();
+if (payload is json) {
     // Valid JSON payload
-    json payload => inReqPayload = payload;
+    inReqPayload = payload;
+} else if (payload is error) {
     // NOT a valid JSON payload
-    any => {
-        outResponse.statusCode = 400;
-        outResponse.setJsonPayload(
-                {"Message":"Invalid payload - Not a valid JSON payload"});
-        _ = client -> respond(outResponse);
-        done;
-    }
+    outResponse.statusCode = 400;
+    outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+    _ = caller->respond(outResponse);
+    return;
 }
 
 outReqPayload.Name = inReqPayload.Name;
@@ -180,8 +171,8 @@ if (outReqPayload.Name == () || outReqPayload.ArrivalDate == () ||
     hotelPreference == () || carPreference == ()) {
     outResponse.statusCode = 400;
     outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-    _ = client -> respond(outResponse);
-    done;
+    _ = caller->respond(outResponse);
+    return;
 }
 ```
 
@@ -196,7 +187,7 @@ json outReqPayloadAirline = outReqPayload;
 outReqPayloadAirline.Preference = airlinePreference;
 
 // Send a post request to airline service with appropriate payload and get response
-http:Response inResAirline = check airlineReservationEP -> post("/reserve",
+http:Response inResAirline = check airlineReservationEP->post("/reserve",
                                                     untaint outReqPayloadAirline);
 
 // Get the reservation status
@@ -206,8 +197,8 @@ string airlineStatus = airlineResPayload.Status.toString();
 if (airlineStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
             "Provide a valid 'Preference' for 'Airline' and try again"});
-    _ = client -> respond(outResponse);
-    done;
+    _ = caller->respond(outResponse);
+    return;
 }
 ```
 
@@ -223,7 +214,7 @@ json outReqPayloadHotel = outReqPayload;
 outReqPayloadHotel.Preference = hotelPreference;
 
 // Send a post request to hotel service with appropriate payload and get response
-http:Response inResHotel = check hotelReservationEP -> post("/reserve",
+http:Response inResHotel = check hotelReservationEP->post("/reserve",
                                                     untaint outReqPayloadHotel);
 
 // Get the reservation status
@@ -233,8 +224,8 @@ string hotelStatus = hotelResPayload.Status.toString();
 if (hotelStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
             "Provide a valid 'Preference' for 'Accommodation' and try again"});
-    _ = client -> respond(outResponse);
-    done;
+    _ = caller->respond(outResponse);
+    return;
 }
 ```
 
@@ -249,7 +240,7 @@ json outReqPayloadCar = outReqPayload;
 outReqPayloadCar.Preference = carPreference;
 
 // Send a post request to car rental service with appropriate payload and get response
-http:Response inResCar = check carRentalEP -> post("/rent", untaint outReqPayloadCar);
+http:Response inResCar = check carRentalEP->post("/rent", untaint outReqPayloadCar);
 
 // Get the rental status
 var carResPayload = check inResCar.getJsonPayload();
@@ -258,8 +249,8 @@ string carRentalStatus = carResPayload.Status.toString();
 if (carRentalStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to rent car! " +
             "Provide a valid 'Preference' for 'Car' and try again"});
-    _ = client -> respond(outResponse);
-    done;
+    _ = caller->respond(outResponse);
+    return;
 }
 ```
 
@@ -361,14 +352,12 @@ import ballerinax/docker;
 }
 
 @docker:Expose{}
-endpoint http:Listener travelAgencyEP {
-    port:9090
-};
+listener http:Listener travelAgencyEP = new(9090);
 
 // http:Client endpoint definitions to communicate with other services
 
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP {
+service travelAgencyService on travelAgencyEP {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `service-composition/guide` and run the following command.

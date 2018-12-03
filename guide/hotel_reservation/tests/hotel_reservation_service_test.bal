@@ -18,13 +18,11 @@ import ballerina/test;
 import ballerina/http;
 
 // Client endpoint
-endpoint http:Client clientEP {
-    url:"http://localhost:9092/hotel"
-};
+http:Client clientEP = new("http://localhost:9092/hotel");
 
 // Function to test Hotel reservation service
 @test:Config
-function testHotelReservationService() {
+function testHotelReservationService() returns error? {
     // Initialize the empty http requests and responses
     http:Request req;
 
@@ -45,4 +43,5 @@ function testHotelReservationService() {
     json resPayload = check response.getJsonPayload();
     json expected = {"Status":"Success"};
     test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+    return ();
 }

@@ -43,37 +43,35 @@ import ballerina/http;
 //}
 
 // Service endpoint
-endpoint http:Listener airlineEP {
-    port:9091
-};
+listener http:Listener airlineEP = new(9091);
 
 // Available flight classes
-@final string ECONOMY = "Economy";
-@final string BUSINESS = "Business";
-@final string FIRST = "First";
+final string ECONOMY = "Economy";
+final string BUSINESS = "Business";
+final string FIRST = "First";
 
 // Airline reservation service to reserve airline tickets
 @http:ServiceConfig {basePath:"/airline"}
-service<http:Service> airlineReservationService bind airlineEP {
+service airlineReservationService on airlineEP {
 
     // Resource to reserve a ticket
     @http:ResourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
         produces:["application/json"]}
-    reserveTicket(endpoint client, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    resource function reserveTicket(http:Caller caller, http:Request request) {
+        http:Response response = new;
+        json reqPayload = {};
 
+        var payload = request.getJsonPayload();
         // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
+        if (payload is json) {
             // Valid JSON payload
-            json payload => reqPayload = payload;
+            reqPayload = payload;
+        } else if (payload is error) {
             // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                done;
-            }
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            _ = caller->respond(response);
+            return;
         }
 
         json name = reqPayload.Name;
@@ -85,8 +83,8 @@ service<http:Service> airlineReservationService bind airlineEP {
         if (name == () || arrivalDate == () || departDate == () || preferredClass == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            done;
+            _ = caller->respond(response);
+            return;
         }
 
         // Mock logic
@@ -101,6 +99,6 @@ service<http:Service> airlineReservationService bind airlineEP {
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-        _ = client -> respond(response);
+        _ = caller->respond(response);
     }
 }

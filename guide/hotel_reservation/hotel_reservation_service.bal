@@ -43,36 +43,34 @@ import ballerina/http;
 //}
 
 // Service endpoint
-endpoint http:Listener hotelEP {
-    port:9092
-};
+listener http:Listener hotelEP = new(9092);
 
 // Available room types
-@final string AC = "Air Conditioned";
-@final string NORMAL = "Normal";
+final string AC = "Air Conditioned";
+final string NORMAL = "Normal";
 
 // Hotel reservation service to reserve hotel rooms
 @http:ServiceConfig {basePath:"/hotel"}
-service<http:Service> hotelReservationService bind hotelEP {
+service hotelReservationService on hotelEP {
 
     // Resource to reserve a room
     @http:ResourceConfig {methods:["POST"], path:"/reserve", consumes:["application/json"],
         produces:["application/json"]}
-    reserveRoom(endpoint client, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    resource function reserveRoom(http:Caller caller, http:Request request) {
+        http:Response response = new;
+        json reqPayload = {};
 
+        var payload = request.getJsonPayload();
         // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
+        if (payload is json) {
             // Valid JSON payload
-            json payload => reqPayload = payload;
+            reqPayload = payload;
+        } else {
             // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                done;
-            }
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            _ = caller->respond(response);
+            return;
         }
 
         json name = reqPayload.Name;
@@ -84,8 +82,8 @@ service<http:Service> hotelReservationService bind hotelEP {
         if (name == () || arrivalDate == () || departDate == () || preferredRoomType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            done;
+            _ = caller->respond(response);
+            return;
         }
 
         // Mock logic
@@ -99,6 +97,6 @@ service<http:Service> hotelReservationService bind hotelEP {
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-        _ = client -> respond(response);
+        _ = caller->respond(response);
     }
 }
