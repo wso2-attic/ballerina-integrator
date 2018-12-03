@@ -40,7 +40,7 @@ function testProductAdminPortal () {
     json|error payloadJson = json.create(payload);
 
     if (payloadJson is error) {
-        var result = test:assertFail;
+        test:assertFail(msg = "Payload JSON returned error.");
     } else {
 
         req.setJsonPayload(payloadJson);
@@ -48,17 +48,17 @@ function testProductAdminPortal () {
         http:Response|error postResponse = httpClient->post("/updatePrice", req);
 
         if (postResponse is error) {
-            var result = test:assertFail;
+            test:assertFail(msg = "HTTP post method returned error.");
         } else {
             // Expected response code is 200
             test:assertEquals(postResponse.statusCode, 200, msg = "product admin service did not respond with 200 OK signal!");
             // Check whether the response is as expected
             var resPayload = postResponse.getJsonPayload();
             if (resPayload is error) {
-                var result = test:assertFail;
+                test:assertFail(msg = "Response payload returned error.");
             } else {
                 json expected = {"Status":"Success"};
-                var result = test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+                test:assertEquals(resPayload, expected, msg = "Response mismatch!");
             }
         }
     }
