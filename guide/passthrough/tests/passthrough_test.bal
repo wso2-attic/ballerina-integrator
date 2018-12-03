@@ -11,20 +11,22 @@ function startService() {
 }
 
 function testFunc() {
-    // Invoking the main function
-    endpoint http:Client httpEndpoint { url: "http://localhost:9090" };
+    // Invokes the main function
+    http:Client httpEndpoint = new("http://localhost:9090");
 
     string response1="Welcome to Local Shop! Please put your order here.....";
 
-    // Send a GET request to the specified endpoint
+    // Sends a GET request to the specified endpoint.
     var response = httpEndpoint->get("/OnlineShopping");
-
-    match response {
-        http:Response resp => {
-            var Resp = check resp.getTextPayload();
-            test:assertEquals(Resp, response1);
+    if(response is http:Response) {
+        var payload = response.getTextPayload();
+        if (payload is string) {
+            test:assertEquals(payload, response1);
+        } else if (payload is error) {
+            test:assertFail(msg = "Failed to parse the text payload");
         }
-        error err => test:assertFail(msg = "Failed to call the endpoint:");
+    } else if (response is error) {
+        test:assertFail(msg = "Failed to call the endpoint");
     }
 }
 

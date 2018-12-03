@@ -76,69 +76,56 @@ To implement the scenario, let's start by implementing the passthrough.bal file,
 
 import ballerina/http;
 import ballerina/log;
-endpoint http:Listener OnlineShoppingEP {
-    port:9090
-};
-endpoint http:Listener LocalShopEP {
-    port:9091
-};
-//Define endpoint for the local shop as online shop link.
-endpoint http:Client clientEP {
-    url: "http://localhost:9091/LocalShop"
-};
 
-service<http:Service> OnlineShopping bind OnlineShoppingEP {
-    // This service is implemented as a passthrough service. So it allows all HTTP methods. So methods are not specified.
+listener http:Listener OnlineShoppingEP = new(9090);
+
+listener http:Listener LocalShopEP = new(9091);
+
+//Defines a client endpoint for the local shop with online shop link.
+http:Client clientEP = new("http://localhost:9091/LocalShop");
+
+//This is a passthrough service.
+service OnlineShopping on OnlineShoppingEP {
+    //This resource allows all HTTP methods.
     @http:ResourceConfig {
         path: "/"
     }
-
-    passthrough(endpoint caller, http:Request req) {
-        // Set log message as "the request will be directed to another service" in the pass-through method.
-        log:printInfo("You will be redirected to Local Shop  .......");
-        // 'Forward()' is used to call the backend endpoint created above as pass-through method. In forward function,
-        // it used the same HTTP method, which is used to invoke the primary service.
-        // The `forward()` function returns the response from the backend if there are no errors.
+    resource function passthrough(http:Caller caller, http:Request req) {
+        log:printInfo("Request will be forwarded to Local Shop  .......");
+        //'Forward()' sends the incoming request unaltered to the backend. Forward function
+        //uses the same HTTP method as in the incoming request.
         var clientResponse = clientEP->forward("/", req);
-        // In order to detect the errors in the return output of 'forward()', 'match' is used to catch those kind of errors.
-        match clientResponse {
-            // Returned response is directed to the outbound endpoint.
-            http:Response res => {
-                caller->respond(res)
-                // If response contains errors, give the error message
-                but { error e =>
-                log:printError("Error sending response", err = e) };
-            }
-            // If there was an error, the 500 error response is constructed and sent back to the client.
-            error err => {
-                http:Response res = new;
-                res.statusCode = 500;
-                res.setPayload(err.message);
-                caller->respond(res) but { error e =>
-                log:printError("Error sending response", err = e) };
-            }
+
+        if (clientResponse is http:Response) {
+            //Sends the client response to the caller.
+            var result = caller->respond(clientResponse);
+            handleError(result);
+        } else if (clientResponse is error) {
+            //Sends the error response to the caller.
+            http:Response res = new;
+            res.statusCode = 500;
+            res.setPayload(string.create(clientResponse.detail().message));
+            var result = caller->respond(res);
+            handleError(result);
         }
     }
 }
 
 //Sample Local Shop service.
-service<http:Service> LocalShop bind LocalShopEP {
+service LocalShop on LocalShopEP {
     //The LocalShop only accepts requests made using the specified HTTP methods.
     @http:ResourceConfig {
         methods: ["POST", "GET"],
         path: "/"
     }
-    helloResource(endpoint caller, http:Request req) {
-        //Set log to view the status to know that the passthrough was successfull.
-        log:printInfo("Now You are connected to Local shop  .......");
+    resource function helloResource(http:Caller caller, http:Request req) {
+        log:printInfo("You have been successfully connected to local shop  .......");
         // Make the response for the request.
         http:Response res = new;
         res.setPayload("Welcome to Local Shop! Please put your order here.....");
-        // Pass the response to the caller.
-        caller->respond(res)
-        // Catch the errors that occur while passing the response.
-        but { error e =>
-        log:printError("Error sending response", err = e) };
+        //Sends the response to the caller.
+        var result = caller->respond(res)
+        handleError(result);
     }
 }
 ```
@@ -178,8 +165,8 @@ Welcome to Local Shop! Please put your order here.....
 To identify the message flow inside the services, there will be INFO in the notification channel.
 
 ```bash
-2018-06-23 05:45:27,849 INFO  [passthrough] - You will be redirected to Local Shop  ....... 
-2018-06-23 05:45:27,864 INFO  [passthrough] - Now You are connected to Local shop  ....... 
+2018-06-23 05:45:27,849 INFO  [passthrough] - Request will be forwarded to Local Shop  ....... 
+2018-06-23 05:45:27,864 INFO  [passthrough] - You have been successfully connected to local shop  ....... 
 ```
 
 ### Writing unit tests 
@@ -243,29 +230,26 @@ import ballerina/log;
 import ballerinax/docker;
 
 @docker:Expose {}
-endpoint http:Listener OnlineShoppingEP {
-    port:9090
-};
+listener http:Listener OnlineShoppingEP = new(9090);
+
 @docker:Expose {}
-endpoint http:Listener LocalShopEP {
-    port:9091
-};
+listener http:Listener LocalShopEP = new(9091);
+
 //Define end-point for the local shop as online shop link
-endpoint http:Client clientEP {
-    url: "http://localhost:9091/LocalShop"
-};
+http:Client clientEP = new("http://localhost:9091/LocalShop");
+
 @docker:Config {
     registry:"ballerina.guides.io",
     name:"passthrough",
     tag:"v1.0"
 }
 
-service<http:Service> OnlineShopping bind OnlineShoppingEP {
+service OnlineShopping on OnlineShoppingEP {
 .
 .
 .
 }
-service<http:Service> LocalShop bind LocalShopEP {
+service LocalShop on LocalShopEP {
 .
 .
 }
@@ -328,23 +312,19 @@ import ballerinax/kubernetes;
     image: "ballerina.guides.io/passthrough:v1.0",
     name: "ballerina-guides-pass-through-messaging"
 }
-endpoint http:Listener OnlineShoppingEP {
-    port:9090
-};
-endpoint http:Listener LocalShopEP {
-    port:9091
-};
+listener http:Listener OnlineShoppingEP = new(9090);
+
+listener http:Listener LocalShopEP = new(9091);
 
 //Define end-point for the local shop as online shop link
-endpoint http:Client clientEP {
-    url: "http://localhost:9091/LocalShop"
-};
-service<http:Service> OnlineShopping bind OnlineShoppingEP {
+http:Client clientEP = new("http://localhost:9091/LocalShop");
+
+service OnlineShopping on OnlineShoppingEP {
 .
 .
 .
 }
-service<http:Service> LocalShop bind LocalShopEP {
+service LocalShop on LocalShopEP {
 .
 .
 }
@@ -623,4 +603,3 @@ Access Kibana to visualize the logs using the following URL.
 ```
    http://localhost:5601 
 ```
-

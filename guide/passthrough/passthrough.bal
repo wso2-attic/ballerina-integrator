@@ -25,21 +25,13 @@ import ballerina/log;
 //}
 
 //@docker:Expose {}
-endpoint http:Listener OnlineShoppingEP {
-    port:9090
-};
+listener http:Listener OnlineShoppingEP = new(9090);
 
 //@docker:Expose {}
-endpoint http:Listener LocalShopEP {
-    port:9091
-};
+listener http:Listener LocalShopEP = new(9091);
 
-
-//Define end-point for the local shop as online shop link
-endpoint http:Client clientEP {
-    url: "http://localhost:9091/LocalShop"
-};
-
+//Defines a client endpoint for the local shop with online shop link.
+http:Client clientEP = new("http://localhost:9091/LocalShop");
 
 //@docker:Config {
 //    registry:"ballerina.guides.io",
@@ -47,60 +39,53 @@ endpoint http:Client clientEP {
 //    tag:"v1.0"
 //}
 
-
-service<http:Service> OnlineShopping bind OnlineShoppingEP {
-    // This service implement as a passthrough servise. So it allows all HTTP methods. So methods are not specified.
+//This is a passthrough service.
+service OnlineShopping on OnlineShoppingEP {
+    //This resource allows all HTTP methods.
     @http:ResourceConfig {
         path: "/"
     }
-
-    passthrough(endpoint caller, http:Request req) {
-        // set log message as "the request will be directed to another service" in pass-through method.
-        log:printInfo("You will be redirected to Local Shop  .......");
-        //'Forward()' used to call the backend endpoint created above as pass-through method. In forward function,
-        //it used the same HTTP method, which used to invoke the primary service.
-        // The `forward()` function returns the response from the backend if there are no errors.
+    resource function passthrough(http:Caller caller, http:Request req) {
+        log:printInfo("Request will be forwarded to Local Shop  .......");
+        //'Forward()' sends the incoming request unaltered to the backend. Forward function
+        //uses the same HTTP method as in the incoming request.
         var clientResponse = clientEP->forward("/", req);
-        // Inorder to detect the errors in return output of the 'forward()' , it used 'match' to catch those kind of errors
-        match clientResponse {
-            // Returned response will directed to the outbound endpoint.
-            http:Response res => {
-                caller->respond(res)
-                // If response contains errors, give the error message
-                but { error e =>
-                log:printError("Error sending response", err = e) };
-            }
-            // If there was an error, the 500 error response is constructed and sent back to the client.
-            error err => {
-                http:Response res = new;
-                res.statusCode = 500;
-                res.setPayload(err.message);
-                caller->respond(res) but { error e =>
-                log:printError("Error sending response", err = e) };
-            }
+
+        if (clientResponse is http:Response) {
+            //Sends the client response to the caller.
+            var result = caller->respond(clientResponse);
+            handleError(result);
+        } else if (clientResponse is error) {
+            //Sends the error response to the caller.
+            http:Response res = new;
+            res.statusCode = 500;
+            res.setPayload(string.create(clientResponse.detail().message));
+            var result = caller->respond(res);
+            handleError(result);
         }
     }
 }
 
-
-
 //Sample Local Shop service.
-service<http:Service> LocalShop bind LocalShopEP {
+service LocalShop on LocalShopEP {
     //The LocalShop only accepts requests made using the specified HTTP methods.
     @http:ResourceConfig {
         methods: ["POST", "GET"],
         path: "/"
     }
-    helloResource(endpoint caller, http:Request req) {
-        //Set log to view the status to know that the passthrough was successfull.
-        log:printInfo("Now You are connected to Local shop  .......");
-        // Make the response for the request
+    resource function helloResource(http:Caller caller, http:Request req) {
+        log:printInfo("You have been successfully connected to local shop  .......");
+        // Make the response for the request.
         http:Response res = new;
         res.setPayload("Welcome to Local Shop! Please put your order here.....");
-        // Pass the response to the caller
-        caller->respond(res)
-        // Cath the errors occured while passing the response
-        but { error e =>
-        log:printError("Error sending response", err = e) };
+        //Sends the response to the caller.
+        var result = caller->respond(res);
+        handleError(result);
+    }
+}
+
+function handleError(error? result) {
+    if (result is error) {
+        log:printError(result.reason(), err = result);
     }
 }
