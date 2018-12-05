@@ -130,7 +130,7 @@ service kafkaService on consumer {
     // Triggered whenever a message added to the subscribed topic
     resource function onMessage(kafka:SimpleConsumer simpleConsumer, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
-        foreach entry in records {
+        foreach var entry in records {
             byte[] serializedMsg = entry.value;
             // Convert the serialized message to string message
             string msg = internal:byteArrayToString(serializedMsg, "UTF-8");
@@ -220,7 +220,7 @@ service productAdminService on httpListener {
             }
 
             // Convert the price value to float
-            var result = float.create(newPrice.toString());
+            var result = float.convert(newPrice.toString());
             if (result is error) {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Invalid amount specified" });
@@ -265,11 +265,15 @@ service productAdminService on httpListener {
  ```bash
     $ bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
  ```
+(* `-daemon` flag is optional) 
+
+  Here we start a zookeeper with default configurations (on `port:2181`).
 
 - Start a single `Kafka broker` instance with the default configurations by entering the following command  in a terminal from `<KAFKA_HOME_DIRECTORY>`.
 ```bash
    $ bin/kafka-server-start.sh -daemon config/server.properties
 ```
+(* `-daemon` flag is optional) 
   
   Here we started the Kafka server on `host:localhost` and `port:9092`. Now we have a working Kafka cluster.
 
@@ -301,35 +305,55 @@ service productAdminService on httpListener {
 - The `productAdminService` sends a response similar to the following (with some additional details).
 ```bash
    < HTTP/1.1 200 OK
+   ...
    {"Status":"Success"}
 ```
 
-- Sample log messages in Kafka subscriber services:
+- Sample outputs in Kafka subscriber services:
+
+All the services will output the following:
 ```bash
-  INFO  [<All>] - New message received from the product admin 
-  INFO  [<All>] - Topic:product-price; Message:{"Product":"ABC","UpdatedPrice":100.0} 
-  INFO  [franchisee1] - Acknowledgement from Franchisee 1 
-  INFO  [franchisee2] - Acknowledgement from Franchisee 2 
-  INFO  [inventory_control_system] - Database updated with the new price of the product
+  [INFO] New message received from the product admin
+  [INFO] Topic: product-price; Received Message: {"Product":"ABC", "UpdatedPrice":100.0}
+```
+
+Inventory control system:
+```bash
+  [INFO] Database updated with the new price of the product
+```
+
+Franchisee 1:
+```bash
+  [INFO] Acknowledgement from Franchisee 1 
+```
+
+Franchisee 2:
+```bash
+  [INFO] Acknowledgement from Franchisee 2 
 ```
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
-- Test functions should be annotated with `@test:Config`. See the below example.
+In Ballerina, the unit test cases should be in the same package inside a folder named as `tests`.  When writing the test functions the below convention should be followed.
+- Test functions should be annotated with `@test:Config`. 
+- Test function name should start with the word `test`.
+
+See the below example:
 ```ballerina
    @test:Config
    function testProductAdminPortal() {
+       // test logic
+   }
 ```
   
-This guide contains unit test for the 'product_admin_portal' service implemented above. 
+This guide contains unit test for the `product_admin_portal` service implemented above. 
 
 To run the unit tests, navigate to `messaging-with-kafka/guide` and run the following command. 
 ```bash
    $ ballerina test
 ```
 
-When running the unit tests, make sure that `Kafka` is up and running.
+When running the unit tests, make sure that `Kafka Cluster` is up and running.
 
 To check the implementation of the test file, refer to the [product_admin_portal_test.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/guide/product_admin_portal/tests/product_admin_portal_test.bal).
 
@@ -384,7 +408,7 @@ import ballerinax/docker;
 
 // Constants to store admin credentials
 
-// Kafka producer endpoint
+// Kafka producer initialization
 
 @docker:Config {
     registry:"ballerina.guides.io",
@@ -410,21 +434,22 @@ service productAdminService on httpListener {
   
 ```bash
    $ ballerina build product_admin_portal
-```
+
+   ...
+
    Run following command to start docker container:
+   $ docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
+```
+
+- Once you successfully build the docker image, you can run it with the `docker run` command that is shown in the previous step.  
+
 ```bash
    $ docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
 ```
 
-- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+   Here we run the docker image with flag `-p <host_port>:<container_port>` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
-```bash
-   $ docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
-```
-
-   Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
-
-- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+- Verify docker container is running with the use of `$ docker ps`. The status of the docker container should be shown as 'Up'. 
 
 - You can access the service using the same curl commands that we've used above.
 ```bash
