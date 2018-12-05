@@ -157,10 +157,13 @@ service travelAgencyService on travelAgencyEP {
             }
         }
 
-        record{http:Response? qatarWorker; http:Response? asianaWorker; http:Response? emiratesWorker;} airlineResponses =
-                        wait {qatarWorker, asianaWorker, emiratesWorker};
-
         // Wait until the responses received from all the workers running in parallel
+        record{
+            http:Response? qatarWorker;
+            http:Response? asianaWorker;
+            http:Response? emiratesWorker;
+        } airlineResponses = wait {qatarWorker, asianaWorker, emiratesWorker};
+
         int qatarPrice = -1;
         int asianaPrice = -1;
         int emiratesPrice = -1;
@@ -176,8 +179,6 @@ service travelAgencyService on travelAgencyEP {
                     qatarPrice = qutarResult;
                 }
             }
-        } else {
-            qatarPrice = -1;
         }
 
         // Get the response and price for airline 'Asiana'
