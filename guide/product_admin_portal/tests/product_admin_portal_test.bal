@@ -51,7 +51,9 @@ function testProductAdminPortal () {
             test:assertFail(msg = "HTTP post method returned error.");
         } else {
             // Expected response code is 200
-            test:assertEquals(postResponse.statusCode, 200, msg = "product admin service did not respond with 200 OK signal!");
+            test:assertEquals(postResponse.statusCode, 200,
+                    msg = "product admin service did not respond with 200 OK signal!"
+            );
             // Check whether the response is as expected
             var resPayload = postResponse.getJsonPayload();
             if (resPayload is error) {
