@@ -117,7 +117,8 @@ service bidService on biddersEP {
         if (Item == null || Condition == "") {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
-            _ = caller->respond(outResponse);
+            var result = caller->respond(outResponse);
+            handleError(result);
             return;
         }
 
