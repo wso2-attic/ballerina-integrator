@@ -266,7 +266,7 @@ As shown above, the travel agency service rents a car for the requested user by 
 
 ### Invoking the service
 
-- Navigate to `service-composition/guide` and run the following commands in separate terminals to start all four HTTP services. This will start the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services on ports 9091, 9092, 9093 and 9090 respectively.
+- Navigate to `service-composition/guide` and run the following commands in separate terminals to start all four HTTP services. This starts the `Airline Reservation`, `Hotel Reservation`, `Car Rental` and `Travel Agency` services on ports 9091, 9092, 9093 and 9090 respectively.
 
 ```bash
    $ ballerina run airline_reservation/
@@ -290,7 +290,7 @@ As shown above, the travel agency service rents a car for the requested user by 
    "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
 ```
 
-  Travel agency service will send a response similar to the following:
+  Travel agency service sends a response similar to the following:
     
 ```bash
    < HTTP/1.1 200 OK
@@ -332,7 +332,7 @@ Once you are done with the development, you can deploy the services using any of
    $ ballerina run target/<Exec_Archive_File_Name>
 ```
 
-- The successful execution of a service will show us something similar to the following output. 
+- The successful execution of a service shows us something similar to the following output. 
 ```
    Initiating service(s) in 'target/travel_agency.balx'
    [ballerina/http] started HTTP/WS endpoint 0.0.0.0:9090
@@ -366,7 +366,7 @@ listener http:Listener travelAgencyEP = new(9090);
 service travelAgencyService on travelAgencyEP {
 ``` 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `service-composition/guide` and run the following command.
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This creates the corresponding Docker image using the Docker annotations that you have configured above. Navigate to `service-composition/guide` and run the following command.
   
 ```
    $ ballerina build travel_agency
@@ -396,7 +396,7 @@ service travelAgencyService on travelAgencyEP {
 
 ### Deploying on Kubernetes
 
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs.
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it takes care of the creation of the Docker images. So you don't need to explicitly create Docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs.
 
 - Let's now see how we can deploy our `travel_agency_service` on Kubernetes. When invoking this service make sure that the other three services (airline_reservation, hotel_reservation, and car_rental) are also up and running. 
 
@@ -436,15 +436,15 @@ endpoint http:Listener travelAgencyEP {
 service travelAgencyService on travelAgencyEP {    
 ``` 
 
-- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name that will be created as part of building this service.
-- We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
+- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name that is created as part of building this service.
+- We have also specified `` @kubernetes:Service `` so that it creates a Kubernetes service, which exposes the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
 If you are using Minikube, you need to set a couple of additional attributes to the `@kubernetes:Deployment` annotation.
 - `dockerCertPath` - The path to the certificates directory of Minikube (e.g., `/home/ballerina/.minikube/certs`).
 - `dockerHost` - The host for the running cluster (e.g., `tcp://192.168.99.100:2376`). The IP address of the cluster can be found by running the `minikube ip` command.
  
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This creates the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
    $ ballerina build travel_agency
@@ -454,7 +454,7 @@ If you are using Minikube, you need to set a couple of additional attributes to 
 ```
 
 - You can verify that the Docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``.
-- Also the Kubernetes artifacts related our service, will be generated under `` ./target/travel_agency/kubernetes``. 
+- Also the Kubernetes artifacts related to our service are generated under `` ./target/travel_agency/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
 ```bash
@@ -563,7 +563,7 @@ Follow the following steps to use tracing with Ballerina.
 ```
 
 ### Metrics
-Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool.
+Metrics and alerts are built-in with ballerina. We use Prometheus as the monitoring tool.
 Follow the below steps to set up Prometheus and view metrics for travel_agency service.
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
@@ -608,7 +608,7 @@ Follow the below steps to set up Prometheus and view metrics for travel_agency s
    http://localhost:19090/
 ```
 
-NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+NOTE:  Ballerina, by default has following metrics for HTTP server connector. You can enter following expression in Prometheus UI
 -  http_requests_total
 -  http_response_time
 
@@ -616,13 +616,13 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 ### Logging
 
 Ballerina has a log module for logging to the console. You can import ballerina/log module and start logging. The
-following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina Service with the following command from `service-composition/guide`
 ```
    $ nohup ballerina run travel_agency/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `service-composition/guide` directory
+   NOTE: This writes the console log to the `ballerina.log` file in the `service-composition/guide` directory
 
 - Start Elasticsearch using the following command
 
