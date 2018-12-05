@@ -20,15 +20,6 @@ import ballerina/http;
 // Client endpoint
 http:Client clientEP = new("http://localhost:9090/travel");
 
-// Mock airline service endpoint
-listener http:Listener airlineEP = new(9091);
-
-// Mock hotel service endpoint
-listener http:Listener hotelEP = new(9092);
-
-// Mock car service endpoint
-listener http:Listener carEP = new(9093);
-
 // Function to test Travel agency service
 @test:Config
 function testTravelAgencyService() returns error? {
@@ -55,36 +46,3 @@ function testTravelAgencyService() returns error? {
     return ();
 }
 
-// Travel agency service depends on three external services.
-// Therefore, to test it we need those three services to be upped.
-// Hence, we need to manually start those services or create mock services.
-
-// Airline reservation mock service
-@http:ServiceConfig { basePath: "/airline" }
-service airlineReservationService on airlineEP {
-    // Mock resource
-    @http:ResourceConfig { methods: ["POST"], path: "/reserve" }
-    resource function reserveTicket(http:Caller caller, http:Request request) {
-        _ = caller->respond({"Status":"Success"});
-    }
-}
-
-// Hotel reservation mock service
-@http:ServiceConfig { basePath: "/hotel" }
-service hotelReservationService on hotelEP {
-    // Mock resource
-    @http:ResourceConfig { methods: ["POST"], path: "/reserve" }
-    resource function reserveRoom(http:Caller caller, http:Request request) {
-        _ = caller->respond({"Status":"Success"});
-    }
-}
-
-// Car rental mock service
-@http:ServiceConfig { basePath: "/car" }
-service carRentalService on carEP {
-    // Mock resource
-    @http:ResourceConfig { methods: ["POST"], path: "/rent" }
-    resource function rentCar(http:Caller caller, http:Request request) {
-        _ = caller->respond({"Status":"Success"});
-    }
-}

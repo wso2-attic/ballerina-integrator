@@ -33,7 +33,7 @@ function testAirlineReservationService() returns error? {
     };
 
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/reserve", payload);
+    http:Response response = check clientEP->post("/reserve", payload);
     // Expected response code is 200
     test:assertEquals(response.statusCode, 200,
         msg = "Airline reservation service did not respond with 200 OK signal!");
