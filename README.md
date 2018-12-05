@@ -5,7 +5,9 @@
 A transaction is a small unit of a program that must maintain Atomicity, Consistency, Isolation, and Durability − 
 commonly known as ACID properties − in order to ensure accuracy, completeness, and data integrity.
 
-> In this guide, you will learn about managing database transactions using Ballerina.
+> In this guide, you will learn about managing database transactions using Ballerina. Please note that Ballerina
+> transactions is an experimental feature. Please use `--experimental` flag when compiling Ballerina files which
+> contain transaction related constructs.
 
 The following are the sections available in this guide.
 
@@ -86,53 +88,41 @@ understanding.
 ```ballerina
 // Function to transfer money from one account to another.
 public function transferMoney(int fromAccId, int toAccId, int amount) returns (boolean) {
-    boolean isSuccessful;
+    boolean isSuccessful = false;
     log:printInfo("Initiating transaction");
     // Transaction block - Ensures the 'ACID' properties.
-    // Withdraw and deposit should happen as a transaction when transferring money
-    // from one account to another.
-    // Here, the reason for switching off the 'retries' option is, in failing scenarios
-    // almost all the time transaction fails due to erroneous operations triggered by the users.
-    transaction with retries = 0, oncommit = commitFunc, onabort = abortFunc {
+    // Withdraw and deposit should happen as a transaction when transferring money from one account to another.
+    // Here, the reason for switching off the 'retries' option is, in failing scenarios almost all the time
+    // transaction fails due to erroneous operations triggered by the users.
+    transaction with retries = 0 {
         // Withdraw money from transferor's account.
-        match withdrawMoney(fromAccId, amount) {
-            error withdrawError => {
-                log:printError("Error while withdrawing the money: " +
-                    withdrawError.message);
-                // Abort transaction if withdrawal fails.
-                log:printError("Failed to transfer money from account ID " + fromAccId +
-                    " to account ID " + toAccId);
+        var withdrawRet = withdrawMoney(fromAccId, amount);
+        if (withdrawRet is ()) {
+            var depositRet = depositMoney(toAccId, amount);
+            if (depositRet is ()) {
+                isSuccessful = true;
+            } else if (depositRet is error) {
+                log:printError("Error while depositing the money: " + <string>depositRet.detail().message);
+                // Abort transaction if deposit fails.
+                log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " +
+                    toAccId);
                 abort;
             }
-            () => {
-                match depositMoney(toAccId, amount) {
-                    error depositError => {
-                        log:printError("Error while depositing the money: " +
-                            depositError.message);
-                        // Abort transaction if deposit fails.
-                        log:printError("Failed to transfer money from account ID " +
-                            fromAccId + " to account ID " + toAccId);
-                        abort;
-                    }
-                    () => isSuccessful = true;
-                }
-            }
+        } else if (withdrawRet is error) {
+            log:printError("Error while withdrawing the money: " + <string>withdrawRet.detail().message);
+            // Abort transaction if withdrawal fails.
+            log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " + toAccId);
+            abort;
         }
         // If transaction successful.
-        log:printInfo("Successfully transferred $" + amount + " from account ID " +
-            fromAccId + " to account ID " + toAccId);
+        log:printInfo("Successfully transferred $" + amount + " from account ID " + fromAccId + " to account ID " +
+                toAccId);
+    } committed {
+        log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " committed");
+    } aborted {
+        log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " aborted");
     }
     return isSuccessful;
-}
-
-// Printed oncommit
-function commitFunc(string transactionId) {
-    log:printInfo("Transaction: " + transactionId + " aborted");
-}
-
-// Printed onabort
-function abortFunc(string transactionId) {
-    log:printInfo("Transaction: " + transactionId + " committed");
 }
 ```
 
@@ -144,26 +134,28 @@ Skeleton of the `account_manager.bal` file attached below.
 ```ballerina
 // Imports
 
-// 'mysql:Client' endpoint.
-endpoint mysql:Client bankDB {
-    host: config:getAsString("DATABASE_HOST", default = "localhost"),
-    port: config:getAsInt("DATABASE_PORT", default = 3306),
-    name: config:getAsString("DATABASE_NAME", default = "bankDB"),
-    username: config:getAsString("DATABASE_USERNAME", default = "root"),
-    password: config:getAsString("DATABASE_PASSWORD", default = ""),
-    dbOptions: { useSSL: false }
-};
+// MySQL Client
+mysql:Client bankDB = new({
+        host: config:getAsString("DATABASE_HOST", default = "localhost"),
+        port: config:getAsInt("DATABASE_PORT", default = 3306),
+        name: config:getAsString("DATABASE_NAME", default = "bankDB"),
+        username: config:getAsString("DATABASE_USERNAME", default = "root"),
+        password: config:getAsString("DATABASE_PASSWORD", default = ""),
+        dbOptions: { useSSL: false }
+    });
 
 // Function to add users to 'ACCOUNT' table of 'bankDB' database
-public function createAccount(string name) returns (int) {
+public function createAccount(string name) returns (int|error) {
     // Implemetation
     // Return the primary key, which will be the account number of the account
+    // or an error in case of a failure
 }
 
 // Function to verify an account whether it exists or not
-public function verifyAccount(int accId) returns (boolean) {
+public function verifyAccount(int accId) returns (boolean|error) {
     // Implementation
     // Return a boolean, which is true if account exists; false otherwise
+    // Or an error in case of a failure
 }
 
 // Function to check balance in an account
@@ -173,7 +165,7 @@ public function checkBalance(int accId) returns (int|error) {
 }
 
 // Function to deposit money to an account
-public function depositMoney(int accId, int amount) returns (error|()) {
+public function depositMoney(int accId, int amount) returns error|()  {
     // Implementation
     // Return error or ()
 }
@@ -185,19 +177,9 @@ public function withdrawMoney(int accId, int amount) returns (error|()) {
 }
 
 // Function to transfer money from one account to another
-public function transferMoney(int fromAccId, int toAccId, int amount) returns (boolean) {
+public function transferMoney(int fromAccId, int toAccId, int amount) returns boolean {
     // Implementation
     // Return a boolean, which is true if transaction is successful; false otherwise
-}
-
-// Printed oncommit
-function commitFunc(string transactionId) {
-    log:printInfo("Transaction: " + transactionId + " aborted");
-}
-
-// Printed onabort
-function abortFunc(string transactionId) {
-    log:printInfo("Transaction: " + transactionId + " committed");
 }
 ```
 
@@ -217,22 +199,22 @@ public function main () {
     int accIdUser2 = createAccount("Bob");
 
     // Deposit money to both new accounts
-    _ = depositMoney(accIdUser1, 500);
-    _ = depositMoney(accIdUser2, 1000);
+    var depositRet1 = depositMoney(accIdUser1, 500);
+    var depositRet2 = depositMoney(accIdUser2, 1000);
 
     // Scenario 1 - Transaction expected to be successful
-    _ = transferMoney(accIdUser1, accIdUser2, 300);
+    var transferRet1 = transferMoney(accIdUser1, accIdUser2, 300);
 
     // Scenario 2 - Transaction expected to fail due to insufficient ballance
     // 'accIdUser1' now only has a balance of 200
-    _ = transferMoney(accIdUser1, accIdUser2, 500);
+    var transferRet2 = transferMoney(accIdUser1, accIdUser2, 500);
 
     // Scenario 3 - Transaction expected to fail due to invalid recipient account ID
     // Account ID 1234 does not exist
-    _ = transferMoney(accIdUser2, 1234, 500);
+    var transferRet3 = transferMoney(accIdUser2, 1234, 500);
     
     // Check the balance in Bob's account
-    _ = checkBalance(accIdUser2);
+    var checkBalanceRet = checkBalance(accIdUser2);
 }
 ```
 
@@ -262,7 +244,7 @@ NOTE : You can find the SQL script [here](./resources/database_initializer.sql).
 - Navigate to `managing-database-transactions/guide` and execute the following command in a terminal to run this sample.
 
 ```bash
-   $ ballerina run banking_application
+   $ ballerina run --experimental banking_application
 ```
 
 ### Response you'll get
