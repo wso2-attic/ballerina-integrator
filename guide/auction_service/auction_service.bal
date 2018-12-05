@@ -50,7 +50,7 @@ service auctionService on auctionEP {
             // NOT a valid JSON payload
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            _ = caller->respond(outResponse);
+            var result = caller->respond(outResponse);
             return;
         }
 
@@ -61,7 +61,7 @@ service auctionService on auctionEP {
         if (Item == null || Condition == null) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
-            _ = caller->respond(outResponse);
+            var result = caller->respond(outResponse);
             return;
         }
 
@@ -168,7 +168,13 @@ service auctionService on auctionEP {
         }
         // Send final response to client
         outResponse.setJsonPayload(jsonHighestBid);
-        _ = caller->respond(outResponse);
+        var result = caller->respond(outResponse);
         return ();
+    }
+}
+
+function handleError(error? result) {
+    if (result is error) {
+        log:printError(result.reason(), err = result);
     }
 }

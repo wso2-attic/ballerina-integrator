@@ -1,5 +1,6 @@
 import ballerina/io;
 import ballerina/http;
+import ballerina/log;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 //
@@ -49,7 +50,8 @@ service bidService on biddersEP {
             // NOT a valid JSON payload
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            _ = caller->respond(outResponse);
+            var result = caller->respond(outResponse);
+            handleError(result);
             return;
         }
 
@@ -60,7 +62,8 @@ service bidService on biddersEP {
         if (Item == null || Condition == "") {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
-            _ = caller->respond(outResponse);
+            var result = caller->respond(outResponse);
+            handleError(result);
             return;
         }
 
@@ -81,7 +84,8 @@ service bidService on biddersEP {
         // Response payload
         outResponse.setJsonPayload(BidDetails);
         // Send the response to the caller
-        _ = caller->respond(outResponse);
+        var result = caller->respond(outResponse);
+        handleError(result);
         return;
     }
 
@@ -101,7 +105,8 @@ service bidService on biddersEP {
             // NOT a valid JSON payload
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            _ = caller->respond(outResponse);
+            var result = caller->respond(outResponse);
+            handleError(result);
             return;
         }
 
@@ -133,7 +138,8 @@ service bidService on biddersEP {
         // Response payload
         outResponse.setJsonPayload(BidDetails);
         // Send the response to the caller
-        _ = caller->respond(outResponse);
+        var result = caller->respond(outResponse);
+        handleError(result);
         return;
     }
 
@@ -152,7 +158,8 @@ service bidService on biddersEP {
             // NOT a valid JSON payload
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            _ = caller->respond(outResponse);
+            var result = caller->respond(outResponse);
+            handleError(result);
             return;
         }
 
@@ -163,7 +170,8 @@ service bidService on biddersEP {
         if (Item == null || Condition == "") {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
-            _ = caller->respond(outResponse);
+            var result = caller->respond(outResponse);
+            handleError(result);
             return;
         }
 
@@ -184,7 +192,8 @@ service bidService on biddersEP {
         // Response payload
         outResponse.setJsonPayload(BidDetails);
         // Send the response to the caller
-        _ = caller->respond(outResponse);
+        var result = caller->respond(outResponse);
+        handleError(result);
         return;
     }
 }
