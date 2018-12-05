@@ -57,7 +57,7 @@ service OnlineShopping on OnlineShoppingEP {
             //Sends the error response to the caller.
             http:Response res = new;
             res.statusCode = 500;
-            res.setPayload(string.create(clientResponse.detail().message));
+            res.setPayload(string.convert(clientResponse.detail().message));
             var result = caller->respond(res);
             handleError(result);
         }

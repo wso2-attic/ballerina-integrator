@@ -103,7 +103,7 @@ service OnlineShopping on OnlineShoppingEP {
             //Sends the error response to the caller.
             http:Response res = new;
             res.statusCode = 500;
-            res.setPayload(string.create(clientResponse.detail().message));
+            res.setPayload(string.convert(clientResponse.detail().message));
             var result = caller->respond(res);
             handleError(result);
         }
@@ -123,7 +123,7 @@ service LocalShop on LocalShopEP {
         http:Response res = new;
         res.setPayload("Welcome to Local Shop! Please put your order here.....");
         //Sends the response to the caller.
-        var result = caller->respond(res)
+        var result = caller->respond(res);
         handleError(result);
     }
 }
