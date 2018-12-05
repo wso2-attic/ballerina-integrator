@@ -1,5 +1,6 @@
 import ballerina/http;
 import ballerina/io;
+import ballerina/log;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 //
@@ -38,8 +39,12 @@ http:Client biddersEP1 = new("http://localhost:9091/bidders");
 service auctionService on auctionEP {
 
     //Resource to get highest bid value
-    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
-    resource function setAuction(http:Caller caller, http:Request inRequest) returns error? {
+    @http:ResourceConfig {
+        methods: ["POST"],
+        consumes: ["application/json"],
+        produces: ["application/json"]
+    }
+    resource function setAuction(http:Caller caller, http:Request inRequest) {
         http:Response outResponse = new;
         json inReqPayload;
         var payload = inRequest.getJsonPayload();
@@ -77,7 +82,7 @@ service auctionService on auctionEP {
                 // Set out request payload
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 1' and get the results
-                http:Response respWorkerBidder1 = check biddersEP1->post("/bidder1", outReq);
+                var respWorkerBidder1 = biddersEP1->post("/bidder1", outReq);
                 // Reply to the join block from this worker - Send the response from 'Bidder1'
                 return respWorkerBidder1;
             }
@@ -87,7 +92,7 @@ service auctionService on auctionEP {
                 // Set out request payload
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 2' and get the results
-                http:Response respWorkerBidder2 = check biddersEP1->post("/bidder2", outReq);
+                var respWorkerBidder2 = biddersEP1->post("/bidder2", outReq);
                 // Reply to the join block from this worker - Send the response from 'Bidder 2'
                 return respWorkerBidder2;
             }
@@ -98,7 +103,7 @@ service auctionService on auctionEP {
                 // Set out request payload
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 3' and get the results
-                http:Response respWorkerBidder3 = check biddersEP1->post("/bidder3", outReq);
+                var respWorkerBidder3 = biddersEP1->post("/bidder3", outReq);
                 // Reply to the join block from this worker - Send the response from 'Bidder 3'
                 return respWorkerBidder3;
             }
@@ -116,7 +121,12 @@ service auctionService on auctionEP {
         if (resBidder1 is error) {
             panic resBidder1;
         } else if (resBidder1 is http:Response) {
-            jsonResponseBidder1 = check resBidder1.getJsonPayload();
+            var jsonResp = resBidder1.getJsonPayload();
+            if (jsonResp is json) {
+                jsonResponseBidder1 = jsonResp;
+            } else {
+                panic(jsonResp);
+            }
             var bid1 = jsonResponseBidder1.Bid;
             if (bid1 is int) {
                 bidder1Bid = bid1;
@@ -130,7 +140,12 @@ service auctionService on auctionEP {
         if (resBidder2 is error) {
             panic(resBidder2);
         } else if (resBidder2 is http:Response) {
-            jsonResponseBidder2 = check resBidder2.getJsonPayload();
+            var jsonResp = resBidder2.getJsonPayload();
+            if (jsonResp is json) {
+                jsonResponseBidder2 = jsonResp;
+            } else {
+                panic(jsonResp);
+            }
             var bid2 = jsonResponseBidder2.Bid;
             if (bid2 is int) {
                 bidder2Bid = bid2;
@@ -144,7 +159,12 @@ service auctionService on auctionEP {
         if (resBidder3 is error) {
             panic(resBidder3);
         } else if (resBidder3 is http:Response) {
-            jsonResponseBidder3 = check resBidder3.getJsonPayload();
+            var jsonResp = resBidder3.getJsonPayload();
+            if (jsonResp is json) {
+                jsonResponseBidder3 = jsonResp;
+            } else {
+                panic(jsonResp);
+            }
             var bid3 = jsonResponseBidder3.Bid;
             if (bid3 is int) {
                 bidder3Bid = bid3;
@@ -173,8 +193,3 @@ service auctionService on auctionEP {
     }
 }
 
-function handleError(error? result) {
-    if (result is error) {
-        log:printError(result.reason(), err = result);
-    }
-}

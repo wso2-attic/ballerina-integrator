@@ -197,3 +197,10 @@ service bidService on biddersEP {
         return;
     }
 }
+
+
+function handleError(error? result) {
+    if (result is error) {
+        log:printError(result.reason(), err = result);
+    }
+}
