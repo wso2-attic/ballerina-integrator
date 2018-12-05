@@ -43,46 +43,36 @@ import ballerina/http;
 //}
 
 // Service endpoint
-endpoint http:Listener travelAgencyEP {
-    port: 9090
-};
+listener http:Listener travelAgencyEP  = new(9090);
 
 // Client endpoint to communicate with Airline reservation service
-endpoint http:Client airlineEP {
-    url: "http://localhost:9091/airline"
-};
+http:Client airlineEP = new("http://localhost:9091/airline");
 
 // Client endpoint to communicate with Hotel reservation service
-endpoint http:Client hotelEP {
-    url: "http://localhost:9092/hotel"
-};
+http:Client hotelEP = new("http://localhost:9092/hotel");
 
 // Client endpoint to communicate with Car rental service
-endpoint http:Client carRentalEP {
-    url: "http://localhost:9093/car"
-};
+http:Client carRentalEP = new("http://localhost:9093/car");
 
 // Travel agency service to arrange a complete tour for a user
 @http:ServiceConfig { basePath: "/travel" }
-service<http:Service> travelAgencyService bind travelAgencyEP {
+service travelAgencyService on travelAgencyEP {
 
     // Resource to arrange a tour
     @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
-    arrangeTour(endpoint client, http:Request inRequest) {
-        http:Response outResponse;
-        json inReqPayload;
+    resource function arrangeTour(http:Caller caller, http:Request inRequest) {
+        http:Response outResponse = new;
+        json inReqPayload = {};
 
         // Try parsing the JSON payload from the request
-        match inRequest.getJsonPayload() {
-            // Valid JSON payload
-            json payload => inReqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                outResponse.statusCode = 400;
-                outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-                _ = client->respond(outResponse);
-                done;
-            }
+        var payload = inRequest.getJsonPayload();
+        if (payload is error) {
+            outResponse.statusCode = 400;
+            outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+            _ = caller->respond(outResponse);
+            return;
+        } else {
+            inReqPayload = payload;
         }
 
         json arrivalDate = inReqPayload.ArrivalDate;
@@ -97,8 +87,8 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             vehicleType == () || location == ()) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
-            _ = client->respond(outResponse);
-            done;
+            _ = caller->respond(outResponse);
+            return;
         }
 
         // Out request payload for Airline reservation service
@@ -110,94 +100,123 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         json vehiclePayload = { "ArrivalDate": arrivalDate, "DepartureDate": departureDate, "VehicleType": vehicleType }
         ;
 
-        json jsonFlightResponse;
-        json jsonVehicleResponse;
-        json jsonHotelResponse;
-        json miramarJsonResponse;
-        json aqueenJsonResponse;
-        json elizabethJsonResponse;
-        json jsonFlightResponseEmirates;
-        json jsonFlightResponseAsiana;
-        json jsonFlightResponseQatar;
+        json jsonFlightResponse = {};
+        json jsonVehicleResponse = {};
+        json jsonHotelResponse = {};
+        json miramarJsonResponse = {};
+        json aqueenJsonResponse = {};
+        json elizabethJsonResponse = {};
+        json jsonFlightResponseEmirates = {};
+        json jsonFlightResponseAsiana = {};
+        json jsonFlightResponseQatar = {};
 
         // Airline reservation
         // Call Airline reservation service and consume different resources in parallel to check different airways
         // Fork - Join to run parallel workers and join the results
         fork {
             // Worker to communicate with airline 'Qatar Airways'
-            worker qatarWorker {
-                http:Request outReq;
+            worker qatarWorker returns http:Response? {
+                http:Request outReq = new;
                 // Out request payload
                 outReq.setJsonPayload(untaint flightPayload);
                 // Send a POST request to 'Qatar Airways' and get the results
-                http:Response respWorkerQatar = check airlineEP->post("/qatarAirways", outReq);
+                var respWorkerQuatar = airlineEP->post("/qatarAirways", outReq);
                 // Reply to the join block from this worker - Send the response from 'Qatar Airways'
-                respWorkerQatar -> fork;
+                if (respWorkerQuatar is http:Response) {
+                    return respWorkerQuatar;
+                }
+                return;
             }
 
             // Worker to communicate with airline 'Asiana'
-            worker asianaWorker {
-                http:Request outReq;
+            worker asianaWorker returns http:Response? {
+                http:Request outReq = new;
                 // Out request payload
                 outReq.setJsonPayload(untaint flightPayload);
                 // Send a POST request to 'Asiana' and get the results
-                http:Response respWorkerAsiana = check airlineEP->post("/asiana", outReq);
+                var respWorkerAsiana = airlineEP->post("/asiana", outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
-                respWorkerAsiana -> fork;
+                if (respWorkerAsiana is http:Response) {
+                    return respWorkerAsiana;
+                }
+                return;
             }
 
             // Worker to communicate with airline 'Emirates'
-            worker emiratesWorker {
-                http:Request outReq;
+            worker emiratesWorker returns http:Response? {
+                http:Request outReq = new;
                 // Out request payload
                 outReq.setJsonPayload(untaint flightPayload);
                 // Send a POST request to 'Emirates' and get the results
-                http:Response respWorkerEmirates = check airlineEP->post("/emirates", outReq);
+                var respWorkerEmirates = airlineEP->post("/emirates", outReq);
                 // Reply to the join block from this worker - Send the response from 'Emirates'
-                respWorkerEmirates -> fork;
+                if (respWorkerEmirates is http:Response) {
+                    return respWorkerEmirates;
+                }
+                return;
             }
-        } join (all) (map airlineResponses) {
-            // Wait until the responses received from all the workers running in parallel
-            int qatarPrice;
-            int asianaPrice;
-            int emiratesPrice;
+        }
 
-            // Get the response and price for airline 'Qatar Airways'
-            var resQatar = check <http:Response>(airlineResponses["qatarWorker"]);
-            jsonFlightResponseQatar = check resQatar.getJsonPayload();
-            qatarPrice = jsonFlightResponseQatar.Price but {
-                int price => price,
-                any otherVals => -1
-            };
+        record{http:Response? qatarWorker; http:Response? asianaWorker; http:Response? emiratesWorker;} airlineResponses =
+                        wait {qatarWorker, asianaWorker, emiratesWorker};
 
-            // Get the response and price for airline 'Asiana'
-            var resAsiana = check <http:Response>(airlineResponses["asianaWorker"]);
-            jsonFlightResponseAsiana = check resAsiana.getJsonPayload();
-            asianaPrice = jsonFlightResponseAsiana.Price but {
-                int price => price,
-                any otherVals => -1
-            };
+        // Wait until the responses received from all the workers running in parallel
+        int qatarPrice = -1;
+        int asianaPrice = -1;
+        int emiratesPrice = -1;
 
-            // Get the response and price for airline 'Emirates'
-            var resEmirates = check <http:Response>(airlineResponses["emiratesWorker"]);
-            jsonFlightResponseEmirates = check resEmirates.getJsonPayload();
-            emiratesPrice = jsonFlightResponseEmirates.Price but {
-                int price => price,
-                any otherVals => -1
-            };
-
-            // Select the airline with the least price
-            if (qatarPrice < asianaPrice) {
-                if (qatarPrice < emiratesPrice) {
-                    jsonFlightResponse = jsonFlightResponseQatar;
+        // Get the response and price for airline 'Qatar Airways'
+        var resQatar = airlineResponses["qatarWorker"];
+        if (resQatar is http:Response) {
+            var flightResponseQutar= resQatar.getJsonPayload();
+            if (flightResponseQutar is json) {
+                jsonFlightResponseQatar = flightResponseQutar;
+                var qutarResult = jsonFlightResponseQatar.Price;
+                if (qutarResult is int) {
+                    qatarPrice = qutarResult;
                 }
-            } else {
-                if (asianaPrice < emiratesPrice) {
-                    jsonFlightResponse = jsonFlightResponseAsiana;
+            }
+        } else {
+            qatarPrice = -1;
+        }
+
+        // Get the response and price for airline 'Asiana'
+        var resAsiana = airlineResponses["asianaWorker"];
+        if (resAsiana is http:Response) {
+            var flightResponseAsia = resAsiana.getJsonPayload();
+            if (flightResponseAsia is json) {
+                jsonFlightResponseAsiana = flightResponseAsia;
+                var asianaResult = jsonFlightResponseAsiana.Price;
+                if (asianaResult is int) {
+                    asianaPrice = asianaResult;
                 }
-                else {
-                    jsonFlightResponse = jsonFlightResponseEmirates;
+            }
+        }
+
+        // Get the response and price for airline 'Emirates'
+        var resEmirates = airlineResponses["emiratesWorker"];
+        if (resEmirates is http:Response) {
+            var flightResponseEmirates = resEmirates.getJsonPayload();
+            if (flightResponseEmirates is json) {
+                jsonFlightResponseEmirates = flightResponseEmirates;
+                var emiratesResult = jsonFlightResponseEmirates.Price;
+                if (emiratesResult is int) {
+                    emiratesPrice = emiratesResult;
                 }
+            }
+        }
+
+        // Select the airline with the least price
+        if (qatarPrice < asianaPrice) {
+            if (qatarPrice < emiratesPrice) {
+                jsonFlightResponse = jsonFlightResponseQatar;
+            }
+        } else {
+            if (asianaPrice < emiratesPrice) {
+                jsonFlightResponse = jsonFlightResponseAsiana;
+            }
+            else {
+                jsonFlightResponse = jsonFlightResponseEmirates;
             }
         }
 
@@ -206,67 +225,94 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         // Fork - Join to run parallel workers and join the results
         fork {
             // Worker to communicate with hotel 'Miramar'
-            worker miramar {
-                http:Request outReq;
+            worker miramar returns http:Response? {
+                http:Request outReq = new;
                 // Out request payload
                 outReq.setJsonPayload(untaint hotelPayload);
                 // Send a POST request to 'Asiana' and get the results
-                http:Response respWorkerMiramar = check hotelEP->post("/miramar", outReq);
+                var respWorkerMiramar = hotelEP->post("/miramar", outReq);
                 // Reply to the join block from this worker - Send the response from 'Asiana'
-                respWorkerMiramar -> fork;
+                if (respWorkerMiramar is http:Response) {
+                    return respWorkerMiramar;
+                }
+                return;
             }
 
             // Worker to communicate with hotel 'Aqueen'
-            worker aqueen {
-                http:Request outReq;
+            worker aqueen returns http:Response? {
+                http:Request outReq = new;
                 // Out request payload
                 outReq.setJsonPayload(untaint hotelPayload);
                 // Send a POST request to 'Aqueen' and get the results
-                http:Response respWorkerAqueen = check hotelEP->post("/aqueen", outReq);
+                var respWorkerAqueen = hotelEP->post("/aqueen", outReq);
                 // Reply to the join block from this worker - Send the response from 'Aqueen'
-                respWorkerAqueen -> fork;
+                if (respWorkerAqueen is http:Response) {
+                    return respWorkerAqueen;
+                }
+                return;
             }
 
             // Worker to communicate with hotel 'Elizabeth'
-            worker elizabeth {
-                http:Request outReq;
+            worker elizabeth returns http:Response? {
+                http:Request outReq = new;
                 // Out request payload
                 outReq.setJsonPayload(untaint hotelPayload);
                 // Send a POST request to 'Elizabeth' and get the results
-                http:Response respWorkerElizabeth = check hotelEP->post("/elizabeth", outReq);
+                var respWorkerElizabeth = hotelEP->post("/elizabeth", outReq);
                 // Reply to the join block from this worker - Send the response from 'Elizabeth'
-                respWorkerElizabeth -> fork;
+                if (respWorkerElizabeth is http:Response) {
+                    return respWorkerElizabeth;
+                }
+                return;
             }
-        } join (all) (map hotelResponses) {
-            // Wait until the responses received from all the workers running in parallel
+        }
 
-            int miramarDistance;
-            int aqueenDistance;
-            int elizabethDistance;
+        record{http:Response? miramar; http:Response? aqueen; http:Response? elizabeth;} hotelResponses =
+                wait{miramar, aqueen, elizabeth};
+
+            // Wait until the responses received from all the workers running in parallel
+            int miramarDistance = -1;
+            int aqueenDistance = -1;
+            int elizabethDistance = -1;
 
             // Get the response and distance to the preferred location from the hotel 'Miramar'
-            var responseMiramar = check <http:Response>(hotelResponses["miramar"]);
-            miramarJsonResponse = check responseMiramar.getJsonPayload();
-            miramarDistance = miramarJsonResponse.DistanceToLocation but {
-                int distance => distance,
-                any otherVals => -1
-            };
+            var responseMiramar = hotelResponses["miramar"];
+            if (responseMiramar is http:Response) {
+                var mirmarPayload = responseMiramar.getJsonPayload();
+                if (mirmarPayload is json) {
+                    miramarJsonResponse = mirmarPayload;
+                    var miramarDistanceResult = miramarJsonResponse.DistanceToLocation;
+                    if (miramarDistanceResult is int) {
+                        miramarDistance = miramarDistanceResult;
+                    }
+                }
+            }
 
             // Get the response and distance to the preferred location from the hotel 'Aqueen'
-            var responseAqueen = check <http:Response>(hotelResponses["aqueen"]);
-            aqueenJsonResponse = check responseAqueen.getJsonPayload();
-            aqueenDistance = aqueenJsonResponse.DistanceToLocation but {
-                int distance => distance,
-                any otherVals => -1
-            };
+            var responseAqueen = hotelResponses["aqueen"];
+            if (responseAqueen is http:Response) {
+                var aqueenPayload = responseMiramar.getJsonPayload();
+                if (aqueenPayload is json) {
+                    aqueenJsonResponse = aqueenPayload;
+                    var aqueenDistanceResult = aqueenJsonResponse.DistanceToLocation;
+                    if (aqueenDistanceResult is int) {
+                        aqueenDistance = aqueenDistanceResult;
+                    }
+                }
+            }
 
             // Get the response and distance to the preferred location from the hotel 'Elizabeth'
-            var responseElizabeth = check <http:Response>(hotelResponses["elizabeth"]);
-            elizabethJsonResponse = check responseElizabeth.getJsonPayload();
-            elizabethDistance = elizabethJsonResponse.DistanceToLocation but {
-                int distance => distance,
-                any otherVals => -1
-            };
+            var responseElizabeth = hotelResponses["elizabeth"];
+            if (responseElizabeth is http:Response) {
+                var elizabethPayload = responseMiramar.getJsonPayload();
+                if (elizabethPayload is json) {
+                    elizabethJsonResponse = elizabethPayload;
+                    var elizabethDistanceResult = elizabethJsonResponse.DistanceToLocation;
+                    if (elizabethDistanceResult is int) {
+                        elizabethDistance = elizabethDistanceResult;
+                    }
+                }
+            }
 
             // Select the hotel with the lowest distance
             if (miramarDistance < aqueenDistance) {
@@ -281,59 +327,60 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
                     jsonHotelResponse = elizabethJsonResponse;
                 }
             }
-        }
+
 
         // Car rental
         // Call Car rental service and consume different resources in parallel to check different companies
         // Fork - Join to run parallel workers and join the results
         fork {
             // Worker to communicate with Company 'DriveSg'
-            worker driveSg {
-                http:Request outReq;
+            worker driveSg returns http:Response? {
+                http:Request outReq = new;
                 // Out request payload
                 outReq.setJsonPayload(untaint vehiclePayload);
                 // Send a POST request to 'DriveSg' and get the results
-                http:Response respWorkerDriveSg = check carRentalEP->post("/driveSg", outReq);
+                var respWorkerDriveSg = carRentalEP->post("/driveSg", outReq);
                 // Reply to the join block from this worker - Send the response from 'DriveSg'
-                respWorkerDriveSg -> fork;
+                if (respWorkerDriveSg is http:Response) {
+                    return respWorkerDriveSg;
+                }
+                return;
             }
 
             // Worker to communicate with Company 'DreamCar'
-            worker dreamCar {
-                http:Request outReq;
+            worker dreamCar returns http:Response? {
+                http:Request outReq = new;
                 // Out request payload
                 outReq.setJsonPayload(untaint vehiclePayload);
                 // Send a POST request to 'DreamCar' and get the results
-                http:Response respWorkerDreamCar = check carRentalEP->post("/dreamCar", outReq);
+                var respWorkerDreamCar = carRentalEP->post("/dreamCar", outReq);
+                if (respWorkerDreamCar is http:Response) {
                 // Reply to the join block from this worker - Send the response from 'DreamCar'
-                respWorkerDreamCar -> fork;
+                    return respWorkerDreamCar;
+                }
+                return;
             }
 
             // Worker to communicate with Company 'Sixt'
-            worker sixt {
-                http:Request outReq;
+            worker sixt returns http:Response? {
+                http:Request outReq = new;
                 // Out request payload
                 outReq.setJsonPayload(untaint vehiclePayload);
                 // Send a POST request to 'Sixt' and get the results
-                http:Response respWorkerSixt = check carRentalEP->post("/sixt", outReq);
+                var respWorkerSixt = carRentalEP->post("/sixt", outReq);
                 // Reply to the join block from this worker - Send the response from 'Sixt'
-                respWorkerSixt -> fork;
+                if (respWorkerSixt is http:Response) {
+                    return respWorkerSixt;
+                }
+                return;
             }
-        } join (some 1) (map vehicleResponses) {
-            // Get the first responding worker
-
-            // Get the response from company 'DriveSg' if not ()
-            if (vehicleResponses["driveSg"] != ()) {
-                var responseDriveSg = check <http:Response>(vehicleResponses["driveSg"]);
-                jsonVehicleResponse = check responseDriveSg.getJsonPayload();
-            } else if (vehicleResponses["dreamCar"] != ()) {
-                // Get the response from company 'DreamCar' if not ()
-                var responseDreamCar = check <http:Response>(vehicleResponses["dreamCar"]);
-                jsonVehicleResponse = check responseDreamCar.getJsonPayload();
-            } else if (vehicleResponses["sixt"] != ()) {
-                // Get the response from company 'Sixt' if not ()
-                var responseSixt = check <http:Response>(vehicleResponses["sixt"]);
-                jsonVehicleResponse = check responseSixt.getJsonPayload();
+        }
+        // Get the first responding worker
+        http:Response? vehicleResponse = wait driveSg | dreamCar | sixt;
+        if (vehicleResponse is http:Response) {
+            var vehicleResponsePayload = vehicleResponse.getJsonPayload();
+            if (vehicleResponsePayload is json) {
+                jsonVehicleResponse = vehicleResponsePayload;
             }
         }
 
@@ -347,6 +394,6 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         // Response payload
         outResponse.setJsonPayload(untaint clientResponse);
         // Send the response to the client
-        _ = client->respond(outResponse);
+        _ = caller->respond(outResponse);
     }
 }

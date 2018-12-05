@@ -43,32 +43,27 @@ import ballerina/http;
 //}
 
 // Service endpoint
-endpoint http:Listener carEP {
-    port:9093
-};
+listener http:Listener carEP = new (9093);
 
 // Car rental service
 @http:ServiceConfig {basePath:"/car"}
-service<http:Service> carRentalService bind carEP {
+service carRentalService on carEP {
 
     // Resource 'driveSg', which checks about hotel 'DriveSg'
     @http:ResourceConfig {methods:["POST"], path:"/driveSg", consumes:["application/json"],
         produces:["application/json"]}
-    driveSg(endpoint caller, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    resource function driveSg(http:Caller caller, http:Request request) {
+        http:Response response = new;
+        json reqPayload = {};
 
-        // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
-                done;
-            }
+        var payload = request.getJsonPayload();
+        if (payload is error) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            _ = caller -> respond(response);
+            return;
+        } else {
+            reqPayload = payload;
         }
 
         json arrivalDate = reqPayload.ArrivalDate;
@@ -80,7 +75,7 @@ service<http:Service> carRentalService bind carEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
-            done;
+            return;
         }
 
         // Mock logic
@@ -101,21 +96,19 @@ service<http:Service> carRentalService bind carEP {
     // Resource 'dreamCar', which checks about hotel 'DreamCar'
     @http:ResourceConfig {methods:["POST"], path:"/dreamCar", consumes:["application/json"],
         produces:["application/json"]}
-    dreamCar(endpoint caller, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    resource function dreamCar(http:Caller caller, http:Request request) {
+        http:Response response = new;
+        json reqPayload = {};
 
         // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
-                done;
-            }
+        var payload = request.getJsonPayload();
+        if (payload is error) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            _ = caller -> respond(response);
+            return;
+        } else {
+            reqPayload = payload;
         }
 
         json arrivalDate = reqPayload.ArrivalDate;
@@ -127,7 +120,7 @@ service<http:Service> carRentalService bind carEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
-            done;
+            return;
         }
 
         // Mock logic
@@ -148,21 +141,19 @@ service<http:Service> carRentalService bind carEP {
     // Resource 'sixt', which checks about hotel 'Sixt'
     @http:ResourceConfig {methods:["POST"], path:"/sixt", consumes:["application/json"],
         produces:["application/json"]}
-    sixt(endpoint caller, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    resource function sixt(http:Caller caller, http:Request request) {
+        http:Response response = new;
+        json reqPayload = {};
 
         // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
-                done;
-            }
+        var payload = request.getJsonPayload();
+        if (payload is error) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            _ = caller -> respond(response);
+            return;
+        } else {
+            reqPayload = payload;
         }
 
         json arrivalDate = reqPayload.ArrivalDate;
@@ -174,7 +165,7 @@ service<http:Service> carRentalService bind carEP {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
             _ = caller -> respond(response);
-            done;
+            return;
         }
 
         // Mock logic
