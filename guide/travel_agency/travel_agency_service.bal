@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/log;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
@@ -43,48 +44,41 @@ import ballerina/http;
 //}
 
 // Service endpoint
-endpoint http:Listener travelAgencyEP {
-    port:9090
-};
+listener http:Listener travelAgencyEP = new(9090);
 
 // Client endpoint to communicate with Airline reservation service
-endpoint http:Client airlineReservationEP {
-    url:"http://localhost:9091/airline"
-};
+http:Client airlineReservationEP = new("http://localhost:9091/airline");
 
 // Client endpoint to communicate with Hotel reservation service
-endpoint http:Client hotelReservationEP {
-    url:"http://localhost:9092/hotel"
-};
+http:Client hotelReservationEP = new("http://localhost:9092/hotel");
 
 // Client endpoint to communicate with Car rental service
-endpoint http:Client carRentalEP {
-    url:"http://localhost:9093/car"
-};
+http:Client carRentalEP = new("http://localhost:9093/car");
 
 // Travel agency service to arrange a complete tour for a user
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP {
+service travelAgencyService on travelAgencyEP {
 
     // Resource to arrange a tour
     @http:ResourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
-    arrangeTour(endpoint client, http:Request inRequest) {
-        http:Response outResponse;
-        json inReqPayload;
+    resource function arrangeTour(http:Caller caller, http:Request inRequest) returns error? {
+        http:Response outResponse = new;
+        json inReqPayload = {};
         // Json payload format for an http out request
         json outReqPayload = {"Name":"", "ArrivalDate":"", "DepartureDate":"", "Preference":""};
 
         // Try parsing the JSON payload from the user request
-        match inRequest.getJsonPayload() {
+        var payload = inRequest.getJsonPayload();
+        if (payload is json) {
             // Valid JSON payload
-            json payload => inReqPayload = payload;
+            inReqPayload = payload;
+        } else if (payload is error) {
             // NOT a valid JSON payload
-            any => {
-                outResponse.statusCode = 400;
-                outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(outResponse);
-                done;
-            }
+            outResponse.statusCode = 400;
+            outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            var result = caller->respond(outResponse);
+            handleError(result);
+            return;
         }
 
         outReqPayload.Name = inReqPayload.Name;
@@ -99,8 +93,9 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
             airlinePreference == () || hotelPreference == () || carPreference == ()) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(outResponse);
-            done;
+            var result = caller->respond(outResponse);
+            handleError(result);
+            return;
         }
 
 
@@ -110,7 +105,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqPayloadAirline.Preference = airlinePreference;
 
         // Send a post request to airlineReservationService with appropriate payload and get response
-        http:Response inResAirline = check airlineReservationEP -> post("/reserve", untaint outReqPayloadAirline);
+        http:Response inResAirline = check airlineReservationEP->post("/reserve", untaint outReqPayloadAirline);
 
         // Get the reservation status
         var airlineResPayload = check inResAirline.getJsonPayload();
@@ -119,8 +114,9 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         if (airlineStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
                     "Provide a valid 'Preference' for 'Airline' and try again"});
-            _ = client -> respond(outResponse);
-            done;
+            var result = caller->respond(outResponse);
+            handleError(result);
+            return;
         }
 
 
@@ -130,7 +126,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqPayloadHotel.Preference = hotelPreference;
 
         // Send a post request to hotelReservationService with appropriate payload and get response
-        http:Response inResHotel = check hotelReservationEP -> post("/reserve", untaint outReqPayloadHotel);
+        http:Response inResHotel = check hotelReservationEP->post("/reserve", untaint outReqPayloadHotel);
 
         // Get the reservation status
         var hotelResPayload = check inResHotel.getJsonPayload();
@@ -139,10 +135,10 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         if (hotelStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
                     "Provide a valid 'Preference' for 'Accommodation' and try again"});
-            _ = client -> respond(outResponse);
-            done;
+            var result = caller->respond(outResponse);
+            handleError(result);
+            return;
         }
-
 
         // Renting car for the user by calling Car rental service
         // construct the payload
@@ -150,7 +146,7 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         outReqPayloadCar.Preference = carPreference;
 
         // Send a post request to carRentalService with appropriate payload and get response
-        http:Response inResCar = check carRentalEP -> post("/rent", untaint outReqPayloadCar);
+        http:Response inResCar = check carRentalEP->post("/rent", untaint outReqPayloadCar);
 
         // Get the rental status
         var carResPayload = check inResCar.getJsonPayload();
@@ -159,13 +155,22 @@ service<http:Service> travelAgencyService bind travelAgencyEP {
         if (carRentalStatus.equalsIgnoreCase("Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to rent car! " +
                     "Provide a valid 'Preference' for 'Car' and try again"});
-            _ = client -> respond(outResponse);
-            done;
+            var result = caller->respond(outResponse);
+            handleError(result);
+            return;
         }
 
 
         // If all three services response positive status, send a successful message to the user
         outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
-        _ = client -> respond(outResponse);
+        var result = caller->respond(outResponse);
+        handleError(result);
+        return ();
+    }
+}
+
+function handleError(error? result) {
+    if (result is error) {
+        log:printError(result.reason(), err = result);
     }
 }

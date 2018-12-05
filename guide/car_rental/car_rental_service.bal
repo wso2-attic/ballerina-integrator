@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/log;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
@@ -43,35 +44,34 @@ import ballerina/http;
 //}
 
 // Service endpoint
-endpoint http:Listener carEP {
-    port:9093
-};
+listener http:Listener carEP = new(9093);
 
 // Available car types
-@final string AC = "Air Conditioned";
-@final string NORMAL = "Normal";
+final string AC = "Air Conditioned";
+final string NORMAL = "Normal";
 
 // Car rental service to rent cars
 @http:ServiceConfig {basePath:"/car"}
-service<http:Service> carRentalService bind carEP {
+service carRentalService on carEP {
 
     // Resource to rent a car
     @http:ResourceConfig {methods:["POST"], path:"/rent", consumes:["application/json"], produces:["application/json"]}
-    rentCar(endpoint client, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    resource function rentCar(http:Caller caller, http:Request request) {
+        http:Response response = new;
+        json reqPayload = {};
 
+        var payload = request.getJsonPayload();
         // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
+        if (payload is json) {
             // Valid JSON payload
-            json payload => reqPayload = payload;
+            reqPayload = payload;
+        } else {
             // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                done;
-            }
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            var result = caller->respond(response);
+            handleError(result);
+            return;
         }
 
         json name = reqPayload.Name;
@@ -83,8 +83,9 @@ service<http:Service> carRentalService bind carEP {
         if (name == () || arrivalDate == () || departDate == () || preferredType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = client -> respond(response);
-            done;
+            var result = caller->respond(response);
+            handleError(result);
+            return;
         }
 
         // Mock logic
@@ -98,6 +99,13 @@ service<http:Service> carRentalService bind carEP {
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-        _ = client -> respond(response);
+        var result = caller->respond(response);
+        handleError(result);
+    }
+}
+
+function handleError(error? result) {
+    if (result is error) {
+        log:printError(result.reason(), err = result);
     }
 }
