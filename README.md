@@ -137,7 +137,8 @@ service travelAgencyService on travelAgencyEP {
 
         // If all three response positive status, send a successful message to the user
         outResponse.setJsonPayload({"Message":"Congrats! Your journey is ready!"});
-        _ = caller->respond(outResponse);
+        var result = caller->respond(outResponse);
+        handleError(result);
     }
 }
 ```
@@ -154,7 +155,8 @@ if (payload is json) {
     // NOT a valid JSON payload
     outResponse.statusCode = 400;
     outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-    _ = caller->respond(outResponse);
+    var result = caller->respond(outResponse);
+    handleError(result);
     return;
 }
 
@@ -171,7 +173,8 @@ if (outReqPayload.Name == () || outReqPayload.ArrivalDate == () ||
     hotelPreference == () || carPreference == ()) {
     outResponse.statusCode = 400;
     outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-    _ = caller->respond(outResponse);
+    var result = caller->respond(outResponse);
+    handleError(result);
     return;
 }
 ```
@@ -197,7 +200,8 @@ string airlineStatus = airlineResPayload.Status.toString();
 if (airlineStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
             "Provide a valid 'Preference' for 'Airline' and try again"});
-    _ = caller->respond(outResponse);
+    var result = caller->respond(outResponse);
+    handleError(result);
     return;
 }
 ```
@@ -224,7 +228,8 @@ string hotelStatus = hotelResPayload.Status.toString();
 if (hotelStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
             "Provide a valid 'Preference' for 'Accommodation' and try again"});
-    _ = caller->respond(outResponse);
+    var result = caller->respond(outResponse);
+    handleError(result);
     return;
 }
 ```
@@ -249,7 +254,8 @@ string carRentalStatus = carResPayload.Status.toString();
 if (carRentalStatus.equalsIgnoreCase("Failed")) {
     outResponse.setJsonPayload({"Message":"Failed to rent car! " +
             "Provide a valid 'Preference' for 'Car' and try again"});
-    _ = caller->respond(outResponse);
+    var result = caller->respond(outResponse);
+    handleError(result);
     return;
 }
 ```
@@ -427,7 +433,7 @@ endpoint http:Listener travelAgencyEP {
 // http:Client endpoint definitions to communicate with other services
 
 @http:ServiceConfig {basePath:"/travel"}
-service<http:Service> travelAgencyService bind travelAgencyEP {    
+service travelAgencyService on travelAgencyEP {    
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name that will be created as part of building this service.

@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/log;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
@@ -70,7 +71,8 @@ service airlineReservationService on airlineEP {
             // NOT a valid JSON payload
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            _ = caller->respond(response);
+            var result = caller->respond(response);
+            handleError(result);
             return;
         }
 
@@ -83,7 +85,8 @@ service airlineReservationService on airlineEP {
         if (name == () || arrivalDate == () || departDate == () || preferredClass == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller->respond(response);
+            var result = caller->respond(response);
+            handleError(result);
             return;
         }
 
@@ -99,6 +102,13 @@ service airlineReservationService on airlineEP {
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-        _ = caller->respond(response);
+        var result = caller->respond(response);
+        handleError(result);
+    }
+}
+
+function handleError(error? result) {
+    if (result is error) {
+        log:printError(result.reason(), err = result);
     }
 }

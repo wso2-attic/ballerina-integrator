@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/log;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
@@ -68,7 +69,8 @@ service carRentalService on carEP {
             // NOT a valid JSON payload
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            _ = caller->respond(response);
+            var result = caller->respond(response);
+            handleError(result);
             return;
         }
 
@@ -81,7 +83,8 @@ service carRentalService on carEP {
         if (name == () || arrivalDate == () || departDate == () || preferredType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller->respond(response);
+            var result = caller->respond(response);
+            handleError(result);
             return;
         }
 
@@ -96,6 +99,13 @@ service carRentalService on carEP {
             response.setJsonPayload({"Status":"Failed"});
         }
         // Send the response
-        _ = caller->respond(response);
+        var result = caller->respond(response);
+        handleError(result);
+    }
+}
+
+function handleError(error? result) {
+    if (result is error) {
+        log:printError(result.reason(), err = result);
     }
 }
