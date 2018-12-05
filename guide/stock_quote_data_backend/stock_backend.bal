@@ -1,15 +1,14 @@
 import ballerina/http;
-import ballerina/io;
 import ballerina/runtime;
 
 # Attributes associated with the service endpoint are defined here.
-endpoint http:Listener listener {
-    port:9095
-};
+listener http:Listener httpListener = new(9095);
 
 # By default Ballerina assumes that the service is to be exposed via HTTP/1.1.
-@http:ServiceConfig {basePath:"/nasdaq/quote"}
-service<http:Service> StockDataService bind listener {
+@http:ServiceConfig {
+    basePath:"/nasdaq/quote"
+}
+service StockDataService on httpListener {
 
     # Resource to handle GET requests for GOOG stock quote.
     #
@@ -18,7 +17,7 @@ service<http:Service> StockDataService bind listener {
     @http:ResourceConfig {
         path:"/GOOG", methods:["GET"]
     }
-    googleStockQuote(endpoint caller, http:Request request) {
+    resource function googleStockQuote(http:Caller caller, http:Request request) {
         http:Response response = new;
         string googQuote = "GOOG, Alphabet Inc., 1013.41";
         response.setTextPayload(googQuote);
@@ -32,7 +31,7 @@ service<http:Service> StockDataService bind listener {
     @http:ResourceConfig {
         path:"/APPL", methods:["GET"]
     }
-    appleStockQuote(endpoint caller, http:Request request) {
+    resource function appleStockQuote(http:Caller caller, http:Request request) {
         http:Response response = new;
         string applQuote = "APPL, Apple Inc., 165.22";
         response.setTextPayload(applQuote);
@@ -46,7 +45,7 @@ service<http:Service> StockDataService bind listener {
     @http:ResourceConfig {
         path:"/MSFT", methods:["GET"]
     }
-    msftStockQuote(endpoint caller, http:Request request) {
+    resource function msftStockQuote(http:Caller caller, http:Request request) {
         http:Response response = new;
         string msftQuote = "MSFT, Microsoft Corporation, 95.35";
         response.setTextPayload(msftQuote);

@@ -94,29 +94,27 @@ asynchronous-invocation
 
   `future <http:Response|error> responseFuture = start nasdaqServiceEP -> get("/nasdaq/quote/MSFT");`
 
-- Finally, the service appends all three responses and returns the stock quote summary to the client. To get the results from an asynchronous call, the `await` keyword needs to be used. `await` blocks invocations until the previously started asynchronous invocations are completed.
+- Finally, the service appends all three responses and returns the stock quote summary to the client. To get the results from an asynchronous call, the `wait` keyword needs to be used. `wait` blocks invocations until the previously started asynchronous invocations are completed.
 The following statement receives the response from the future type.
 
-  ` var response1 = check await f1;`
+  ` var response1 = wait f1;`
 
 ##### async_service.bal
 ```ballerina
 import ballerina/http;
-import ballerina/io;
+import ballerina/log;
 import ballerina/runtime;
 
-# Attributes associated with the service endpoint are defined here.
-endpoint http:Listener asyncServiceEP {
-    port: 9090
-};
+# Attributes associated with the service endpoint is defined here.
+listener http:Listener asyncServiceEP = new(9090);
 
-# This service is to be exposed via HTTP/1.1.
+# Service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
     basePath: "/quote-summary"
 }
-service<http:Service> AsyncInvoker bind asyncServiceEP {
+service AsyncInvoker on asyncServiceEP {
 
-    # The resource for the GET requests of the quote service.
+    # Resource for the GET requests of quote service.
     #
     # + caller - Represents the remote client's endpoint
     # + req - Represents the client request
@@ -124,92 +122,94 @@ service<http:Service> AsyncInvoker bind asyncServiceEP {
         methods: ["GET"],
         path: "/"
     }
-    getQuote(endpoint caller, http:Request req) {
-        // The endpoint for the Stock Quote Backend service.
-        endpoint http:Client nasdaqServiceEP {
-            url: "http://localhost:9095"
-        };
+    resource function getQuote(http:Caller caller, http:Request req) {
+        // Endpoint for the stock quote backend service
+        http:Client nasdaqServiceEP = new("http://localhost:9095");
         http:Response finalResponse = new;
-        string responseStr;
-        // This initializes empty json to add results from the backend call.
-        json  responseJson = {};
+        string responseStr = "";
 
-        io:println(" >> Invoking services asynchrnounsly...");
+        log:printInfo(" >> Invoking services asynchrnounsly...");
 
         // 'start' allows you to invoke a functions  asynchronously. Following three
         // remote invocation returns without waiting for response.
 
-        // This calls the backend to get the stock quote for GOOG asynchronously.
-        future <http:Response|error> f1 = start nasdaqServiceEP
-        -> get("/nasdaq/quote/GOOG");
+        // Calling the backend to get the stock quote for GOOG asynchronously
+        future<http:Response|error> f1 = start nasdaqServiceEP->get("/nasdaq/quote/GOOG");
 
-        io:println(" >> Invocation completed for GOOG stock quote! Proceed without
+        log:printInfo(" >> Invocation completed for GOOG stock quote! Proceed without
         blocking for a response.");
 
-        // This calls the backend to get the stock quote for APPL asynchronously.
+        // Calling the backend to get the stock quote for APPL asynchronously
         future <http:Response|error> f2 = start nasdaqServiceEP
         -> get("/nasdaq/quote/APPL");
 
-        io:println(" >> Invocation completed for APPL stock quote! Proceed without
+        log:printInfo(" >> Invocation completed for APPL stock quote! Proceed without
         blocking for a response.");
 
-        // This calls the backend to get the stock quote for MSFT asynchronously.
+        // Calling the backend to get the stock quote for MSFT asynchronously
         future <http:Response|error> f3 = start nasdaqServiceEP
         -> get("/nasdaq/quote/MSFT");
 
-        io:println(" >> Invocation completed for MSFT stock quote! Proceed without
+        log:printInfo(" >> Invocation completed for MSFT stock quote! Proceed without
         blocking for a response.");
 
-        // The ‘await` keyword blocks until the previously started async function returns.
-        // Append the results from all the responses of the stock data backend.
-        var response1 = await f1;
-        // Use `match` to check whether the responses are available.
-        // If a response is not available, an error is generated.
-        match response1 {
-            http:Response resp => {
+        // Initialize empty json to add results from backed call
+        json responseJson = ();
 
-                responseStr = check resp.getTextPayload();
-                // Add the response from the `/GOOG` endpoint to the `responseJson` file.
-
-                responseJson["GOOG"] = responseStr;
+        // ‘wait` blocks until the previously started async function returns.
+        // Append the results from all the responses of stock data backend
+        var response1 = wait f1;
+        if (response1 is http:Response) {
+            var payload = response1.getTextPayload();
+            if (payload is string) {
+                responseStr = payload;
+            } else {
+                log:printError("Failed to retrive the payload");
             }
-            error err => {
-                io:println(err.message);
-                responseJson["GOOG"] = err.message;
-            }
+            // Add the response from /GOOG endpoint to responseJson file
+            responseJson["GOOG"] = responseStr;
+        } else {
+            string errorMsg = <string>response1.detail().message;
+            log:printError(errorMsg);
+            responseJson["GOOG"] = errorMsg;
         }
 
-        var response2 = await f2;
-        match response2 {
-            http:Response resp => {
-
-                responseStr = check resp.getTextPayload();
-                // Add the response from `/APPL` endpoint to `responseJson` file.
-                responseJson["APPL"] = responseStr;
+        var response2 = wait f2;
+        if (response2 is http:Response) {
+            var payload = response2.getTextPayload();
+            if (payload is string) {
+                responseStr = payload;
+            } else {
+                log:printError("Failed to retrive the payload");
             }
-            error err => {
-                io:println(err.message);
-                responseJson["APPL"] = err.message;
-            }
+            // Add the response from /APPL endpoint to responseJson file
+            responseJson["APPL"] = responseStr;
+        } else {
+            string errorMsg = <string>response2.detail().message;
+            log:printError(errorMsg);
+            responseJson["APPL"] = errorMsg;
         }
 
-        var response3 = await f3;
-        match response3 {
-            http:Response resp => {
-                responseStr = check resp.getTextPayload();
-                // Add the response from the `/MSFT` endpoint to the `responseJson` file.
-                responseJson["MSFT"] = responseStr;
+        var response3 = wait f3;
+        if (response3 is http:Response) {
+            var payload = response3.getTextPayload();
+            if (payload is string) {
+                responseStr = payload;
+            } else {
+                log:printError("Failed to retrive the payload");
+            }
+            // Add the response from /MSFT endpoint to responseJson file
+            responseJson["MSFT"] = responseStr;
 
-            }
-            error err => {
-                io:println(err.message);
-                responseJson["MSFT"] = err.message;
-            }
+        } else {
+            string errorMsg = <string>response3.detail().message;
+            log:printError(errorMsg);
+            responseJson["MSFT"] = errorMsg;
         }
 
-        // Send the response back to the client.
+        // Send the response back to the client
         finalResponse.setJsonPayload(untaint responseJson);
-        io:println(" >> Response : " + responseJson.toString());
+        log:printInfo(" >> Response : " + responseJson.toString());
         _ = caller -> respond(finalResponse);
     }
 }
@@ -222,7 +222,7 @@ You can use any third-party remote service for the remote backend service. For e
  - resource path `/APPL` with response `"APPL, Apple Inc., 165.22"` 
  - resource path `/MSFT` with response `"MSFT, Microsoft Corporation, 95.35"` 
 
-NOTE: You can find the complete implementaion of the stock_quote_data_backend [here](stock_quote_data_backend/stock_backend.bal)
+NOTE: You can find the complete implementation of the stock_quote_data_backend [here](stock_quote_data_backend/stock_backend.bal)
 
 
 ## Testing 
@@ -259,18 +259,18 @@ Output :
 
 **Console output for stock_quote_summary_service(with asynchronous calls)**
 ```
- >> Invoking services asynchrnounsly...
- >> Invocation completed for GOOG stock quote! Proceed without
+ INFO  [ballerina/log] -  >> Invoking services asynchrnounsly...
+ INFO  [ballerina/log] -  >> Invocation completed for GOOG stock quote! Proceed without
         blocking for a response.
- >> Invocation completed for APPL stock quote! Proceed without
+ INFO  [ballerina/log] -  >> Invocation completed for APPL stock quote! Proceed without
         blocking for a response.
- >> Invocation completed for MSFT stock quote! Proceed without
+ INFO  [ballerina/log] -  >> Invocation completed for MSFT stock quote! Proceed without
         blocking for a response.
- >> Response : {
+ INFO  [ballerina/log] -  >> Response : {
     "GOOG": "GOOG, Alphabet Inc., 1013.41",
     "APPL": "APPL, Apple Inc., 165.22",
     "MSFT": "MSFT, Microsoft Corporation, 95.35"
-}
+    }
 ```
 
 ### Writing unit tests 
@@ -321,14 +321,14 @@ $ ballerina run target/stock_quote_data_backend.balx
 - Once the service is successfully executed, the following output is displayed. 
 ```
 $ ballerina run target/stock_quote_summary_service.balx
-ballerina: initiating service(s) in 'async_service.bal'
-ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+Initiating service(s) in 'target/stock_quote_summary_service.balx'
+[ballerina/http] started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ```
 $ ballerina run target/stock_quote_data_backend.balx
-ballerina: initiating service(s) in 'stock_backend.bal'
-ballerina: started HTTP/WS endpoint 0.0.0.0:9095
+Initiating service(s) in 'target/stock_quote_data_backend.balx'
+[ballerina/http] started HTTP/WS endpoint 0.0.0.0:9095
 
 ```
 
@@ -341,7 +341,7 @@ You can run the service that we developed above as a Docker container. As Baller
 ##### async_service.bal
 ```ballerina
 import ballerina/http;
-import ballerina/io;
+import ballerina/log;
 import ballerina/runtime;
 import ballerinax/docker;
 
@@ -352,15 +352,13 @@ import ballerinax/docker;
 }
 
 @docker:Expose{}
-endpoint http:Listener listener {
-    port:9090
-};
+listener http:Listener asyncServiceEP = new (9090);
 
 # Service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
     basePath: "/quote-summary"
 }
-service<http:Service> AsyncInvoker bind asyncServiceEP {
+service AsyncInvoker on asyncServiceEP {
 ``` 
 
 - `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port.
@@ -398,7 +396,7 @@ curl http://localhost:9090/quote-summary
 
 ```ballerina
 import ballerina/http;
-import ballerina/io;
+import ballerina/log;
 import ballerina/runtime;
 import ballerinax/kubernetes;
 
@@ -418,15 +416,13 @@ import ballerinax/kubernetes;
     name:"ballerina-guides-asynchronous-invocation"
 }
 
-endpoint http:Listener listener {
-    port:9090
-};
+listener http:Listener asyncServiceEP = new (9090);
 
 # Service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
     basePath: "/quote-summary"
 }
-service<http:Service> AsyncInvoker bind asyncServiceEP {
+service AsyncInvoker on asyncServiceEP {
 ``` 
 
 - Here we have used `@kubernetes:Deployment` to specify the Docker image name which will be created as part of building this service.
