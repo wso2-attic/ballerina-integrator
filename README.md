@@ -173,7 +173,6 @@ service auctionService on auctionEP {
                outReq.setJsonPayload(inReqPayload);
                // Send a POST request to 'Bidder 1' and get the results.
                var respWorkerBidder1 = biddersEP1->post("/bidder1", outReq);
-               // Reply to the join block from this worker - Send the response from 'Bidder1'.
                return respWorkerBidder1;
            }
            // Worker to communicate with 'Bidder 2'.
@@ -183,7 +182,6 @@ service auctionService on auctionEP {
                outReq.setJsonPayload(inReqPayload);
                // Send a POST request to 'Bidder 2' and get the results.
                var respWorkerBidder2 = biddersEP1->post("/bidder2", outReq);
-               // Reply to the join block from this worker - Send the response from 'Bidder 2'.
                return respWorkerBidder2;
            }
 
@@ -194,7 +192,6 @@ service auctionService on auctionEP {
                outReq.setJsonPayload(inReqPayload);
                // Send a POST request to 'Bidder 3' and get the results.
                var respWorkerBidder3 = biddersEP1->post("/bidder3", outReq);
-               // Reply to the join block from this worker - Send the response from 'Bidder 3'.
                return respWorkerBidder3;
            }
        }
@@ -297,7 +294,6 @@ Let's now look at the code segment that is responsible for communicating with al
             outReq.setJsonPayload(inReqPayload);
             // Send a POST request to 'Bidder 1' and get the results
             var respWorkerBidder1 = biddersEP1->post("/bidder1", outReq);
-            // Reply to the join block from this worker - Send the response from 'Bidder1'
             return respWorkerBidder1;
         }
         // Worker to communicate with 'Bidder 2'
@@ -307,7 +303,6 @@ Let's now look at the code segment that is responsible for communicating with al
             outReq.setJsonPayload(inReqPayload);
             // Send a POST request to 'Bidder 2' and get the results
             var respWorkerBidder2 = biddersEP1->post("/bidder2", outReq);
-            // Reply to the join block from this worker - Send the response from 'Bidder 2'
             return respWorkerBidder2;
         }
 
@@ -318,7 +313,6 @@ Let's now look at the code segment that is responsible for communicating with al
             outReq.setJsonPayload(inReqPayload);
             // Send a POST request to 'Bidder 3' and get the results
             var respWorkerBidder3 = biddersEP1->post("/bidder3", outReq);
-            // Reply to the join block from this worker - Send the response from 'Bidder 3'
             return respWorkerBidder3;
         }
     }

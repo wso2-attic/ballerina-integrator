@@ -85,7 +85,6 @@ service auctionService on auctionEP {
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 1' and get the results.
                 var respWorkerBidder1 = biddersEP1->post("/bidder1", outReq);
-                // Reply to the join block from this worker - Send the response from 'Bidder1'.
                 return respWorkerBidder1;
             }
             // Worker to communicate with 'Bidder 2'.
@@ -95,18 +94,16 @@ service auctionService on auctionEP {
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 2' and get the results.
                 var respWorkerBidder2 = biddersEP1->post("/bidder2", outReq);
-                // Reply to the join block from this worker - Send the response from 'Bidder 2'.
                 return respWorkerBidder2;
             }
 
             // Worker to communicate with 'Bidder 3'.
             worker bidder3Worker returns http:Response|error {
                 http:Request outReq = new;
-                // Set out request payload.
+                // Set the out request payload.
                 outReq.setJsonPayload(inReqPayload);
                 // Send a POST request to 'Bidder 3' and get the results.
                 var respWorkerBidder3 = biddersEP1->post("/bidder3", outReq);
-                // Reply to the join block from this worker - Send the response from 'Bidder 3'.
                 return respWorkerBidder3;
             }
         }
@@ -188,7 +185,7 @@ service auctionService on auctionEP {
                 jsonHighestBid = untaint jsonResponseBidder3;
             }
         }
-        // Send final response to client.
+        // Send the final response to client.
         outResponse.setJsonPayload(jsonHighestBid);
         var result = caller->respond(outResponse);
         handleError(result);
