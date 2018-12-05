@@ -28,14 +28,14 @@ import ballerina/log;
 //    name:"ballerina-guides-bidders-endpoints"
 //}
 
-//Service endpoint
+// Service endpoint.
 listener http:Listener biddersEP = new(9091);
 
-// Bidders endpoints service
+// Bidders endpoints service.
 @http:ServiceConfig { basePath: "/bidders" }
 service bidService on biddersEP {
 
-    // Resource 'bidder1', which checks the item condition and set 'bidder 1' bid value
+    // Resource 'bidder1', which checks the item condition and set 'bidder 1' bid value.
     @http:ResourceConfig { methods: ["POST"], path: "/bidder1", consumes: ["application/json"],
         produces: ["application/json"] }
     resource function bidder1(http:Caller caller, http:Request inRequest) {
@@ -44,10 +44,10 @@ service bidService on biddersEP {
         int bid = 0;
         var payload = inRequest.getJsonPayload();
         if (payload is json) {
-            // Valid JSON payload
+            // Valid JSON payload.
             inReqPayload = payload;
         } else {
-            // NOT a valid JSON payload
+            // NOT a valid JSON payload.
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
             var result = caller->respond(outResponse);
@@ -58,7 +58,7 @@ service bidService on biddersEP {
         string Condition = inReqPayload.Condition.toString();
         json Item = inReqPayload.Item;
 
-        // If payload parsing fails, send a "Bad Request" message as the response
+        // If payload parsing fails, send a "Bad Request" message as the response.
         if (Item == null || Condition == "") {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
@@ -67,7 +67,7 @@ service bidService on biddersEP {
             return;
         }
 
-        //Check the item condition and set the appropriate bid value
+        // Check the item condition and set the appropriate bid value.
         if (Condition == "good") {
             bid = 350000;
         }
@@ -81,15 +81,15 @@ service bidService on biddersEP {
             "Bid": bid
         };
 
-        // Response payload
+        // Response payload.
         outResponse.setJsonPayload(BidDetails);
-        // Send the response to the caller
+        // Send the response to the caller.
         var result = caller->respond(outResponse);
         handleError(result);
         return;
     }
 
-    // Resource 'bidder2', which checks the item condition and set 'bidder 2' bid value
+    // Resource 'bidder2', which checks the item condition and set 'bidder 2' bid value.
     @http:ResourceConfig { methods: ["POST"], path: "/bidder2", consumes: ["application/json"],
         produces: ["application/json"] }
     resource function bidder2(http:Caller caller, http:Request inRequest) {
@@ -98,11 +98,11 @@ service bidService on biddersEP {
         int bid = 0;
         var payload = inRequest.getJsonPayload();
         if (payload is json) {
-            // Valid JSON payload
+            // Valid JSON payload.
             inReqPayload = payload;
         }
         else {
-            // NOT a valid JSON payload
+            // NOT a valid JSON payload.
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
             var result = caller->respond(outResponse);
@@ -113,7 +113,7 @@ service bidService on biddersEP {
         string Condition = inReqPayload.Condition.toString();
         json Item = inReqPayload.Item;
 
-        // If payload parsing fails, send a "Bad Request" message as the response
+        // If payload parsing fails, send a "Bad Request" message as the response.
         if (Item == null || Condition == "") {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
@@ -121,7 +121,7 @@ service bidService on biddersEP {
             return;
         }
 
-        //Check the item condition and set the appropriate bid value
+        //Check the item condition and set the appropriate bid value.
         if (Condition == "good") {
             bid = 470000;
         }
@@ -135,15 +135,15 @@ service bidService on biddersEP {
             "Bid": bid
         };
 
-        // Response payload
+        // Response payload.
         outResponse.setJsonPayload(BidDetails);
-        // Send the response to the caller
+        // Send the response to the caller.
         var result = caller->respond(outResponse);
         handleError(result);
         return;
     }
 
-    // Resource 'bidder3', which checks the item condition and set 'bidder 3' bid value
+    // Resource 'bidder3', which checks the item condition and set 'bidder 3' bid value.
     @http:ResourceConfig { methods: ["POST"], path: "/bidder3", consumes: ["application/json"],
         produces: ["application/json"] }
     resource function bidder3(http:Caller caller, http:Request inRequest) {
@@ -152,10 +152,10 @@ service bidService on biddersEP {
         int bid = 0;
         var payload = inRequest.getJsonPayload();
         if(payload is json) {
-            // Valid JSON payload
+            // Valid JSON payload.
             inReqPayload = payload;
         } else {
-            // NOT a valid JSON payload
+            // NOT a valid JSON payload.
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
             var result = caller->respond(outResponse);
@@ -166,7 +166,7 @@ service bidService on biddersEP {
         string Condition = inReqPayload.Condition.toString();
         json Item = inReqPayload.Item;
 
-        // If payload parsing fails, send a "Bad Request" message as the response
+        // If payload parsing fails, send a "Bad Request" message as the response.
         if (Item == null || Condition == "") {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
@@ -175,7 +175,7 @@ service bidService on biddersEP {
             return;
         }
 
-        //Check the item condition and set the appropriate bid value
+        //Check the item condition and set the appropriate bid value.
         if (Condition == "good") {
             bid = 440000;
         }
@@ -189,9 +189,9 @@ service bidService on biddersEP {
             "Bid": bid
         };
 
-        // Response payload
+        // Response payload.
         outResponse.setJsonPayload(BidDetails);
-        // Send the response to the caller
+        // Send the response to the caller.
         var result = caller->respond(outResponse);
         handleError(result);
         return;

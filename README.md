@@ -119,14 +119,14 @@ import ballerina/io;
 // Service endpoint
 listener http:Listener auctionEP = new(9090);
 
-//Client endpoint to communicate with bidders
+// Client endpoint to communicate with bidders.
 http:Client biddersEP1 = new("http://localhost:9091/bidders");
 
-// Auction service to get highest bid from bidders
+// Auction service to get highest bid from bidders.
 @http:ServiceConfig { basePath: "/auction" }
 service auctionService on auctionEP {
 
-    //Resource to get highest bid value
+    // Resource to get highest bid value.
    @http:ResourceConfig { 
        methods: ["POST"], 
        consumes: ["application/json"], 
@@ -137,10 +137,10 @@ service auctionService on auctionEP {
        json inReqPayload;
        var payload = inRequest.getJsonPayload();
        if (payload is json) {
-           // Valid JSON payload
+           // Valid JSON payload.
            inReqPayload = untaint payload;
        } else {
-           // NOT a valid JSON payload
+           // NOT a valid JSON payload.
            outResponse.statusCode = 400;
            outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
            var result = caller->respond(outResponse);
@@ -150,7 +150,7 @@ service auctionService on auctionEP {
        json Item = inReqPayload.Item;
        json Condition = inReqPayload.Condition;
 
-       // If payload parsing fails, send a "Bad Request" message as the response
+       // If payload parsing fails, send a "Bad Request" message as the response.
        if (Item == null || Condition == null) {
            outResponse.statusCode = 400;
            outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
@@ -164,47 +164,47 @@ service auctionService on auctionEP {
        json jsonHighestBid = {};
 
        fork {
-           // Worker to communicate with 'Bidder 1'
+           // Worker to communicate with 'Bidder 1'.
            worker bidder1Worker returns http:Response|error {
                http:Request outReq = new;
                // Set out request payload
                outReq.setJsonPayload(inReqPayload);
-               // Send a POST request to 'Bidder 1' and get the results
+               // Send a POST request to 'Bidder 1' and get the results.
                var respWorkerBidder1 = biddersEP1->post("/bidder1", outReq);
-               // Reply to the join block from this worker - Send the response from 'Bidder1'
+               // Reply to the join block from this worker - Send the response from 'Bidder1'.
                return respWorkerBidder1;
            }
-           // Worker to communicate with 'Bidder 2'
+           // Worker to communicate with 'Bidder 2'.
            worker bidder2Worker returns http:Response|error {
                http:Request outReq = new;
-               // Set out request payload
+               // Set out request payload.
                outReq.setJsonPayload(inReqPayload);
-               // Send a POST request to 'Bidder 2' and get the results
+               // Send a POST request to 'Bidder 2' and get the results.
                var respWorkerBidder2 = biddersEP1->post("/bidder2", outReq);
-               // Reply to the join block from this worker - Send the response from 'Bidder 2'
+               // Reply to the join block from this worker - Send the response from 'Bidder 2'.
                return respWorkerBidder2;
            }
 
-           // Worker to communicate with 'Bidder 3'
+           // Worker to communicate with 'Bidder 3'.
            worker bidder3Worker returns http:Response|error {
                http:Request outReq = new;
                // Set out request payload
                outReq.setJsonPayload(inReqPayload);
-               // Send a POST request to 'Bidder 3' and get the results
+               // Send a POST request to 'Bidder 3' and get the results.
                var respWorkerBidder3 = biddersEP1->post("/bidder3", outReq);
-               // Reply to the join block from this worker - Send the response from 'Bidder 3'
+               // Reply to the join block from this worker - Send the response from 'Bidder 3'.
                return respWorkerBidder3;
            }
        }
 
-       // Wait until the responses received from all the workers running
+       // Wait until the responses received from all the workers running.
        map<http:Response|error> biddersResponses = wait {bidder1Worker, bidder2Worker, bidder3Worker};
 
        int bidder1Bid = 0;
        int bidder2Bid = 0;
        int bidder3Bid = 0;
 
-       // Get the bid value response from bidder 1
+       // Get the bid value response from bidder 1.
        var resBidder1 = biddersResponses["bidder1Worker"];
        if (resBidder1 is error) {
            panic resBidder1;
@@ -223,7 +223,7 @@ service auctionService on auctionEP {
            }
        }
 
-       // Get the bid value response from bidder 2
+       // Get the bid value response from bidder 2.
        var resBidder2 = biddersResponses["bidder2Worker"];
        if (resBidder2 is error) {
            panic(resBidder2);
@@ -242,7 +242,7 @@ service auctionService on auctionEP {
            }
        }
 
-       // Get the bid value response from bidder 3
+       // Get the bid value response from bidder 3.
        var resBidder3 = biddersResponses["bidder3Worker"];
        if (resBidder3 is error) {
            panic(resBidder3);
@@ -261,7 +261,7 @@ service auctionService on auctionEP {
            }
        }
 
-       // Select the bidder with the highest bid
+       // Select the bidder with the highest bid.
        if (bidder1Bid > bidder2Bid) {
            if (bidder1Bid > bidder3Bid) {
                jsonHighestBid = untaint jsonResponseBidder1;
@@ -274,7 +274,7 @@ service auctionService on auctionEP {
                jsonHighestBid = untaint jsonResponseBidder3;
            }
        }
-       // Send final response to client
+       // Send final response to client.
        outResponse.setJsonPayload(jsonHighestBid);
        var result = caller->respond(outResponse);
        return ();
@@ -548,10 +548,10 @@ import ballerinax/kubernetes;
     image: "ballerina.guides.io/auction_service:v1.0",
     name: "ballerina-guides-auction-service"
 }
-// Service endpoint
+// Service endpoint.
 listener http:Listener auctionEP = new(9090);
 
-//Client endpoint to communicate with bidders
+//Client endpoint to communicate with bidders.
 http:Client biddersEP1 = new("http://localhost:9091/bidders");
 
 
