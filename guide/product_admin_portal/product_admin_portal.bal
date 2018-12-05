@@ -61,7 +61,7 @@ service productAdminService on httpListener {
             }
 
             // Convert the price value to float
-            var result = float.create(newPrice.toString());
+            var result = float.convert(newPrice.toString());
             if (result is error) {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Invalid amount specified" });

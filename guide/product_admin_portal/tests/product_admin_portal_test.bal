@@ -37,7 +37,7 @@ function testProductAdminPortal () {
     // Test the 'updatePrice' resource
     // Construct a request payload
     Payload payload = { Username:"Admin", Password:"Admin", Product:"ABC", Price:100.00 };
-    json|error payloadJson = json.create(payload);
+    json|error payloadJson = json.convert(payload);
 
     if (payloadJson is error) {
         test:assertFail(msg = "Payload JSON returned error.");

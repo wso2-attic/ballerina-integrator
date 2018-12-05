@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/log;
+import ballerina/io;
 import wso2/kafka;
 import ballerina/internal;
 
@@ -38,15 +38,15 @@ service franchiseeService1 on consumer {
     // Triggered whenever a message added to the subscribed topic
     resource function onMessage(kafka:SimpleConsumer simpleConsumer, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
-        foreach entry in records {
+        foreach var entry in records {
             byte[] serializedMsg = entry.value;
             // Convert the serialized message to string message
             string msg = internal:byteArrayToString(serializedMsg, "UTF-8");
-            log:printInfo("New message received from the product admin");
+            io:println("[INFO] New message received from the product admin");
             // log the retrieved Kafka record
-            log:printInfo("Topic: " + entry.topic + "; Received Message: " + msg);
+            io:println("[INFO] Topic: " + entry.topic + "; Received Message: " + msg);
             // Acknowledgement
-            log:printInfo("Acknowledgement from Franchisee 1");
+            io:println("[INFO] Acknowledgement from Franchisee 1");
         }
     }
 }
