@@ -846,7 +846,7 @@ NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to 
 
 ```bash
    docker run -p 5601:5601 -h kibana --name kibana --link elasticsearch:elasticsearch \
-   docker.elastic.co/kibana/kibana:6.2.2     
+   docker.elastic.co/kibana/kibana:6.5.1     
 ```
 
 - Configure `logstash` to format the ballerina logs
