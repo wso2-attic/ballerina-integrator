@@ -174,7 +174,7 @@ public function withdrawMoney(int accId, int amount) returns (error|()) {
             error err = error("Error: Not enough balance");
             return err;
         }
-    } else if (balanceVal is error) {
+    } else {
         return balanceVal;
     }
     log:printInfo("Withdrawing money from account ID: " + accId);
@@ -203,24 +203,24 @@ public function transferMoney(int fromAccId, int toAccId, int amount) returns bo
             var depositRet = depositMoney(toAccId, amount);
             if (depositRet is ()) {
                 isSuccessful = true;
-            } else if (depositRet is error) {
+            } else {
                 log:printError("Error while depositing the money: " + depositRet.reason());
                 // Abort transaction if deposit fails.
                 log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " +
                     toAccId);
                 abort;
             }
-        } else if (withdrawRet is error) {
+        } else {
             log:printError("Error while withdrawing the money: " + withdrawRet.reason());
             // Abort transaction if withdrawal fails.
             log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " + toAccId);
             abort;
         }
+    } committed {
+        log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " committed");
         // If transaction successful.
         log:printInfo("Successfully transferred $" + amount + " from account ID " + fromAccId + " to account ID " +
                 toAccId);
-    } committed {
-        log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " committed");
     } aborted {
         log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " aborted");
     }

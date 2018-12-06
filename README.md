@@ -87,7 +87,7 @@ understanding.
 ##### transferMoney function
 ```ballerina
 // Function to transfer money from one account to another.
-public function transferMoney(int fromAccId, int toAccId, int amount) returns (boolean) {
+public function transferMoney(int fromAccId, int toAccId, int amount) returns boolean {
     boolean isSuccessful = false;
     log:printInfo("Initiating transaction");
     // Transaction block - Ensures the 'ACID' properties.
@@ -101,24 +101,24 @@ public function transferMoney(int fromAccId, int toAccId, int amount) returns (b
             var depositRet = depositMoney(toAccId, amount);
             if (depositRet is ()) {
                 isSuccessful = true;
-            } else if (depositRet is error) {
-                log:printError("Error while depositing the money: " + <string>depositRet.detail().message);
+            } else {
+                log:printError("Error while depositing the money: " + depositRet.reason());
                 // Abort transaction if deposit fails.
                 log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " +
                     toAccId);
                 abort;
             }
-        } else if (withdrawRet is error) {
-            log:printError("Error while withdrawing the money: " + <string>withdrawRet.detail().message);
+        } else {
+            log:printError("Error while withdrawing the money: " + withdrawRet.reason());
             // Abort transaction if withdrawal fails.
             log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " + toAccId);
             abort;
         }
+    } committed {
+        log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " committed");
         // If transaction successful.
         log:printInfo("Successfully transferred $" + amount + " from account ID " + fromAccId + " to account ID " +
                 toAccId);
-    } committed {
-        log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " committed");
     } aborted {
         log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " aborted");
     }
