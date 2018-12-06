@@ -910,7 +910,7 @@ iii) Start the `logstash` container, replace the `{SAMPLE_ROOT_DIRECTORY}` with 
 ```bash
    docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
    -v {SAMPLE_ROOT}/guide/ballerina.log:/usr/share/filebeat/ballerina.log \
-   --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
+   --link logstash:logstash docker.elastic.co/beats/filebeat:6.5.1
 ```
 
 - Access Kibana to visualize the logs using following URL
