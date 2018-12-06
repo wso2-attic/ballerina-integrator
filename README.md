@@ -186,8 +186,8 @@ service orderMgt on httpListener {
             response.statusCode = 201;
             // Set 'Location' header in the response message.
             // This can be used by the client to locate the newly added order.
-            response.setHeader("Location", "http://localhost:9090/ordermgt/order/" +
-                    orderId);
+            response.setHeader("Location", 
+                "http://localhost:9090/ordermgt/order/" + orderId);
 
             // Send response to the client.
             var result = caller->respond(response);
