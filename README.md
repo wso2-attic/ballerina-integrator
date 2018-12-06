@@ -837,7 +837,7 @@ NOTE: This will write the console log to the `ballerina.log` file in the `parall
 
 ```bash
    docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
-   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
+   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.5.1 
 ```
 
 NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
@@ -846,7 +846,7 @@ NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to 
 
 ```bash
    docker run -p 5601:5601 -h kibana --name kibana --link elasticsearch:elasticsearch \
-   docker.elastic.co/kibana/kibana:6.2.2     
+   docker.elastic.co/kibana/kibana:6.5.1     
 ```
 
 - Configure `logstash` to format the ballerina logs
@@ -888,7 +888,7 @@ iii) Start the `logstash` container, replace the `{SAMPLE_ROOT_DIRECTORY}` with 
 ```bash
    docker run -h logstash --name logstash --link elasticsearch:elasticsearch -it --rm \
    -v {SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
-   -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
+   -p 5044:5044 docker.elastic.co/logstash/logstash:6.5.1
 ```
   
  - Configure filebeat to ship the ballerina logs
@@ -910,7 +910,7 @@ iii) Start the `logstash` container, replace the `{SAMPLE_ROOT_DIRECTORY}` with 
 ```bash
    docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
    -v {SAMPLE_ROOT}/guide/ballerina.log:/usr/share/filebeat/ballerina.log \
-   --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
+   --link logstash:logstash docker.elastic.co/beats/filebeat:6.5.1
 ```
 
 - Access Kibana to visualize the logs using following URL
