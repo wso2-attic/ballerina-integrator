@@ -21,13 +21,13 @@ import ballerina/test;
 http:Client clientEP = new("http://localhost:9090/travel");
 
 // Mock airline service endpoint
-listener http:Listener airlineReservationEP = new(9091);
+listener http:Listener airlineReservationEP = new(9094);
 
 // Mock hotel service endpoint
-listener http:Listener hotelReservationEP = new(9092);
+listener http:Listener hotelReservationEP = new(9095);
 
 // Mock car service endpoint
-listener http:Listener carEP = new(9093);
+listener http:Listener carEP = new(9096);
 
 // Function to test the Travel agency service
 @test:Config

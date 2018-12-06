@@ -112,7 +112,7 @@ service travelAgencyService on travelAgencyEP {
 
         // Airline reservation
         // Call Airline reservation service and consume different resources in parallel to check different airways
-        // Fork - Join to run parallel workers and join the results
+        // fork to run parallel workers and join the results
         fork {
             // Worker to communicate with airline 'Qatar Airways'
             worker qatarWorker returns http:Response? {
@@ -223,7 +223,7 @@ service travelAgencyService on travelAgencyEP {
 
         // Hotel reservation
         // Call Hotel reservation service and consume different resources in parallel to check different hotels
-        // Fork - Join to run parallel workers and join the results
+        // fork to run parallel workers and join the results
         fork {
             // Worker to communicate with hotel 'Miramar'
             worker miramar returns http:Response? {
@@ -305,7 +305,7 @@ service travelAgencyService on travelAgencyEP {
             // Get the response and distance to the preferred location from the hotel 'Elizabeth'
             var responseElizabeth = hotelResponses["elizabeth"];
             if (responseElizabeth is http:Response) {
-                var elizabethPayload = responseMiramar.getJsonPayload();
+                var elizabethPayload = responseElizabeth.getJsonPayload();
                 if (elizabethPayload is json) {
                     elizabethJsonResponse = elizabethPayload;
                     var elizabethDistanceResult = elizabethJsonResponse.DistanceToLocation;
@@ -332,7 +332,7 @@ service travelAgencyService on travelAgencyEP {
 
         // Car rental
         // Call Car rental service and consume different resources in parallel to check different companies
-        // Fork - Join to run parallel workers and join the results
+        // Fork to run parallel workers and join the results
         fork {
             // Worker to communicate with Company 'DriveSg'
             worker driveSg returns http:Response? {
