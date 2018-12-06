@@ -18,24 +18,16 @@ import ballerina/http;
 import ballerina/test;
 
 // Client endpoint
-endpoint http:Client clientEP {
-    url: "http://localhost:9090/travel"
-};
+http:Client clientEP = new("http://localhost:9090/travel");
 
 // Mock airline service endpoint
-endpoint http:Listener airlineReservationEP {
-    port: 9091
-};
+listener http:Listener airlineReservationEP = new(9091);
 
 // Mock hotel service endpoint
-endpoint http:Listener hotelReservationEP {
-    port: 9092
-};
+listener http:Listener hotelReservationEP = new(9092);
 
 // Mock car service endpoint
-endpoint http:Listener carEP {
-    port: 9093
-};
+listener http:Listener carEP = new(9093);
 
 // Function to test the Travel agency service
 @test:Config
@@ -51,19 +43,27 @@ function testTravelAgencyService() {
     };
 
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP->post("/arrangeTour", requestPayload);
-    // Expected response code is 200
-    test:assertEquals(response.statusCode, 200, msg = "Travel agency service did not respond with 200 OK signal!");
-    // Check whether the response is as expected
-    // Flight details
-    string expectedFlight = "{\"Airline\":\"Emirates\", \"ArrivalDate\":\"12-03-2018\", \"ReturnDate\":\"13-04-2018\","
+    var response = clientEP->post("/arrangeTour", requestPayload);
+    if(response is http:Response) {
+        // Expected response code is 200
+        test:assertEquals(response.statusCode, 200, msg = "Travel agency service did not respond with 200 OK signal!");
+        // Check whether the response is as expected
+        // Flight details
+        string expectedFlight = "{\"Airline\":\"Emirates\", \"ArrivalDate\":\"12-03-2018\", \"ReturnDate\":\"13-04-2018\","
         + " \"From\":\"Colombo\", \"To\":\"Changi\", \"Price\":273}";
-    json resPayload = check response.getJsonPayload();
-    test:assertEquals(resPayload.Flight.toString(), expectedFlight, msg = "Response mismatch!");
-    // Hotel details
-    string expectedHotel = "{\"HotelName\":\"Elizabeth\", \"FromDate\":\"12-03-2018\"," +
-        " \"ToDate\":\"13-04-2018\", \"DistanceToLocation\":2}";
-    test:assertEquals(resPayload.Hotel.toString(), expectedHotel, msg = "Response mismatch!");
+        var resPayload = response.getJsonPayload();
+        if (resPayload is json) {
+            test:assertEquals(resPayload.Flight.toString(), expectedFlight, msg = "Response mismatch!");
+            // Hotel details
+            string expectedHotel = "{\"HotelName\":\"Elizabeth\", \"FromDate\":\"12-03-2018\"," +
+            " \"ToDate\":\"13-04-2018\", \"DistanceToLocation\":2}";
+            test:assertEquals(resPayload.Hotel.toString(), expectedHotel, msg = "Response mismatch!");
+        }   else {
+            test:assertFail(msg = "Payload from the post request to arrangeTour is invalid");
+        }
+    } else {
+        test:assertFail(msg = "Response from the post request to arrangeTour is invalid");
+    }
 }
 
 // Travel agency service depends on three external services.
@@ -72,90 +72,90 @@ function testTravelAgencyService() {
 
 // Airline reservation mock service
 @http:ServiceConfig { basePath: "/airline" }
-service<http:Service> airlineReservationService bind airlineReservationEP {
+service airlineReservationService on airlineReservationEP {
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/qatarAirways" }
-    flightConcord (endpoint client, http:Request request) {
+    resource function flightConcord (http:Caller caller, http:Request request) {
         http:Response response;
-        _ = client -> respond({"Airline":"Qatar Airways", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
+        _ = caller -> respond({"Airline":"Qatar Airways", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
                 "From":"Colombo", "To":"Changi", "Price":278});
     }
 
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/asiana" }
-    flightAsiana (endpoint client, http:Request request) {
+    resource function flightAsiana (http:Caller caller, http:Request request) {
         http:Response response;
-        _ = client -> respond({"Airline":"Asiana", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
+        _ = caller -> respond({"Airline":"Asiana", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
                 "From":"Colombo", "To":"Changi", "Price":275});
     }
 
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/emirates" }
-    flightEmirates (endpoint client, http:Request request) {
+    resource function flightEmirates (http:Caller caller, http:Request request) {
         http:Response response;
-        _ = client -> respond({"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
+        _ = caller -> respond({"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
                 "From":"Colombo", "To":"Changi", "Price":273});
     }
 }
 
 // Hotel reservation mock service
 @http:ServiceConfig { basePath: "/hotel" }
-service<http:Service> hotelReservationService bind hotelReservationEP {
+service hotelReservationService on hotelReservationEP {
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/miramar" }
-    miramar(endpoint client, http:Request request) {
+    resource function miramar(http:Caller caller, http:Request request) {
         http:Response response;
         response.setJsonPayload({"HotelName":"Miramar", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
                 "DistanceToLocation":6});
-        _ = client -> respond(response);
+        _ = caller -> respond(response);
     }
 
    // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/aqueen" }
-    aqueen(endpoint client, http:Request request) {
+    resource function aqueen(http:Caller caller, http:Request request) {
         http:Response response;
         response.setJsonPayload({"HotelName":"Aqueen", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
                 "DistanceToLocation":4});
-        _ = client -> respond(response);
+        _ = caller -> respond(response);
     }
 
    // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/elizabeth" }
-    elizabeth(endpoint client, http:Request request) {
+    resource function elizabeth(http:Caller caller, http:Request request) {
         http:Response response;
         response.setJsonPayload({"HotelName":"Elizabeth", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
                 "DistanceToLocation":2});
-        _ = client -> respond(response);
+        _ = caller -> respond(response);
     }
 }
 
 // Car rental mock service
 @http:ServiceConfig { basePath: "/car" }
-service<http:Service> carRentalService bind carEP {
+service carRentalService on carEP {
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/driveSg" }
-    driveSg(endpoint client, http:Request request) {
+    resource function driveSg(http:Caller caller, http:Request request) {
         http:Response response;
         response.setJsonPayload({"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018",
                 "ToDate":"13-04-2018", "PricePerDay":5});
-        _ = client -> respond(response);
+        _ = caller -> respond(response);
     }
 
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/dreamCar" }
-    dreamCar(endpoint client, http:Request request) {
+    resource function dreamCar(http:Caller caller, http:Request request) {
         http:Response response;
         response.setJsonPayload({"Company":"DreamCar", "VehicleType":"Car", "FromDate":"12-03-2018",
                 "ToDate":"13-04-2018", "PricePerDay":6});
-        _ = client -> respond(response);
+        _ = caller -> respond(response);
     }
 
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/sixt" }
-    sixt(endpoint client, http:Request request) {
+    resource function sixt(http:Caller caller, http:Request request) {
         http:Response response;
         response.setJsonPayload({"Company":"Sixt", "VehicleType":"Car", "FromDate":"12-03-2018",
                 "ToDate":"13-04-2018", "PricePerDay":7});
-        _ = client -> respond(response);
+        _ = caller -> respond(response);
     }
 }

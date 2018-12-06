@@ -25,66 +25,92 @@ json requestPayload = {
 };
 
 // Client endpoint
-endpoint http:Client clientEP {
-    url:"http://localhost:9092/hotel"
-};
+http:Client clientEP = new("http://localhost:9092/hotel");
 
 // Function to test resource 'miramar'
 @test:Config
 function testResourceMiramar () {
     // Initialize the empty http requests and responses
-    http:Request req;
+    http:Request req = new;
 
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/miramar", req);
-    // Expected response code is 200
-    test:assertEquals(response.statusCode, 200,
+    var response = clientEP -> post("/miramar", req);
+    if (response is http:Response) {
+        // Expected response code is 200
+        test:assertEquals(response.statusCode, 200,
         msg = "Hotel reservation service did not respond with 200 OK signal!");
-    // Check whether the response is as expected
-    string expected = "{\"HotelName\":\"Miramar\", \"FromDate\":\"12-03-2018\", " +
+        // Check whether the response is as expected
+        string expected = "{\"HotelName\":\"Miramar\", \"FromDate\":\"12-03-2018\", " +
         "\"ToDate\":\"13-04-2018\", \"DistanceToLocation\":6}";
-    json resPayload = check response.getJsonPayload();
-    test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
+        var resPayload = response.getJsonPayload();
+        if (resPayload is json) {
+            test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
+        } else {
+            test:assertFail(msg = "Payload from miramar is invalid");
+        }
+    } else {
+        test:assertFail(msg = "Response from miramar is invalid");
+    }
+    return;
 }
 
 // Function to test resource 'aqueen'
 @test:Config
 function testResourceAqueen () {
     // Initialize the empty http requests and responses
-    http:Request req;
+    http:Request req = new;
 
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/aqueen", req);
-    // Expected response code is 200
-    test:assertEquals(response.statusCode, 200,
+    var response = clientEP -> post("/aqueen", req);
+    if (response is http:Response) {
+        // Expected response code is 200
+        test:assertEquals(response.statusCode, 200,
         msg = "Hotel reservation service did not respond with 200 OK signal!");
-    // Check whether the response is as expected
-    string expected = "{\"HotelName\":\"Aqueen\", \"FromDate\":\"12-03-2018\", " +
+        // Check whether the response is as expected
+        string expected = "{\"HotelName\":\"Aqueen\", \"FromDate\":\"12-03-2018\", " +
         "\"ToDate\":\"13-04-2018\", \"DistanceToLocation\":4}";
-    json resPayload = check response.getJsonPayload();
-    test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
+        var resPayload = response.getJsonPayload();
+        if (resPayload is json) {
+            test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
+        } else {
+            test:assertFail(msg = "Payload from aqueen is invalid");
+        }
+    } else {
+        test:assertFail(msg = "Response from aqueen is invalid");
+    }
+    return;
 }
 
 // Function to test resource 'elizabeth'
 @test:Config
 function testResourceElizabeth () {
     // Initialize the empty http requests and responses
-    http:Request req;
+    http:Request req = new;
 
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    http:Response response = check clientEP -> post("/elizabeth", req);
-    // Expected response code is 200
-    test:assertEquals(response.statusCode, 200,
+    var response = clientEP -> post("/elizabeth", req);
+
+    if (response is http:Response) {
+        // Expected response code is 200
+        test:assertEquals(response.statusCode, 200,
         msg = "Hotel reservation service did not respond with 200 OK signal!");
-    // Check whether the response is as expected
-    string expected = "{\"HotelName\":\"Elizabeth\", \"FromDate\":\"12-03-2018\", " +
+        // Check whether the response is as expected
+        string expected = "{\"HotelName\":\"Elizabeth\", \"FromDate\":\"12-03-2018\", " +
         "\"ToDate\":\"13-04-2018\", \"DistanceToLocation\":2}";
-    json resPayload = check response.getJsonPayload();
-    test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
+        var resPayload = response.getJsonPayload();
+        if (resPayload is json) {
+            test:assertEquals(resPayload.toString(), expected, msg = "Response mismatch!");
+        } else {
+            test:assertFail(msg = "Payload from elizabeth is invalid");
+        }
+    } else {
+        test:assertFail(msg = "Response from elizabeth is invalid");
+    }
+    return;
 }
