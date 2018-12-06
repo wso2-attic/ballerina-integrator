@@ -489,7 +489,7 @@ To see the complete implementation of the above file, refer to the [travel_agenc
    curl -v -X POST -d \
    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
-   "localhost:9090/travel/arrangeTour" -H "Content-Type:application/json" 
+   "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json" 
 ```
 
 - Travel agency service will send a response similar to the following:
@@ -713,7 +713,7 @@ Access the service
    curl -v -X POST -d \
    '{"ArrivalDate":"12-03-2018", "DepartureDate":"13-04-2018", "From":"Colombo",
    "To":"Changi", "VehicleType":"Car", "Location":"Changi"}' \
-   "http://ballerina.guides.io/travel/arrangeTour" -H "Content-Type:application/json"  
+   "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"  
 ```
 
 
