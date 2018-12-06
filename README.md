@@ -263,7 +263,7 @@ service EmployeeData on httpListener {
 }
 
 public function insertData(string name, int age, int ssn, int employeeId) returns (json) {
-    json updateStatus = {};
+    json updateStatus;
     string sqlString =
     "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
     // Insert data to SQL database by invoking update action
@@ -271,7 +271,7 @@ public function insertData(string name, int age, int ssn, int employeeId) return
     // Check type to verify the validity of the result from database
     if (ret is int) {
         updateStatus = { "Status": "Data Inserted Successfully" };
-    } else if (ret is error) {
+    } else {
         updateStatus = { "Status": "Data Not Inserted", "Error": "Error occurred in data update" };
         // Log the error for the service maintainers.
         log:printError("Error occurred in data update", err = ret);
@@ -289,7 +289,7 @@ public function retrieveById(int employeeID) returns (json) {
         var jsonConvertRet = json.convert(ret);
         if (jsonConvertRet is json) {
             jsonReturnValue = jsonConvertRet;
-        } else if (jsonConvertRet is error) {
+        } else {
             jsonReturnValue = { "Status": "Data Not Found", "Error": "Error occurred in data conversion" };
             log:printError("Error occurred in data conversion", err = jsonConvertRet);
         }
@@ -301,7 +301,7 @@ public function retrieveById(int employeeID) returns (json) {
 }
 
 public function updateData(string name, int age, int ssn, int employeeId) returns (json) {
-    json updateStatus = {};
+    json updateStatus;
     string sqlString =
     "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
     // Update existing data by invoking update remote function defined in ballerina sql client
@@ -312,7 +312,7 @@ public function updateData(string name, int age, int ssn, int employeeId) return
         } else {
             updateStatus = { "Status": "Data Not Updated" };
         }
-    } else if (ret is error) {
+    } else {
         updateStatus = { "Status": "Data Not Updated",  "Error": "Error occurred during update operation" };
         // Log the error for the service maintainers.
         log:printError("Error occurred during update operation", err = ret);
@@ -321,14 +321,14 @@ public function updateData(string name, int age, int ssn, int employeeId) return
 }
 
 public function deleteData(int employeeID) returns (json) {
-    json updateStatus = {};
+    json updateStatus;
 
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
     // Delete existing data by invoking update remote function defined in ballerina sql client
     var ret = employeeDB->update(sqlString, employeeID);
     if (ret is int) {
         updateStatus = { "Status": "Data Deleted Successfully" };
-    } else if (ret is error) {
+    } else {
         updateStatus = { "Status": "Data Not Deleted",  "Error": "Error occurred during delete operation" };
         // Log the error for the service maintainers.
         log:printError("Error occurred during delete operation", err = ret);
