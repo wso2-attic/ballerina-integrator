@@ -66,74 +66,88 @@ You can add the content to your Ballerina service as shown below. In that code s
 
 ```ballerina
 import ballerina/http;
+import ballerina/log;
 
-endpoint http:Listener filterServiceEP {
-    port: 9090
-};
+listener http:Listener filterServiceEP = new(9090);
 
-endpoint http:Client stdInfoEP {
-    url: "http://www.mocky.io"
-};
+http:Client stdInfoEP = new("http://www.mocky.io");
 
 // REST service to select the passed student from an exam
-service<http:Service> filterService bind filterServiceEP {
+service filterService on filterServiceEP {
 
-    // Resource that handles HTTP POST request with JSON payload
+    // Resource that handle HTTP POST request with JSON payload
     // Response with JSON payload
     @http:ResourceConfig {
         methods: ["POST"],
         consumes: ["application/json"],
         produces: ["application/json"]
     }
-
-    filterMarks (endpoint caller, http:Request request) {
-        http:Response response;
-
-        // Get the JSON payload from the request
-        json reqPayload = check request.getJsonPayload();
-
-        // Get the information of the subjects
-        string stdName = check <string>reqPayload.name;
-        json subjects = reqPayload.subjects;
+    resource function filterMarks(http:Caller caller, http:Request request) {
 
         // Declare boolean flag to set Qualified or Not
         boolean isQualified = false;
 
-        // Iterating subject array
-        foreach subj in subjects {
-            int mark = check <int>subj.marks;
-            // Check if the student exceeded the pass mark value
-            if (mark >= 60) {
-                isQualified = true;
-            }else{
-                isQualified = false;
-            }
-        }
-        // Set original payload to a new request object
+        // Set Original payload to a new request object
         http:Request req = new;
-        req.setJsonPayload(untaint reqPayload);
 
-        // Define variables for response payload and status code
+        // Get the JSON payload from the request
+        var reqPayload = request.getJsonPayload();
+        if (reqPayload is json) {
+            // Get the information of the subjects
+            string stdName = <string>reqPayload.name;
+            json[] subjects = <json[]>reqPayload.subjects;
+
+            // Iterating subject array
+            foreach var subj in subjects {
+                int mark = <int>subj.marks;
+                // Check the student exceed the pass mark value
+                if (mark >= 60) {
+                    isQualified = true;
+                } else {
+                    isQualified = false;
+                }
+            }
+            req.setJsonPayload(untaint reqPayload);
+        } else {
+            http:Response errResp = new;
+            errResp.statusCode = 400;
+            errResp.setJsonPayload({"^error":"Invalid request payload "});
+            var err = caller->respond(errResp);
+            handleResponseError(err);
+            return;
+        }
+        // Define a variables for response payload and status code
         json resp = {status:""};
         int statusCode;
-
-        // Check whether the student has qualified or not
-        if(isQualified){
+        // Check whether student is qualified or not
+        if (isQualified) {
             // Call qualified student records persistance service
-            response = check stdInfoEP -> post("/v2/5b2cc4292f00007900ebd395", request = req);
-            statusCode = response.statusCode;
-            // Set response status to Qualified
-            resp.status = "Qualified";
-        }else{
+            var response = stdInfoEP->post("/v2/5b2cc4292f00007900ebd395", req);
+            if (response is http:Response) {
+                statusCode = response.statusCode;
+                // Set response status to Qualified
+                resp.status = "Qualified";
+            } else {
+                log:printError("Invalid response", err = response);
+            }
+        } else {
             // Set response status to Not Qualified
             resp.status = "Not Qualified";
         }
 
         // Set JSON response
-        response.setJsonPayload(untaint resp);
-        _ = caller -> respond(response);
+        http:Response res = new;
+        res.statusCode = 200;
+        res.setJsonPayload(untaint resp);
+        var err = caller->respond(res);
+        handleResponseError(err);
     }
+}
 
+function handleResponseError(error? err) {
+    if (err is error) {
+        log:printError("Respond failed", err = err);
+    }
 }
 ```
 
@@ -238,12 +252,12 @@ import ballerinax/docker;
 
 @docker:Expose{}
 
-endpoint http:Listener filterServiceEP {
-    port: 9090
-};
+listener http:Listener filterServiceEP = new(9090);
+
+http:Client stdInfoEP = new("http://www.mocky.io");
 
 // REST service to select the passed student from an exam
-service<http:Service> filterService bind filterServiceEP {
+service filterService on filterServiceEP {
 ``` 
 
 `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port. 
@@ -305,12 +319,12 @@ import ballerinax/kubernetes;
     name:"ballerina-guides-passed_student_filter_service"
 }
 
-endpoint http:Listener filterServiceEP {
-    port: 9090
-};
+listener http:Listener filterServiceEP = new(9090);
+
+http:Client stdInfoEP = new("http://www.mocky.io");
 
 // REST service to select the passed student from an exam
-service<http:Service> filterService bind filterServiceEP {
+service filterService on filterServiceEP {
 ```
 
 - `@kubernetes:Deployment` is used to specify the Docker image name that should be created as part of building the service.
