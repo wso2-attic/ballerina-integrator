@@ -106,7 +106,7 @@ service EmployeeData on httpListener {
                     json ret = insertData(employeeData.name, employeeData.age, employeeData.ssn,
                         employeeData.employeeId);
                     // Send the response back to the client with the employee data
-                    response.setJsonPayload(ret);
+                    response.setPayload(ret);
                 }
             } else {
                 // Send an error response in case of a conversion failure
@@ -175,7 +175,7 @@ service EmployeeData on httpListener {
                     json ret = updateData(employeeData.name, employeeData.age, employeeData.ssn,
                         employeeData.employeeId);
                     // Send the response back to the client with the employee data
-                    response.setJsonPayload(ret);
+                    response.setPayload(ret);
                 }
             } else {
                 // Send an error response in case of a conversion failure
@@ -230,9 +230,9 @@ public function insertData(string name, int age, int ssn, int employeeId) return
     if (ret is int) {
         updateStatus = { "Status": "Data Inserted Successfully" };
     } else if (ret is error) {
-        updateStatus = { "Status": "Data Not Inserted", "Error": "Error occurred in data retrieval" };
+        updateStatus = { "Status": "Data Not Inserted", "Error": "Error occurred in data update" };
         // Log the error for the service maintainers.
-        log:printError("Error occurred in data retrieval", err = ret);
+        log:printError("Error occurred in data update", err = ret);
     }
     return updateStatus;
 }

@@ -148,7 +148,7 @@ service EmployeeData on httpListener {
                     json ret = insertData(employeeData.name, employeeData.age, employeeData.ssn,
                         employeeData.employeeId);
                     // Send the response back to the client with the employee data
-                    response.setJsonPayload(ret);
+                    response.setPayload(ret);
                 }
             } else {
                 // Send an error response in case of a conversion failure
@@ -217,7 +217,7 @@ service EmployeeData on httpListener {
                     json ret = updateData(employeeData.name, employeeData.age, employeeData.ssn,
                         employeeData.employeeId);
                     // Send the response back to the client with the employee data
-                    response.setJsonPayload(ret);
+                    response.setPayload(ret);
                 }
             } else {
                 // Send an error response in case of a conversion failure
@@ -272,9 +272,9 @@ public function insertData(string name, int age, int ssn, int employeeId) return
     if (ret is int) {
         updateStatus = { "Status": "Data Inserted Successfully" };
     } else if (ret is error) {
-        updateStatus = { "Status": "Data Not Inserted", "Error": "Error occurred in data retrieval" };
+        updateStatus = { "Status": "Data Not Inserted", "Error": "Error occurred in data update" };
         // Log the error for the service maintainers.
-        log:printError("Error occurred in data retrieval", err = ret);
+        log:printError("Error occurred in data update", err = ret);
     }
     return updateStatus;
 }
@@ -337,7 +337,7 @@ public function deleteData(int employeeID) returns (json) {
 }
 ```
 
-A remote function in Ballerina indicates that it will be communicating with some remote service through the network. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the MySQL client object which encapsulates aforementioned set of remote functions. The rest of the code is for preparing SQL queries and executing them by calling these remote functions of the Ballerina MySQL client.
+A remote function in Ballerina indicates that it communicates with some remote service through the network. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the MySQL client object which encapsulates aforementioned set of remote functions. The rest of the code is for preparing SQL queries and executing them by calling these remote functions of the Ballerina MySQL client.
 
 You can implement custom functions in Ballerina that perform specific tasks. For this scenario, we have included the following functions to interact with the MySQL database.
 
