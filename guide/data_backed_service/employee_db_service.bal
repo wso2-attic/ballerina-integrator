@@ -70,7 +70,7 @@ mysql:Client employeeDB = new({
         port: config:getAsInt("DATABASE_PORT", default = 3306),
         name: config:getAsString("DATABASE_NAME", default = "EMPLOYEE_RECORDS"),
         username: config:getAsString("DATABASE_USERNAME", default = "root"),
-        password: config:getAsString("DATABASE_PASSWORD", default = "123"),
+        password: config:getAsString("DATABASE_PASSWORD", default = ""),
         dbOptions: { useSSL: false }
     });
 
@@ -251,7 +251,7 @@ public function retrieveById(int employeeID) returns (json) {
             jsonReturnValue = { "Status": "Data Not Found", "Error": "Error occurred in data conversion" };
             log:printError("Error occurred in data conversion", err = jsonConvertRet);
         }
-    } else if (ret is error) {
+    } else {
         jsonReturnValue = { "Status": "Data Not Found", "Error": "Error occurred in data retrieval" };
         log:printError("Error occurred in data retrieval", err = ret);
     }
