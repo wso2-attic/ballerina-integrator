@@ -58,7 +58,7 @@ public function createAccount(string name) returns (int|error) {
         // to avoid connection leak. If the json was fully iterated, the table would also have been fully iterated and
         // streamed out and then the connection would have been automatically closed.
         selectRet.close();
-    } else if (selectRet is error) {
+    } else {
         retVal = selectRet;
         log:printError("Error occurred during database operation", err = selectRet);
     }
@@ -88,7 +88,7 @@ public function verifyAccount(int accId) returns (boolean|error) {
         // to avoid connection leak. If the json was fully iterated, the table would also have been fully iterated and
         // streamed out and then the connection would have been automatically closed.
         selectRet.close();
-    } else if (selectRet is error) {
+    } else {
         retVal = selectRet;
     }
     return retVal;
@@ -124,7 +124,7 @@ public function checkBalance(int accId) returns (int|error) {
         // to avoid connection leak. If the json was fully iterated, the table would also have been fully iterated and
         // streamed out and then the connection would have been automatically closed.
         selectRet.close();
-    } else if (selectRet is error) {
+    } else {
         retVal = selectRet;
     }
     // Return the balance or error in case of a failure.
