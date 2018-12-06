@@ -71,17 +71,15 @@ For each order management operation, there is a dedicated resource. You can impl
 ```ballerina
 import ballerina/http;
 
-endpoint http:Listener listener {
-    port:9090
-};
+listener http:Listener httpListener = new(9090);
 
 // Order management is done using an in-memory map.
 // Add some sample orders to 'ordersMap' at startup.
-map<json> ordersMap;
+map<json> ordersMap = {};
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/ordermgt" }
-service<http:Service> orderMgt bind listener {
+service orderMgt on httpListener {
 
     // Resource that handles the HTTP GET requests that are directed to a specific
     // order using path '/order/<orderId>'
@@ -89,7 +87,7 @@ service<http:Service> orderMgt bind listener {
         methods: ["GET"],
         path: "/order/{orderId}"
     }
-    findOrder(endpoint client, http:Request req, string orderId) {
+    resource function findOrder(http:Caller caller, http:Request req, string orderId) {
         // Implementation
     }
 
@@ -99,7 +97,7 @@ service<http:Service> orderMgt bind listener {
         methods: ["POST"],
         path: "/order"
     }
-    addOrder(endpoint client, http:Request req) {
+    resource function addOrder(http:Caller caller, http:Request req) {
         // Implementation
     }
 
@@ -109,7 +107,7 @@ service<http:Service> orderMgt bind listener {
         methods: ["PUT"],
         path: "/order/{orderId}"
     }
-    updateOrder(endpoint client, http:Request req, string orderId) {
+    resource function updateOrder(http:Caller caller, http:Request req, string orderId) {
         // Implementation
     }
 
@@ -119,7 +117,7 @@ service<http:Service> orderMgt bind listener {
         methods: ["DELETE"],
         path: "/order/{orderId}"
     }
-    cancelOrder(endpoint client, http:Request req, string orderId) {
+    resource function cancelOrder(http:Caller caller, http:Request req, string orderId) {
         // Implementation
     }
 }
@@ -133,17 +131,15 @@ service<http:Service> orderMgt bind listener {
 ```ballerina
 import ballerina/http;
 
-endpoint http:Listener listener {
-    port:9090
-};
+listener http:Listener httpListener = new(9090);
 
-// Order management is done using an in memory map.
+// Order management is done using an in-memory map.
 // Add some sample orders to 'ordersMap' at startup.
-map<json> ordersMap;
+map<json> ordersMap = {};
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/ordermgt" }
-service<http:Service> orderMgt bind listener {
+service orderMgt on httpListener {
 
     // Resource that handles the HTTP GET requests that are directed to a specific
     // order using path '/order/<orderId>'.
@@ -151,10 +147,10 @@ service<http:Service> orderMgt bind listener {
         methods: ["GET"],
         path: "/order/{orderId}"
     }
-    findOrder(endpoint client, http:Request req, string orderId) {
+    resource function findOrder(http:Caller caller, http:Request req, string orderId) {
         // Find the requested order from the map and retrieve it in JSON format.
         json? payload = ordersMap[orderId];
-        http:Response response;
+        http:Response response = new;
         if (payload == null) {
             payload = "Order : " + orderId + " cannot be found.";
         }
@@ -163,7 +159,10 @@ service<http:Service> orderMgt bind listener {
         response.setJsonPayload(untaint payload);
 
         // Send response to the client.
-        _ = client->respond(response);
+        var result = caller->respond(response);
+        if (result is error) {
+            log:printError("Error sending response", err = result);
+        }
     }
 
     // Resource that handles the HTTP POST requests that are directed to the path
@@ -172,25 +171,37 @@ service<http:Service> orderMgt bind listener {
         methods: ["POST"],
         path: "/order"
     }
-    addOrder(endpoint client, http:Request req) {
-        json orderReq = check req.getJsonPayload();
-        string orderId = orderReq.Order.ID.toString();
-        ordersMap[orderId] = orderReq;
+    resource function addOrder(http:Caller caller, http:Request req) {
+        http:Response response = new;
+        var orderReq = req.getJsonPayload();
+        if (orderReq is json) {
+            string orderId = orderReq.Order.ID.toString();
+            ordersMap[orderId] = orderReq;
 
-        // Create response message.
-        json payload = { status: "Order Created.", orderId: orderId };
-        http:Response response;
-        response.setJsonPayload(untaint payload);
+            // Create response message.
+            json payload = { status: "Order Created.", orderId: orderId };
+            response.setJsonPayload(untaint payload);
 
-        // Set 201 Created status code in the response message.
-        response.statusCode = 201;
-        // Set 'Location' header in the response message.
-        // This can be used by the client to locate the newly added order.
-        response.setHeader("Location", "http://localhost:9090/ordermgt/order/" +
-                orderId);
+            // Set 201 Created status code in the response message.
+            response.statusCode = 201;
+            // Set 'Location' header in the response message.
+            // This can be used by the client to locate the newly added order.
+            response.setHeader("Location", 
+                "http://localhost:9090/ordermgt/order/" + orderId);
 
-        // Send response to the client.
-        _ = client->respond(response);
+            // Send response to the client.
+            var result = caller->respond(response);
+            if (result is error) {
+                log:printError("Error sending response", err = result);
+            }
+        } else {
+            response.statusCode = 400;
+            response.setPayload("Invalid payload received");
+            var result = caller->respond(response);
+            if (result is error) {
+                log:printError("Error sending response", err = result);
+            }
+        }
     }
 
     // Resource that handles the HTTP PUT requests that are directed to the path
@@ -199,26 +210,36 @@ service<http:Service> orderMgt bind listener {
         methods: ["PUT"],
         path: "/order/{orderId}"
     }
-    updateOrder(endpoint client, http:Request req, string orderId) {
-        json updatedOrder = check req.getJsonPayload();
+    resource function updateOrder(http:Caller caller, http:Request req, string orderId) {
+        var updatedOrder = req.getJsonPayload();
+        http:Response response = new;
+        if (updatedOrder is json) {
+            // Find the order that needs to be updated and retrieve it in JSON format.
+            json existingOrder = ordersMap[orderId];
 
-        // Find the order that needs to be updated and retrieve it in JSON format.
-        json existingOrder = ordersMap[orderId];
-
-        // Updating existing order with the attributes of the updated order.
-        if (existingOrder != null) {
-            existingOrder.Order.Name = updatedOrder.Order.Name;
-            existingOrder.Order.Description = updatedOrder.Order.Description;
-            ordersMap[orderId] = existingOrder;
+            // Updating existing order with the attributes of the updated order.
+            if (existingOrder != null) {
+                existingOrder.Order.Name = updatedOrder.Order.Name;
+                existingOrder.Order.Description = updatedOrder.Order.Description;
+                ordersMap[orderId] = existingOrder;
+            } else {
+                existingOrder = "Order : " + orderId + " cannot be found.";
+            }
+            // Set the JSON payload to the outgoing response message to the client.
+            response.setJsonPayload(untaint existingOrder);
+            // Send response to the client.
+            var result = caller->respond(response);
+            if (result is error) {
+                log:printError("Error sending response", err = result);
+            }
         } else {
-            existingOrder = "Order : " + orderId + " cannot be found.";
+            response.statusCode = 400;
+            response.setPayload("Invalid payload received");
+            var result = caller->respond(response);
+            if (result is error) {
+                log:printError("Error sending response", err = result);
+            }
         }
-
-        http:Response response;
-        // Set the JSON payload to the outgoing response message to the client.
-        response.setJsonPayload(untaint existingOrder);
-        // Send response to the client.
-        _ = client->respond(response);
     }
 
     // Resource that handles the HTTP DELETE requests, which are directed to the path
@@ -227,8 +248,8 @@ service<http:Service> orderMgt bind listener {
         methods: ["DELETE"],
         path: "/order/{orderId}"
     }
-    cancelOrder(endpoint client, http:Request req, string orderId) {
-        http:Response response;
+    resource function cancelOrder(http:Caller caller, http:Request req, string orderId) {
+        http:Response response = new;
         // Remove the requested order from the map.
         _ = ordersMap.remove(orderId);
 
@@ -237,7 +258,10 @@ service<http:Service> orderMgt bind listener {
         response.setJsonPayload(untaint payload);
 
         // Send response to the client.
-        _ = client->respond(response);
+        var result = caller->respond(response);
+        if (result is error) {
+            log:printError("Error sending response", err = result);
+        }
     }
 }
 ```
@@ -250,8 +274,13 @@ service<http:Service> orderMgt bind listener {
 ### Invoking the RESTful service 
 
 You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `restful-service/guide`, and execute the following command.
+```bash
+    $ ballerina run restful_service
 ```
-$ ballerina run restful_service
+Successful startup of the service results in the following output.
+```
+   Initiating service(s) in 'restful_service'
+   [ballerina/http] started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 To test the functionality of the orderMgt RESTFul service, send HTTP requests for each order management operation.
@@ -259,43 +288,43 @@ Following are sample cURL commands that you can use to test each operation of th
 
 **Create Order** 
 ```bash
-$ curl -v -X POST -d \
-'{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-"http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"
+    $ curl -v -X POST -d \
+    '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+    "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"
 
-Output :  
-< HTTP/1.1 201 Created
-< Content-Type: application/json
-< Location: http://localhost:9090/ordermgt/order/100500
-< content-length: 46
-< server: ballerina/0.982.0
-
-{"status":"Order Created.","orderId":"100500"} 
+    Output :  
+    < HTTP/1.1 201 Created
+    < Content-Type: application/json
+    < Location: http://localhost:9090/ordermgt/order/100500
+    < content-length: 46
+    < server: ballerina/0.982.0
+    
+    {"status":"Order Created.","orderId":"100500"} 
 ```
 
 **Retrieve Order** 
 ```bash
-$ curl "http://localhost:9090/ordermgt/order/100500"
+    $ curl "http://localhost:9090/ordermgt/order/100500"
 
-Output : 
-{"Order":{"ID":"100500","Name":"XYZ","Description":"Sample order."}}
+    Output : 
+    {"Order":{"ID":"100500","Name":"XYZ","Description":"Sample order."}}
 ```
 
 **Update Order** 
 ```bash
-$ curl -X PUT -d '{ "Order": {"Name": "XYZ", "Description": "Updated order."}}' \
-"http://localhost:9090/ordermgt/order/100500" -H "Content-Type:application/json"
-
-Output: 
-{"Order":{"ID":"100500","Name":"XYZ","Description":"Updated order."}}
+    $ curl -X PUT -d '{ "Order": {"Name": "XYZ", "Description": "Updated order."}}' \
+    "http://localhost:9090/ordermgt/order/100500" -H "Content-Type:application/json"
+    
+    Output: 
+    {"Order":{"ID":"100500","Name":"XYZ","Description":"Updated order."}}
 ```
 
 **Cancel Order** 
 ```bash
-$ curl -X DELETE "http://localhost:9090/ordermgt/order/100500"
+    $ curl -X DELETE "http://localhost:9090/ordermgt/order/100500"
 
-Output:
-"Order : 100500 removed."
+    Output:
+    "Order : 100500 removed."
 ```
 
 ### Writing unit tests 
@@ -311,7 +340,7 @@ The source code for this guide contains unit test cases for each resource availa
 
 To run the unit tests, open your terminal and navigate to `restful-service/guide`, and run the following command.
 ```bash
-   $ ballerina test
+    $ ballerina test
 ```
 
 > The source code for the tests can be found at [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/tests/order_mgt_service_test.bal).
@@ -325,18 +354,18 @@ Once you are done with the development, you can deploy the service using any of 
 
 - As the first step, you can build a Ballerina executable archive (.balx) of the service that you developed. Navigate to `restful-service/guide` and run the following command.
 ```bash
-   $ ballerina build restful_service
+    $ ballerina build restful_service
 ```
 
 - Once the restful_service.balx is created inside the target folder, you can run that with the following command. 
 ```bash
-   $ ballerina run target/restful_service.balx
+    $ ballerina run target/restful_service.balx
 ```
 
 - Successful startup of the service results in the following output.
 ```
    Initiating service(s) in 'target/restful_service.balx'
-   ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+   [ballerina/http] started HTTP/WS endpoint 0.0.0.0:9090
 ```
 
 ### Deploying on Docker
@@ -356,17 +385,15 @@ import ballerinax/docker;
     tag:"v1.0"
 }
 @docker:Expose{}
-endpoint http:Listener listener {
-    port:9090
-};
+listener http:Listener httpListener = new(9090);
 
 // Order management is done using an in-memory map.
 // Add some sample orders to 'ordersMap' at startup.
-map<json> ordersMap;
+map<json> ordersMap = {};
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/ordermgt" }
-service<http:Service> orderMgt bind listener {
+service orderMgt on httpListener {
 ``` 
 
 - `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port to which the listener is bound to.
@@ -400,7 +427,7 @@ service<http:Service> orderMgt bind listener {
 
 - Once you have successfully built the Docker image, you can run it using the `docker run` command that you see at the end of the build
 ```bash   
-   $ docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
+    $ docker run -d -p 9090:9090 ballerina.guides.io/restful_service:v1.0
 ```
 
 You have to run the Docker container with the `-p <host_port>:<container_port>` flag so that the container's port 9090 maps to the host's port 9090, and the service is accessible through the same port on the host
@@ -408,9 +435,9 @@ You have to run the Docker container with the `-p <host_port>:<container_port>` 
 - Verify that the container is up and running with the use of `docker ps`. The status of the container should be shown as 'Up'.
 - You can invoke the service using the same cURL commands that you used above.
 ```bash
-   $ curl -v -X POST -d \
-   '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-   "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
+    $ curl -v -X POST -d \
+    '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+    "http://localhost:9090/ordermgt/order" -H "Content-Type:application/json"    
 ```
 
 ### Deploying on Kubernetes
@@ -444,17 +471,15 @@ import ballerinax/kubernetes;
     image:"ballerina.guides.io/restful_service:v1.0",
     name:"ballerina-guides-restful-service"
 }
-endpoint http:Listener listener {
-    port:9090
-};
+listener http:Listener httpListener = new(9090);
 
 // Order management is done using an in-memory map.
 // Add some sample orders to 'ordersMap' at startup.
-map<json> ordersMap;
+map<json> ordersMap = {};
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/ordermgt" }
-service<http:Service> orderMgt bind listener {
+service orderMgt on httpListener {
 ``` 
 
 - `@kubernetes:Deployment` is used to specify the Docker image name that should be created as part of building the service.
@@ -507,20 +532,20 @@ This creates the corresponding Docker image and the Kubernetes artifacts using t
 - Now you can create the Kubernetes deployment using:
 
 ```bash
-   $ kubectl apply -f ./target/kubernetes/restful_service
+    $ kubectl apply -f ./target/kubernetes/restful_service
  
-   deployment "ballerina-guides-restful-service" created
-   ingress "ballerina-guides-restful-service" created
-   service "ballerina-guides-restful-service" created
+    deployment "ballerina-guides-restful-service" created
+    ingress "ballerina-guides-restful-service" created
+    service "ballerina-guides-restful-service" created
 ```
 
 - You can verify that the Kubernetes deployment, service and ingress are functioning as expected by using the following Kubernetes commands.
 
 ```bash
-   $ kubectl get service
-   $ kubectl get deploy
-   $ kubectl get pods
-   $ kubectl get ingress
+    $ kubectl get service
+    $ kubectl get deploy
+    $ kubectl get pods
+    $ kubectl get ingress
 ```
 
 - If all artifacts are successfully deployed, you can invoke the service either via Node Port or Ingress.
@@ -553,9 +578,9 @@ Add `/etc/hosts` entry to match hostname. For Minikube, the IP address should be
 
 Invoke the service
 ```bash 
-   $ curl -v -X POST -d \
-   '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
-   "http://ballerina.guides.io/ordermgt/order" -H "Content-Type:application/json" 
+    $ curl -v -X POST -d \
+    '{ "Order": { "ID": "100500", "Name": "XYZ", "Description": "Sample order."}}' \
+    "http://ballerina.guides.io/ordermgt/order" -H "Content-Type:application/json" 
 ```
 
 ## Observability 
