@@ -752,7 +752,7 @@ Start Elasticsearch using the following command.
 
 ```bash
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
-   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
+   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.5.1 
 ```
 
 > **NOTE**: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`.
@@ -761,7 +761,7 @@ Start Kibana plugin for data visualization with Elasticsearch.
 
 ```bash
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
-   elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
+   elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.5.1     
 ```
 
 Configure logstash to format the Ballerina logs.
@@ -800,11 +800,36 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory
 ```bash
    $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
    -it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
-   -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
+   -p 5044:5044 docker.elastic.co/logstash/logstash:6.5.1
 ```
   
 Configure filebeat to ship the Ballerina logs.
 
+i) Create a file named `filebeat.yml` with the following content.
 
+```
+filebeat.prospectors:
+- type: log
+  paths:
+    - /usr/share/filebeat/ballerina.log
+output.logstash:
+  hosts: ["logstash:5044"]  
+```
 
+> **NOTE**: Modify the ownership of `filebeat.yml` file using `$chmod go-w filebeat.yml` 
 
+ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`.   
+        
+iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory name.
+     
+```
+$ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
+-v {SAMPLE_ROOT}/guide/message-filtering/ballerina.log:/usr/share\
+/filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.5.1
+```
+ 
+Access Kibana to visualize the logs using the following URL.
+
+```
+   http://localhost:5601 
+```
