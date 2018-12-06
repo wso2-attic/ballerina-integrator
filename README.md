@@ -714,7 +714,7 @@ The following section describes how to search, analyze, and visualize logs in re
 - Start Elasticsearch using the following command
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
-   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
+   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.5.1 
 ```
 
 > NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count`
@@ -722,7 +722,7 @@ The following section describes how to search, analyze, and visualize logs in re
 - Start the Kibana plugin for data visualization with Elasticsearch
 ```
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
-   elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
+   elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.5.1     
 ```
 
 - Configure Logstash to format the Ballerina logs
@@ -760,7 +760,7 @@ iii) Start the Logstash container, replace `{SAMPLE_ROOT}` with your directory n
 ```
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
--p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
+-p 5044:5044 docker.elastic.co/logstash/logstash:6.5.1
 ```
   
  - Configure Filebeat to ship the Ballerina logs
@@ -783,7 +783,7 @@ iii) Start the Logstash container, replace the `{SAMPLE_ROOT}` with your directo
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
 -v {SAMPLE_ROOT}/guide/restful_service/ballerina.log:/usr/share\
-/filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
+/filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.5.1
 ```
  
  - Access Kibana to visualize the logs using following URL
