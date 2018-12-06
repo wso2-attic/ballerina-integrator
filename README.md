@@ -73,7 +73,7 @@ data-backed-service
 ```
 
 ### Developing the SQL data backed web service
-Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource inside the service. You can implement the business logic inside a resource using Ballerina language syntax.
+Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource function inside the service. You can implement the business logic inside a resource function using Ballerina language syntax.
 We can use the following database schema to store employee data.
 ```
 +------------+-------------+------+-----+---------+-------+
@@ -86,7 +86,7 @@ We can use the following database schema to store employee data.
 +------------+-------------+------+-----+---------+-------+
 
 ```
-The following Ballerina code is the employee data service with resources to add, retrieve, update and delete employee data.
+The following Ballerina code is the employee data service with resource functions to add, retrieve, update and delete employee data.
 
 ##### employee_db_service.bal
 
@@ -97,6 +97,8 @@ import ballerina/log;
 import ballerina/mysql;
 import ballerina/sql;
 
+listener http:Listener httpListener = new(9090);
+
 type Employee record {
     string name;
     int age;
@@ -104,197 +106,240 @@ type Employee record {
     int employeeId;
 };
 
-// Create SQL endpoint to MySQL database
-endpoint mysql:Client employeeDB {
-    host: config:getAsString("DATABASE_HOST", default = "localhost"),
-    port: config:getAsInt("DATABASE_PORT", default = 3306),
-    name: config:getAsString("DATABASE_NAME", default = "EMPLOYEE_RECORDS"),
-    username: config:getAsString("DATABASE_USERNAME", default = "root"),
-    password: config:getAsString("DATABASE_PASSWORD", default = "root"),
-    dbOptions: { useSSL: false }
-};
-
-endpoint http:Listener listener {
-    port: 9090
-};
+// Create SQL client for MySQL database
+mysql:Client employeeDB = new({
+        host: config:getAsString("DATABASE_HOST", default = "localhost"),
+        port: config:getAsInt("DATABASE_PORT", default = 3306),
+        name: config:getAsString("DATABASE_NAME", default = "EMPLOYEE_RECORDS"),
+        username: config:getAsString("DATABASE_USERNAME", default = "root"),
+        password: config:getAsString("DATABASE_PASSWORD", default = "123"),
+        dbOptions: { useSSL: false }
+    });
 
 // Service for the employee data service
 @http:ServiceConfig {
     basePath: "/records"
 }
-service<http:Service> EmployeeData bind listener {
+service EmployeeData on httpListener {
 
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/employee/"
     }
-    addEmployeeResource(endpoint httpConnection, http:Request request) {
+    resource function addEmployeeResource(http:Caller httpCaller, http:Request request) {
         // Initialize an empty http response message
-        http:Response response;
-        Employee employeeData;
+        http:Response response = new;
+
         // Extract the data from the request payload
-        var payloadJson = check request.getJsonPayload();
-        employeeData = check <Employee>payloadJson;
+        var payloadJson = request.getJsonPayload();
 
-        // Check for errors with JSON payload using
-        if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 ||
-            employeeData.employeeId == 0) {
-            response.setTextPayload("Error : json payload should contain
-             {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
-            response.statusCode = 400;
-            _ = httpConnection->respond(response);
-            done;
+        if (payloadJson is json) {
+            Employee|error employeeData = Employee.convert(payloadJson);
+
+            if (employeeData is Employee) {
+                // Validate JSON payload
+                if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 ||
+                    employeeData.employeeId == 0) {
+                    response.setPayload("Error : json payload should contain
+                    {name:<string>, age:<int>, ssn:<123456>, employeeId:<int>}");
+                    response.statusCode = 400;
+                } else {
+                    // Invoke insertData function to save data in the MySQL database
+                    json ret = insertData(employeeData.name, employeeData.age, employeeData.ssn,
+                        employeeData.employeeId);
+                    // Send the response back to the client with the employee data
+                    response.setPayload(ret);
+                }
+            } else {
+                // Send an error response in case of a conversion failure
+                response.statusCode = 400;
+                response.setPayload("Error: Please send the JSON payload in the correct format");
+            }
+        } else {
+            // Send an error response in case of an error in retriving the request payload
+            response.statusCode = 500;
+            response.setPayload("Error: An internal error occurred");
         }
-
-        // Invoke insertData function to save data in the Mymysql database
-        json ret = insertData(employeeData.name, employeeData.age, employeeData.ssn,
-            employeeData.employeeId);
-        // Send the response back to the client with the employee data
-        response.setJsonPayload(ret);
-        _ = httpConnection->respond(response);
+        var respondRet = httpCaller->respond(response);
+        if (respondRet is error) {
+            // Log the error for the service maintainers.
+            log:printError("Error responding to the client", err = respondRet);
+        }
     }
 
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/employee/{employeeId}"
     }
-    retrieveEmployeeResource(endpoint httpConnection, http:Request request, string
-    employeeId) {
+    resource function retrieveEmployeeResource(http:Caller httpCaller, http:Request request, string
+        employeeId) {
         // Initialize an empty http response message
-        http:Response response;
+        http:Response response = new;
         // Convert the employeeId string to integer
-        int empID = check <int>employeeId;
-        // Invoke retrieveById function to retrieve data from Mymysql database
-        var employeeData = retrieveById(empID);
-        // Send the response back to the client with the employee data
-        response.setJsonPayload(untaint employeeData);
-        _ = httpConnection->respond(response);
+        var empID = int.convert(employeeId);
+        if (empID is int) {
+            // Invoke retrieveById function to retrieve data from Mymysql database
+            var employeeData = retrieveById(empID);
+            // Send the response back to the client with the employee data
+            response.setPayload(untaint employeeData);
+        } else {
+            response.statusCode = 400;
+            response.setPayload("Error: employeeId parameter should be a valid integer");
+        }
+        var respondRet = httpCaller->respond(response);
+        if (respondRet is error) {
+            // Log the error for the service maintainers.
+            log:printError("Error responding to the client", err = respondRet);
+        }
     }
 
     @http:ResourceConfig {
         methods: ["PUT"],
         path: "/employee/"
     }
-    updateEmployeeResource(endpoint httpConnection, http:Request request) {
+    resource function updateEmployeeResource(http:Caller httpCaller, http:Request request) {
         // Initialize an empty http response message
-        http:Response response;
-        Employee employeeData;
+        http:Response response = new;
+
         // Extract the data from the request payload
-        var payloadJson = check request.getJsonPayload();
-        employeeData = check <Employee>payloadJson;
+        var payloadJson = request.getJsonPayload();
+        if (payloadJson is json) {
+            Employee|error employeeData = Employee.convert(payloadJson);
 
-        if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 ||
-            employeeData.employeeId == 0) {
-            response.setTextPayload("Error : json payload should contain
-             {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
-            response.statusCode = 400;
-            _ = httpConnection->respond(response);
-            done;
+            if (employeeData is Employee) {
+                if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 ||
+                    employeeData.employeeId == 0) {
+                    response.setPayload("Error : json payload should contain
+                        {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
+                    response.statusCode = 400;
+                } else {
+                    // Invoke updateData function to update data in mysql database
+                    json ret = updateData(employeeData.name, employeeData.age, employeeData.ssn,
+                        employeeData.employeeId);
+                    // Send the response back to the client with the employee data
+                    response.setPayload(ret);
+                }
+            } else {
+                // Send an error response in case of a conversion failure
+                response.statusCode = 400;
+                response.setPayload("Error: Please send the JSON payload in the correct format");
+            }
+        } else {
+            // Send an error response in case of an error in retriving the request payload
+            response.statusCode = 500;
+            response.setPayload("Error: An internal error occurred");
         }
-
-        // Invoke updateData function to update data in mysql database
-        json ret = updateData(employeeData.name, employeeData.age, employeeData.ssn,
-            employeeData.employeeId);
-        // Send the response back to the client with the employee data
-        response.setJsonPayload(ret);
-        _ = httpConnection->respond(response);
+        var respondRet = httpCaller->respond(response);
+        if (respondRet is error) {
+            // Log the error for the service maintainers.
+            log:printError("Error responding to the client", err = respondRet);
+        }
     }
 
     @http:ResourceConfig {
         methods: ["DELETE"],
         path: "/employee/{employeeId}"
     }
-    deleteEmployeeResource(endpoint httpConnection, http:Request request, string
-    employeeId) {
+    resource function deleteEmployeeResource(http:Caller httpCaller, http:Request request, string
+        employeeId) {
         // Initialize an empty http response message
-        http:Response response;
+        http:Response response = new;
         // Convert the employeeId string to integer
-        var empID = check <int>employeeId;
-        var deleteStatus = deleteData(empID);
-        // Send the response back to the client with the employee data
-        response.setJsonPayload(deleteStatus);
-        _ = httpConnection->respond(response);
+        var empID = int.convert(employeeId);
+        if (empID is int) {
+            var deleteStatus = deleteData(empID);
+            // Send the response back to the client with the employee data
+            response.setPayload(deleteStatus);
+        } else {
+            response.statusCode = 400;
+            response.setPayload("Error: employeeId parameter should be a valid integer");
+        }
+        var respondRet = httpCaller->respond(response);
+        if (respondRet is error) {
+            // Log the error for the service maintainers.
+            log:printError("Error responding to the client", err = respondRet);
+        }
     }
 }
 
-public function insertData(string name, int age, int ssn, int employeeId) returns (json){
+public function insertData(string name, int age, int ssn, int employeeId) returns (json) {
     json updateStatus;
     string sqlString =
     "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
     // Insert data to SQL database by invoking update action
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
-    // Use match operator to check the validity of the result from database
-    match ret {
-        int updateRowCount => {
-            updateStatus = { "Status": "Data Inserted Successfully" };
-        }
-        error err => {
-            updateStatus = { "Status": "Data Not Inserted", "Error": err.message };
-        }
+    // Check type to verify the validity of the result from database
+    if (ret is int) {
+        updateStatus = { "Status": "Data Inserted Successfully" };
+    } else {
+        updateStatus = { "Status": "Data Not Inserted", "Error": "Error occurred in data update" };
+        // Log the error for the service maintainers.
+        log:printError("Error occurred in data update", err = ret);
     }
     return updateStatus;
 }
 
 public function retrieveById(int employeeID) returns (json) {
-    json jsonReturnValue;
+    json jsonReturnValue = {};
     string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
-    // Retrieve employee data by invoking select action defined in ballerina sql client
+    // Retrieve employee data by invoking select remote function defined in ballerina sql client
     var ret = employeeDB->select(sqlString, (), employeeID);
-    match ret {
-        table dataTable => {
-            // Convert the sql data table into JSON using type conversion
-            jsonReturnValue = check <json>dataTable;
+    if (ret is table<record {}>) {
+        // Convert the sql data table into JSON using type conversion
+        var jsonConvertRet = json.convert(ret);
+        if (jsonConvertRet is json) {
+            jsonReturnValue = jsonConvertRet;
+        } else {
+            jsonReturnValue = { "Status": "Data Not Found", "Error": "Error occurred in data conversion" };
+            log:printError("Error occurred in data conversion", err = jsonConvertRet);
         }
-        error err => {
-            jsonReturnValue = { "Status": "Data Not Found", "Error": err.message };
-        }
+    } else if (ret is error) {
+        jsonReturnValue = { "Status": "Data Not Found", "Error": "Error occurred in data retrieval" };
+        log:printError("Error occurred in data retrieval", err = ret);
     }
     return jsonReturnValue;
 }
 
-public function updateData(string name, int age, int ssn, int employeeId) returns (json){
-    json updateStatus = {};
+public function updateData(string name, int age, int ssn, int employeeId) returns (json) {
+    json updateStatus;
     string sqlString =
     "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
-    // Update existing data by invoking update action defined in ballerina sql client
+    // Update existing data by invoking update remote function defined in ballerina sql client
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
-    match ret {
-        int updateRowCount => {
-            if (updateRowCount > 0) {
-                updateStatus = { "Status": "Data Updated Successfully" };
-            }
-            else {
-                updateStatus = { "Status": "Data Not Updated" };
-            }
+    if (ret is int) {
+        if (ret > 0) {
+            updateStatus = { "Status": "Data Updated Successfully" };
+        } else {
+            updateStatus = { "Status": "Data Not Updated" };
         }
-        error err => {
-            updateStatus = { "Status": "Data Not Updated", "Error": err.message };
-        }
+    } else {
+        updateStatus = { "Status": "Data Not Updated",  "Error": "Error occurred during update operation" };
+        // Log the error for the service maintainers.
+        log:printError("Error occurred during update operation", err = ret);
     }
     return updateStatus;
 }
 
 public function deleteData(int employeeID) returns (json) {
-    json updateStatus = {};
+    json updateStatus;
 
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
-    // Delete existing data by invoking update action defined in ballerina sql client
+    // Delete existing data by invoking update remote function defined in ballerina sql client
     var ret = employeeDB->update(sqlString, employeeID);
-    match ret {
-        int updateRowCount => {
-            updateStatus = { "Status": "Data Deleted Successfully" };
-        }
-        error err => {
-            updateStatus = { "Status": "Data Not Deleted", "Error": err.message };
-        }
+    if (ret is int) {
+        updateStatus = { "Status": "Data Deleted Successfully" };
+    } else {
+        updateStatus = { "Status": "Data Not Deleted",  "Error": "Error occurred during delete operation" };
+        // Log the error for the service maintainers.
+        log:printError("Error occurred during delete operation", err = ret);
     }
     return updateStatus;
 }
 ```
 
-The `endpoint` keyword in Ballerina refers to a connection with a remote service. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the SQL endpoint. The rest of the code is for preparing SQL queries and executing them by calling the `update` action in the `ballerina/mysql` module.
+A remote function in Ballerina indicates that it communicates with some remote service through the network. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the MySQL client object which encapsulates aforementioned set of remote functions. The rest of the code is for preparing SQL queries and executing them by calling these remote functions of the Ballerina MySQL client.
 
-You can implement custom functions in Ballerina that do specific tasks. For this scenario, we have included the following functions to interact with the MySQL database.
+You can implement custom functions in Ballerina that perform specific tasks. For this scenario, we have included the following functions to interact with the MySQL database.
 
 - insertData
 - retrieveById
@@ -446,20 +491,20 @@ import ballerinax/docker;
 // Employee type definition
 
 // Create SQL endpoint to MySQL database
-endpoint mysql:Client employeeDB {
-    host: <MySQL_Container_IP>,
-    port: 3306,
-    name: "EMPLOYEE_RECORDS",
-    username: "root",
-    password: "root",
-    poolOptions: { maximumPoolSize: 5 }
-};
+mysql:Client employeeDB = new({
+        host: <MySQL_Container_IP>,
+        port: 3306,
+        name: "EMPLOYEE_RECORDS",
+        username: "root",
+        password: "root",
+        poolOptions: { maximumPoolSize: 5 }
+    });
 
 @docker:Config {
     registry: "ballerina.guides.io",
     name: "employee_database_service",
     tag: "v1.0",
-    baseImage: "ballerina/ballerina:0.983.0"
+    baseImage: "ballerina/ballerina:0.990.0"
 }
 
 @docker:CopyFiles {
@@ -469,14 +514,12 @@ endpoint mysql:Client employeeDB {
 
 @docker:Expose {}
 
-endpoint http:Listener listener {
-    port: 9090
-};
+listener http:Listener httpListener = new(9090);
 
 @http:ServiceConfig {
     basePath: "/records"
 }
-service<http:Service> EmployeeData bind listener {
+service EmployeeData on httpListener {
 ``` 
 
  - `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:CopyFiles` is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path. `@docker:Expose {}` is used to expose the port. Finally you need to change the host field in the  `mysql:Client` endpoint definition to the IP address of the MySQL container. You can obtain this IP address using the below command.
@@ -546,14 +589,14 @@ import ballerinax/kubernetes;
 // Employee type definition
 
 // Create SQL endpoint to MySQL database
-endpoint mysql:Client employeeDB {
-    host: "mysql-service",
-    port: 3306,
-    name: "EMPLOYEE_RECORDS",
-    username: "root",
-    password: "root",
-    poolOptions: { maximumPoolSize: 5 }
-};
+mysql:Client employeeDB = new({
+        host: "mysql-service",
+        port: 3306,
+        name: "EMPLOYEE_RECORDS",
+        username: "root",
+        password: "root",
+        poolOptions: { maximumPoolSize: 5 }
+    });
 
 @kubernetes:Ingress {
     hostname: "ballerina.guides.io",
@@ -569,19 +612,17 @@ endpoint mysql:Client employeeDB {
 @kubernetes:Deployment {
     image: "ballerina.guides.io/employee_database_service:v1.0",
     name: "ballerina-guides-employee-database-service",
-    baseImage: "ballerina/ballerina:0.983.0",
+    baseImage: "ballerina/ballerina:0.990.0",
     copyFiles: [{ target: "/ballerina/runtime/bre/lib",
                 source: <path_to_JDBC_jar> }]
 }
 
-endpoint http:Listener listener {
-    port: 9090
-};
+listener http:Listener httpListener = new(9090);
 
 @http:ServiceConfig {
     basePath: "/records"
 }
-service<http:Service> EmployeeData bind listener {      
+service EmployeeData on httpListener {
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the MySQL jar file into the ballerina bre/lib folder. Make sure to replace the `<path_to_JDBC_jar>` with your JDBC jar's path.
@@ -591,7 +632,7 @@ eg:
 @kubernetes:Deployment {
     image: "ballerina.guides.io/employee_database_service:v1.0",
     name: "ballerina-guides-employee-database-service",
-    baseImage: "ballerina/ballerina:0.983.0",
+    baseImage: "ballerina/ballerina:0.990.0",
     copyFiles: [{ target: "/ballerina/runtime/bre/lib",
                 source: <path_to_JDBC_jar> }],
     dockerHost: "tcp://<MINIKUBE_IP>:<DOCKER_PORT>",
@@ -786,7 +827,7 @@ Ballerina has a log module for logging to the console. You can import ballerina/
 - Start Elasticsearch using the following command
 ```
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
-   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
+   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.5.1
 ```
 
    NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
@@ -794,7 +835,7 @@ Ballerina has a log module for logging to the console. You can import ballerina/
 - Start Kibana plugin for data visualization with Elasticsearch
 ```
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
-   elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
+   elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.5.1
 ```
 
 - Configure logstash to format the ballerina logs
@@ -832,7 +873,7 @@ iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directo
 ```
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
--p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
+-p 5044:5044 docker.elastic.co/logstash/logstash:6.5.1
 ```
   
  - Configure filebeat to ship the ballerina logs
@@ -855,7 +896,7 @@ iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directo
 ```
 $ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
 -v {SAMPLE_ROOT}/guide/data_backed_service/ballerina.log:/usr/share\
-/filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
+/filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.5.1
 ```
  
  - Access Kibana to visualize the logs using following URL
