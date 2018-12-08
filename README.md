@@ -196,9 +196,9 @@ if (resQatar is http:Response) {
     var flightResponseQutar= resQatar.getJsonPayload();
     if (flightResponseQutar is json) {
         jsonFlightResponseQatar = flightResponseQutar;
-        var qutarResult = jsonFlightResponseQatar.Price;
-        if (qutarResult is int) {
-            qatarPrice = qutarResult;
+        var qatarResult = jsonFlightResponseQatar.Price;
+        if (qatarResult is int) {
+            qatarPrice = qatarResult;
         }
     }
 }
@@ -237,8 +237,7 @@ if (qatarPrice < asianaPrice) {
 } else {
     if (asianaPrice < emiratesPrice) {
         jsonFlightResponse = jsonFlightResponseAsiana;
-    }
-    else {
+    } else {
         jsonFlightResponse = jsonFlightResponseEmirates;
     }
 }
