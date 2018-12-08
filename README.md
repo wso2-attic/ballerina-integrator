@@ -444,7 +444,7 @@ service travelAgencyService on travelAgencyEP {
     // Resource to arrange a tour
     @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
         produces:["application/json"]}
-    resource function arrangeTour (http:Caller client, http:Request inRequest) {
+    resource function arrangeTour (http:Caller caller, http:Request inRequest) {
 
         // Try parsing the JSON payload from the user request
 
