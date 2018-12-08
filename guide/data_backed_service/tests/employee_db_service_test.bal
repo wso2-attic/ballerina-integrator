@@ -42,10 +42,10 @@ function testRetrieveByIdResource() {
             123456789 }];
             test:assertEquals(receivedPayload[0], expectedJson[0], msg =
                 "Name did not store in the database");
-        } else if (receivedPayload is error) {
+        } else {
             test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail().message);
         }
-    } else if (resp is error) {
+    } else {
         test:assertFail(msg = "Request failed: " + <string>resp.detail().message);
     }
 }
@@ -74,10 +74,10 @@ function testAddEmployeeResource() {
             expectedJson = { "Status": "Data Inserted Successfully" };
             test:assertEquals(receivedPayload, expectedJson, msg =
                 "Name did not store in the database");
-        } else if (receivedPayload is error) {
+        } else {
             test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail().message);
         }
-    } else if (resp is error) {
+    } else {
         test:assertFail(msg = "Request failed: " + <string>resp.detail().message);
     }
 }
@@ -107,10 +107,10 @@ function testUpdateEmployeeResource() {
             expectedJson = { "Status": "Data Updated Successfully" };
             test:assertEquals(receivedPayload, expectedJson, msg =
                 "Name did not updated in the database");
-        } else if (receivedPayload is error) {
+        } else {
             test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail().message);
         }
-    } else if (resp is error) {
+    } else {
         test:assertFail(msg = "Request failed: " + <string>resp.detail().message);
     }
 }
@@ -136,7 +136,7 @@ function testDeleteEmployeeResource() {
         if (receivedPayload is json) {
             expectedJson = { "Status": "Data Deleted Successfully" };
             test:assertEquals(receivedPayload, expectedJson, msg = "Delete data resource failed");
-        } else if (receivedPayload is error) {
+        } else {
             test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail().message);
         }
     } else {

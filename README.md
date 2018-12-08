@@ -293,7 +293,7 @@ public function retrieveById(int employeeID) returns (json) {
             jsonReturnValue = { "Status": "Data Not Found", "Error": "Error occurred in data conversion" };
             log:printError("Error occurred in data conversion", err = jsonConvertRet);
         }
-    } else if (ret is error) {
+    } else {
         jsonReturnValue = { "Status": "Data Not Found", "Error": "Error occurred in data retrieval" };
         log:printError("Error occurred in data retrieval", err = ret);
     }
