@@ -60,7 +60,7 @@ service travelAgencyService on travelAgencyEP {
 
     // Resource to arrange a tour
     @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
-    resource function arrangeTour(http:Caller caller, http:Request inRequest) {
+    resource function arrangeTour(http:Caller caller, http:Request inRequest) returns error? {
         http:Response outResponse = new;
         json inReqPayload = {};
 
@@ -69,7 +69,7 @@ service travelAgencyService on travelAgencyEP {
         if (payload is error) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            _ = caller->respond(outResponse);
+            _ = check caller->respond(outResponse);
             return;
         } else {
             inReqPayload = payload;
@@ -87,7 +87,7 @@ service travelAgencyService on travelAgencyEP {
             vehicleType == () || location == ()) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
-            _ = caller->respond(outResponse);
+            _ = check caller->respond(outResponse);
             return;
         }
 
@@ -395,6 +395,7 @@ service travelAgencyService on travelAgencyEP {
         // Response payload
         outResponse.setJsonPayload(untaint clientResponse);
         // Send the response to the client
-        _ = caller->respond(outResponse);
+        _ = check caller->respond(outResponse);
+        return;
     }
 }

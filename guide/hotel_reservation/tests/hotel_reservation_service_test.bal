@@ -36,7 +36,7 @@ function testResourceMiramar () {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    var response = clientEP -> post("/miramar", req);
+    var response = clientEP->post("/miramar", req);
     if (response is http:Response) {
         // Expected response code is 200
         test:assertEquals(response.statusCode, 200,
@@ -65,7 +65,7 @@ function testResourceAqueen () {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    var response = clientEP -> post("/aqueen", req);
+    var response = clientEP->post("/aqueen", req);
     if (response is http:Response) {
         // Expected response code is 200
         test:assertEquals(response.statusCode, 200,
@@ -94,7 +94,7 @@ function testResourceElizabeth () {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    var response = clientEP -> post("/elizabeth", req);
+    var response = clientEP->post("/elizabeth", req);
 
     if (response is http:Response) {
         // Expected response code is 200

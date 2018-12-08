@@ -52,7 +52,7 @@ service airlineReservationService on airlineEP {
     // Resource 'flightConcord', which checks about airline 'Qatar Airways'
     @http:ResourceConfig {methods:["POST"], path:"/qatarAirways", consumes:["application/json"],
         produces:["application/json"]}
-    resource function flightConcord (http:Caller caller, http:Request request) {
+    resource function flightConcord (http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
         json reqPayload = {};
 
@@ -61,7 +61,7 @@ service airlineReservationService on airlineEP {
         if (payload is error) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            _ = caller->respond(response);
+            _ = check caller->respond(response);
         } else {
             reqPayload = payload;
         }
@@ -75,7 +75,7 @@ service airlineReservationService on airlineEP {
         if (arrivalDate == () || departureDate == () || fromPlace == () || toPlace == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         }
 
@@ -92,13 +92,14 @@ service airlineReservationService on airlineEP {
         // Response payload
         response.setJsonPayload(untaint flightDetails);
         // Send the response to the caller
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
     // Resource 'flightAsiana', which checks about airline 'Asiana'
     @http:ResourceConfig {methods:["POST"], path:"/asiana", consumes:["application/json"],
         produces:["application/json"]}
-    resource function flightAsiana (http:Caller caller, http:Request request) {
+    resource function flightAsiana (http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
         json reqPayload = {};
 
@@ -107,7 +108,7 @@ service airlineReservationService on airlineEP {
         if (payload is error) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         } else {
             reqPayload = payload;
@@ -122,7 +123,7 @@ service airlineReservationService on airlineEP {
         if (arrivalDate == () || arrivalDate == () || fromPlace == () || toPlace == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         }
 
@@ -139,13 +140,14 @@ service airlineReservationService on airlineEP {
         // Response payload
         response.setJsonPayload(untaint flightDetails);
         // Send the response to the caller
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
     // Resource 'flightEmirates', which checks about airline 'Emirates'
     @http:ResourceConfig {methods:["POST"], path:"/emirates", consumes:["application/json"],
         produces:["application/json"]}
-    resource function flightEmirates (http:Caller caller, http:Request request) {
+    resource function flightEmirates (http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
         json reqPayload = {};
 
@@ -154,7 +156,7 @@ service airlineReservationService on airlineEP {
         if (payload is error) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         } else {
             reqPayload = payload;
@@ -169,7 +171,7 @@ service airlineReservationService on airlineEP {
         if (arrivalDate == () || departureDate == () || fromPlace == () || toPlace == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
         }
 
         // Mock logic
@@ -185,6 +187,7 @@ service airlineReservationService on airlineEP {
         // Response payload
         response.setJsonPayload(untaint flightDetails);
         // Send the response to the caller
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 }

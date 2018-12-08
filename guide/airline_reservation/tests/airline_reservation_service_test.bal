@@ -37,7 +37,7 @@ function testResourceFlightConcord () {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    var response = clientEP -> post("/qatarAirways", req);
+    var response = clientEP->post("/qatarAirways", req);
     if (response is http:Response) {
         // Expected response code is 200
         test:assertEquals(response.statusCode, 200,
@@ -65,7 +65,7 @@ function testResourceFlightAsiana () {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    var response = clientEP -> post("/asiana", req);
+    var response = clientEP->post("/asiana", req);
     if (response is http:Response) {
         // Expected response code is 200
         test:assertEquals(response.statusCode, 200,
@@ -93,7 +93,7 @@ function testResourceFlightEmirates () {
     // Set request payload
     req.setJsonPayload(requestPayload);
     // Send a 'post' request and obtain the response
-    var response = clientEP -> post("/emirates", req);
+    var response = clientEP->post("/emirates", req);
     if (response is http:Response) {
         // Expected response code is 200
         test:assertEquals(response.statusCode, 200,

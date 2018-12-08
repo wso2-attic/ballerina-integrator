@@ -75,26 +75,29 @@ function testTravelAgencyService() {
 service airlineReservationService on airlineReservationEP {
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/qatarAirways" }
-    resource function flightConcord (http:Caller caller, http:Request request) {
+    resource function flightConcord (http:Caller caller, http:Request request) returns error? {
         http:Response response;
-        _ = caller -> respond({"Airline":"Qatar Airways", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
+        _ = check caller->respond({"Airline":"Qatar Airways", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
                 "From":"Colombo", "To":"Changi", "Price":278});
+        return;
     }
 
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/asiana" }
-    resource function flightAsiana (http:Caller caller, http:Request request) {
+    resource function flightAsiana (http:Caller caller, http:Request request) returns error? {
         http:Response response;
-        _ = caller -> respond({"Airline":"Asiana", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
+        _ = check caller->respond({"Airline":"Asiana", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
                 "From":"Colombo", "To":"Changi", "Price":275});
+        return;
     }
 
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/emirates" }
-    resource function flightEmirates (http:Caller caller, http:Request request) {
+    resource function flightEmirates (http:Caller caller, http:Request request) returns error? {
         http:Response response;
-        _ = caller -> respond({"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
+        _ = check caller->respond({"Airline":"Emirates", "ArrivalDate":"12-03-2018", "ReturnDate":"13-04-2018",
                 "From":"Colombo", "To":"Changi", "Price":273});
+        return;
     }
 }
 
@@ -103,29 +106,32 @@ service airlineReservationService on airlineReservationEP {
 service hotelReservationService on hotelReservationEP {
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/miramar" }
-    resource function miramar(http:Caller caller, http:Request request) {
+    resource function miramar(http:Caller caller, http:Request request) returns error? {
         http:Response response;
         response.setJsonPayload({"HotelName":"Miramar", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
                 "DistanceToLocation":6});
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
    // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/aqueen" }
-    resource function aqueen(http:Caller caller, http:Request request) {
+    resource function aqueen(http:Caller caller, http:Request request) returns error? {
         http:Response response;
         response.setJsonPayload({"HotelName":"Aqueen", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
                 "DistanceToLocation":4});
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
    // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/elizabeth" }
-    resource function elizabeth(http:Caller caller, http:Request request) {
+    resource function elizabeth(http:Caller caller, http:Request request) returns error? {
         http:Response response;
         response.setJsonPayload({"HotelName":"Elizabeth", "FromDate":"12-03-2018", "ToDate":"13-04-2018",
                 "DistanceToLocation":2});
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 }
 
@@ -134,28 +140,31 @@ service hotelReservationService on hotelReservationEP {
 service carRentalService on carEP {
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/driveSg" }
-    resource function driveSg(http:Caller caller, http:Request request) {
+    resource function driveSg(http:Caller caller, http:Request request) returns error? {
         http:Response response;
         response.setJsonPayload({"Company":"DriveSG", "VehicleType":"Car", "FromDate":"12-03-2018",
                 "ToDate":"13-04-2018", "PricePerDay":5});
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/dreamCar" }
-    resource function dreamCar(http:Caller caller, http:Request request) {
+    resource function dreamCar(http:Caller caller, http:Request request) returns error? {
         http:Response response;
         response.setJsonPayload({"Company":"DreamCar", "VehicleType":"Car", "FromDate":"12-03-2018",
                 "ToDate":"13-04-2018", "PricePerDay":6});
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
     // Mock resource
     @http:ResourceConfig { methods: ["POST"], path: "/sixt" }
-    resource function sixt(http:Caller caller, http:Request request) {
+    resource function sixt(http:Caller caller, http:Request request) returns error? {
         http:Response response;
         response.setJsonPayload({"Company":"Sixt", "VehicleType":"Car", "FromDate":"12-03-2018",
                 "ToDate":"13-04-2018", "PricePerDay":7});
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 }

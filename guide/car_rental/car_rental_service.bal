@@ -52,7 +52,7 @@ service carRentalService on carEP {
     // Resource 'driveSg', which checks about hotel 'DriveSg'
     @http:ResourceConfig {methods:["POST"], path:"/driveSg", consumes:["application/json"],
         produces:["application/json"]}
-    resource function driveSg(http:Caller caller, http:Request request) {
+    resource function driveSg(http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
         json reqPayload = {};
 
@@ -60,7 +60,7 @@ service carRentalService on carEP {
         if (payload is error) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         } else {
             reqPayload = payload;
@@ -74,7 +74,7 @@ service carRentalService on carEP {
         if (arrivalDate == () || departureDate == () || vehicleType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         }
 
@@ -90,13 +90,14 @@ service carRentalService on carEP {
         // Response payload
         response.setJsonPayload(untaint vehicleDetails);
         // Send the response to the caller
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
     // Resource 'dreamCar', which checks about hotel 'DreamCar'
     @http:ResourceConfig {methods:["POST"], path:"/dreamCar", consumes:["application/json"],
         produces:["application/json"]}
-    resource function dreamCar(http:Caller caller, http:Request request) {
+    resource function dreamCar(http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
         json reqPayload = {};
 
@@ -105,7 +106,7 @@ service carRentalService on carEP {
         if (payload is error) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         } else {
             reqPayload = payload;
@@ -119,7 +120,7 @@ service carRentalService on carEP {
         if (arrivalDate == () || departureDate == () || vehicleType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         }
 
@@ -135,13 +136,14 @@ service carRentalService on carEP {
         // Response payload
         response.setJsonPayload(untaint vehicleDetails);
         // Send the response to the caller
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
     // Resource 'sixt', which checks about hotel 'Sixt'
     @http:ResourceConfig {methods:["POST"], path:"/sixt", consumes:["application/json"],
         produces:["application/json"]}
-    resource function sixt(http:Caller caller, http:Request request) {
+    resource function sixt(http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
         json reqPayload = {};
 
@@ -150,7 +152,7 @@ service carRentalService on carEP {
         if (payload is error) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         } else {
             reqPayload = payload;
@@ -164,7 +166,7 @@ service carRentalService on carEP {
         if (arrivalDate == () || departureDate == () || vehicleType == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller -> respond(response);
+            _ = check caller->respond(response);
             return;
         }
 
@@ -180,6 +182,7 @@ service carRentalService on carEP {
         // Response payload
         response.setJsonPayload(untaint vehicleDetails);
         // Send the response to the caller
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 }
