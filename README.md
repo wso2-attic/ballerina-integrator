@@ -27,20 +27,20 @@ In this example, the Ballerina Kafka Connector is used to connect Ballerina to A
 
 ## Prerequisites
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- [Apache Kafka 1.1.0](https://kafka.apache.org/downloads)
+- [Apache Kafka](https://kafka.apache.org/downloads)
   * Download the binary distribution and extract the contents
 - [Ballerina Kafka Connector](https://github.com/wso2-ballerina/package-kafka/releases)
   * Extract `wso2-kafka-<version>.zip`. Run the install.{sh/bat} script to install the package.
 - A Text Editor or an IDE 
 
 ### Optional Requirements
-- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
-- [Docker](https://docs.docker.com/engine/installation/)
+- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [Atom](https://atom.io/packages/language-ballerina))
+- [Docker](https://docs.docker.com/install/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
 
 ## Implementation
 
-> If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping "Implementation" section.    
+> If you want to skip the basics, you can [download the git repo](https://github.com/ballerina-guides/messaging-with-kafka/archive/master.zip) and directly move to the "Testing" section by skipping "Implementation" section.    
 
 ### Create the project structure
 
@@ -75,19 +75,22 @@ First, let's see how to add the Kafka configurations for a Kafka subscriber writ
 
 ##### Kafka subscriber configurations
 ```ballerina
-// Kafka consumer endpoint
-endpoint kafka:SimpleConsumer consumer {
+// Kafka consumer listener configurations
+kafka:ConsumerConfig consumerConfig = {
     bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
-    groupId: "inventorySystemd",
+    groupId: "inventorySystem",
     // Listen from topic 'product-price'
     topics: ["product-price"],
     // Poll every 1 second
-    pollingInterval:1000
+    pollingInterval: 1000
 };
+
+// Create kafka listener
+listener kafka:SimpleConsumer consumer = new(consumerConfig);
 ```
 
-A Kafka subscriber in Ballerina needs to consist of a `kafka:SimpleConsumer` endpoint in which you specify the required configurations for a Kafka subscriber. 
+A Kafka subscriber in Ballerina needs to consist of a `kafka:SimpleConsumer` listener with providing required configurations for a Kafka subscriber. 
 
 The `bootstrapServers` field provides the list of host and port pairs, which are the addresses of the Kafka brokers in a "bootstrap" Kafka cluster. 
 
@@ -105,25 +108,28 @@ import ballerina/log;
 import wso2/kafka;
 import ballerina/internal;
 
-// Kafka consumer endpoint
-endpoint kafka:SimpleConsumer consumer {
+// Kafka consumer listener configurations
+kafka:ConsumerConfig consumerConfig = {
     bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
-    groupId: "inventorySystemd",
+    groupId: "inventorySystem",
     // Listen from topic 'product-price'
     topics: ["product-price"],
     // Poll every 1 second
-    pollingInterval:1000
+    pollingInterval: 1000
 };
+
+// Create kafka listener
+listener kafka:SimpleConsumer consumer = new(consumerConfig);
 
 // Kafka service that listens from the topic 'product-price'
 // 'inventoryControlService' subscribed to new product price updates from
 // the product admin and updates the Database.
-service<kafka:Consumer> kafkaService bind consumer {
+service kafkaService on consumer {
     // Triggered whenever a message added to the subscribed topic
-    onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
+    resource function onMessage(kafka:SimpleConsumer simpleConsumer, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
-        foreach entry in records {
+        foreach var entry in records {
             byte[] serializedMsg = entry.value;
             // Convert the serialized message to string message
             string msg = internal:byteArrayToString(serializedMsg, "UTF-8");
@@ -138,7 +144,7 @@ service<kafka:Consumer> kafkaService bind consumer {
 }
 ```
 
-In the above code, resource `onMessage` will be triggered whenever a message published to the topic specified.
+In the above code, resource function `onMessage` will be triggered whenever a message published to the topic specified.
 
 To check the implementations of the other subscribers, see [franchisee1.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/guide/franchisee1/franchisee1.bal) and 
 [franchisee2.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/guide/franchisee2/franchisee2.bal).
@@ -150,16 +156,17 @@ First, let's see how to add the Kafka configurations for a Kafka publisher writt
 
 ##### Kafka producer configurations
 ```ballerina
-// Kafka producer endpoint
-endpoint kafka:SimpleProducer kafkaProducer {
+kafka:ProducerConfig producerConfigs = {
     bootstrapServers: "localhost:9092",
-    clientID:"basic-producer",
-    acks:"all",
-    noRetries:3
+    clientID: "basic-producer",
+    acks: "all",
+    noRetries: 3
 };
+
+kafka:SimpleProducer kafkaProducer = new(producerConfigs);
 ```
 
-A Kafka producer in Ballerina needs to consist of a `kafka:SimpleProducer` endpoint in which you specify the required configurations for a Kafka publisher. 
+A Kafka producer in Ballerina needs to consist of a `kafka:SimpleProducer` object with specifying the required configurations for a Kafka publisher. 
 
 Let's now see the complete implementation of the `product_admin_portal`, which is a Kafka topic publisher. Inline comments added for better understanding.
 
@@ -169,90 +176,82 @@ import ballerina/http;
 import wso2/kafka;
 
 // Constants to store admin credentials
-@final string ADMIN_USERNAME = "Admin";
-@final string ADMIN_PASSWORD = "Admin";
+final string ADMIN_USERNAME = "Admin";
+final string ADMIN_PASSWORD = "Admin";
 
-// Kafka producer endpoint
-endpoint kafka:SimpleProducer kafkaProducer {
+// Kafka producer configurations
+kafka:ProducerConfig producerConfigs = {
     bootstrapServers: "localhost:9092",
-    clientID:"basic-producer",
-    acks:"all",
-    noRetries:3
+    clientID: "basic-producer",
+    acks: "all",
+    noRetries: 3
 };
+
+kafka:SimpleProducer kafkaProducer = new(producerConfigs);
 
 // HTTP service endpoint
-endpoint http:Listener listener {
-    port:9090
-};
+listener http:Listener httpListener = new(9090);
 
-@http:ServiceConfig {basePath:"/product"}
-service<http:Service> productAdminService bind listener {
+@http:ServiceConfig { basePath: "/product" }
+service productAdminService on httpListener {
 
-    @http:ResourceConfig {methods:["POST"], consumes:["application/json"],
-        produces:["application/json"]}
-    updatePrice (endpoint client, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
+    resource function updatePrice(http:Caller caller, http:Request request) {
+        http:Response response = new;
         float newPriceAmount;
+        json|error reqPayload = request.getJsonPayload();
 
-        // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = client -> respond(response);
-                done;
-            }
-        }
-
-        json username = reqPayload.Username;
-        json password = reqPayload.Password;
-        json productName = reqPayload.Product;
-        json newPrice = reqPayload.Price;
-
-        // If payload parsing fails, send a "Bad Request" message as the response
-        if (username == null || password == null || productName == null || newPrice == null) {
+        if (reqPayload is error) {
             response.statusCode = 400;
-            response.setJsonPayload({"Message":"Bad Request: Invalid payload"});
-            _ = client->respond(response);
-            done;
-        }
+            response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+            _ = caller->respond(response);
+        } else {
+            json username = reqPayload.Username;
+            json password = reqPayload.Password;
+            json productName = reqPayload.Product;
+            json newPrice = reqPayload.Price;
 
-        // Convert the price value to float
-        var result = <float>newPrice.toString();
-        match result {
-            float value => {
-                newPriceAmount = value;
-            }
-            error err => {
+            // If payload parsing fails, send a "Bad Request" message as the response
+            if (username == null || password == null || productName == null || newPrice == null) {
                 response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid amount specified"});
-                _ = client->respond(response);
-                done;
+                response.setJsonPayload({ "Message": "Bad Request: Invalid payload" });
+                _ = caller->respond(response);
             }
+
+            // Convert the price value to float
+            var result = float.convert(newPrice.toString());
+            if (result is error) {
+                response.statusCode = 400;
+                response.setJsonPayload({ "Message": "Invalid amount specified" });
+                _ = caller->respond(response);
+            } else {
+                newPriceAmount = result;
+            }
+
+            // If the credentials does not match with the admin credentials,
+            // send an "Access Forbidden" response message
+            if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
+                response.statusCode = 403;
+                response.setJsonPayload({ "Message": "Access Forbidden" });
+                _ = caller->respond(response);
+            }
+
+            // Construct and serialize the message to be published to the Kafka topic
+            json priceUpdateInfo = { "Product": productName, "UpdatedPrice": newPriceAmount };
+            byte[] serializedMsg = priceUpdateInfo.toString().toByteArray("UTF-8");
+
+            // Produce the message and publish it to the Kafka topic
+            var sendResult = kafkaProducer->send(serializedMsg, "product-price", partition = 0);
+            // Send internal server error if the sending has failed
+            if (sendResult is error) {
+                response.statusCode = 500;
+                response.setJsonPayload({ "Message": "Kafka producer failed to send data" });
+                _ = caller->respond(response);
+            }
+            // Send a success status to the admin request
+            response.setJsonPayload({ "Status": "Success" });
+            _ = caller->respond(response);
         }
-
-        // If the credentials does not match with the admin credentials,
-        // send an "Access Forbidden" response message
-        if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
-            response.statusCode = 403;
-            response.setJsonPayload({"Message":"Access Forbidden"});
-            _ = client->respond(response);
-            done;
-        }
-
-        // Construct and serialize the message to be published to the Kafka topic
-        json priceUpdateInfo = {"Product":productName, "UpdatedPrice":newPriceAmount};
-        byte[] serializedMsg = priceUpdateInfo.toString().toByteArray("UTF-8");
-
-        // Produce the message and publish it to the Kafka topic
-        kafkaProducer->send(serializedMsg, "product-price", partition = 0);
-        // Send a success status to the admin request
-        response.setJsonPayload({"Status":"Success"});
-        _ = client->respond(response);
     }
 }
 ```
@@ -265,11 +264,15 @@ service<http:Service> productAdminService bind listener {
  ```bash
     $ bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
  ```
+(* `-daemon` flag is optional) 
+
+  Here we start a zookeeper with default configurations (on `port:2181`).
 
 - Start a single `Kafka broker` instance with the default configurations by entering the following command  in a terminal from `<KAFKA_HOME_DIRECTORY>`.
 ```bash
    $ bin/kafka-server-start.sh -daemon config/server.properties
 ```
+(* `-daemon` flag is optional) 
   
   Here we started the Kafka server on `host:localhost` and `port:9092`. Now we have a working Kafka cluster.
 
@@ -298,38 +301,58 @@ service<http:Service> productAdminService bind listener {
    "http://localhost:9090/product/updatePrice" -H "Content-Type:application/json"
 ```
 
-- The `productAdminService` sends a response similar to the following.
+- The `productAdminService` sends a response similar to the following (with some additional details).
 ```bash
    < HTTP/1.1 200 OK
+   ...
    {"Status":"Success"}
 ```
 
-- Sample log messages in Kafka subscriber services:
+- Sample outputs in Kafka subscriber services:
+
+All the services will output the following:
 ```bash
-  INFO  [<All>] - New message received from the product admin 
-  INFO  [<All>] - Topic:product-price; Message:{"Product":"ABC","UpdatedPrice":100.0} 
-  INFO  [franchisee1] - Acknowledgement from Franchisee 1 
-  INFO  [franchisee2] - Acknowledgement from Franchisee 2 
-  INFO  [inventory_control_system] - Database updated with the new price of the product
+  [INFO] New message received from the product admin
+  [INFO] Topic: product-price; Received Message: {"Product":"ABC", "UpdatedPrice":100.0}
+```
+
+Inventory control system:
+```bash
+  [INFO] Database updated with the new price of the product
+```
+
+Franchisee 1:
+```bash
+  [INFO] Acknowledgement from Franchisee 1 
+```
+
+Franchisee 2:
+```bash
+  [INFO] Acknowledgement from Franchisee 2 
 ```
 
 ### Writing unit tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
-- Test functions should be annotated with `@test:Config`. See the below example.
+In Ballerina, the unit test cases should be in the same package inside a folder named as `tests`.  When writing the test functions the below convention should be followed.
+- Test functions should be annotated with `@test:Config`. 
+- Test function name should start with the word `test`.
+
+See the below example:
 ```ballerina
    @test:Config
    function testProductAdminPortal() {
+       // test logic
+   }
 ```
   
-This guide contains unit test for the 'product_admin_portal' service implemented above. 
+This guide contains unit test for the `product_admin_portal` service implemented above. 
 
 To run the unit tests, navigate to `messaging-with-kafka/guide` and run the following command. 
 ```bash
    $ ballerina test
 ```
 
-When running the unit tests, make sure that `Kafka` is up and running.
+When running the unit tests, make sure that `Kafka Cluster` is up and running.
 
 To check the implementation of the test file, refer to the [product_admin_portal_test.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/guide/product_admin_portal/tests/product_admin_portal_test.bal).
 
@@ -384,7 +407,7 @@ import ballerinax/docker;
 
 // Constants to store admin credentials
 
-// Kafka producer endpoint
+// Kafka producer initialization
 
 @docker:Config {
     registry:"ballerina.guides.io",
@@ -398,34 +421,34 @@ import ballerinax/docker;
 }
 
 @docker:Expose{}
-endpoint http:Listener listener {
-    port:9090
-};
+http:Listener httpListener = new("9090");
 
 @http:ServiceConfig {basePath:"/product"}
-service<http:Service> productAdminService bind listener {
+service productAdminService on httpListener {
 ``` 
 
 - `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:CopyFiles` is used to copy the Kafka connector jar files into the ballerina bre/lib folder. You can provide multiple files as an array to field `files` of CopyFiles docker annotation. `@docker:Expose {}` is used to expose the port. 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `messaging-with-kafka/guide` and run the following command.  
   
-```
-   $ballerina build product_admin_portal
-  
-   Run following command to start docker container: 
-   docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
+```bash
+   $ ballerina build product_admin_portal
+
+   ...
+
+   Run following command to start docker container:
+   $ docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
 ```
 
-- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+- Once you successfully build the docker image, you can run it with the `docker run` command that is shown in the previous step.  
 
 ```bash
    $ docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
 ```
 
-   Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+   Here we run the docker image with flag `-p <host_port>:<container_port>` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
-- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+- Verify docker container is running with the use of `$ docker ps`. The status of the docker container should be shown as 'Up'. 
 
 - You can access the service using the same curl commands that we've used above.
 ```bash
@@ -446,7 +469,7 @@ service<http:Service> productAdminService bind listener {
    $ kubectl create -f ./kubernetes/
 ```
 
-- Now let's see how we can deploy the `product_admin_portal` on Kubernetes. We need to import `` ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment.
+- Now let's see how we can deploy the `product_admin_portal` on Kubernetes. We need to import `ballerinax/kubernetes;` and use ` @kubernetes` annotations as shown below to enable kubernetes deployment.
 
 ##### product_admin_portal.bal
 
@@ -476,29 +499,27 @@ import ballerinax/kubernetes;
                   source:<path_to_Kafka_connector_jars>}]
 }
 
-endpoint http:Listener listener {
-    port:9090
-};
+http:Listener httpListener = new(9090);
 
 @http:ServiceConfig {basePath:"/product"}
-service<http:Service> productAdminService bind listener {
+service productAdminService on httpListener {
 ``` 
 
-- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the Kafka connector jar files into the ballerina bre/lib folder. You can provide multiple files as an array to this field.
-- We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
-- In addition we have used `` @kubernetes:Ingress ``, which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
+- Here we have used `@kubernetes:Deployment` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the Kafka connector jar files into the ballerina bre/lib folder. You can provide multiple files as an array to this field.
+- We have also specified `@kubernetes:Service` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
+- In addition we have used `@kubernetes:Ingress`, which is the external interface to access your service (with path `/` and host name `ballerina.guides.io`)
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+- Now you can build a Ballerina executable archive (`.balx`) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-```
+```bash
    $ ballerina build product_admin_portal
   
    Run following command to deploy kubernetes artifacts:  
    kubectl apply -f ./target/product_admin_portal/kubernetes
 ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker images ``. 
-- Also the Kubernetes artifacts related our service, will be generated under `` ./target/product_admin_portal/kubernetes``. 
+- You can verify that the docker image that we specified in `@kubernetes:Deployment` is created, by using `docker images`. 
+- Also the Kubernetes artifacts related our service, will be generated under `./target/product_admin_portal/kubernetes`. 
 - Now you can create the Kubernetes deployment using:
 
 ```bash

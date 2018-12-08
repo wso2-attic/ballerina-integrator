@@ -14,38 +14,41 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/log;
+import ballerina/io;
 import wso2/kafka;
 import ballerina/internal;
 
-// Kafka consumer endpoint
-endpoint kafka:SimpleConsumer consumer {
+// Kafka consumer listener configurations
+kafka:ConsumerConfig consumerConfig = {
     bootstrapServers: "localhost:9092, localhost:9093",
     // Consumer group ID
-    groupId: "inventorySystemd",
+    groupId: "inventorySystem",
     // Listen from topic 'product-price'
     topics: ["product-price"],
     // Poll every 1 second
-    pollingInterval:1000
+    pollingInterval: 1000
 };
+
+// Create kafka listener
+listener kafka:SimpleConsumer consumer = new(consumerConfig);
 
 // Kafka service that listens from the topic 'product-price'
 // 'inventoryControlService' subscribed to new product price updates from
 // the product admin and updates the Database.
-service<kafka:Consumer> kafkaService bind consumer {
+service kafkaService on consumer {
     // Triggered whenever a message added to the subscribed topic
-    onMessage(kafka:ConsumerAction consumerAction, kafka:ConsumerRecord[] records) {
+    resource function onMessage(kafka:SimpleConsumer simpleConsumer, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
-        foreach entry in records {
+        foreach var entry in records {
             byte[] serializedMsg = entry.value;
             // Convert the serialized message to string message
             string msg = internal:byteArrayToString(serializedMsg, "UTF-8");
-            log:printInfo("New message received from the product admin");
+            io:println("[INFO] New message received from the product admin");
             // log the retrieved Kafka record
-            log:printInfo("Topic: " + entry.topic + "; Received Message: " + msg);
+            io:println("[INFO] Topic: " + entry.topic + "; Received Message: " + msg);
             // Mock logic
             // Update the database with the new price for the specified product
-            log:printInfo("Database updated with the new price of the product");
+            io:println("[INFO] Database updated with the new price of the product");
         }
     }
 }
