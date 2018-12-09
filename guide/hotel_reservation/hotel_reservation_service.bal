@@ -43,32 +43,28 @@ import ballerina/http;
 //}
 
 // Service endpoint
-endpoint http:Listener hotelEP {
-    port:9092
-};
+listener http:Listener hotelEP = new (9092);
 
 // Hotel reservation service
 @http:ServiceConfig {basePath:"/hotel"}
-service<http:Service> hotelReservationService bind hotelEP {
+service hotelReservationService on hotelEP {
 
     // Resource 'miramar', which checks about hotel 'Miramar'
     @http:ResourceConfig {methods:["POST"], path:"/miramar", consumes:["application/json"],
         produces:["application/json"]}
-    miramar (endpoint caller, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    resource function miramar (http:Caller caller, http:Request request) returns error? {
+        http:Response response = new;
+        json reqPayload = {};
 
         // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
-                done;
-            }
+        var payload = request.getJsonPayload();
+        if (payload is error) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            _ = check caller->respond(response);
+            return;
+        } else {
+            reqPayload = payload;
         }
 
         json arrivalDate = reqPayload.ArrivalDate;
@@ -79,8 +75,8 @@ service<http:Service> hotelReservationService bind hotelEP {
         if (arrivalDate == () || departureDate == () || location == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller -> respond(response);
-            done;
+            _ = check caller->respond(response);
+            return;
         }
 
         // Mock logic
@@ -94,27 +90,26 @@ service<http:Service> hotelReservationService bind hotelEP {
         // Response payload
         response.setJsonPayload(untaint hotelDetails);
         // Send the response to the caller
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
     // Resource 'aqueen', which checks about hotel 'Aqueen'
     @http:ResourceConfig {methods:["POST"], path:"/aqueen", consumes:["application/json"],
         produces:["application/json"]}
-    aqueen (endpoint caller, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    resource function aqueen (http:Caller caller, http:Request request) returns error? {
+        http:Response response = new;
+        json reqPayload = {};
 
         // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
-                done;
-            }
+        var payload = request.getJsonPayload();
+        if (payload is error) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            _ = check caller->respond(response);
+            return;
+        } else {
+            reqPayload = payload;
         }
 
         json arrivalDate = reqPayload.ArrivalDate;
@@ -125,8 +120,8 @@ service<http:Service> hotelReservationService bind hotelEP {
         if (arrivalDate == () || departureDate == () || location == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller -> respond(response);
-            done;
+            _ = check caller->respond(response);
+            return;
         }
 
         // Mock logic
@@ -140,27 +135,26 @@ service<http:Service> hotelReservationService bind hotelEP {
         // Response payload
         response.setJsonPayload(untaint hotelDetails);
         // Send the response to the caller
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 
     // Resource 'elizabeth', which checks about hotel 'Elizabeth'
     @http:ResourceConfig {methods:["POST"], path:"/elizabeth", consumes:["application/json"],
         produces:["application/json"]}
-    elizabeth (endpoint caller, http:Request request) {
-        http:Response response;
-        json reqPayload;
+    resource function elizabeth (http:Caller caller, http:Request request) returns error? {
+        http:Response response = new;
+        json reqPayload = {};
 
         // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-                _ = caller -> respond(response);
-                done;
-            }
+        var payload = request.getJsonPayload();
+        if (payload is error) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+            _ = check caller->respond(response);
+            return;
+        } else {
+            reqPayload = payload;
         }
 
         json arrivalDate = reqPayload.ArrivalDate;
@@ -171,8 +165,8 @@ service<http:Service> hotelReservationService bind hotelEP {
         if (arrivalDate == () || departureDate == () || location == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            _ = caller -> respond(response);
-            done;
+            _ = check caller->respond(response);
+            return;
         }
 
         // Mock logic
@@ -186,6 +180,7 @@ service<http:Service> hotelReservationService bind hotelEP {
         // Response payload
         response.setJsonPayload(untaint hotelDetails);
         // Send the response to the caller
-        _ = caller -> respond(response);
+        _ = check caller->respond(response);
+        return;
     }
 }
