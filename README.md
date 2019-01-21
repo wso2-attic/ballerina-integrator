@@ -47,7 +47,7 @@ For the scenario In this guide, you will use `Apache ActiveMQ` as the JMS broker
 - A Text Editor or an IDE 
 
 ### Optional Requirements
-- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina))
+- Ballerina IDE plugins ([VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
 
