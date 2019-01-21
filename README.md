@@ -34,7 +34,7 @@ In this example, the Ballerina Kafka Connector is used to connect Ballerina to A
 - A Text Editor or an IDE 
 
 ### Optional Requirements
-- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [Atom](https://atom.io/packages/language-ballerina))
+- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina))
 - [Docker](https://docs.docker.com/install/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
 
