@@ -31,10 +31,7 @@ The following diagram illustrates all the required functionality of the Order Ma
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - A Text Editor or an IDE 
 > **Tip**: You can install the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
-
-### Optional requirements
-- [Docker](https://docs.docker.com/engine/installation/)
-- [Kubernetes](https://kubernetes.io/docs/setup/)
+- [Docker](https://docs.docker.com/engine/installation/) or [Kubernetes](https://kubernetes.io/docs/setup/)
 
 ## Implementation
 
