@@ -39,7 +39,7 @@ The first scenario shows a successful transaction whereas the other two fail due
 ## Prerequisites
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - A Text Editor or an IDE 
-> **Tip**: You can install the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 - [MySQL](https://dev.mysql.com/downloads/)
 - [JDBC driver](https://dev.mysql.com/downloads/connector/j/)
     - Copy the downloaded JDBC driver jar file into the` <BALLERINA_HOME>/bre/lib` folder 
