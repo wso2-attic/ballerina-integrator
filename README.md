@@ -34,7 +34,7 @@ Basically, this service will deal with a MySQL database and expose the data oper
  
 * [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 * A Text Editor or an IDE 
-> **Tip**: You can install the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 * [MySQL version 5.6 or later](https://www.mysql.com/downloads/)
 * [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL
   * Copy the downloaded JDBC driver to the `<BALLERINA_HOME>/bre/lib` folder.   
