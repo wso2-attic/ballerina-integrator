@@ -53,7 +53,7 @@ Using student's ID, it maps the details which belong to a particular student fro
  
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - A Text Editor or an IDE 
-> **Tip**: You can install the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 
 ### Optional Requirements
 
