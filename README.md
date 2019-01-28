@@ -33,7 +33,9 @@ Basically, this service will deal with a MySQL database and expose the data oper
 ## Prerequisites
  
 * [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-* MySQL version 5.6 or later
+* A Text Editor or an IDE 
+> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+* [MySQL version 5.6 or later](https://www.mysql.com/downloads/)
 * [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL
   * Copy the downloaded JDBC driver to the `<BALLERINA_HOME>/bre/lib` folder.   
   
@@ -41,10 +43,9 @@ Basically, this service will deal with a MySQL database and expose the data oper
     > _On Linux:_ `mysql-connector-java-8.x.x.jar -> user/lib/Ballerina/ballerina-x.xx.x/bre/lib/`      
     > _On Mac:_ `mysql-connector-java-8.x.x.jar -> Library/Ballerina/ballerina-x.xx.x/bre/lib/`   
     > _On Windows:_ `mysql-connector-java-8.x.x.jar -> C:\Program Files\Ballerina\ballerina-x.xx.x\bre\lib\`
-* A Text Editor or an IDE
 
 ### Optional requirements
-- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [Atom](https://atom.io/packages/language-ballerina))
+
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
 
