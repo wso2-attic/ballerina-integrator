@@ -27,14 +27,16 @@ In this example, the Ballerina Kafka Connector is used to connect Ballerina to A
 
 ## Prerequisites
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
+- A Text Editor or an IDE 
+> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 - [Apache Kafka](https://kafka.apache.org/downloads)
   * Download the binary distribution and extract the contents
 - [Ballerina Kafka Connector](https://github.com/wso2-ballerina/package-kafka/releases)
   * Extract `wso2-kafka-<version>.zip`. Run the install.{sh/bat} script to install the package.
-- A Text Editor or an IDE 
+
 
 ### Optional Requirements
-- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [Atom](https://atom.io/packages/language-ballerina))
+
 - [Docker](https://docs.docker.com/install/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
 
