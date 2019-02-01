@@ -87,7 +87,7 @@ service productAdminService on httpListener {
             // Send internal server error if the sending has failed
             if (sendResult is error) {
                 response.statusCode = 500;
-                response.setJsonPayload({ "Message": "Kafka producer failed to send data"});
+                response.setJsonPayload({ "Message": "Kafka producer failed to send data" });
                 _ = caller->respond(response);
             }
             // Send a success status to the admin request
