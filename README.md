@@ -123,7 +123,7 @@ kafka:ConsumerConfig consumerConfig = {
 listener kafka:SimpleConsumer consumer = new(consumerConfig);
 
 // Kafka service that listens from the topic 'product-price'
-// 'inventoryControlService' subscribed to new product price updates`` from
+// 'inventoryControlService' subscribed to new product price updates from
 // the product admin and updates the Database.
 service kafkaService on consumer {
     // Triggered whenever a message added to the subscribed topic
