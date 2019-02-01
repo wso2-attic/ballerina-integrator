@@ -18,10 +18,10 @@ import ballerina/test;
 import ballerina/http;
 
 type Payload record {
-    string Username = "";
-    string Password = "";
-    string Product = "";
-    float Price = 1.0;
+    string Username;
+    string Password;
+    string Product;
+    float Price;
     !...;
 };
 
