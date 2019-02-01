@@ -296,7 +296,7 @@ service productAdminService on httpListener {
    
 - Invoke the `productAdminService` by sending a valid POST request.
 ```bash
-   curl -v -X POST -d \
+   curl -v POST -d \
    '{"Username":"Admin", "Password":"Admin", "Product":"ABC", "Price":100.00}' \
    "http://localhost:9090/product/updatePrice" -H "Content-Type:application/json"
 ```
