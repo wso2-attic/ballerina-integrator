@@ -104,9 +104,9 @@ Let's now see the complete implementation of the `inventory_control_system`, whi
 
 ##### inventory_control_system.bal
 ```ballerina
-import ballerina/log;
+import ballerina/io;
 import wso2/kafka;
-import ballerina/internal;
+import ballerina/encoding;
 
 // Kafka consumer listener configurations
 kafka:ConsumerConfig consumerConfig = {
@@ -123,7 +123,7 @@ kafka:ConsumerConfig consumerConfig = {
 listener kafka:SimpleConsumer consumer = new(consumerConfig);
 
 // Kafka service that listens from the topic 'product-price'
-// 'inventoryControlService' subscribed to new product price updates from
+// 'inventoryControlService' subscribed to new product price updates`` from
 // the product admin and updates the Database.
 service kafkaService on consumer {
     // Triggered whenever a message added to the subscribed topic
@@ -132,13 +132,13 @@ service kafkaService on consumer {
         foreach var entry in records {
             byte[] serializedMsg = entry.value;
             // Convert the serialized message to string message
-            string msg = internal:byteArrayToString(serializedMsg, "UTF-8");
-            log:printInfo("New message received from the product admin");
+            string msg = encoding:byteArrayToString(serializedMsg);
+            io:println("New message received from the product admin");
             // log the retrieved Kafka record
-            log:printInfo("Topic: " + entry.topic + "; Received Message: " + msg);
+            io:println("Topic: " + entry.topic + "; Received Message: " + msg);
             // Mock logic
             // Update the database with the new price for the specified product
-            log:printInfo("Database updated with the new price of the product");
+            io:println("Database updated with the new price of the product");
         }
     }
 }
@@ -264,7 +264,7 @@ service productAdminService on httpListener {
  ```bash
     $ bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
  ```
-(* `-daemon` flag is optional) 
+(* `-daemon` flag is optional, use this if you want to run kafka server as a daemon) 
 
   Here we start a zookeeper with default configurations (on `port:2181`).
 
@@ -272,7 +272,7 @@ service productAdminService on httpListener {
 ```bash
    $ bin/kafka-server-start.sh -daemon config/server.properties
 ```
-(* `-daemon` flag is optional) 
+(* `-daemon` flag is optional, use this if you want to run kafka server as a daemon) 
   
   Here we started the Kafka server on `host:localhost` and `port:9092`. Now we have a working Kafka cluster.
 
@@ -302,7 +302,7 @@ service productAdminService on httpListener {
 ```
 
 - The `productAdminService` sends a response similar to the following (with some additional details).
-```bash
+```
    < HTTP/1.1 200 OK
    ...
    {"Status":"Success"}
@@ -311,23 +311,23 @@ service productAdminService on httpListener {
 - Sample outputs in Kafka subscriber services:
 
 All the services will output the following:
-```bash
+```
   [INFO] New message received from the product admin
   [INFO] Topic: product-price; Received Message: {"Product":"ABC", "UpdatedPrice":100.0}
 ```
 
 Inventory control system:
-```bash
+```
   [INFO] Database updated with the new price of the product
 ```
 
 Franchisee 1:
-```bash
+```
   [INFO] Acknowledgement from Franchisee 1 
 ```
 
 Franchisee 2:
-```bash
+```
   [INFO] Acknowledgement from Franchisee 2 
 ```
 
@@ -452,7 +452,7 @@ service productAdminService on httpListener {
 
 - You can access the service using the same curl commands that we've used above.
 ```bash
-   curl -v -X POST -d \
+   curl -v POST -d \
    '{"Username":"Admin", "Password":"Admin", "Product":"ABC", "Price":100.00}' \
    "http://localhost:9090/product/updatePrice" -H "Content-Type:application/json"
 ```
