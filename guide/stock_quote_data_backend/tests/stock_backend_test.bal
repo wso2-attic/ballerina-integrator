@@ -64,7 +64,3 @@ function testMsftResource() {
     }
 }
 
-@test:AfterSuite
-function stopService() {
-    test:stopServices("stock_quote_data_backend");
-}
