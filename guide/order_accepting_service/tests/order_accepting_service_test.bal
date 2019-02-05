@@ -23,19 +23,22 @@ import ballerina/test;
 
 function testResourceOrderDelivey() {
 
-    endpoint http:Client httpEndpoint3 { url: "http://localhost:9090/placeOrder" };
+    http:Client httpEndpoint3 = new("http://localhost:9090");
     // Initialize the empty http request
-    http:Request req;
+    http:Request req = new;
     // Construct a request payload
     json payload = { "customerID": "C002", "productID": "P002", "quantity": "40000", "orderType": "wholesale" };
     req.setJsonPayload(payload);
     // Send a 'post' request and obtain the response
-    http:Response response = check httpEndpoint3->post("/place", req);
-    // Expected response code is 200
-    test:assertEquals(response.statusCode, 200, msg = "service did not respond with 200 OK signal!");
-    // Check whether the response is as expected
-    json resPayload = check response.getJsonPayload();
-    json expected = { "Message": "Your order is successfully placed" };
-    test:assertEquals(resPayload, expected, msg = "Response mismatch!");
-
+    var response = httpEndpoint3->post("/placeOrder/place", req);
+    if (response is http:Response) {
+        // Expected response code is 200
+        test:assertEquals(response.statusCode, 200, msg = "service did not respond with 200 OK signal!");
+        // Check whether the response is as expected
+        var resPayload = response.getJsonPayload();
+        if (resPayload is json) {
+            json expected = { "Message": "Your order is successfully placed" };
+            test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+        }
+    }
 }

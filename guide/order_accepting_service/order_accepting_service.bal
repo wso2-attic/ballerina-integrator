@@ -18,12 +18,12 @@ import ballerina/log;
 import ballerina/http;
 import ballerina/jms;
 
-// Type definition for a order
+// Type definition for an order
 type Order record {
-    string customerID;
-    string productID;
-    string quantity;
-    string orderType;
+    string customerID?;
+    string productID?;
+    string quantity?;
+    string orderType?;
 };
 
 // Initialize a JMS connection with the provider
@@ -40,38 +40,31 @@ jms:Session jmsSession = new(jmsConnection, {
     });
 
 // Initialize a queue sender using the created session
-endpoint jms:QueueSender jmsProducer {
-    session: jmsSession,
-    queueName: "Order_Queue"
-};
+jms:QueueSender jmsProducer = new(jmsSession, queueName = "Order_Queue");
 
 //export http listner port on 9090
-endpoint http:Listener listener {
-    port: 9090
-};
+listener http:Listener httpListener = new(9090);
 
 // Order Accepting Service, which allows users to place order online
 @http:ServiceConfig { basePath: "/placeOrder" }
-service<http:Service> orderAcceptingService bind listener {
+service orderAcceptingService on httpListener {
     // Resource that allows users to place an order 
     @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"],
         produces: ["application/json"] }
-    place(endpoint caller, http:Request request) {
-        http:Response response;
-        Order newOrder;
-        json reqPayload;
+    resource function place(http:Caller caller, http:Request request) {
+        http:Response response = new;
+        Order newOrder = {};
+        json reqPayload = {};
 
         // Try parsing the JSON payload from the request
-        match request.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-                _ = caller->respond(response);
-                done;
-            }
+        var payload = request.getJsonPayload();
+        if (payload is json) {
+            reqPayload = payload;
+        } else {
+            response.statusCode = 400;
+            response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+            _ = caller->respond(response);
+            return;
         }
 
         json customerID = reqPayload.customerID;
@@ -84,7 +77,7 @@ service<http:Service> orderAcceptingService bind listener {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Bad Request - Invalid payload" });
             _ = caller->respond(response);
-            done;
+            return;
         }
 
         // Order details
@@ -94,16 +87,25 @@ service<http:Service> orderAcceptingService bind listener {
         newOrder.orderType = orderType.toString();
 
         json responseMessage;
-        var orderDetails = check <json>newOrder;
+        var orderDetails = json.convert(newOrder);
         // Create a JMS message
-        jms:Message queueMessage = check jmsSession.createTextMessage(orderDetails.toString());
-        // Send the message to the JMS queue
-        _ = jmsProducer->send(queueMessage);
-        // Construct a success message for the response
-        responseMessage = { "Message": "Your order is successfully placed" };
-        log:printInfo("New order added to the JMS Queue; customerID: '" + newOrder.customerID +
-                "', productID: '" + newOrder.productID + "';");
-
+        if (orderDetails is json) {
+            var queueMessage = jmsSession.createTextMessage(orderDetails.toString());
+            // Send the message to the JMS queue
+            if (queueMessage is jms:Message) {
+                _ = jmsProducer->send(queueMessage);
+                // Construct a success message for the response
+                responseMessage = { "Message": "Your order is successfully placed" };
+                log:printInfo("New order added to the JMS queue; customerID: '" + newOrder.customerID +
+                        "', productID: '" + newOrder.productID + "';");
+            } else {
+                responseMessage = { "Message": "Error occured while placing the order" };
+                log:printError("Error occured while adding the order to the JMS queue");
+            }
+        } else {
+            responseMessage = { "Message": "Error occured while placing the order" };
+            log:printError("Error occured while placing the order");
+        }
         // Send response to the user
         response.setJsonPayload(responseMessage);
         _ = caller->respond(response);
