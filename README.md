@@ -130,6 +130,7 @@ service orderMgt on httpListener {
 ##### order_mgt_service.bal
 ```ballerina
 import ballerina/http;
+import ballerina/log;
 
 listener http:Listener httpListener = new(9090);
 
