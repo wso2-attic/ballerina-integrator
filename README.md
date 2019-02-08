@@ -321,7 +321,7 @@ This guide contains unit tests for each method available in the `account_manager
 
 To run the unit tests, navigate to `managing-database-transactions/guide` and run the following command. 
 ```bash
-   $ ballerina test
+   $ ballerina test --experimental
 ```
 Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file
 
