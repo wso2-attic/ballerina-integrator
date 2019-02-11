@@ -505,7 +505,7 @@ mysql:Client employeeDB = new({
     registry: "ballerina.guides.io",
     name: "employee_database_service",
     tag: "v1.0",
-    baseImage: "ballerina/ballerina:0.990.0"
+    baseImage: "ballerina/ballerina:<BALLERINA_VERSION>"
 }
 
 @docker:CopyFiles {
@@ -613,7 +613,7 @@ mysql:Client employeeDB = new({
 @kubernetes:Deployment {
     image: "ballerina.guides.io/employee_database_service:v1.0",
     name: "ballerina-guides-employee-database-service",
-    baseImage: "ballerina/ballerina:0.990.0",
+    baseImage: "ballerina/ballerina:<BALLERINA_VERSION>",
     copyFiles: [{ target: "/ballerina/runtime/bre/lib",
                 source: <path_to_JDBC_jar> }]
 }
@@ -633,7 +633,7 @@ eg:
 @kubernetes:Deployment {
     image: "ballerina.guides.io/employee_database_service:v1.0",
     name: "ballerina-guides-employee-database-service",
-    baseImage: "ballerina/ballerina:0.990.0",
+    baseImage: "ballerina/ballerina:<BALLERINA_VERSION>",
     copyFiles: [{ target: "/ballerina/runtime/bre/lib",
                 source: <path_to_JDBC_jar> }],
     dockerHost: "tcp://<MINIKUBE_IP>:<DOCKER_PORT>",
