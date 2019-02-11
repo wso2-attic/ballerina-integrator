@@ -47,7 +47,7 @@ script:
 - ./${KAFKA_VERSION}/bin/kafka-server-start.sh -daemon ./${KAFKA_VERSION}/config/server.properties
 
 # Ballerina Kafka Connector
-- KAFKA_CONNECTOR_VERSION=${CONNECTOR_VERSION:-0.980.1}
+- KAFKA_CONNECTOR_VERSION=${CONNECTOR_VERSION:-0.980.2-SNAPSHOT}
 - KAFKA_CONNECTOR_DISTRIBUTION=wso2-kafka-${KAFKA_CONNECTOR_VERSION}
 
 - wget https://github.com/wso2-ballerina/module-kafka/releases/download/v${KAFKA_CONNECTOR_VERSION}/${KAFKA_CONNECTOR_DISTRIBUTION}.zip
