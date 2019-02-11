@@ -16,7 +16,7 @@
 
 import ballerina/io;
 import wso2/kafka;
-import ballerina/internal;
+import ballerina/encoding;
 
 // Kafka consumer listener configurations
 kafka:ConsumerConfig consumerConfig = {
@@ -41,7 +41,7 @@ service franchiseeService1 on consumer {
         foreach var entry in records {
             byte[] serializedMsg = entry.value;
             // Convert the serialized message to string message
-            string msg = internal:byteArrayToString(serializedMsg, "UTF-8");
+            string msg = encoding:byteArrayToString(serializedMsg);
             io:println("[INFO] New message received from the product admin");
             // log the retrieved Kafka record
             io:println("[INFO] Topic: " + entry.topic + "; Received Message: " + msg);

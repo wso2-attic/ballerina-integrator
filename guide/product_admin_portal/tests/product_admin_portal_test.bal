@@ -22,7 +22,7 @@ type Payload record {
     string Password;
     string Product;
     float Price;
-    !...
+    !...;
 };
 
 // Client endpoint
