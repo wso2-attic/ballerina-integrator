@@ -32,26 +32,32 @@ jms:Session jmsSession = new(conn, {
     });
 
 // Initialize a retail queue receiver using the created session
-endpoint jms:QueueReceiver jmsConsumer {
-    session: jmsSession,
-    queueName: "Wholesale_Queue"
-};
+listener jms:QueueReceiver jmsConsumer = new(jmsSession, queueName = "Wholesale_Queue");
 
 // JMS service that consumes messages from the JMS queue
 // Bind the created consumer to the listener service
-service<jms:Consumer> orderDispatcherService bind jmsConsumer {
+service orderDispatcherService on jmsConsumer {
     // Triggered whenever an order is added to the 'Order_Queue'
-    onMessage(endpoint consumer, jms:Message message) {
+    resource function onMessage(jms:QueueReceiverCaller consumer, jms:Message message) {
 
         log:printInfo("New order received from the JMS Queue");
         // Retrieve the string payload using native function
-        var orderDetails = check message.getTextMessageContent();
-        //Convert String Payload to the JSON
-        io:StringReader reader = new io:StringReader(orderDetails);
-        json result = check reader.readJson();
-        var closeResult = reader.close();
-        log:printInfo("New wholesale order has been processed successfully; Order ID: '" + result.customerID.toString() +
-                "', Product ID: '" + result.productID.toString() + "', Quantity: '" + result.quantity.toString() + "';");
-
+        var orderDetails = message.getTextMessageContent();
+        if (orderDetails is string) {
+            //Convert String Payload to the JSON
+            io:StringReader reader = new io:StringReader(orderDetails);
+            var result = reader.readJson();
+            var closeResult = reader.close();
+            if (result is json) {
+                log:printInfo("New wholesale order has been processed successfully; Order ID: '"
+                        + result.customerID.toString() + "', Product ID: '"
+                        + result.productID.toString() + "', Quantity: '"
+                        + result.quantity.toString() + "';");
+            } else {
+                log:printError("Error occured while processing the order");
+            }
+        } else {
+            log:printError("Invalid order details, error occured while processing the order");
+        }
     }
 }
