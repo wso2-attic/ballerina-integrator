@@ -1,13 +1,6 @@
 import ballerina/test;
 import ballerina/http;
 
-
-// Start the filterService
-//@test:BeforeSuite
-////function setupService () {
-////    _ = test:startServices("message-filtering");
-////}
-
 // Client endpoint
 http:Client clientEP = new("http://localhost:9090/filterService");
 

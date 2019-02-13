@@ -203,7 +203,7 @@ To run the unit tests, open your command line, navigate to `message-filtering/gu
    $ ballerina test
 ```
 
-To check the implementation of the test file, refer to the [passed_student_filter_service_test.bal](https://github.com/Susankha/message-filtering/blob/master/guide/message-filtering/tests/passed_student_filter_service_test.bal).
+To check the implementation of the test file, refer to the [passed_student_filter_service_test.bal](https://github.com/ballerina-guides/message-filtering/blob/master/guide/message-filtering/tests/passed_student_filter_service_test.bal).
 
 
 ## Deployment
