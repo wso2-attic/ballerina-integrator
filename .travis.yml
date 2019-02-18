@@ -36,6 +36,8 @@ script:
 - ballerina version
 
 # Kafka
+
+# Define kafka version
 - KAFKA_VERSION=kafka_2.11-2.0.0
 
 - wget http://www-us.apache.org/dist/kafka/2.0.0/${KAFKA_VERSION}.tgz
