@@ -15,13 +15,13 @@
 script:
 # Ballerina
 - BALLERINA_VERSION=${VERSION:-0.990.3}
-- echo -e "\033[36m${BALLERINA_VERSION}\033[m"
+- echo -e "\033[36m ${BALLERINA_VERSION} \033[m"
 
 - DISTRIBUTION_NAME=ballerina-${BALLERINA_VERSION}
-- echo -e "\033[36m${DISTRIBUTION_NAME}\033[m"
+- echo -e "\033[36m ${DISTRIBUTION_NAME} \033[m"
 
-- DOWNLOAD_CHANNEL=${CHANNEL:-nightly}
-- echo -e "\033[36m${DOWNLOAD_CHANNEL}\033[m"
+- DOWNLOAD_CHANNEL=${CHANNEL:-downloads}
+- echo -e "\033[36m ${DOWNLOAD_CHANNEL} \033[m"
 
 - DOWNLOAD_LOCATION=${URL:-https://product-dist.ballerina.io}
 - echo -e "\033[36m${DOWNLOAD_LOCATION}\033[m"
