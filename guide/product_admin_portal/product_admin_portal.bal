@@ -16,6 +16,7 @@
 
 import ballerina/http;
 import wso2/kafka;
+import ballerinax/kubernetes;
 
 // Constants to store admin credentials
 final string ADMIN_USERNAME = "Admin";
@@ -30,6 +31,27 @@ kafka:ProducerConfig producerConfigs = {
 };
 
 kafka:SimpleProducer kafkaProducer = new(producerConfigs);
+
+@kubernetes:Ingress {
+    hostname:"ballerina.guides.io",
+    name:"ballerina-guides-product-admin-portal",
+    path:"/"
+}
+@kubernetes:Service {
+    serviceType:"NodePort",
+    name:"ballerina-guides-product-admin-portal"
+}
+
+@kubernetes:Deployment {
+    image:"ballerina.guides.io/product_admin_portal:v1.0",
+    name:"ballerina-guides-product-admin-portal",
+    copyFiles:[{target:"/ballerina/runtime/bre/lib",
+        source:<path_to_kafka_connector_jars>}],
+    username:"<USERNAME>",
+    password:"<PASSWORD>",
+    push:true,
+    imagePullPolicy:"Always"
+}
 
 // HTTP service endpoint
 listener http:Listener httpListener = new(9090);
