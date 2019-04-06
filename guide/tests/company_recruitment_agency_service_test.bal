@@ -75,7 +75,7 @@ json payload3 = { "Name": "Smart Automobile" };
     if (response is http:Response) {
         var jsonRes = response.getJsonPayload();
         test:assertEquals(jsonRes, response1);
-    } else if (response is error) {
+    } else {
         test:assertFail(msg = "Failed to call the endpoint:");
     }
 
@@ -85,7 +85,7 @@ json payload3 = { "Name": "Smart Automobile" };
     if (response is http:Response) {
         var jsonRes = response.getJsonPayload();
         test:assertEquals(jsonRes, response2);
-    } else if (response is error) {
+    } else {
         test:assertFail(msg = "Failed to call the endpoint:");
     }
 
