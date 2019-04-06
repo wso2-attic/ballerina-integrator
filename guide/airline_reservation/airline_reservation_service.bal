@@ -67,7 +67,7 @@ service airlineReservationService on airlineEP {
         if (payload is json) {
             // Valid JSON payload
             reqPayload = payload;
-        } else{
+        } else {
             // NOT a valid JSON payload
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
