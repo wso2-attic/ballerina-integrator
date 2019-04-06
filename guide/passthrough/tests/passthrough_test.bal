@@ -21,10 +21,10 @@ function testFunc() {
         var payload = response.getTextPayload();
         if (payload is string) {
             test:assertEquals(payload, response1);
-        } else if (payload is error) {
+        } else {
             test:assertFail(msg = "Failed to parse the text payload");
         }
-    } else if (response is error) {
+    } else {
         test:assertFail(msg = "Failed to call the endpoint");
     }
 }
