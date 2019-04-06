@@ -53,7 +53,7 @@ service OnlineShopping on OnlineShoppingEP {
             //Sends the client response to the caller.
             var result = caller->respond(clientResponse);
             handleError(result);
-        } else if (clientResponse is error) {
+        } else {
             //Sends the error response to the caller.
             http:Response res = new;
             res.statusCode = 500;
