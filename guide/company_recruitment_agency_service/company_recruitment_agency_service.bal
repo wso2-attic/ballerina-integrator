@@ -85,28 +85,28 @@ service comapnyRecruitmentsAgency on comEP {
             //When the request is successful, the response is returned.
             //Sends back the clientResponse to the caller if no error is found.
            if(clientResponse is http:Response) {
-                var err = CompanyEP->respond(clientResponse);
-                if (err is error) {
-                    log:printError("Error sending response", err = err);
-                }
+                var result = CompanyEP->respond(clientResponse);
+                handleErrorWhenResponding(result);
            } else if (clientResponse is error) {
                 http:Response res = new;
                 res.statusCode = 500;
                 res.setPayload(<string>clientResponse.detail().message);
-                var err = CompanyEP->respond(res);
-                if (err is error) {
-                    log:printError("Error sending response", err = err);
-                }
+                var result = CompanyEP->respond(res);
+                handleErrorWhenResponding(result);
            }
         } else {
             //500 error response is constructed and sent back to the client.
             http:Response res = new;
             res.statusCode = 500;
             res.setPayload(untaint <string>jsonMsg.detail().message);
-            var err = CompanyEP->respond(res);
-            if (err is error) {
-                log:printError("Error sending response", err = jsonMsg);
-            }
+            var result = CompanyEP->respond(res);
+            handleErrorWhenResponding(result);
         }
+    }
+}
+
+function handleErrorWhenResponding(error? result) {
+    if (result is error) {
+        log:printError("Error when responding", err = result);
     }
 }
