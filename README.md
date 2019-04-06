@@ -138,7 +138,7 @@ service comapnyRecruitmentsAgency on comEP {
                     log:printError("Error sending response", err = err);
                 }
            }
-        } else if (jsonMsg is error) {
+        } else {
             //500 error response is constructed and sent back to the client.
             http:Response res = new;
             res.statusCode = 500;
