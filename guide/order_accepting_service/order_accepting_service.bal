@@ -51,7 +51,7 @@ service orderAcceptingService on httpListener {
     // Resource that allows users to place an order 
     @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"],
         produces: ["application/json"] }
-    resource function place(http:Caller caller, http:Request request) {
+    resource function place(http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
         Order newOrder = {};
         json reqPayload = {};
@@ -63,7 +63,7 @@ service orderAcceptingService on httpListener {
         } else {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            _ = caller->respond(response);
+            _ = check caller->respond(response);
             return;
         }
 
@@ -76,7 +76,7 @@ service orderAcceptingService on httpListener {
         if (customerID == null || productID == null || quantity == null || orderType == null) {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Bad Request - Invalid payload" });
-            _ = caller->respond(response);
+            _ = check caller->respond(response);
             return;
         }
 
@@ -93,7 +93,7 @@ service orderAcceptingService on httpListener {
             var queueMessage = jmsSession.createTextMessage(orderDetails.toString());
             // Send the message to the JMS queue
             if (queueMessage is jms:Message) {
-                _ = jmsProducer->send(queueMessage);
+                _ = check jmsProducer->send(queueMessage);
                 // Construct a success message for the response
                 responseMessage = { "Message": "Your order is successfully placed" };
                 log:printInfo("New order added to the JMS queue; customerID: '" + newOrder.customerID +
@@ -108,6 +108,6 @@ service orderAcceptingService on httpListener {
         }
         // Send response to the user
         response.setJsonPayload(responseMessage);
-        _ = caller->respond(response);
+        _ = check caller->respond(response);
     }
 }
