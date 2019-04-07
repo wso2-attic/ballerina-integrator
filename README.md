@@ -105,13 +105,14 @@ The following statement receives the response from the future type.
 import ballerina/http;
 import ballerina/log;
 import ballerina/runtime;
+import ballerina/io;
 
 # Attributes associated with the service endpoint is defined here.
 listener http:Listener asyncServiceEP = new(9090);
 
 # Service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
-    basePath: "/quote-summary"
+    basePath:"/quote-summary"
 }
 service AsyncInvoker on asyncServiceEP {
 
@@ -120,8 +121,8 @@ service AsyncInvoker on asyncServiceEP {
     # + caller - Represents the remote client's endpoint
     # + req - Represents the client request
     @http:ResourceConfig {
-        methods: ["GET"],
-        path: "/"
+        methods:["GET"],
+        path:"/"
     }
     resource function getQuote(http:Caller caller, http:Request req) {
         // Endpoint for the stock quote backend service
@@ -141,14 +142,14 @@ service AsyncInvoker on asyncServiceEP {
         blocking for a response.");
 
         // Calling the backend to get the stock quote for APPL asynchronously
-        future <http:Response|error> f2 = start nasdaqServiceEP
+        future<http:Response|error> f2 = start nasdaqServiceEP
         -> get("/nasdaq/quote/APPL");
 
         log:printInfo(" >> Invocation completed for APPL stock quote! Proceed without
         blocking for a response.");
 
         // Calling the backend to get the stock quote for MSFT asynchronously
-        future <http:Response|error> f3 = start nasdaqServiceEP
+        future<http:Response|error> f3 = start nasdaqServiceEP
         -> get("/nasdaq/quote/MSFT");
 
         log:printInfo(" >> Invocation completed for MSFT stock quote! Proceed without
@@ -211,9 +212,13 @@ service AsyncInvoker on asyncServiceEP {
         // Send the response back to the client
         finalResponse.setJsonPayload(untaint responseJson);
         log:printInfo(" >> Response : " + responseJson.toString());
-        _ = caller -> respond(finalResponse);
+        var result = caller -> respond(finalResponse);
+        if (result is error){
+            log:printError("Error sending response", err = result);
+        }
     }
 }
+
 ```
 
 ### Mock remote service: stock_quote_data_backend
