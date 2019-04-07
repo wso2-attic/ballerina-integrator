@@ -1,6 +1,7 @@
 import ballerina/http;
 import ballerina/log;
 import ballerina/runtime;
+import ballerina/io;
 
 # Attributes associated with the service endpoint is defined here.
 listener http:Listener asyncServiceEP = new(9090);
@@ -107,6 +108,9 @@ service AsyncInvoker on asyncServiceEP {
         // Send the response back to the client
         finalResponse.setJsonPayload(untaint responseJson);
         log:printInfo(" >> Response : " + responseJson.toString());
-        _ = caller -> respond(finalResponse);
+        var result = caller -> respond(finalResponse);
+        if (result is error){
+            log:printError("Error sending response", err = result);
+        }
     }
 }
