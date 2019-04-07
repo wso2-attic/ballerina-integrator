@@ -114,13 +114,13 @@ jms:QueueSender jmsProducer = new(jmsSession, queueName = "Order_Queue");
 //export http listner port on 9090
 listener http:Listener httpListener = new(9090);
 
-// Order Accepting Service, which allows users to place orders online
+// Order Accepting Service, which allows users to place order online
 @http:ServiceConfig { basePath: "/placeOrder" }
 service orderAcceptingService on httpListener {
     // Resource that allows users to place an order 
     @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"],
         produces: ["application/json"] }
-    resource function place(http:Caller caller, http:Request request) {
+    resource function place(http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
         Order newOrder = {};
         json reqPayload = {};
@@ -132,7 +132,8 @@ service orderAcceptingService on httpListener {
         } else {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            _ = caller->respond(response);
+            _ = check caller->respond(response);
+            return;
         }
 
         json customerID = reqPayload.customerID;
@@ -144,7 +145,8 @@ service orderAcceptingService on httpListener {
         if (customerID == null || productID == null || quantity == null || orderType == null) {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Bad Request - Invalid payload" });
-            _ = caller->respond(response);
+            _ = check caller->respond(response);
+            return;
         }
 
         // Order details
@@ -160,7 +162,7 @@ service orderAcceptingService on httpListener {
             var queueMessage = jmsSession.createTextMessage(orderDetails.toString());
             // Send the message to the JMS queue
             if (queueMessage is jms:Message) {
-                _ = jmsProducer->send(queueMessage);
+                _ = check jmsProducer->send(queueMessage);
                 // Construct a success message for the response
                 responseMessage = { "Message": "Your order is successfully placed" };
                 log:printInfo("New order added to the JMS queue; customerID: '" + newOrder.customerID +
@@ -171,11 +173,11 @@ service orderAcceptingService on httpListener {
             }
         } else {
             responseMessage = { "Message": "Error occured while placing the order" };
-            log:printError("Invalid order details, error occured while placing the order");
+            log:printError("Error occured while placing the order");
         }
         // Send response to the user
         response.setJsonPayload(responseMessage);
-        _ = caller->respond(response);
+        _ = check caller->respond(response);
     }
 }
 ```
@@ -212,7 +214,7 @@ jms:QueueSender jmsProducerWholesale = new(jmsSession, queueName = "Wholesale_Qu
 // Bind the created consumer to the listener service
 service orderDispatcherService on jmsConsumer {
     // Triggered whenever an order is added to the 'Order_Queue'
-    resource function onMessage(jms:QueueReceiverCaller consumer, jms:Message message) {
+    resource function onMessage(jms:QueueReceiverCaller consumer, jms:Message message) returns error? {
 
         log:printInfo("New order received from the JMS Queue");
         // Retrieve the string payload using native function
@@ -233,7 +235,7 @@ service orderDispatcherService on jmsConsumer {
                     var queueMessage = jmsSession.createTextMessage(orderDetails);
                     if (queueMessage is jms:Message) {
                         // Send the message to the Retail JMS queue
-                        _ = jmsProducerRetail->send(queueMessage);
+                        _ = check jmsProducerRetail->send(queueMessage);
                         log:printInfo("New Retail order added to the Retail JMS Queue");
                     } else {
                         log:printError("Error while adding the retail order to the JMS queue");
@@ -243,7 +245,7 @@ service orderDispatcherService on jmsConsumer {
                     var queueMessage = jmsSession.createTextMessage(orderDetails);
                     if (queueMessage is jms:Message) {
                         // Send the message to the Wolesale JMS queue
-                        _ = jmsProducerWholesale->send(queueMessage);
+                        _ = check jmsProducerWholesale->send(queueMessage);
                         log:printInfo("New Wholesale order added to the Wholesale JMS Queue");
                     } else {
                         log:printError("Error while adding the wholesale order to the JMS queue");
