@@ -24,7 +24,7 @@ service StockDataService on httpListener {
         string googQuote = "GOOG, Alphabet Inc., 1013.41";
         response.setTextPayload(googQuote);
         var result = caller->respond(response);
-        HandleRespondingError(result);
+        HandleError(result);
     }
 
     # Resource to handle GET requests for APPL stock quote.
@@ -40,7 +40,7 @@ service StockDataService on httpListener {
         string applQuote = "APPL, Apple Inc., 165.22";
         response.setTextPayload(applQuote);
         var result = caller->respond(response);
-        HandleRespondingError(result);
+        HandleError(result);
     }
 
     # Resource to handle GET requests for MSFT stock quote.
@@ -56,11 +56,11 @@ service StockDataService on httpListener {
         string msftQuote = "MSFT, Microsoft Corporation, 95.35";
         response.setTextPayload(msftQuote);
         var result = caller->respond(response);
-        HandleRespondingError(result);
+        HandleError(result);
     }
 }
 
-function HandleRespondingError(error? result) {
+function HandleError(error? result) {
     if (result is error) {
         log:printError("Error sending response", err = result);
     }
