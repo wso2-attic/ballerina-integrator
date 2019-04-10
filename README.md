@@ -40,8 +40,8 @@ Basically, this service will deal with a MySQL database and expose the data oper
   * Copy the downloaded JDBC driver to the `<BALLERINA_HOME>/bre/lib` folder.   
   
     > **E.g.**   
-    > _On Linux:_ `mysql-connector-java-8.x.x.jar -> user/lib/Ballerina/ballerina-x.xx.x/bre/lib/`      
-    > _On Mac:_ `mysql-connector-java-8.x.x.jar -> Library/Ballerina/ballerina-x.xx.x/bre/lib/`   
+    > _On Linux:_ `mysql-connector-java-8.x.x.jar -> /usr/lib/ballerina/ballerina-x.xx.x/bre/lib/`
+    > _On Mac:_ `mysql-connector-java-8.x.x.jar -> ~/Library/Ballerina/ballerina-x.xx.x/bre/lib/`
     > _On Windows:_ `mysql-connector-java-8.x.x.jar -> C:\Program Files\Ballerina\ballerina-x.xx.x\bre\lib\`
 
 ### Optional requirements
@@ -92,6 +92,22 @@ The following Ballerina code is the employee data service with resource function
 ##### employee_db_service.bal
 
 ```ballerina
+// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+//
+// WSO2 Inc. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 import ballerina/config;
 import ballerina/http;
 import ballerina/log;
@@ -109,11 +125,11 @@ type Employee record {
 
 // Create SQL client for MySQL database
 mysql:Client employeeDB = new({
-        host: config:getAsString("DATABASE_HOST", default = "localhost"),
-        port: config:getAsInt("DATABASE_PORT", default = 3306),
-        name: config:getAsString("DATABASE_NAME", default = "EMPLOYEE_RECORDS"),
-        username: config:getAsString("DATABASE_USERNAME", default = "root"),
-        password: config:getAsString("DATABASE_PASSWORD", default = "123"),
+        host: config:getAsString("DATABASE_HOST", defaultValue = "localhost"),
+        port: config:getAsInt("DATABASE_PORT", defaultValue = 3306),
+        name: config:getAsString("DATABASE_NAME", defaultValue = "EMPLOYEE_RECORDS"),
+        username: config:getAsString("DATABASE_USERNAME", defaultValue = "root"),
+        password: config:getAsString("DATABASE_PASSWORD", defaultValue = "root"),
         dbOptions: { useSSL: false }
     });
 
@@ -270,7 +286,7 @@ public function insertData(string name, int age, int ssn, int employeeId) return
     // Insert data to SQL database by invoking update action
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
     // Check type to verify the validity of the result from database
-    if (ret is int) {
+    if (ret is sql:UpdateResult) {
         updateStatus = { "Status": "Data Inserted Successfully" };
     } else {
         updateStatus = { "Status": "Data Not Inserted", "Error": "Error occurred in data update" };
@@ -307,8 +323,8 @@ public function updateData(string name, int age, int ssn, int employeeId) return
     "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
     // Update existing data by invoking update remote function defined in ballerina sql client
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
-    if (ret is int) {
-        if (ret > 0) {
+    if (ret is sql:UpdateResult) {
+        if (ret.updatedRowCount > 0) {
             updateStatus = { "Status": "Data Updated Successfully" };
         } else {
             updateStatus = { "Status": "Data Not Updated" };
@@ -327,7 +343,7 @@ public function deleteData(int employeeID) returns (json) {
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
     // Delete existing data by invoking update remote function defined in ballerina sql client
     var ret = employeeDB->update(sqlString, employeeID);
-    if (ret is int) {
+    if (ret is sql:UpdateResult) {
         updateStatus = { "Status": "Data Deleted Successfully" };
     } else {
         updateStatus = { "Status": "Data Not Deleted",  "Error": "Error occurred during delete operation" };
@@ -336,6 +352,7 @@ public function deleteData(int employeeID) returns (json) {
     }
     return updateStatus;
 }
+
 ```
 
 A remote function in Ballerina indicates that it communicates with some remote service through the network. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the MySQL client object which encapsulates aforementioned set of remote functions. The rest of the code is for preparing SQL queries and executing them by calling these remote functions of the Ballerina MySQL client.
@@ -417,7 +434,7 @@ In Ballerina, the unit test cases should be in the same module inside a folder n
    function testAddEmployeeResource() {
    ...
 ```
-You can download the [employee_db_service_test.bal](guide/data_backed_service/test/employee_db_service_test.bal) sample, which contains unit test cases to test the resources available in the employee_data_service we implemented above.
+You can download the [employee_db_service_test.bal](guide/data_backed_service/tests/employee_db_service_test.bal) sample, which contains unit test cases to test the resources available in the employee_data_service we implemented above.
 
 To run the unit tests, go to the `guide` directory and run the following command.
 Please note that `--config` option is required if it is needed to read configurations from a ballerina configuration file.
