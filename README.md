@@ -133,11 +133,11 @@ Skeleton of the `account_manager.bal` file attached below.
 
 // MySQL Client
 mysql:Client bankDB = new({
-        host: config:getAsString("DATABASE_HOST", default = "localhost"),
-        port: config:getAsInt("DATABASE_PORT", default = 3306),
-        name: config:getAsString("DATABASE_NAME", default = "bankDB"),
-        username: config:getAsString("DATABASE_USERNAME", default = "root"),
-        password: config:getAsString("DATABASE_PASSWORD", default = ""),
+        host: config:getAsString("DATABASE_HOST", defaultValue = "localhost"),
+        port: config:getAsInt("DATABASE_PORT", defaultValue = 3306),
+        name: config:getAsString("DATABASE_NAME", defaultValue = "bankDB"),
+        username: config:getAsString("DATABASE_USERNAME", defaultValue = "root"),
+        password: config:getAsString("DATABASE_PASSWORD", defaultValue = "root"),
         dbOptions: { useSSL: false }
     });
 
@@ -235,7 +235,7 @@ NOTE : You can find the SQL script [here](./resources/database_initializer.sql).
    DATABASE_PORT = 3306
    DATABASE_NAME = "bankDB"
    DATABASE_USERNAME = "root"
-   DATABASE_PASSWORD = ""
+   DATABASE_PASSWORD = "root"
 ```
 
 - Navigate to `managing-database-transactions/guide` and execute the following command in a terminal to run this sample.
