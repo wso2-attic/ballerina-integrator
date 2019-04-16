@@ -1,7 +1,7 @@
 import ballerina/http;
 import ballerina/log;
-// import ballerinax/docker;
-// import ballerinax/kubernetes;
+import ballerinax/docker;
+import ballerinax/kubernetes;
 
 // Kubernetes related config. Uncomment for Kubernetes deployment.
 // *******************************************************

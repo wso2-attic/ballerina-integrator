@@ -58,10 +58,4 @@ function testResourceGetMedicalRecords() {
     } else {
         test:assertFail(msg = "Invalid response received");
     }
-
-
-
-
-
-    
 }
