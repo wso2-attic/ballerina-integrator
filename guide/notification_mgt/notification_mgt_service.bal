@@ -35,51 +35,47 @@ import ballerinax/kubernetes;
 //}
 
 //@docker:Expose{}
-
-endpoint http:Listener listener {
-    port: 9094
-};
+listener http:Listener httpListener = new(9094);
 
 // Notification management is done using an in-memory map.
 // Add some sample notifications to 'notificationMap' at startup.
-map<json> notificationMap;
+map<json> notificationMap = {};
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/notification-mgt" }
-service<http:Service> notification_mgt_service bind listener {
+service notification_mgt_service on httpListener {
 
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/notification"
     }
-    addNotification(endpoint client, http:Request req) {
-
+    resource function addNotification(http:Caller caller, http:Request req) {
         log:printInfo("addNotification...");
 
-        json notificationReq = check req.getJsonPayload();
-        string notificationId = notificationReq.Notification.ID.toString();
-        notificationMap[notificationId] = notificationReq;
+        var notificationReq = req.getJsonPayload();
+        if (notificationReq is json) {
+            string notificationId = notificationReq.Notification.ID.toString();
+            notificationMap[notificationId] = notificationReq;
 
-        // Create response message.
-        json payload = { status: "Notification Created.", notificationId: notificationId };
-        http:Response response;
-        response.setJsonPayload(untaint payload);
+            // Create response message.
+            json payload = { status: "Notification Created.", notificationId: notificationId };
+            http:Response response = new();
+            response.setJsonPayload(untaint payload);
 
-        // Set 201 Created status code in the response message.
-        response.statusCode = 201;
-
-        // Send response to the client.
-        _ = client->respond(response) but {
-            error e => log:printError(
-                           "Error sending response", err = e)
-        };
+            // Set 201 Created status code in the response message.
+            response.statusCode = 201;
+            // Send response to the client.
+            checkpanic caller->respond(response);
+        } else {
+            log:printError("JSON Payload is expected", err = notificationReq);
+        }
     }
 
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/notification/list"
     }
-    getNotifications(endpoint client, http:Request req) {
+    resource function getNotifications(http:Caller caller, http:Request req) {
 
         log:printInfo("getNotifications...");
 
@@ -88,19 +84,16 @@ service<http:Service> notification_mgt_service bind listener {
 
         // Get all Notifications from map and add them to response
         int i = 0;
-        foreach k, v in notificationMap {
+        foreach var(k, v) in notificationMap {
             json notificationValue = v.Notification;
             notificationsResponse.Notifications[i] = notificationValue;
-            i++;
+            i += 1;
         }
 
         // Set the JSON payload in the outgoing response message.
         response.setJsonPayload(untaint notificationsResponse);
 
         // Send response to the client.
-        client->respond(response) but {
-            error e => log:printError(
-                           "Error sending response", err = e)
-        };
+        checkpanic caller->respond(response);
     }
 }

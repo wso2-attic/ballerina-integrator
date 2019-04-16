@@ -35,44 +35,32 @@ import ballerinax/kubernetes;
 //}
 
 //@docker:Expose{}
-
-endpoint http:Listener listener {
-    port: 9090
-};
+listener http:Listener httpListener = new(9090);
 
 // Client endpoint to communicate with appointment management service
-endpoint http:Client appointmentEP {
-    url: "http://localhost:9092/appointment-mgt"
-
-    // URL for Docker deployment
-    // url: "http://appointment-mgt-container:9092/appointment-mgt"
-};
+// URL for Docker deployment
+// url: "http://appointment-mgt-container:9092/appointment-mgt"
+http:Client appointmentEP = new("http://localhost:9092/appointment-mgt");
 
 // Client endpoint to communicate with medical record service
-endpoint http:Client medicalRecordEP {
-    url: "http://localhost:9093/medical-records"
-
-    // URL for Docker deployment
-    // url: "http://medical-record-mgt-container:9093/medical-records"
-};
+// URL for Docker deployment
+// url: "http://medical-record-mgt-container:9093/medical-records"
+http:Client medicalRecordEP = new("http://localhost:9093/medical-records");
 
 // Client endpoint to communicate with message management service
-endpoint http:Client messageEP {
-    url: "http://localhost:9095/message-mgt"
-
-    // URL for Docker deployment
-    // url: "http://message-mgt-container:9095/message-mgt"
-};
+// URL for Docker deployment
+// url: "http://message-mgt-container:9095/message-mgt"
+http:Client messageEP = new("http://localhost:9095/message-mgt");
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/mobile-bff" }
-service<http:Service> mobile_bff_service bind listener {
+service mobile_bff_service on httpListener {
 
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/profile"
     }
-    getUserProfile(endpoint client, http:Request req) {
+    resource function getUserProfile(http:Caller caller, http:Request req) {
 
         log:printInfo("getUserProfile...");
 
@@ -92,14 +80,11 @@ service<http:Service> mobile_bff_service bind listener {
         profileJson.Messages = unreadMessageList.Messages;
 
         // Set JSON payload to response
-        http:Response response;
+        http:Response response = new();
         response.setJsonPayload(untaint profileJson);
 
         // Send response to the client.
-        _ = client->respond(response) but {
-            error e => log:printError(
-                           "Error sending response", err = e)
-        };
+        checkpanic caller->respond(response);
     }
 
     // This API may have more resources for other functionalities
@@ -108,28 +93,20 @@ service<http:Service> mobile_bff_service bind listener {
 // Function which takes http client endpoint and context as a input
 // This will call given endpoint and return a json response
 function sendGetRequest(http:Client httpClient1, string context) returns (json) {
-
-    endpoint http:Client client1 = httpClient1;
-
+    http:Client client1 = httpClient1;
     var response = client1->get(context);
-
-    json value;
-
-    match response {
-        http:Response resp => {
-            var msg = resp.getJsonPayload();
-            match msg {
-                json jsonPayload => {
-                    value = jsonPayload;
-                }
-                error err => {
-                    log:printError(err.message, err = err);
-                }
-            }
+    json value = {};
+    
+    if (response is http:Response) {
+        var msg = response.getJsonPayload();
+        if (msg is json) {
+            value = msg;
+        } else {
+            log:printError(msg.reason(), err = msg);
         }
-        error err => {
-            log:printError(err.message, err = err);
-        }
+    } else {
+        log:printError(response.reason(), err = response);
     }
+
     return value;
 }

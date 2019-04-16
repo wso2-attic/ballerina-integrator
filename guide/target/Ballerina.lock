@@ -1,0 +1,12 @@
+[project]
+name = "nadeeshaan"
+version = "0.0.1"
+lockfileversion = "1"
+ballerinaversion = "0.991.0"
+modules = [ "sample_data_publisher" ]
+
+[[module]] 
+org = "nadeeshaan"
+name = "sample_data_publisher"
+version = "0.0.1"
+

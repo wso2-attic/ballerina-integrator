@@ -4,24 +4,16 @@ import ballerina/http;
 import ballerina/log;
 
 // Client endpoint to communicate with appointment management service
-endpoint http:Client appointmentEP {
-    url: "http://localhost:9092/appointment-mgt"
-};
+http:Client appointmentEP = new("http://localhost:9092/appointment-mgt");
 
 // Client endpoint to communicate with medical record service
-endpoint http:Client medicalRecordEP {
-    url: "http://localhost:9093/medical-records"
-};
+http:Client medicalRecordEP = new("http://localhost:9093/medical-records");
 
 // Client endpoint to communicate with notification management service
-endpoint http:Client notificationEP {
-    url: "http://localhost:9094/notification-mgt"
-};
+http:Client notificationEP = new("http://localhost:9094/notification-mgt");
 
 // Client endpoint to communicate with message management service
-endpoint http:Client messageEP {
-    url: "http://localhost:9095/message-mgt"
-};
+http:Client messageEP = new("http://localhost:9095/message-mgt");
 
 public function main(string... args) {
 
@@ -72,32 +64,25 @@ public function main(string... args) {
 
 // Function which takes http client endpoint, context and data as a input
 //This will perform a HTTP POST against given endpoint and return a json response
-function sendPostRequest(http:Client client, string context, json data) returns (json) {
+function sendPostRequest(http:Client clientEP, string context, json data) returns (json) {
 
-    endpoint http:Client client1 = client;
+    http:Client client1 = clientEP;
 
     http:Request req = new;
     req.setJsonPayload(data);
 
     var response = client1->post(context, req);
 
-    json value;
-
-    match response {
-        http:Response resp => {
-            var msg = resp.getJsonPayload();
-            match msg {
-                json jsonPayload => {
-                    value = jsonPayload;
-                }
-                error err => {
-                    log:printError(err.message, err = err);
-                }
-            }
+    json value = {};
+    if (response is http:Response) {
+        var msg = response.getJsonPayload();
+        if (msg is json) {
+            value = msg;
+        } else {
+            log:printError(msg.reason(), err = msg);
         }
-        error err => {
-            log:printError(err.message, err = err);
-        }
+    } else {
+        log:printError(response.reason(), err = response);
     }
     return value;
 }
@@ -105,27 +90,19 @@ function sendPostRequest(http:Client client, string context, json data) returns 
 // Function which takes http client endpoint and context as a input
 // This will call given endpoint and return a json response
 function sendGetRequest(http:Client httpClient1, string context) returns (json) {
-
-    endpoint http:Client client1 = httpClient1;
+    http:Client client1 = httpClient1;
     var response = client1->get(context);
-    json value;
+    json value = {};
 
-    match response {
-        http:Response resp => {
-            var msg = resp.getJsonPayload();
-            match msg {
-                json jsonPayload => {
-                    io:println(jsonPayload);
-                    value = jsonPayload;
-                }
-                error err => {
-                    log:printError(err.message, err = err);
-                }
-            }
+    if (response is http:Response) {
+        var msg = response.getJsonPayload();
+        if (msg is json) {
+            value = msg;
+        } else {
+            log:printError(msg.reason(), err = msg);
         }
-        error err => {
-            log:printError(err.message, err = err);
-        }
+    } else {
+        log:printError(response.reason(), err = response);
     }
     return value;
 }
