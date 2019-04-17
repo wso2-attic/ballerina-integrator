@@ -44,7 +44,7 @@ jms:QueueSender jmsProducerWholesale = new(jmsSession, queueName = "Wholesale_Qu
 // Bind the created consumer to the listener service
 service orderDispatcherService on jmsConsumer {
     // Triggered whenever an order is added to the 'Order_Queue'
-    resource function onMessage(jms:QueueReceiverCaller consumer, jms:Message message) {
+    resource function onMessage(jms:QueueReceiverCaller consumer, jms:Message message) returns error? {
 
         log:printInfo("New order received from the JMS Queue");
         // Retrieve the string payload using native function
@@ -65,7 +65,7 @@ service orderDispatcherService on jmsConsumer {
                     var queueMessage = jmsSession.createTextMessage(orderDetails);
                     if (queueMessage is jms:Message) {
                         // Send the message to the Retail JMS queue
-                        _ = jmsProducerRetail->send(queueMessage);
+                        _ = check jmsProducerRetail->send(queueMessage);
                         log:printInfo("New Retail order added to the Retail JMS Queue");
                     } else {
                         log:printError("Error while adding the retail order to the JMS queue");
@@ -75,7 +75,7 @@ service orderDispatcherService on jmsConsumer {
                     var queueMessage = jmsSession.createTextMessage(orderDetails);
                     if (queueMessage is jms:Message) {
                         // Send the message to the Wolesale JMS queue
-                        _ = jmsProducerWholesale->send(queueMessage);
+                        _ = check jmsProducerWholesale->send(queueMessage);
                         log:printInfo("New Wholesale order added to the Wholesale JMS Queue");
                     } else {
                         log:printError("Error while adding the wholesale order to the JMS queue");
