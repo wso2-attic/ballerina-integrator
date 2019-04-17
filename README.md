@@ -100,11 +100,17 @@ service OnlineShopping on OnlineShoppingEP {
             //Sends the client response to the caller.
             var result = caller->respond(clientResponse);
             handleError(result);
-        } else if (clientResponse is error) {
+        } else {
             //Sends the error response to the caller.
             http:Response res = new;
             res.statusCode = 500;
-            res.setPayload(string.convert(clientResponse.detail().message));
+            var payload = clientResponse.detail().message;
+            if (payload is error) {
+                res.setPayload("Recursive error occurred while reading client response");
+                handleError(payload);
+            } else {
+                res.setPayload(string.convert(payload));
+            }
             var result = caller->respond(res);
             handleError(result);
         }
@@ -128,6 +134,13 @@ service LocalShop on LocalShopEP {
         handleError(result);
     }
 }
+
+function handleError(error? result) {
+    if (result is error) {
+        log:printError(result.reason(), err = result);
+    }
+}
+
 ```
 
 ## Testing 
