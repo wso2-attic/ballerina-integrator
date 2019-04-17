@@ -151,7 +151,7 @@ var payload = inRequest.getJsonPayload();
 if (payload is json) {
     // Valid JSON payload
     inReqPayload = payload;
-} else if (payload is error) {
+} else {
     // NOT a valid JSON payload
     outResponse.statusCode = 400;
     outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});

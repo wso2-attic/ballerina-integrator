@@ -70,7 +70,8 @@ service hotelReservationService on hotelEP {
             // NOT a valid JSON payload
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            _ = caller->respond(response);
+            var result = caller->respond(response);
+            handleError(result);
             return;
         }
 
