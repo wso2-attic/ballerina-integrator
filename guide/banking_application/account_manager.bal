@@ -22,11 +22,11 @@ import ballerina/transactions;
 
 // 'mysql:Client'.
 mysql:Client bankDB = new({
-    host: config:getAsString("DATABASE_HOST", default = "localhost"),
-    port: config:getAsInt("DATABASE_PORT", default = 3306),
-    name: config:getAsString("DATABASE_NAME", default = "bankDB"),
-    username: config:getAsString("DATABASE_USERNAME", default = "root"),
-    password: config:getAsString("DATABASE_PASSWORD", default = ""),
+    host: config:getAsString("DATABASE_HOST", defaultValue = "localhost"),
+    port: config:getAsInt("DATABASE_PORT", defaultValue = 3306),
+    name: config:getAsString("DATABASE_NAME", defaultValue = "bankDB"),
+    username: config:getAsString("DATABASE_USERNAME", defaultValue = "root"),
+    password: config:getAsString("DATABASE_PASSWORD", defaultValue = "root"),
     dbOptions: { useSSL: false }
 });
 
@@ -80,7 +80,7 @@ public function verifyAccount(int accId) returns (boolean|error) {
             // convert the json to int.
             int count = <int>jsonConvertRet[0]["COUNT"];
             // Return a boolean, which will be true if account exists; false otherwise.
-            retVal = <boolean>count;
+            retVal = boolean.convert(count);
         } else {
             retVal = jsonConvertRet;
         }
@@ -151,7 +151,7 @@ public function depositMoney(int accId, int amount) returns error|() {
     log:printInfo("Depositing money to account ID: " + accId);
     // Update query to increase the current balance.
     var updateRet = bankDB->update("UPDATE ACCOUNT SET BALANCE = (BALANCE + ?) WHERE ID = ?", amount, accId);
-    if (updateRet is int) {
+    if (updateRet is sql:UpdateResult) {
         log:printInfo("$" + amount + " has been deposited to account ID " + accId);
     } else {
         return updateRet;
@@ -180,7 +180,7 @@ public function withdrawMoney(int accId, int amount) returns (error|()) {
     log:printInfo("Withdrawing money from account ID: " + accId);
     // Update query to reduce the current balance.
     var updateRet = bankDB->update("UPDATE ACCOUNT SET BALANCE = (BALANCE - ?) WHERE ID = ?", amount, accId);
-    if (updateRet is int) {
+    if (updateRet is sql:UpdateResult) {
         log:printInfo("$" + amount + " has been withdrawn from account ID " + accId);
     } else {
         return updateRet;
