@@ -64,8 +64,8 @@ service orderMgt on httpListener {
         response.setJsonPayload(payload);
 
         // Send response to the caller.
-        var err = caller->respond(response);
-        handleErrorWhenResponding(err);
+        var result = caller->respond(response);
+        handleErrorWhenResponding(result);
     }
 
     // Resource that handles the HTTP GET requests that are directed to data
@@ -93,8 +93,8 @@ service orderMgt on httpListener {
         response.setJsonPayload(payload);
 
         // Send response to the client.
-        var err = caller->respond(response);
-        handleErrorWhenResponding(err);
+        var result = caller->respond(response);
+        handleErrorWhenResponding(result);
     }
 
     // Resource that handles the HTTP GET requests that are directed to a specific
@@ -122,13 +122,13 @@ service orderMgt on httpListener {
         response.setJsonPayload(payload);
 
         // Send response to the client.
-        var err = caller->respond(response);
-        handleErrorWhenResponding(err);
+        var result = caller->respond(response);
+        handleErrorWhenResponding(result);
     }
 }
 
-function handleErrorWhenResponding(error? err) {
-    if (err is error) {
-        log:printError("Error when responding", err = err);
+function handleErrorWhenResponding(error? result) {
+    if (result is error) {
+        log:printError("Error when responding", err = result);
     }
 }

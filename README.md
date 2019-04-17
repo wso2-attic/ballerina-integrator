@@ -81,7 +81,6 @@ http:Client locationEP = new("http://localhost:9090/companies");
 @http:ServiceConfig {
     basePath: "/checkVacancies"
 }
-
 //"comapnyRecruitmentsAgency" routes requests to relevant endpoints and gets their responses.
 service comapnyRecruitmentsAgency on comEP {
 
@@ -125,31 +124,32 @@ service comapnyRecruitmentsAgency on comEP {
             //When the request is successful, the response is returned.
             //Sends back the clientResponse to the caller if no error is found.
            if(clientResponse is http:Response) {
-                var err = CompanyEP->respond(clientResponse);
-                if (err is error) {
-                    log:printError("Error sending response", err = err);
-                }
+                var result = CompanyEP->respond(clientResponse);
+                handleErrorWhenResponding(result);
            } else if (clientResponse is error) {
                 http:Response res = new;
                 res.statusCode = 500;
                 res.setPayload(<string>clientResponse.detail().message);
-                var err = CompanyEP->respond(res);
-                if (err is error) {
-                    log:printError("Error sending response", err = err);
-                }
+                var result = CompanyEP->respond(res);
+                handleErrorWhenResponding(result);
            }
-        } else if (jsonMsg is error) {
+        } else {
             //500 error response is constructed and sent back to the client.
             http:Response res = new;
             res.statusCode = 500;
             res.setPayload(untaint <string>jsonMsg.detail().message);
-            var err = CompanyEP->respond(res);
-            if (err is error) {
-                log:printError("Error sending response", err = jsonMsg);
-            }
+            var result = CompanyEP->respond(res);
+            handleErrorWhenResponding(result);
         }
     }
 }
+
+function handleErrorWhenResponding(error? result) {
+    if (result is error) {
+        log:printError("Error when responding", err = result);
+    }
+}
+
 ```
 
 Let's now look at `company_data_service`, which is responsible for communicating with all the company's endpoints.
@@ -193,8 +193,8 @@ service orderMgt on httpListener {
         response.setJsonPayload(payload);
 
         // Send response to the caller.
-        var err = caller->respond(response);
-        handleErrorWhenResponding(err);
+        var result = caller->respond(response);
+        handleErrorWhenResponding(result);
     }
 
     // Resource that handles the HTTP GET requests that are directed to data
@@ -222,8 +222,8 @@ service orderMgt on httpListener {
         response.setJsonPayload(payload);
 
         // Send response to the client.
-        var err = caller->respond(response);
-        handleErrorWhenResponding(err);
+        var result = caller->respond(response);
+        handleErrorWhenResponding(result);
     }
 
     // Resource that handles the HTTP GET requests that are directed to a specific
@@ -251,14 +251,14 @@ service orderMgt on httpListener {
         response.setJsonPayload(payload);
 
         // Send response to the client.
-        var err = caller->respond(response);
-        handleErrorWhenResponding(err);
+        var result = caller->respond(response);
+        handleErrorWhenResponding(result);
     }
 }
 
-function handleErrorWhenResponding(error? err) {
-    if (err is error) {
-        log:printError("Error when responding", err = err);
+function handleErrorWhenResponding(error? result) {
+    if (result is error) {
+        log:printError("Error when responding", err = result);
     }
 }
 ```
