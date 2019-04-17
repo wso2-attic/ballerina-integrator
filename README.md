@@ -105,7 +105,6 @@ The following statement receives the response from the future type.
 import ballerina/http;
 import ballerina/log;
 import ballerina/runtime;
-import ballerina/io;
 
 # Attributes associated with the service endpoint is defined here.
 listener http:Listener asyncServiceEP = new(9090);
