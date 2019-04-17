@@ -66,11 +66,11 @@ type Employee record {
 
 // Create SQL client for MySQL database
 mysql:Client employeeDB = new({
-        host: config:getAsString("DATABASE_HOST", default = "localhost"),
-        port: config:getAsInt("DATABASE_PORT", default = 3306),
-        name: config:getAsString("DATABASE_NAME", default = "EMPLOYEE_RECORDS"),
-        username: config:getAsString("DATABASE_USERNAME", default = "root"),
-        password: config:getAsString("DATABASE_PASSWORD", default = ""),
+        host: config:getAsString("DATABASE_HOST", defaultValue = "localhost"),
+        port: config:getAsInt("DATABASE_PORT", defaultValue = 3306),
+        name: config:getAsString("DATABASE_NAME", defaultValue = "EMPLOYEE_RECORDS"),
+        username: config:getAsString("DATABASE_USERNAME", defaultValue = "root"),
+        password: config:getAsString("DATABASE_PASSWORD", defaultValue = "root"),
         dbOptions: { useSSL: false }
     });
 
@@ -227,7 +227,7 @@ public function insertData(string name, int age, int ssn, int employeeId) return
     // Insert data to SQL database by invoking update action
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
     // Check type to verify the validity of the result from database
-    if (ret is int) {
+    if (ret is sql:UpdateResult) {
         updateStatus = { "Status": "Data Inserted Successfully" };
     } else {
         updateStatus = { "Status": "Data Not Inserted", "Error": "Error occurred in data update" };
@@ -264,8 +264,8 @@ public function updateData(string name, int age, int ssn, int employeeId) return
     "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
     // Update existing data by invoking update remote function defined in ballerina sql client
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
-    if (ret is int) {
-        if (ret > 0) {
+    if (ret is sql:UpdateResult) {
+        if (ret.updatedRowCount > 0) {
             updateStatus = { "Status": "Data Updated Successfully" };
         } else {
             updateStatus = { "Status": "Data Not Updated" };
@@ -284,7 +284,7 @@ public function deleteData(int employeeID) returns (json) {
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
     // Delete existing data by invoking update remote function defined in ballerina sql client
     var ret = employeeDB->update(sqlString, employeeID);
-    if (ret is int) {
+    if (ret is sql:UpdateResult) {
         updateStatus = { "Status": "Data Deleted Successfully" };
     } else {
         updateStatus = { "Status": "Data Not Deleted",  "Error": "Error occurred during delete operation" };
@@ -293,3 +293,4 @@ public function deleteData(int employeeID) returns (json) {
     }
     return updateStatus;
 }
+
