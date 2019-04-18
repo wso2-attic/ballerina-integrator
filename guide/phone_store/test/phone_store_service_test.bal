@@ -14,34 +14,39 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/http;
 import ballerina/test;
+import ballerina/http;
 
 @test:Config
 function testResourceGetPhoneList() {
 
-    endpoint http:Client httpEndpoint { url: "http://localhost:9090/phonestore" };
-    // Initialize the empty http request
+    http:Client httpEndpoint = new("http://localhost:9090/phonestore");
+    // Initialize the empty http request.
     http:Request req;
 
-    // Send a 'get' request and obtain the response
-    http:Response response = check httpEndpoint->get("/getPhoneList");
-    // Expected response code is 200
-    test:assertEquals(response.statusCode, 200, msg = "phonestore service did not respond with 200 OK signal!");
-    // Check whether the response is as expected
-    json resPayload = check response.getJsonPayload();
-    string stringPayload = resPayload.toString();
-    test:assertTrue(stringPayload.contains("Huawei:100000"), msg = "Response mismatch!");
+    // Send a 'get' request and obtain the response.
+    var response = httpEndpoint->get("/getPhoneList");
+
+    if (response is http:Response) {
+        // Expected response code is 200.
+        test:assertEquals(response.statusCode, 200, msg = "phonestore service did not respond with 200 OK signal!");
+        // Check whether the response is as expected.
+        var resPayload = response.getJsonPayload();
+        if (resPayload is json) {
+            string stringPayload = resPayload.toString();
+            test:assertTrue(stringPayload.contains("Huawei:100000"), msg = "Response mismatch!");
+        }
+    }
 }
 
-// Function to test 'placeOrder' resource
+// Function to test 'placeOrder' resource.
 @test:Config
 function testResourcePlaceOrder() {
 
-    endpoint http:Client httpEndpoint2 { url: "http://localhost:9090/phonestore" };
-    // Initialize the empty http request
-    http:Request req;
-    // Construct a request payload
+    http:Client httpEndpoint2 = new("http://localhost:9090/phonestore");
+    // Initialize the empty http request.
+    http:Request req = new;
+    // Construct a request payload.
     json payload = {
         "Name": "Alice",
         "Address": "20, Palm Grove, Colombo, Sri Lanka",
@@ -49,12 +54,17 @@ function testResourcePlaceOrder() {
         "PhoneName": "Nokia:80000"
     };
     req.setJsonPayload(payload);
-    // Send a 'post' request and obtain the response
-    http:Response response = check httpEndpoint2->post("/placeOrder", req);
-    // Expected response code is 200
-    test:assertEquals(response.statusCode, 200, msg = "phonestore service did not respond with 200 OK signal!");
-    // Check whether the response is as expected
-    json resPayload = check response.getJsonPayload();
-    json expected = { "Message": "Your order was successfully placed. Ordered phone will be delivered soon" };
-    test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+    // Send a 'post' request and obtain the response.
+    var response = httpEndpoint2->post("/placeOrder", req);
+
+    if(response is http:Response) {
+        // Expected response code is 200.
+        test:assertEquals(response.statusCode, 200, msg = "phonestore service did not respond with 200 OK signal!");
+        // Check whether the response is as expected.
+        var resPayload = response.getJsonPayload();
+        if (resPayload is json) {
+            json expected = { "Message": "Your order was successfully placed. Ordered phone will be delivered soon" };
+            test:assertEquals(resPayload, expected, msg = "Response mismatch!");
+        }
+    }
 }

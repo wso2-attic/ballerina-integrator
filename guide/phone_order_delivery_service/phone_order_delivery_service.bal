@@ -18,14 +18,8 @@ import ballerina/http;
 import ballerina/jms;
 import ballerina/log;
 
-//Deploying on kubernetes
-//import ballerinax /kubernetes;
-
-//Type definition for a Deliver order
-//json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
-//'jms:Connection' definition
-//'jms:Session' definition
-//'jms:QueueSender' endpoint definition
+// Deploying on kubernetes.
+//import ballerinax/kubernetes;
 
 //@kubernetes:Ingress {
 //    hostname: "ballerina.guides.io",
@@ -43,14 +37,8 @@ import ballerina/log;
 //    name: "ballerina-guides-phone_order_delivery_service"
 //}
 
-//Deploying on docker
-//import ballerinax /docker;
-
-//Type definition for a Deliver order
-//json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
-//'jms:Connection' definition
-//'jms:Session' definition
-//'jms:QueueSender' endpoint definition
+// Deploying on docker.
+//import ballerinax/docker;
 
 //@docker:Config {
 //    registry: "ballerina.guides.io",
@@ -58,133 +46,156 @@ import ballerina/log;
 //    tag: "v1.0",
 //    baseImage: "ballerina/ballerina-platform:0.980.0"
 //}
-//Service endpoint
+
 //@docker:Expose {}
 
 type PhoneDeliver record {
-    string customerName;
-    string address;
-    string contactNumber;
-    string deliveryPhoneName;
+    string customerName?;
+    string address?;
+    string contactNumber?;
+    string deliveryPhoneName?;
 };
+
 json[] phoneInventory = ["Apple:190000", "Samsung:150000", "Nokia:80000", "HTC:40000", "Huawei:100000"];
 
 jms:Connection DeliveryQueueJmsConnectionSend = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
     });
-// Initialize a queue sender using the created session
-endpoint jms:QueueSender jmsProducerDeliveryQueue {
-    session: DeliveryQueueJmsSessionSend,
-    queueName: "DeliveryQueue"
-};
-// Initialize a JMS session on top of the created connection
-jms:Session DeliveryQueueJmsSessionSend = new(DeliveryQueueJmsConnectionSend, {
-        acknowledgementMode: "AUTO_ACKNOWLEDGE"
-    });
-// Service endpoint
-endpoint http:Listener deliveryEP {
-    port: 9091
-};
 
-@http:ServiceConfig { basePath: "/deliveryDetails" }
-// phone store service, which allows users to order phones online for delivery
-service<http:Service> phoneOrderDeliveryService bind deliveryEP {
-    // Resource that allows users to place an order for a phone
+// Initialize a JMS session on top of the created connection.
+jms:Session DeliveryQueueJmsSessionSend = new(DeliveryQueueJmsConnectionSend,
+    { acknowledgementMode: "AUTO_ACKNOWLEDGE" });
+
+// Initialize a queue sender using the created session.
+jms:QueueSender jmsProducerDeliveryQueue = new(DeliveryQueueJmsSessionSend, queueName = "DeliveryQueue");
+
+
+// Service endpoint.
+listener http:Listener deliveryEP = new(9091);
+
+@http:ServiceConfig {
+    basePath: "/deliveryDetails"
+}
+// Phone store service, which allows users to order phones online for delivery.
+service phoneOrderDeliveryService on deliveryEP {
+
+    // Resource that allows users to place an order for a phone.
     @http:ResourceConfig {
         consumes: ["application/json"],
         produces: ["application/json"]
     }
-    sendDelivery(endpoint caller, http:Request enrichedreq) {
-        http:Response response;
-        PhoneDeliver newDeliver;
-        json reqPayload;
+    resource function sendDelivery(http:Caller caller, http:Request request) {
+        http:Response response = new;
+        PhoneDeliver newDeliver = {};
+        json requestPayload = {};
 
-        log:printInfo(" Received order details from the phone store service");
+        log:printInfo("Received order details from the phone store service");
 
-        // Try parsing the JSON payload from the request
-        match enrichedreq.getJsonPayload() {
-            // Valid JSON payload
-            json payload => reqPayload = payload;
-            // NOT a valid JSON payload
-            any => {
-                response.statusCode = 400;
-                response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-                _ = caller->respond(response);
-                done;
-            }
+        // Try parsing the JSON payload from the request.
+        var payload = request.getJsonPayload();
+        if (payload is json) {
+            // Valid JSON payload.
+            requestPayload = payload;
+        } else {
+            response.statusCode = 400;
+            response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+            checkpanic caller->respond(response);
+            return;
         }
-        json name = reqPayload.Name;
-        json address = reqPayload.Address;
-        json contact = reqPayload.ContactNumber;
-        json phoneName = reqPayload.PhoneName;
 
-        // If payload parsing fails, send a "Bad Request" message as the response
+        json name = requestPayload.Name;
+        json address = requestPayload.Address;
+        json contact = requestPayload.ContactNumber;
+        json phoneName = requestPayload.PhoneName;
+
+        // If payload parsing fails, send a "Bad Request" message as the response.
         if (name == null || address == null || contact == null || phoneName == null) {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Bad Request - Invalid payload" });
-            _ = caller->respond(response);
-            done;
+            checkpanic caller-> respond(response);
+            return;
         }
-        // Order details
+
+        // Order details.
         newDeliver.customerName = name.toString();
         newDeliver.address = address.toString();
         newDeliver.contactNumber = contact.toString();
         newDeliver.deliveryPhoneName = phoneName.toString();
 
-        // boolean variable to track the availability of a requested phone
-        boolean isPhoneAvailable;
-        // Check whether the requested phone available
-        foreach phone in phoneInventory {
+        // Boolean variable to track the availability of a requested phone.
+        boolean isPhoneAvailable = false;
+
+        // Check the availability of the requested phone.
+        foreach var phone in phoneInventory {
             if (newDeliver.deliveryPhoneName.equalsIgnoreCase(phone.toString())) {
                 isPhoneAvailable = true;
                 break;
             }
         }
-        json responseMessage;
-        // If the requested phone is available, then add the order to the 'OrderQueue'
+        json responseMessage = {};
+
+        // If the requested phone is available, then add the order to the 'OrderQueue'.
         if (isPhoneAvailable) {
-            var phoneDeliverDetails = check <json>newDeliver;
-            // Create a JMS message
-            jms:Message queueMessage2 = check DeliveryQueueJmsSessionSend.createTextMessage(phoneDeliverDetails.toString());
-            log:printInfo("Order delivery details added to the delivery queue'; CustomerName: '" + newDeliver.
-                    customerName +
-                    "', OrderedPhone: '" + newDeliver.deliveryPhoneName + "';");
-            // Send the message to the JMS queue
-            _ = jmsProducerDeliveryQueue->send(queueMessage2);
-            // Construct a success message for the response
-            responseMessage = { "Message": "Your order was successfully placed. Ordered phone will be delivered soon" };
+            var phoneDeliverDetails = json.convert(newDeliver);
+            // Create a JMS message.
+            if (phoneDeliverDetails is json) {
+                var queueMessage = DeliveryQueueJmsSessionSend.createTextMessage(phoneDeliverDetails.toString());
+                if (queueMessage is jms:Message) {
+                    log:printInfo("Order delivery details added to the delivery queue'; CustomerName: '" + newDeliver.
+                            customerName +
+                            "', OrderedPhone: '" + newDeliver.deliveryPhoneName + "';");
+                    // Send the message to the JMS queue.
+                    checkpanic jmsProducerDeliveryQueue-> send(queueMessage);
+
+                    // Construct a success message for the response.
+                    responseMessage =
+                    { "Message": "Your order was successfully placed. Ordered phone will be delivered soon" };
+                } else {
+                    responseMessage =
+                    { "Message": "Failed to place the order, Error while creating the message" };
+                }
+            } else {
+                responseMessage =
+                { "Message": "Failed to place the order, Invalid phone delivery details" };
+            }
         }
         else {
-            // If phone is not available, construct a proper response message to notify user
+            // If phone is not available, construct a proper response message to notify user.
             responseMessage = { "Message": "Requested phone not available" };
         }
         // Send response to the user
         response.setJsonPayload(responseMessage);
-        _ = caller->respond(response);
+        checkpanic caller->respond(response);
     }
 }
 jms:Connection DeliveryQueueJmsConnectionReceive = new({
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
     });
-// Initialize a JMS session on top of the created connection
+
+// Initialize a JMS session on top of the created connection.
 jms:Session DeliveryQueueJmsSessionReceive = new(DeliveryQueueJmsConnectionReceive, {
-        // Optional property. Defaults to AUTO_ACKNOWLEDGE
+        // Optional property. Defaults to AUTO_ACKNOWLEDGE.
         acknowledgementMode: "AUTO_ACKNOWLEDGE"
     });
-// Initialize a queue receiver using the created session
-endpoint jms:QueueReceiver jmsConsumerDeliveryQueue {
-    session: DeliveryQueueJmsSessionReceive,
-    queueName: "DeliveryQueue"
-};
-service<jms:Consumer> deliverySystem bind jmsConsumerDeliveryQueue {
-    // Triggered whenever an order is added to the 'OrderQueue'
-    onMessage(endpoint consumer, jms:Message message2) {
-        log:printInfo("New order successfilly received from the Delivery Queue");
-        // Retrieve the string payload using native function
-        string stringPayload2 = check message2.getTextMessageContent();
-        log:printInfo("Delivery details: " + stringPayload2);
-        log:printInfo(" Delivery details sent to the customer successfully");
+
+// Initialize a queue receiver using the created session.
+listener jms:QueueReceiver jmsConsumerDeliveryQueue = new(DeliveryQueueJmsSessionReceive, queueName = "DeliveryQueue");
+
+service deliverySystem on jmsConsumerDeliveryQueue {
+
+    // Triggered whenever an order is added to the 'OrderQueue'.
+    resource function onMessage(jms:QueueReceiverCaller consumer, jms:Message message) {
+        log:printInfo("New order successfully received from the delivery queue");
+
+        // Retrieve the string payload using native function.
+        var stringPayload = message.getTextMessageContent();
+        if (stringPayload is string) {
+            log:printInfo("Delivery details: " + stringPayload);
+            log:printInfo("Delivery details sent to the customer successfully");
+        } else {
+            log:printError("Failed to retrieve the delivery details");
+        }
     }
 }
