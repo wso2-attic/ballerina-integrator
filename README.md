@@ -198,13 +198,13 @@ service productAdminService on httpListener {
     @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
     resource function updatePrice(http:Caller caller, http:Request request) {
         http:Response response = new;
-        float newPriceAmount;
+        float newPriceAmount = 0.0;
         json|error reqPayload = request.getJsonPayload();
 
         if (reqPayload is error) {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            _ = caller->respond(response);
+            var result = caller->respond(response);
         } else {
             json username = reqPayload.Username;
             json password = reqPayload.Password;
@@ -215,7 +215,7 @@ service productAdminService on httpListener {
             if (username == null || password == null || productName == null || newPrice == null) {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Bad Request: Invalid payload" });
-                _ = caller->respond(response);
+                var responseResult = caller->respond(response);
             }
 
             // Convert the price value to float
@@ -223,7 +223,7 @@ service productAdminService on httpListener {
             if (result is error) {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Invalid amount specified" });
-                _ = caller->respond(response);
+                var responseResult = caller->respond(response);
             } else {
                 newPriceAmount = result;
             }
@@ -233,7 +233,7 @@ service productAdminService on httpListener {
             if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
                 response.statusCode = 403;
                 response.setJsonPayload({ "Message": "Access Forbidden" });
-                _ = caller->respond(response);
+                var responseResult = caller->respond(response);
             }
 
             // Construct and serialize the message to be published to the Kafka topic
@@ -246,11 +246,11 @@ service productAdminService on httpListener {
             if (sendResult is error) {
                 response.statusCode = 500;
                 response.setJsonPayload({ "Message": "Kafka producer failed to send data" });
-                _ = caller->respond(response);
+                var responseResult = caller->respond(response);
             }
             // Send a success status to the admin request
             response.setJsonPayload({ "Status": "Success" });
-            _ = caller->respond(response);
+            var responseResult = caller->respond(response);
         }
     }
 }
@@ -352,7 +352,7 @@ To run the unit tests, navigate to `messaging-with-kafka/guide` and run the foll
    $ ballerina test
 ```
 
-When running the unit tests, make sure that `Kafka Cluster` is up and running.
+> When running the unit tests, make sure that `Kafka Cluster` is up and running.
 
 To check the implementation of the test file, refer to the [product_admin_portal_test.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/guide/product_admin_portal/tests/product_admin_portal_test.bal).
 

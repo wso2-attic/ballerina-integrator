@@ -46,7 +46,7 @@ service productAdminService on httpListener {
         if (reqPayload is error) {
             response.statusCode = 400;
             response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            _ = caller->respond(response);
+            var result = caller->respond(response);
         } else {
             json username = reqPayload.Username;
             json password = reqPayload.Password;
@@ -57,7 +57,7 @@ service productAdminService on httpListener {
             if (username == null || password == null || productName == null || newPrice == null) {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Bad Request: Invalid payload" });
-                _ = caller->respond(response);
+                var responseResult = caller->respond(response);
             }
 
             // Convert the price value to float
@@ -65,7 +65,7 @@ service productAdminService on httpListener {
             if (result is error) {
                 response.statusCode = 400;
                 response.setJsonPayload({ "Message": "Invalid amount specified" });
-                _ = caller->respond(response);
+                var responseResult = caller->respond(response);
             } else {
                 newPriceAmount = result;
             }
@@ -75,7 +75,7 @@ service productAdminService on httpListener {
             if (username.toString() != ADMIN_USERNAME || password.toString() != ADMIN_PASSWORD) {
                 response.statusCode = 403;
                 response.setJsonPayload({ "Message": "Access Forbidden" });
-                _ = caller->respond(response);
+                var responseResult = caller->respond(response);
             }
 
             // Construct and serialize the message to be published to the Kafka topic
@@ -88,11 +88,11 @@ service productAdminService on httpListener {
             if (sendResult is error) {
                 response.statusCode = 500;
                 response.setJsonPayload({ "Message": "Kafka producer failed to send data" });
-                _ = caller->respond(response);
+                var responseResult = caller->respond(response);
             }
             // Send a success status to the admin request
             response.setJsonPayload({ "Status": "Success" });
-            _ = caller->respond(response);
+            var responseResult = caller->respond(response);
         }
     }
 }

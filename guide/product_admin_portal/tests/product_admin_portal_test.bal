@@ -17,13 +17,12 @@
 import ballerina/test;
 import ballerina/http;
 
-type Payload record {
+type Payload record {|
     string Username;
     string Password;
     string Product;
     float Price;
-    !...;
-};
+|};
 
 // Client endpoint
 http:Client httpClient = new http:Client("http://localhost:9090/product");
