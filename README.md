@@ -193,8 +193,6 @@ service contentfilter on contentfilterEP {
         var jsonMsg = filteredReq.getJsonPayload();
 
         if (jsonMsg is json) {
-            io:println(jsonMsg);
-
             http:Response res = new;
             if (!checkForValidData(jsonMsg, res)) {
                 respondAndHandleError(caller, res, "Error sending response");
@@ -233,7 +231,7 @@ service validater on claimvalidateEP {
             //In this example student's ID should be in between 100 to 110
             if (100 <= idValue && idValue <= 110) {
                 //Print the validity
-                io:println("The  Student ID is succussfully validated");
+                log:printInfo("The  Student ID is successfully validated");
                 //Forward the request to the enricher service
                 var clientResponse = enricherEP->forward("/enrich", validatededReq);
                 forwardResponse(caller, clientResponse);
@@ -354,7 +352,6 @@ function checkForValidData(json msg, http:Response res) returns boolean {
         res.setPayload(<string> (err.detail().message));
         return false;
     } else {
-        io:println("True returned");
         return true;
     }
 }
@@ -365,9 +362,9 @@ function createError(string message) returns error {
 
 function handleUpdate(sql:UpdateResult|error returned, string message) {
     if (returned is sql:UpdateResult) {
-        io:println(message + " status: " + returned.updatedRowCount);
+        log:printInfo(message + " status: " + returned.updatedRowCount);
     } else {
-        io:println(message + " failed: " + <string>returned.detail().message);
+        log:printInfo(message + " failed: " + <string>returned.detail().message);
     }
 }
 
