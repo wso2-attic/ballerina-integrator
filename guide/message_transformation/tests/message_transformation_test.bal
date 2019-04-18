@@ -20,7 +20,7 @@ import ballerina/test;
 @test:Config {}
 function testMessageTransformation() {
     // Invoking the main function
-    endpoint http:Client httpEndpoint { url: "http://localhost:9090" };
+    http:Client httpEndpoint = new("http://localhost:9090");
     json payload = { "id": 105, "name": "saneth", "city": "Colombo 03", "gender": "male" };
     json response1 = { "id": 105, "city": "Colombo 03", "gender": "male", "fname": "saneth",
         "results": { "Com_Maths": "A", "Physics": "B", "Chemistry": "C" } };
@@ -29,11 +29,10 @@ function testMessageTransformation() {
     req.setJsonPayload(payload);
     // Send a GET request to the specified endpoint
     var response = httpEndpoint->post("/contentfilter", req);
-    match response {
-        http:Response resp => {
-            var jsonRes = check resp.getJsonPayload();
-            test:assertEquals(jsonRes, response1);
-        }
-        error err => test:assertFail(msg = "Failed to call the endpoint:");
+    if (response is http:Response) {
+        var jsonRes = response.getJsonPayload();
+        test:assertEquals(jsonRes, response);
+    } else {
+        test:assertFail(msg = "Failed to call the endpoint");
     }
 }

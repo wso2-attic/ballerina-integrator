@@ -17,31 +17,30 @@
 import ballerina/http;
 import ballerina/io;
 import ballerina/log;
+import ballerina/sql;
 import ballerina/mysql;
 //import ballerinax/kubernetes;
 //import ballerinax/docker;
 
 //Connect the student details table
-endpoint mysql:Client studentDetailsDB {
+mysql:Client studentDetailsDB = new({
     host: "localhost",
     port: 3306,
     name: "StudentDetailsDB",
     username: "root",
-    password: "",
-    poolOptions: { maximumPoolSize: 5 },
+    password: "123",
     dbOptions: { useSSL: false }
-};
+});
 
 //Connect the student's results details table
-endpoint mysql:Client studentResultsDB {
+mysql:Client studentResultsDB = new ({
     host: "localhost",
     port: 3306,
     name: "StudentResultsDB",
     username: "root",
-    password: "",
-    poolOptions: { maximumPoolSize: 5 },
+    password: "123",
     dbOptions: { useSSL: false }
-};
+});
 
 //@kubernetes:Ingress {
 //    hostname:"ballerina.guides.io",
@@ -67,7 +66,7 @@ endpoint mysql:Client studentResultsDB {
 //@kubernetes:Deployment {
 //    image:"ballerina.guides.io/message_transformation_service:v1.0",
 //    name:"ballerina-guides-message-transformation-service",
-//    baseImage:"ballerina/ballerina-platform:0.981.0",
+//    baseImage:"ballerina/ballerina-platform:0.991.0",
 //    copyFiles:[{target:"/ballerina/runtime/bre/lib",
 //        source:"<mysql-connector-path>"}]
 //}
@@ -84,330 +83,210 @@ endpoint mysql:Client studentResultsDB {
 //}
 //
 //@docker:Expose {}
-//Define end points lister http ports for the service endpoints
-endpoint http:Listener contentfilterEP {
-    port: 9090
-};
-endpoint http:Listener claimvalidateEP {
-    port: 9094
-};
-endpoint http:Listener contentenricherEP {
-    port: 9092
-};
-endpoint http:Listener backendEP {
-    port: 9093
-};
+//Define listeners for the service endpoints
+listener http:Listener contentfilterEP = new(9090);
+
+listener http:Listener claimvalidateEP = new(9094);
+
+listener http:Listener contentenricherEP = new(9092);
+
+listener http:Listener backendEP = new(9093);
 //Define endpoints for services
-endpoint http:Client validatorEP {
-    url: "http://localhost:9094/validate"
-};
-endpoint http:Client enricherEP {
-    url: "http://localhost:9092/enricher"
-};
-endpoint http:Client clientEP {
-    url: "http://localhost:9093/backend"
-};
+http:Client validatorEP = new("http://localhost:9094/validate");
+
+http:Client enricherEP = new("http://localhost:9092/enricher");
+
+http:Client clientEP = new("http://localhost:9093/backend");
+
 
 //Define the global variables
-public json payload1;
-public json payload2;
+json payload1 = "";
+json payload2 = "";
 
-//Service for the content filter pattern
-service<http:Service> contentfilter bind contentfilterEP {
-    @http:ResourceConfig {
-        methods: ["POST"],
-        path: "/"
-    }
-    contentfilter(endpoint caller, http:Request req) {
+service contentfilter on contentfilterEP {
+    resource function contentfilter(http:Caller caller, http:Request req) {
         http:Request filteredReq = req;
-        var jsonMsg = req.getJsonPayload();
-        match jsonMsg {
-            json msg => {
-                //Create the StudentDetails table in the DB
-                var ret = studentDetailsDB->update(
-                     "CREATE TABLE StudentDetails (id INT, name VARCHAR(255), city VARCHAR(255), gender VARCHAR(255))"
-                );
-                handleUpdate(ret, "Create the table");
-                http:Response res = new;
-                if (!checkForValidData(msg, res)) {
-                    caller->respond(res) but {
-                        error e =>
-                        log:printError("Error sending response", err = e)
-                    };
-                } else {
-                    //Assign user input values to variables
-                    int IdValue = check <int>msg["id"];
-                    string nameString = check <string>msg["name"];
-                    string cityString = check <string>msg["city"];
-                    string genderString = check <string>msg["gender"];
-                    //Add values to the student details table
-                    ret = studentDetailsDB->update(
-                         "INSERT INTO StudentDetails(id, name, city, gender) values (?, ?, ?, ?)", IdValue,
-                          nameString, cityString, genderString);
-                    handleUpdate(ret, "Add details to the table");
-                    json iddetails = { id: IdValue };
-                    //Set filtered payload to the request
-                    filteredReq.setJsonPayload(untaint iddetails);
-                    //Forward request to the nesxt ID validating service
-                    var clientResponse = validatorEP->forward("/", filteredReq);
-                    match clientResponse {
-                        http:Response response => {
-                            caller->respond(response) but {
-                                error e =>
-                                log:printError("Error sending response", err = e)
-                            };
-                        }
-                        error err => {
-                            http:Response response = new;
-                            response.statusCode = 500;
-                            response.setPayload(err.message);
-                            caller->respond(response) but {
-                                error e =>
-                                log:printError("Error sending response", err = e)
-                            };
-                        }
-                    }
-                }
-            }
-            error err => {
-                http:Response res = new;
-                res.statusCode = 500;
-                res.setPayload(untaint err.message);
-                caller->respond(res) but {
-                    error e =>
-                    log:printError("Error while content reading", err = e)
-                };
-            }
-        }
+        var jsonMsg = filteredReq.getJsonPayload();
 
+        if (jsonMsg is json) {
+            //Create the StudentDetails table in the DB
+            var ret = studentDetailsDB->update("CREATE TABLE StudentDetails (id INT, name VARCHAR(255), city VARCHAR(255), gender VARCHAR(255))");
+            handleUpdate(ret, "Create the table");
+            http:Response res = new;
+            if (checkForValidData(jsonMsg, res)) {
+                respondAndHandleError(caller, res, "Error sending response");
+            } else {
+                //Assign user input values to variables
+                int IdValue = checkpanic int.convert(jsonMsg["id"]);
+                string nameString = checkpanic string.convert(jsonMsg["name"]);
+                string cityString = checkpanic string.convert(jsonMsg["city"]);
+                string genderString = checkpanic string.convert(jsonMsg["gender"]);
+                //Add values to the student details table
+                ret = studentDetailsDB->update(
+                        "INSERT INTO StudentDetails(id, name, city, gender) values (?, ?, ?, ?)", IdValue,
+                        nameString, cityString, genderString);
+                handleUpdate(ret, "Add details to the table");
+                json iddetails = { id: IdValue };
+                //Set filtered payload to the request
+                filteredReq.setJsonPayload(untaint iddetails);
+                //Forward request to the nesxt ID validating service
+                var clientResponse = validatorEP->forward("/", filteredReq);
+                forwardResponse(caller, clientResponse);
+            }
+        } else {
+            createAndSendErrorResponse(caller, untaint jsonMsg, "Error while content reading");
+        }
     }
 }
 
-//The student ID validate service
-service<http:Service> validate bind claimvalidateEP {
-    @http:ResourceConfig {
-        methods: ["POST"],
-        path: "/"
-    }
-    validate(endpoint caller, http:Request filteredReq) {
+service validate on claimvalidateEP {
+    resource function validate(http:Caller caller, http:Request filteredReq) {
         http:Request validatededReq = filteredReq;
         //Get the payload in the request (Student ID)
         var jsonMsg = filteredReq.getJsonPayload();
-        match jsonMsg {
-            json msg => {
-                int Idvalue = check <int>msg["id"];
-                //validate the student's ID
-                //In this example student's ID should be in between 100 to 110
-                if ((100 <= Idvalue) && (Idvalue <= 110))  {
-                    //Print the validity
-                    io:println("The  Student ID is succussfully validated");
-                    //Forward the request to the enricher service
-                    var clientResponse = enricherEP->forward("/", validatededReq);
-                    match clientResponse {
-                        http:Response res => {
-                            caller->respond(res) but {
-                                error e =>
-                                log:printError("Error sending response", err = e)
-                            };
-                        }
-                        error err => {
-                            http:Response res = new;
-                            res.statusCode = 500;
-                            res.setPayload(untaint err.message);
-                            caller->respond(res) but {
-                                error e =>
-                                log:printError("Error sending response", err = e)
-                            };
-                        }
-                    }
-                }
-                else {
-                    error err = { message: "Student ID: " + Idvalue + " is not found" };
-                    http:Response res = new;
-                    res.statusCode = 500;
-                    res.setPayload(untaint err.message);
-                    caller->respond(res) but {
-                        error e =>
-                        log:printError("Error sending response", err = e)
-                    };
-                }
-            }
-            error err => {
+        if (jsonMsg is json) {
+            int idValue = <int>jsonMsg["id"];
+            //validate the student's ID
+            //In this example student's ID should be in between 100 to 110
+            if (100 <= idValue && idValue <= 110) {
+                //Print the validity
+                io:println("The  Student ID is succussfully validated");
+                //Forward the request to the enricher service
+                var clientResponse = enricherEP->forward("/", validatededReq);
+                forwardResponse(caller, clientResponse);
+            } else {
+                error err = error("Student ID: " + idValue + " is not found");
                 http:Response res = new;
                 res.statusCode = 500;
-                res.setPayload(untaint err.message);
-                caller->respond(res) but {
-                    error e =>
-                    log:printError("Error while content reading", err = e)
-                };
+                res.setPayload(untaint err.reason());
+                respondAndHandleError(caller, res, "Error sending response");
             }
+        } else {
+            createAndSendErrorResponse(caller, untaint jsonMsg, "Error while content reading");
         }
-
     }
 }
 
 //The content enricher service
-service<http:Service> enricher bind contentenricherEP {
-    @http:ResourceConfig {
-        methods: ["POST"],
-        path: "/"
-    }
-    enricher(endpoint caller, http:Request validatedReq) {
+service enricher on contentenricherEP {
+    resource function enricher(http:Caller caller, http:Request validatedReq) {
         http:Request enrichedReq = validatedReq;
         var jsonMsg = validatedReq.getJsonPayload();
-        match jsonMsg {
-            json msg => {
-                //Get the student's ID value
-                int Idvalue = check <int>msg["id"];
-                //Select details from the data table according to the student's ID
-                var selectRet = studentDetailsDB->select("SELECT * FROM StudentDetails", ());
-                table dt;
-                match selectRet {
-                    table tableReturned => dt = tableReturned;
-                    error e => io:println("Select data from StudentDetails table failed: "
-                            + e.message);
-                }
-                //Convert the details to a jason file
-                io:println("\nConvert the table into json");
-                var jsonConversionRet = <json>dt;
-                match jsonConversionRet {
-                    json jsonRes => {
-                        //Set student's details to the global variable
-                        payload1 = untaint jsonRes;
-                        io:println(payload1);
-                    }
-                    error e => io:println("Error in student table to json conversion");
-                }
-                //Drop the student details table
-                var ret = studentDetailsDB->update("DROP TABLE StudentDetails");
-                handleUpdate(ret, "Drop table student");
-                //Select student's results from the student results data table, according to the student's ID
-                var selectRet1 = studentResultsDB->select(
-                       "select Com_Maths,Physics,Chemistry from StudentResults where ID = ?", (), Idvalue);
-                table dt1;
-                match selectRet1 {
-                    table tableReturned => dt1 = tableReturned;
-                    error e => io:println("Select data from StudentResults table failed: "
-                            + e.message);
-                }
-                //Convert the details to a jason file
-                io:println("\nConvert the table into json");
-                var jsonConversionRet1 = <json>dt1;
-                match jsonConversionRet1 {
-                    json jsonRes1 => {
-                        //Set student's result details to the global variable
-                        payload2 = untaint jsonRes1;
-                    }
-                    error e => io:println("Error in StudentDetails table to json conversion");
-                }
+        if (jsonMsg is json) {
+            //Get the student's ID value
+            int idvalue = <int>jsonMsg["id"];
+            //Select details from the data table according to the student's ID
+            var selectRet = studentDetailsDB->select("SELECT * FROM StudentDetails", ());
+            payload1 = untaint convertTableToJson(selectRet, "Select data from StudentDetails table failed", "Error in student table to json conversion");
+            //Drop the student details table
+            var ret = studentDetailsDB->update("DROP TABLE StudentDetails");
+            handleUpdate(ret, "Drop table student");
+            //Select student's results from the student results data table, according to the student's ID
+            var selectRet1 = studentResultsDB->select(
+                    "select Com_Maths,Physics,Chemistry from StudentResults where ID = ?", (), idvalue);
+            payload2 = untaint convertTableToJson(selectRet1, "Select data from StudentResults table failed", "Error in StudentDetails table to json conversion");
 
-                //jason to jason conversion to the selected details
-                //Define new jason variable
-                json pay = payload1[0];
-                //Add extra values to the jason payload
-                pay.fname = pay.name;
-                //remove values from the jason payload
-                pay.remove("name");
-                //Add results to the same payload
-                pay.results = payload2[0];
-                //Set enriched payload to the request
-                enrichedReq.setJsonPayload(pay);
-            }
-            error err => {
-                http:Response res = new;
-                res.statusCode = 500;
-                res.setPayload(untaint err.message);
-                caller->respond(res) but {
-                    error e =>
-                    log:printError("Error sending response", err = e)
-                };
-            }
+            //Define new json variable
+            json pay = payload1[0];
+            //Add extra values to the jason payload
+            pay.fname = pay.name;
+            //remove values from the jason payload
+            pay.remove("name");
+            //Add results to the same payload
+            pay.results = payload2[0];
+            //Set enriched payload to the request
+            enrichedReq.setJsonPayload(pay);
+        } else {
+            createAndSendErrorResponse(caller, untaint jsonMsg, "Error sending response");
         }
+
         //Forward enriched request to the client endpoint
         var clientResponse = clientEP->forward("/", enrichedReq);
-        match clientResponse {
-            http:Response res => {
-                caller->respond(res) but {
-                    error e =>
-                    log:printError("Error sending response", err = e)
-                };
-            }
-            error err => {
-                http:Response res = new;
-                res.statusCode = 500;
-                res.setPayload(err.message);
-                caller->respond(res) but {
-                    error e =>
-                    log:printError("Error sending response", err = e)
-                };
-            }
+        forwardResponse(caller, clientResponse);
+    }
+}
+
+service backend on backendEP {
+    resource function backendservice(http:Caller caller, http:Request enrichedReq) {
+        //Get the requset payload
+        var jsonMsg = enrichedReq.getJsonPayload();
+        if (jsonMsg is json) {
+            //Send payload as response
+            http:Response res = new;
+            res.setJsonPayload(untaint jsonMsg);
+            respondAndHandleError(caller, res, "Error sending response");
+        } else {
+            createAndSendErrorResponse(caller, untaint jsonMsg, "Error sending response");
         }
     }
 }
 
-//Client endpoint service to display the request payload
-service<http:Service> backend bind backendEP {
-    @http:ResourceConfig {
-        methods: ["POST"],
-        path: "/"
+function forwardResponse(http:Caller caller, http:Response|error forwardingResponse) {
+    if (forwardingResponse is http:Response) {
+        respondAndHandleError(caller, forwardingResponse, "Error sending response");
+    } else {
+        createAndSendErrorResponse(caller, forwardingResponse, "Error sending response");
     }
-    backendservice(endpoint caller, http:Request enrichedReq) {
-        //Get the requset payload
-        var jsonMsg = enrichedReq.getJsonPayload();
-        match jsonMsg {
-            json msg => {
-                //Send payload as response
-                http:Response res = new;
-                res.setJsonPayload(untaint msg);
-                caller->respond(res) but {
-                    error e =>
-                    log:printError("Error sending response", err = e)
-                };
-            }
-            error err => {
-                http:Response res = new;
-                res.statusCode = 500;
-                res.setPayload(untaint err.message);
-                caller->respond(res) but {
-                    error e =>
-                    log:printError("Error sending response", err = e)
-                };
-            }
+}
+
+function createAndSendErrorResponse(http:Caller caller, error sourceError, string respondErrorMsg) {
+    http:Response response = new;
+    response.statusCode = 500;
+    response.setPayload(<string> sourceError.detail().message);
+    respondAndHandleError(caller, response, respondErrorMsg);
+}
+
+function respondAndHandleError(http:Caller caller, http:Response response, string respondErrorMsg) {
+    var respondRet = caller->respond(response);
+    if (respondRet is error) {
+        log:printError(respondErrorMsg, err = respondRet);
+    }
+}
+
+function convertTableToJson(table<record{}>|error tableOrError, string dataRetrievalErrorMsg, string conversionErrorMsg) returns json? {
+    if (tableOrError is table<record{}>) {
+        json | error convertedJson = json.convert(tableOrError);
+        if (convertedJson is json) {
+            return convertedJson;
+        } else {
+            log:printError(conversionErrorMsg, err = convertedJson);
         }
+    } else {
+        log:printError(dataRetrievalErrorMsg, err = tableOrError);
     }
 }
 
 //Function to handle the user input
 function checkForValidData(json msg, http:Response res) returns boolean {
-    boolean returnError = false;
-    error err;
+    error? err = ();
     //Check input through the regular expressions
-    if (!(check msg.id.toString().matches("\\d+"))) {
-        err = { message: "student ID containts invalid data" };
-        returnError = true;
-    } else if (!(check msg.name.toString().matches("[a-zA-Z]+"))) {
-        err = { message: "student Name containts invalid data" };
-        returnError = true;
-    } else if (!(check msg.city.toString().matches("^[a-zA-Z]+([\\-\\s]?[a-zA-Z0-9]+)*$"))) {
-        err = { message: "student city containts invalid data" };
-        returnError = true;
-    } else if (!(check msg.gender.toString().matches("[a-zA-Z]+"))) {
-        err = { message: "student gender containts invalid data" };
-        returnError = true;
+    if (!(checkpanic msg.id.toString().matches("\\d+"))) {
+        err = createError("student ID containts invalid data");
+    } else if (!(checkpanic msg.name.toString().matches("[a-zA-Z]+"))) {
+        err = createError("student Name containts invalid data");
+    } else if (!(checkpanic msg.city.toString().matches("^[a-zA-Z]+([\\-\\s]?[a-zA-Z0-9]+)*$"))) {
+        err = createError("student city containts invalid data");
+    } else if (!(checkpanic msg.gender.toString().matches("[a-zA-Z]+"))) {
+        err = createError("student gender containts invalid data");
     }
-    if (returnError) {
+    if (err is error) {
         res.statusCode = 400;
-        res.setPayload(err.message);
+        res.setPayload(<string> (err.detail().message));
         return false;
     } else {
         return true;
     }
 }
 
-//function for the error handling part in extract values from payload to variables
-function handleUpdate(int|error returned, string message) {
-    match returned {
-        int retInt => io:println(message + " status: " + retInt);
-        error e => io:println(message + " failed: " + e.message);
+function createError(string message) returns error {
+    return error(message);
+}
+
+function handleUpdate(sql:UpdateResult|error returned, string message) {
+    if (returned is sql:UpdateResult) {
+        io:println(message + " status: " + returned.updatedRowCount);
+    } else {
+        io:println(message + " failed: " + <string>returned.detail().message);
     }
 }
+
