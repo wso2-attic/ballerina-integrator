@@ -91,8 +91,9 @@ listener http:Listener claimvalidateEP = new(9094);
 listener http:Listener contentenricherEP = new(9092);
 
 listener http:Listener backendEP = new(9093);
+
 //Define endpoints for services
-http:Client validatorEP = new("http://localhost:9094/validate");
+http:Client validatorEP = new("http://localhost:9094/validater");
 
 http:Client enricherEP = new("http://localhost:9092/enricher");
 
@@ -104,16 +105,13 @@ json payload1 = "";
 json payload2 = "";
 
 service contentfilter on contentfilterEP {
-    resource function contentfilter(http:Caller caller, http:Request req) {
+    resource function filter(http:Caller caller, http:Request req) {
         http:Request filteredReq = req;
         var jsonMsg = filteredReq.getJsonPayload();
 
         if (jsonMsg is json) {
-            //Create the StudentDetails table in the DB
-            var ret = studentDetailsDB->update("CREATE TABLE StudentDetails (id INT, name VARCHAR(255), city VARCHAR(255), gender VARCHAR(255))");
-            handleUpdate(ret, "Create the table");
             http:Response res = new;
-            if (checkForValidData(jsonMsg, res)) {
+            if (!checkForValidData(jsonMsg, res)) {
                 respondAndHandleError(caller, res, "Error sending response");
             } else {
                 //Assign user input values to variables
@@ -122,7 +120,7 @@ service contentfilter on contentfilterEP {
                 string cityString = checkpanic string.convert(jsonMsg["city"]);
                 string genderString = checkpanic string.convert(jsonMsg["gender"]);
                 //Add values to the student details table
-                ret = studentDetailsDB->update(
+                var ret = studentDetailsDB->update(
                         "INSERT INTO StudentDetails(id, name, city, gender) values (?, ?, ?, ?)", IdValue,
                         nameString, cityString, genderString);
                 handleUpdate(ret, "Add details to the table");
@@ -130,7 +128,7 @@ service contentfilter on contentfilterEP {
                 //Set filtered payload to the request
                 filteredReq.setJsonPayload(untaint iddetails);
                 //Forward request to the nesxt ID validating service
-                var clientResponse = validatorEP->forward("/", filteredReq);
+                var clientResponse = validatorEP->forward("/validate", filteredReq);
                 forwardResponse(caller, clientResponse);
             }
         } else {
@@ -139,7 +137,7 @@ service contentfilter on contentfilterEP {
     }
 }
 
-service validate on claimvalidateEP {
+service validater on claimvalidateEP {
     resource function validate(http:Caller caller, http:Request filteredReq) {
         http:Request validatededReq = filteredReq;
         //Get the payload in the request (Student ID)
@@ -152,7 +150,7 @@ service validate on claimvalidateEP {
                 //Print the validity
                 io:println("The  Student ID is succussfully validated");
                 //Forward the request to the enricher service
-                var clientResponse = enricherEP->forward("/", validatededReq);
+                var clientResponse = enricherEP->forward("/enrich", validatededReq);
                 forwardResponse(caller, clientResponse);
             } else {
                 error err = error("Student ID: " + idValue + " is not found");
@@ -169,7 +167,7 @@ service validate on claimvalidateEP {
 
 //The content enricher service
 service enricher on contentenricherEP {
-    resource function enricher(http:Caller caller, http:Request validatedReq) {
+    resource function enrich(http:Caller caller, http:Request validatedReq) {
         http:Request enrichedReq = validatedReq;
         var jsonMsg = validatedReq.getJsonPayload();
         if (jsonMsg is json) {
@@ -178,9 +176,6 @@ service enricher on contentenricherEP {
             //Select details from the data table according to the student's ID
             var selectRet = studentDetailsDB->select("SELECT * FROM StudentDetails", ());
             payload1 = untaint convertTableToJson(selectRet, "Select data from StudentDetails table failed", "Error in student table to json conversion");
-            //Drop the student details table
-            var ret = studentDetailsDB->update("DROP TABLE StudentDetails");
-            handleUpdate(ret, "Drop table student");
             //Select student's results from the student results data table, according to the student's ID
             var selectRet1 = studentResultsDB->select(
                     "select Com_Maths,Physics,Chemistry from StudentResults where ID = ?", (), idvalue);
@@ -201,13 +196,13 @@ service enricher on contentenricherEP {
         }
 
         //Forward enriched request to the client endpoint
-        var clientResponse = clientEP->forward("/", enrichedReq);
+        var clientResponse = clientEP->forward("/backend", enrichedReq);
         forwardResponse(caller, clientResponse);
     }
 }
 
 service backend on backendEP {
-    resource function backendservice(http:Caller caller, http:Request enrichedReq) {
+    resource function backend(http:Caller caller, http:Request enrichedReq) {
         //Get the requset payload
         var jsonMsg = enrichedReq.getJsonPayload();
         if (jsonMsg is json) {
