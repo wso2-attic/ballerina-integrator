@@ -28,7 +28,7 @@ mysql:Client studentDetailsDB = new({
     port: 3306,
     name: "StudentDetailsDB",
     username: "root",
-    password: "123",
+    password: "",
     dbOptions: { useSSL: false }
 });
 
@@ -38,7 +38,7 @@ mysql:Client studentResultsDB = new ({
     port: 3306,
     name: "StudentResultsDB",
     username: "root",
-    password: "123",
+    password: "",
     dbOptions: { useSSL: false }
 });
 
