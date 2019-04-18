@@ -35,51 +35,38 @@ import ballerinax/kubernetes;
 
 //@docker:Expose{}
 
-endpoint http:Listener listener {
-    port: 9091
-};
+listener http:Listener httpListener = new(9091);
+
 
 // Client endpoint to communicate with appointment management service
-endpoint http:Client appointmentEP {
-    url: "http://localhost:9092/appointment-mgt"
-
-    // URL for Docker deployment
-    // url: "http://appointment-mgt-container:9092/appointment-mgt"
-};
+// URL for Docker deployment
+// url: "http://appointment-mgt-container:9092/appointment-mgt"
+http:Client appointmentEP = new("http://localhost:9092/appointment-mgt");
 
 // Client endpoint to communicate with medical record service
-endpoint http:Client medicalRecordEP {
-    url: "http://localhost:9093/medical-records"
-
-    // URL for Docker deployment
-    // url: "http://medical-record-mgt-container:9093/medical-records"
-};
+// URL for Docker deployment
+// url: "http://medical-record-mgt-container:9093/medical-records"
+http:Client medicalRecordEP = new("http://localhost:9093/medical-records");
 
 // Client endpoint to communicate with notification management service
-endpoint http:Client notificationEP {
-    url: "http://localhost:9094/notification-mgt"
-
-    // URL for Docker deployment
-    // url: "http://notification-mgt-container:9094/notification-mgt"
-};
+// URL for Docker deployment
+// url: "http://notification-mgt-container:9094/notification-mgt"
+http:Client notificationEP = new("http://localhost:9094/notification-mgt");
 
 // Client endpoint to communicate with message management service
-endpoint http:Client messageEP {
-    url: "http://localhost:9095/message-mgt"
-
-    // URL for Docker deployment
-    // url: "http://message-mgt-container:9095/message-mgt"
-};
+// URL for Docker deployment
+// url: "http://message-mgt-container:9095/message-mgt"
+http:Client messageEP = new("http://localhost:9095/message-mgt");
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/desktop-bff" }
-service<http:Service> desktop_bff_service bind listener {
+service desktop_bff_service on httpListener {
 
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/alerts"
     }
-    getAlerts(endpoint client, http:Request req) {
+    resource function getAlerts(http:Caller caller, http:Request req) {
 
         // This will return all message and notifications
         log:printInfo("getAlerts...");
@@ -97,21 +84,18 @@ service<http:Service> desktop_bff_service bind listener {
         alertJson.Messages = messageList.Messages;
 
         // Set JSON payload to response
-        http:Response response;
+        http:Response response = new;
         response.setJsonPayload(untaint alertJson);
 
         // Send response to the client.
-        _ = client->respond(response) but {
-            error e => log:printError(
-                           "Error sending response", err = e)
-        };
+        checkpanic caller->respond(response);
     }
 
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/appointments"
     }
-    getAppointments(endpoint client, http:Request req) {
+    resource function getAppointments(http:Caller caller, http:Request req) {
 
         log:printInfo("getAppointments...");
 
@@ -123,21 +107,18 @@ service<http:Service> desktop_bff_service bind listener {
         appointmentJson.Appointments = appointmentList.Appointments;
 
         // Set JSON payload to response
-        http:Response response;
+        http:Response response = new();
         response.setJsonPayload(untaint appointmentJson);
 
         // Send response to the client.
-        _ = client->respond(response) but {
-            error e => log:printError(
-                           "Error sending response", err = e)
-        };
+        checkpanic caller->respond(response);
     }
 
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/medical-records"
     }
-    getMedicalRecords(endpoint client, http:Request req) {
+    resource function getMedicalRecords(http:Caller caller, http:Request req) {
 
         log:printInfo("getMedicalRecords...");
 
@@ -149,14 +130,11 @@ service<http:Service> desktop_bff_service bind listener {
         medicalRecordJson.MedicalRecords = medicalRecordList.MedicalRecords;
 
         // Set JSON payload to response
-        http:Response response;
+        http:Response response = new();
         response.setJsonPayload(untaint medicalRecordJson);
 
         // Send response to the client.
-        _ = client->respond(response) but {
-            error e => log:printError(
-                           "Error sending response", err = e)
-        };
+        checkpanic caller->respond(response);
     }
 
     // This API may have more resources for other functionalities
@@ -166,27 +144,20 @@ service<http:Service> desktop_bff_service bind listener {
 // This will call given endpoint and return a json response
 function sendGetRequest(http:Client httpClient1, string context) returns (json) {
 
-    endpoint http:Client client1 = httpClient1;
-
+    http:Client client1 = httpClient1;
     var response = client1->get(context);
+    json value = {};
 
-    json value;
-
-    match response {
-        http:Response resp => {
-            var msg = resp.getJsonPayload();
-            match msg {
-                json jsonPayload => {
-                    value = jsonPayload;
-                }
-                error err => {
-                    log:printError(err.message, err = err);
-                }
-            }
+    if (response is http:Response) {
+        var msg = response.getJsonPayload();
+        if (msg is json) {
+            value = msg;
+        } else {
+            log:printError(msg.reason());
         }
-        error err => {
-            log:printError(err.message, err = err);
-        }
+    } else {
+        log:printError(response.reason());
     }
+
     return value;
 }

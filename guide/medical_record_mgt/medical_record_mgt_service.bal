@@ -35,51 +35,45 @@ import ballerinax/kubernetes;
 //}
 
 //@docker:Expose{}
-
-endpoint http:Listener listener {
-    port: 9093
-};
+listener http:Listener httpListener = new(9093);
 
 // Medical Record management is done using an in-memory map.
 // Add some sample Medical Records to 'medicalRecordMap' at startup.
-map<json> medicalRecordMap;
+map<json> medicalRecordMap = {};
 
 // RESTful service.
 @http:ServiceConfig { basePath: "/medical-records" }
-service<http:Service> medical_record_mgt_service bind listener {
+service medical_record_mgt_service on httpListener {
 
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/medical-record"
     }
-    addMedicalRecord(endpoint client, http:Request req) {
+    resource function addMedicalRecord(http:Caller caller, http:Request req) {
 
         log:printInfo("addMedicalRecord...");
 
-        json medicalRecordtReq = check req.getJsonPayload();
+        json medicalRecordtReq = checkpanic req.getJsonPayload();
         string medicalRecordId = medicalRecordtReq.MedicalRecord.ID.toString();
         medicalRecordMap[medicalRecordId] = medicalRecordtReq;
 
         // Create response message.
         json payload = { status: "Medical Record Created.", medicalRecordId: medicalRecordId };
-        http:Response response;
+        http:Response response = new();
         response.setJsonPayload(untaint payload);
 
         // Set 201 Created status code in the response message.
         response.statusCode = 201;
 
         // Send response to the client.
-        _ = client->respond(response) but {
-            error e => log:printError(
-                           "Error sending response", err = e)
-        };
+        checkpanic caller->respond(response);
     }
 
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/medical-record/list"
     }
-    getMedicalRecords(endpoint client, http:Request req) {
+    resource function getMedicalRecords(http:Caller caller, http:Request req) {
         log:printInfo("getMedicalRecords...");
 
         http:Response response = new;
@@ -87,19 +81,16 @@ service<http:Service> medical_record_mgt_service bind listener {
 
         // Get all Medical Records from map and add them to response
         int i = 0;
-        foreach k, v in medicalRecordMap {
+        foreach var(k, v) in medicalRecordMap {
             json medicalRecordValue = v.MedicalRecord;
             medicalRecordsResponse.MedicalRecords[i] = medicalRecordValue;
-            i++;
+            i += 1;
         }
 
         // Set the JSON payload in the outgoing response message.
         response.setJsonPayload(untaint medicalRecordsResponse);
 
         // Send response to the client.
-        client->respond(response) but {
-            error e => log:printError(
-                           "Error sending response", err = e)
-        };
+        checkpanic caller->respond(response);
     }
 }
