@@ -1,6 +1,6 @@
 # Message Transformation
 
-This guide demonstrates how to transform a request message payload to a different format expected by the back-end service.
+In this example, we are going to transform a request message payload to a different format expected by the back-end service.
 
 The high level sections of this guide are as follows:
 
@@ -26,7 +26,7 @@ Let’s assume this is the format of the request sent by the client:
   "appointment_date": "2017-04-02"
 }
 ```
-However, the format of the message required by the backend service as follows:
+However, the format of the message required by the backend service is as follows:
 ```json
 {
   "patient": {
