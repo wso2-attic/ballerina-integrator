@@ -11,7 +11,7 @@ The high level sections of this guide are as follows:
 - [Testing](#testing)
 
 ## What you'll build
-Let's consider a real world scenario where patients use a hospital service. It facilitates resering appointments on doctors in different catogaries at different hospitals registered in the system.
+Let's consider a real world scenario where patients use a hospital service. It facilitates reserving appointments on doctors in different catagories at different hospitals registered in the system.
 
 The system is received a message for reservation from the client. The hospital name and the doctor name is extracted from the message payload. The category of service (e.g.: surgery) is extracted from the requested URL.
 
@@ -35,20 +35,27 @@ The following is the code of the service that performs the content based routing
 import ballerina/http;
 import ballerina/log;
 
+// Service to reserve appointments
 @http:ServiceConfig {
     basePath: "/healthcare"
 }
 service contentBasedRouting on new http:Listener(9080) {
+
+    // Reserve appointments on the type of "category"
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/categories/{category}/reserve"
     }
     resource function CBRResource(http:Caller outboundEP, http:Request req, string category) {
+
+        // Request message payload
         var jsonMsg = req.getJsonPayload();
         if (jsonMsg is json) {
             string hospitalDesc = jsonMsg["hospital"].toString();
             string doctorName = jsonMsg["doctor"].toString();
             string hospitalName = "";
+
+            // Endpoint URL of the backend service
             http:Client locationEP = new("http://localhost:9090");
             http:Response|error clientResponse;
             if (hospitalDesc != "") {
@@ -58,33 +65,36 @@ service contentBasedRouting on new http:Listener(9080) {
                     "pine valley community hospital" => hospitalName = "pinevalley";
                 }
                 string sendPath = "/" + hospitalName + "/categories/" + category + "/reserve";
+
+                // Call the backend service related to the hospital
                 clientResponse = locationEP -> post(untaint sendPath, untaint jsonMsg);
             } else {
                 return;
             }
             if (clientResponse is http:Response) {
                 var result = outboundEP->respond(clientResponse);
-                if (result is error) {
-                    log:printError("Error at the backend", err = result);
-                }
+                handleErrorResponse(result, "Error at the backend");
             } else {
                 http:Response res = new;
                 res.statusCode = 500;
                 res.setPayload(<string>clientResponse.detail().message);
                 var result = outboundEP->respond(res);
-                if (result is error) {
-                   log:printError("Backend not properly responds", err = result);
-                }
+                handleErrorResponse(result, "Backend not properly responds");
             }
         } else {
             http:Response res = new;
             res.statusCode = 500;
             res.setPayload(untaint <string>jsonMsg.detail().message);
             var result = outboundEP->respond(res);
-            if (result is error) {
-               log:printError("Request is not JSON", err = result);
-            }
+            handleErrorResponse(result, "Request is not JSON");
         }
+    }
+}
+
+# Error handle the responses
+function handleErrorResponse(http:Response|error? response, string errorMessage) {
+    if (response is error) {
+        log:printError(errorMessage, err = response);
     }
 }
 ```
