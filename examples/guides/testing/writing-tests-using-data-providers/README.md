@@ -34,7 +34,7 @@ In this example we have implemented a simple hello service which gets user input
 
 We have the main test function 'testHelloServiceResponse' which accepts a single parameter. We have defined our data provider as helloServiceDataProvider. 
 
-```
+```ballerina
 @test:Config {
     dataProvider: "helloServiceDataProvider"
 }
