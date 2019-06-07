@@ -17,6 +17,9 @@
 import ballerina/http;
 import ballerina/log;
 
+// Endpoint URL of the backend service
+http:Client locationEP = new("http://localhost:9090");
+
 // Service to reserve appointments
 @http:ServiceConfig {
     basePath: "/healthcare"
@@ -37,8 +40,6 @@ service contentBasedRouting on new http:Listener(9080) {
             string doctorName = jsonMsg["doctor"].toString();
             string hospitalName = "";
 
-            // Endpoint URL of the backend service
-            http:Client locationEP = new("http://localhost:9090");
             http:Response|error clientResponse;
             if (hospitalDesc != "") {
                 match hospitalDesc {
