@@ -45,30 +45,24 @@ service contentBasedRouting on new http:Listener(9080) {
                     "grand oak community hospital" => hospitalName = "grandoaks";
                     "clemency medical center" => hospitalName = "clemency";
                     "pine valley community hospital" => hospitalName = "pinevalley";
+                    _ => respondWithError(outboundEP, "Hospital name is invalid.", "Hospital name is invalid.");
                 }
                 string sendPath = "/" + hospitalName + "/categories/" + category + "/reserve";
 
                 // Call the backend service related to the hospital
                 clientResponse = locationEP -> post(untaint sendPath, untaint jsonMsg);
             } else {
+                respondWithError(outboundEP, "JSON Path $hospital cannot be empty.", "Hospital cannot be empty.");
                 return;
             }
             if (clientResponse is http:Response) {
                 var result = outboundEP->respond(clientResponse);
                 handleErrorResponse(result, "Error at the backend");
             } else {
-                http:Response res = new;
-                res.statusCode = 500;
-                res.setPayload(<string>clientResponse.detail().message);
-                var result = outboundEP->respond(res);
-                handleErrorResponse(result, "Backend not properly responds");
+                respondWithError(outboundEP, <string>clientResponse.detail().message, "Backend service does not properly respond");
             }
         } else {
-            http:Response res = new;
-            res.statusCode = 500;
-            res.setPayload(untaint <string>jsonMsg.detail().message);
-            var result = outboundEP->respond(res);
-            handleErrorResponse(result, "Request is not JSON");
+            respondWithError(outboundEP, untaint <string>jsonMsg.detail().message, "Request is not JSON");
         }
     }
 }
@@ -78,4 +72,13 @@ function handleErrorResponse(http:Response|error? response, string errorMessage)
     if (response is error) {
         log:printError(errorMessage, err = response);
     }
+}
+
+# Respond in error cases
+function respondWithError(http:Caller outboundEP, string payload, string failedMessage) {
+    http:Response res = new;
+    res.statusCode = 500;
+    res.setPayload(payload);
+    var result = outboundEP->respond(res);
+    handleErrorResponse(result, failedMessage);
 }
