@@ -40,6 +40,10 @@ gmail:GmailConfiguration gmailConfig = {
     }
 };
 
+const RECIPIENT_EMAIL = "someone@gmail.com";
+const SENDER_EMAIL = "somebody@gmail.com";
+
+
 // Gmail client that handles sending payloads to email address.
 gmail:Client gmailClient = new(gmailConfig);
 // Listener endpoint that the service binds to.
@@ -111,8 +115,8 @@ function sendEmail(string email) returns http:Response {
 
     string userId = "me";
     gmail:MessageRequest messageRequest = {};
-    messageRequest.recipient = "someone@gmail.com";
-    messageRequest.sender = "somebody@gmail.com";
+    messageRequest.recipient = RECIPIENT_EMAIL;
+    messageRequest.sender = SENDER_EMAIL;
     messageRequest.subject = "Gmail Connector test : Payment Status";
     messageRequest.messageBody = messageBody;
     messageRequest.contentType = gmail:TEXT_HTML;
@@ -133,7 +137,7 @@ function sendEmail(string email) returns http:Response {
         response.setJsonPayload(payload, contentType = "application/json");
     } else {
         // If unsuccessful, print the error returned.
-        io:println("Error: ", sendMessageResponse);
+        log:printError("Failed to send the email", err = sendMessageResponse);
         response.setPayload("Failed to send the Email");
     }
 

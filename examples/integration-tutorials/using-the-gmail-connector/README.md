@@ -167,7 +167,7 @@ $ ballerina run gmail_connector.balx
 }
 ```
 
-- Send the message using curl
+- Navigate to `using-the-gmail-connector/resources` and send the request message to the service using cURL
 
 ```
 curl -v -X POST --data @request.json http://localhost:9090/surgery/reserve --header "Content-Type:application/json"
