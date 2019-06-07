@@ -42,11 +42,11 @@ We have the main test function 'testHelloServiceResponse' which accepts a single
 
 We pass the data to the test cases as below. 
 ```
-function helloServiceDataProvider() returns (string[][]) {
-    return [
-    			["John"], 
-    			[" "]
-    	   ];
+function helloServiceDataProvider() returns string[][] {
+	return[
+    		["John"], 
+    	  	[" "]
+    	  ];
 }
 ```
 
