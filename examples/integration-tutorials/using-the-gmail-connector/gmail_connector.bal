@@ -19,7 +19,7 @@ import ballerina/http;
 import ballerina/log;
 import wso2/gmail;
 
-# Gmail client endpoint declaration with oAuth2 client configurations
+// Gmail client endpoint declaration with oAuth2 client configurations.
 gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
@@ -27,12 +27,12 @@ gmail:GmailConfiguration gmailConfig = {
             config: {
                 grantType: http:DIRECT_TOKEN,
                 config: {
-                    accessToken: "ya29.GlwgB6Nbn8FLTeNy4qJGDywJyheIKt0M7OUu5Q5yxrEA0033LMHM4BA-kzxbpmdjwkhaO6CJJ5_mdR55EjP-g-5Bk-wo2HdIiWCjiwDJfzNU-111X2yB_DJOagZMHQ",
+                    accessToken: "accessToken",
                     refreshConfig: {
                         refreshUrl: gmail:REFRESH_URL,
-                        refreshToken: "1/sUpgjclqE_KwPnqGlVs6pvFHjL2_fefkI_OOXuxZolJNOUjpmQdr-uYuQoameOic",
-                        clientId: "924967501288-12je7sdbirp167m61gsrujbnni0c5u58.apps.googleusercontent.com",
-                        clientSecret: "iDPT9j2_gMiUGgxDyEv8bj7i&grant_type=refresh_token&refresh_token=1%2FsUpgjclqE_KwPnqGlVs6pvFHjL2_fefkI_OOXuxZolJNOUjpmQdr-uYuQoameOic&client_id=924967501288-12je7sdbirp167m61gsrujbnni0c5u58.apps.googleusercontent.com"
+                        refreshToken: "refreshToken",
+                        clientId: "clientId",
+                        clientSecret: "clientSecret"
                     }
                 }
             }
@@ -40,9 +40,13 @@ gmail:GmailConfiguration gmailConfig = {
     }
 };
 
-//Gmail client that handles sending payloads to email address
+const RECIPIENT_EMAIL = "someone@gmail.com";
+const SENDER_EMAIL = "somebody@gmail.com";
+
+
+// Gmail client that handles sending payloads to email address.
 gmail:Client gmailClient = new(gmailConfig);
-//Listener endpoint that the service binds to 
+// Listener endpoint that the service binds to.
 listener http:Listener endpoint = new(9091);
 
 //Change the service URL to base /surgery
@@ -51,25 +55,27 @@ listener http:Listener endpoint = new(9091);
 }
 service gmailConnector on new http:Listener(9091) {
 
-    //Decorate "reserve" resource path to accept POST requests
+    // Decorate "reserve" resource path to accept POST requests.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/reserve"
     }
     resource function settleReservation(http:Caller caller, http:Request request) {
-        var payload = request.getJsonPayload();
+        json|error payload = request.getJsonPayload();
         http:Response response = new;
 
         if (payload is json) {
             http:Client clientEp = new("http://localhost:9090");
 
-            var backendResponse = clientEp->post("/grandoaks/categories/surgery/reserve", untaint payload);
+            http:Response|error backendResponse = clientEp->post("/grandoaks/categories/surgery/reserve", untaint payload);
 
             if (backendResponse is http:Response) {
-                var jsonPayload = backendResponse.getJsonPayload();
-
+                json|error jsonPayload = backendResponse.getJsonPayload();
+                
                 if (jsonPayload is json) {
-                    response = sendToGmail(untaint jsonPayload);
+                    io:println("Appointment Confirmation Payload : " + jsonPayload.toString());
+                    // Get the complete email and send it to the email address 
+                    response = sendEmail(generateEmail(untaint jsonPayload));
                 } else {
                     log:printError("Invalid Json payload recieved from backend");
                 }
@@ -81,25 +87,39 @@ service gmailConnector on new http:Listener(9091) {
             response.setPayload("Payload is not a valid JSON format");
         }
 
-        var result = caller->respond(response);
+        http:Response|error? result = caller->respond(response);
         if (result is error) {
             log:printError("Error in responding", err = result);
         }
     }
 }
 
-// Sends the payload to Gmail
-function sendToGmail(json jsonPayload) returns http:Response {
-    string messageBody = jsonPayload.toString();
+// Generates an email based on the recieved payload.
+function generateEmail(json jsonPayload) returns string{
+    string email = "<html>";
+    email += "<h1> GRAND OAK COMMUNITY HOSPITAL </h1>";
+    email += "<h3> Patient Name : " + jsonPayload.patient.name.toString() +"</h3>";
+    email += "<p> This is a confimation for your appointment with Dr." + jsonPayload.doctor.name.toString() + "</p>";
+    email += "<p> Assigned time : " + jsonPayload.doctor.availability.toString() + "</p>";
+    email += "<p> Appointment number : " + jsonPayload.appointmentNumber.toString() + "</p>";
+    email += "<p> Appointment date : " + jsonPayload.appointmentDate.toString() + "</p>";
+    email += "<p><b> FEE : " + jsonPayload.fee.toString() + "</b></p>";
+
+    return email;
+}
+
+// Sends the payload to an Email account.
+function sendEmail(string email) returns http:Response {
+    string messageBody = email;
     http:Response response = new;
 
     string userId = "me";
     gmail:MessageRequest messageRequest = {};
-    messageRequest.recipient = "aquib.zt@gmail.com";
-    messageRequest.sender = "aquib@wso2.com";
+    messageRequest.recipient = RECIPIENT_EMAIL;
+    messageRequest.sender = SENDER_EMAIL;
     messageRequest.subject = "Gmail Connector test : Payment Status";
     messageRequest.messageBody = messageBody;
-    messageRequest.contentType = gmail:TEXT_PLAIN;
+    messageRequest.contentType = gmail:TEXT_HTML;
 
     // Send the message.
     var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
@@ -117,7 +137,7 @@ function sendToGmail(json jsonPayload) returns http:Response {
         response.setJsonPayload(payload, contentType = "application/json");
     } else {
         // If unsuccessful, print the error returned.
-        io:println("Error: ", sendMessageResponse);
+        log:printError("Failed to send the email", err = sendMessageResponse);
         response.setPayload("Failed to send the Email");
     }
 
