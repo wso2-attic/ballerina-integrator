@@ -1,6 +1,9 @@
-# sending-a-simple-message-to-a-service
+# sending a simple message to a service
 
 This guide demonstrates how to sending a simple message to a ballerina service. This service is basically implemented on real world scenario.Let’s start use case of Healthcare Management System.
+
+## Prerequisites
+- Ballerina 0.991.0
 
 ## Backend
 
