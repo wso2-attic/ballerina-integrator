@@ -57,17 +57,8 @@ service hospitalMgt on httpListener {
         var patientReq = req.getJsonPayload();
         if (patientReq is json) {
             string patientID = patientReq.Appoinment.ID.toString();
-            appoinmentMap[patientID] = patientReq;
-
-            var payload = req.getJsonPayload();
-            // Create response message.
-            json jsonpayload = {};
-            if (payload is json) {
-            jsonpayload = untaint payload;
-                } else {
-            jsonpayload = "error";
-            }
-            response.setJsonPayload(untaint jsonpayload);
+            appoinmentMap[patientID] = patientReq;            
+            response.setJsonPayload(untaint patientReq);
             // Set 201 Created status code in the response message.
             response.statusCode = 201;            
             response.setHeader("Location", 
