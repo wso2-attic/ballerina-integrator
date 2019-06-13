@@ -77,7 +77,7 @@ function testResourceUpdateAppoinment_Negative(json dataset) {
     req.setJsonPayload(payload);
     string testInput = payload.Appoinment.ID.toString();    
     // Send 'PUT' request and obtain the response.
-    var response = clientEP->put("/medicalreservation/"+testInput, req);
+    var response = clientEP->put("/medicalreservation/" + testInput, req);
     if (response is http:Response) {
         // Expected response code is 200.
         test:assertEquals(response.statusCode, 200,
