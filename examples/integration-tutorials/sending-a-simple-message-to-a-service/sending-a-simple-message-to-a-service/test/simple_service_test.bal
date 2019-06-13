@@ -151,7 +151,7 @@ function testResourceUpdateDataProvider() returns json[][]{
 // NTC002 - Verify the response when an invalid ID is sent.
 function testResourceGetDetails_Negative(json dataset) {    
     string testInput = dataset.Appoinment.ID.toString();
-    var response = clientEP->get("/medicalreservation/"+testInput);
+    var response = clientEP->get("/medicalreservation/" + testInput);
     if (response is http:Response) {
         // Expected response code is 200.
         test:assertEquals(response.statusCode, 200, 
