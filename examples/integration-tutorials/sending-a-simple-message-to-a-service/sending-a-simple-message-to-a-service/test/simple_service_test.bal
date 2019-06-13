@@ -23,12 +23,7 @@ http:Client clientEP = new("http://localhost:9090/hospitalmgt/");
 @test:Config {
     dataProvider: "testResourceInsertDataProvider"
 }
-// This function verifies for the response of the POST service.
-// It asserts for the response text and the status code.
-// Following function covers three test cases.
-// TC001 - Verify the response when a valid request is sent.
-// TC002 - Verify the response when a valid request is sent as " ".
-// TC003 - Verify the response when a valid request is sent as empty json object.
+
 function testResourceAddAppoinment(json dataset) {
     // Initialize the empty http request.
     http:Request req = new;        
@@ -53,7 +48,13 @@ function testResourceAddAppoinment(json dataset) {
     }
 }   
 
-//This function passes data to testResourceAddAppoinment function for test cases.
+// This function verifies for the response of the POST service.
+// It asserts for the response text and the status code.
+// Following function covers three test cases.
+// TC001 - Verify the response when a valid request is sent.
+// TC002 - Verify the response when a valid request is sent as " ".
+// TC003 - Verify the response when a valid request is sent as empty json object.
+// This function passes data to testResourceAddAppoinment function for test cases.
 function testResourceInsertDataProvider() returns json[][]{
      return [[{ "Appoinment": { "ID": "001", "Name": "XYZ"} }],
             [{ "": { "": ""} }],
@@ -66,9 +67,6 @@ function testResourceInsertDataProvider() returns json[][]{
     dependsOn: ["testResourceAddAppoinment"]
 }
 
-// This negative function verifies the failure when an invalid ID is sent.
-// This function covers the below test case.
-// NTC001 - Verify the response when an invalid ID is sent.
 function testResourceUpdateAppoinment_Negative(json dataset) {
     // Initialize empty http requests and responses.
     http:Request req = new;
@@ -95,7 +93,10 @@ function testResourceUpdateAppoinment_Negative(json dataset) {
     }
 }
 
-//This function passes data to testResourceUpdateAddAppoinment_Negative function for test cases.
+// This function passes data to testResourceUpdateAddAppoinment_Negative function for test cases.
+// This negative function verifies the failure when an invalid ID is sent.
+// This function covers the below test case.
+// NTC001 - Verify the response when an invalid ID is sent.
 function testResourceUpdateDataProvider_Negative() returns json[][]{
     return [[{ "Appoinment": { "ID": "002", "Name": "XYZAA"} }]];
 }
@@ -106,9 +107,6 @@ function testResourceUpdateDataProvider_Negative() returns json[][]{
     dependsOn: ["testResourceAddAppoinment"]
 }
 
-// This negative function verifies the when an valid ID is sent.
-// This function covers the below test case.
-// TC004 - Verify the response when an valid ID is sent to update the details.
 function testResourceUpdateAppoinment(json dataset) {
     // Initialize empty http requests and responses.
     http:Request req = new;
@@ -135,7 +133,10 @@ function testResourceUpdateAppoinment(json dataset) {
     }
 }
 
-//This function passes data to testResourceUpdateAddAppoinment function for test cases.
+// This function passes data to testResourceUpdateAddAppoinment function for test cases.
+// This negative function verifies the when an valid ID is sent.
+// This function covers the below test case.
+// TC004 - Verify the response when an valid ID is sent to update the details.
 function testResourceUpdateDataProvider() returns json[][]{
     return [[{ "Appoinment": { "ID": "001", "Name": "XYZAA"} }]];
 }
@@ -146,9 +147,6 @@ function testResourceUpdateDataProvider() returns json[][]{
     dependsOn: ["testResourceUpdateAppoinment"]
 }
 
-// This negative function verifies the when an invalid ID is sent.
-// This function covers the below test case.
-// NTC002 - Verify the response when an invalid ID is sent.
 function testResourceGetDetails_Negative(json dataset) {    
     string testInput = dataset.Appoinment.ID.toString();
     var response = clientEP->get("/medicalreservation/"+testInput);
@@ -169,7 +167,10 @@ function testResourceGetDetails_Negative(json dataset) {
     }
 }
 
-//This function passes data to testResourceGetDetails_Negative function for test cases.
+// This function passes data to testResourceGetDetails_Negative function for test cases.
+// This negative function verifies the when an invalid ID is sent.
+// This function covers the below test case.
+// NTC002 - Verify the response when an invalid ID is sent.
 function testResourceGetDataProvider_Negative() returns json[][] {
     return [[{ "Appoinment": { "ID": "002", "Name": "XYZAA"} }]];
     
@@ -181,9 +182,6 @@ function testResourceGetDataProvider_Negative() returns json[][] {
     dependsOn: ["testResourceUpdateAppoinment"]
 }
 
-// This function verifies the when an valid ID is sent.
-// This function covers the below test case.
-// TC005 - Verify the response when an valid ID is sent.
 function testResourceGetDetails(json dataset) {
     string testInput = dataset.Appoinment.ID.toString();
     var response = clientEP->get("/medicalreservation/"+testInput);
@@ -205,14 +203,14 @@ function testResourceGetDetails(json dataset) {
     }
 }
 
-//This function passes data to testResourceGetDetails function for two test cases.
+// This function passes data to testResourceGetDetails function for two test cases.
+// This function verifies the when an valid ID is sent.
+// This function covers the below test case.
+// TC005 - Verify the response when an valid ID is sent.
 function testResourceGetDataProvider() returns json[][] {
     return [[{ "Appoinment": { "ID": "001", "Name": "XYZAA"} }]];
 }
 
-// This function verifies the when an valid ID is sent.
-// This function covers the below test case.
-// TC006 - Verify the response when an valid ID is sent to delete the details.
 @test:Config {
     dataProvider: "testResourceCancelDataProvider",
     dependsOn: ["testResourceGetDetails"]
@@ -239,7 +237,10 @@ function testResourceCancelAppoinment(json dataset) {
     }
 }
 
-//This function passes data to testResourceCancelAppoinment function for test cases.
+// This function passes data to testResourceCancelAppoinment function for test cases.
+// This function verifies the when an valid ID is sent.
+// This function covers the below test case.
+// TC006 - Verify the response when an valid ID is sent to delete the details.
 function testResourceCancelDataProvider() returns json[][] {
     return [[{ "Appoinment": { "ID": "001", "Name": "XYZAA"} }]];
 }
