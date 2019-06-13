@@ -229,7 +229,7 @@ function testResourceCancelAppoinment(json dataset) {
             msg = "cancelAppoinment resource did not respond with expected response code!");        
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {                        
-            test:assertEquals(resPayload,"Medical reservation : "+testInput+ " removed.",
+            test:assertEquals(resPayload, "Medical reservation :  " + testInput + " removed.",
                   msg = "Response mismatch!");            
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
