@@ -75,7 +75,7 @@ function testResourceUpdateAppoinment_Negative(json dataset) {
     req.setJsonPayload(payload);
     string testInput = payload.Appoinment.ID.toString();    
     // Send 'PUT' request and obtain the response.
-    var response = clientEP->put("/medicalreservation/"+testInput, req);
+    var response = clientEP->put("/medicalreservation/" + testInput, req);
     if (response is http:Response) {
         // Expected response code is 200.
         test:assertEquals(response.statusCode, 200,
@@ -83,7 +83,7 @@ function testResourceUpdateAppoinment_Negative(json dataset) {
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {                     
-            test:assertEquals(resPayload,"Medical reservation : "+testInput+ " cannot be found.",
+            test:assertEquals(resPayload,"Medical reservation : " + testInput + " cannot be found.",
                 msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
@@ -115,7 +115,7 @@ function testResourceUpdateAppoinment(json dataset) {
     req.setJsonPayload(payload);
     string testInput = payload.Appoinment.ID.toString();    
     // Send 'PUT' request and obtain the response.
-    var response = clientEP->put("/medicalreservation/"+testInput, req);
+    var response = clientEP->put("/medicalreservation/" + testInput, req);
     if (response is http:Response) {
         // Expected response code is 200.
         test:assertEquals(response.statusCode, 200,
@@ -149,7 +149,7 @@ function testResourceUpdateDataProvider() returns json[][]{
 
 function testResourceGetDetails_Negative(json dataset) {    
     string testInput = dataset.Appoinment.ID.toString();
-    var response = clientEP->get("/medicalreservation/"+testInput);
+    var response = clientEP->get("/medicalreservation/" + testInput);
     if (response is http:Response) {
         // Expected response code is 200.
         test:assertEquals(response.statusCode, 200, 
@@ -157,7 +157,7 @@ function testResourceGetDetails_Negative(json dataset) {
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {                       
-            test:assertEquals(resPayload,"Medical reservation : "+testInput+ " cannot be found.",
+            test:assertEquals(resPayload,"Medical reservation : " + testInput + " cannot be found.",
                  msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
@@ -184,7 +184,7 @@ function testResourceGetDataProvider_Negative() returns json[][] {
 
 function testResourceGetDetails(json dataset) {
     string testInput = dataset.Appoinment.ID.toString();
-    var response = clientEP->get("/medicalreservation/"+testInput);
+    var response = clientEP->get("/medicalreservation/" + testInput);
     if (response is http:Response) {
         // Expected response code is 200.
         test:assertEquals(response.statusCode, 200, 
@@ -221,13 +221,13 @@ function testResourceCancelAppoinment(json dataset) {
     http:Request req = new;    
     //string b = id;
     string testInput = dataset.Appoinment.ID.toString();
-    var response = clientEP->delete("/medicalreservation/"+testInput, req);
+    var response = clientEP->delete("/medicalreservation/" + testInput, req);
     if (response is http:Response) {       
         test:assertEquals(response.statusCode, 200,
             msg = "cancelAppoinment resource did not respond with expected response code!");        
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {                        
-            test:assertEquals(resPayload,"Medical reservation : "+testInput+ " removed.",
+            test:assertEquals(resPayload, "Medical reservation :  " + testInput + " removed.",
                   msg = "Response mismatch!");            
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
