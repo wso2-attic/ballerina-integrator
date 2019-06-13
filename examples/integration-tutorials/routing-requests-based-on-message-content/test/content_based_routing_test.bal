@@ -71,6 +71,8 @@ function testReservation() {
             } else {
                 test:assertFail(msg = "Payload from reservation service is invalid");
             }
+        } else {
+            test:assertFail(msg = "Response is an error");
         }
     } else {
         test:assertFail(msg = "Response from reservation service is invalid");
