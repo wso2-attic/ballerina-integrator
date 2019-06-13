@@ -53,7 +53,7 @@ function testResourceAddAppoinment(json dataset) {
     }
 }   
 
-//This function passes data to testResourceAddAppoinment function for test cases.
+// This function passes data to testResourceAddAppoinment function for test cases.
 function testResourceInsertDataProvider() returns json[][]{
      return [[{ "Appoinment": { "ID": "001", "Name": "XYZ"} }],
             [{ "": { "": ""} }],
