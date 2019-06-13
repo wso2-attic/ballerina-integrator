@@ -85,7 +85,7 @@ function testResourceUpdateAppoinment_Negative(json dataset) {
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {                     
-            test:assertEquals(resPayload,"Medical reservation : "+testInput+ " cannot be found.",
+            test:assertEquals(resPayload,"Medical reservation : " + testInput + " cannot be found.",
                 msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
