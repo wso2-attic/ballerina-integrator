@@ -67,10 +67,7 @@ function testReservation() {
         if(receivedPayload is string) {
             var resPayload = response.getJsonPayload();
             if (resPayload is json) {
-                var payloadJson = response.getJsonPayload();
-                if(payloadJson is json) {
-                    test:assertEquals(payloadJson["confirmed"], expected["confirmed"], msg = "Response mismatch!");
-                }
+                test:assertEquals(resPayload["confirmed"], expected["confirmed"], msg = "Response mismatch!");
             } else {
                 test:assertFail(msg = "Payload from reservation service is invalid");
             }
