@@ -223,7 +223,7 @@ function testResourceCancelAppoinment(json dataset) {
     http:Request req = new;    
     //string b = id;
     string testInput = dataset.Appoinment.ID.toString();
-    var response = clientEP->delete("/medicalreservation/"+testInput, req);
+    var response = clientEP->delete("/medicalreservation/" + testInput, req);
     if (response is http:Response) {       
         test:assertEquals(response.statusCode, 200,
             msg = "cancelAppoinment resource did not respond with expected response code!");        
