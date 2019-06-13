@@ -186,7 +186,7 @@ function testResourceGetDataProvider_Negative() returns json[][] {
 // TC005 - Verify the response when an valid ID is sent.
 function testResourceGetDetails(json dataset) {
     string testInput = dataset.Appoinment.ID.toString();
-    var response = clientEP->get("/medicalreservation/"+testInput);
+    var response = clientEP->get("/medicalreservation/" + testInput);
     if (response is http:Response) {
         // Expected response code is 200.
         test:assertEquals(response.statusCode, 200, 
