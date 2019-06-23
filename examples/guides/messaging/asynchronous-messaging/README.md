@@ -1,4 +1,5 @@
-# Asynchrouns messaging 
+# Asynchronous messaging
+
 This guide demonstrates how to send a message asynchronously to an HTTP service. It uses ActiveMQ as the message broker to make the invocation asynchrouns. 
 
 The high level sections of this guide are as follows:
@@ -17,7 +18,7 @@ service which will listen to the queue, will pick up the message and invoke the 
 
 The following diagram illustrates the scenario:
 
-![alt text](resources/Asynchronous_service_invocation.png)
+![alt text](https://raw.githubusercontent.com/pramodya1994/ballerina-integrator/hugo-site/examples/guides/messaging/asynchronous-messaging/resources/Asynchronous_service_invocation.png)
 
 
 ## Prerequisites
@@ -34,112 +35,10 @@ The following diagram illustrates the scenario:
 Take a look at the code samples below to understand how to implement each service. 
 
 **http_message_receiver.bal**
-```ballerina
-import ballerina/log;
-import ballerina/http;
-import ballerina/jms;
-
-
-// Initialize a JMS connection with the provider
-// 'providerUrl' and 'initialContextFactory' vary based on the JMS provider you use
-// 'Apache ActiveMQ' has been used as the message broker in this example
-jms:Connection jmsConnection = new({
-        initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://localhost:61616"
-    });
-
-// Initialize a JMS session on top of the created connection
-jms:Session jmsSession = new(jmsConnection, {
-        acknowledgementMode: "AUTO_ACKNOWLEDGE"
-    });
-
-// Initialize a queue sender using the created session
-jms:QueueSender jmsProducer = new(jmsSession, queueName = "appointments");
-
-//export http listner port on 9091
-listener http:Listener httpListener = new(9091);
-
-// Healthcare Service, which allows users to channel doctors online
-@http:ServiceConfig { basePath: "/healthcare" }
-service healthcareService on httpListener {
-    // Resource that allows users to make appointments
-    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"],
-        produces: ["application/json"] }
-    resource function make_appointment(http:Caller caller, http:Request request) returns error? {
-        http:Response response = new;
-
-        // Try parsing the JSON payload from the request
-        var payload = request.getJsonPayload();
-        if (payload is json) {
-            json responseMessage;
-            var queueMessage = jmsSession.createTextMessage(payload.toString());
-            // Send the message to the JMS queue
-            if (queueMessage is jms:Message) {
-                check jmsProducer->send(queueMessage);
-                // Construct a success message for the response
-                responseMessage = { "Message": "Your appointment is successfully placed" };
-                log:printInfo("New channel request added to the JMS queue; Patient: " + payload.patient.name.toString());
-            } else {
-                responseMessage = { "Message": "Error occured while placing the appointment" };
-                log:printError("Error occured while adding channeling information to the JMS queue");
-            }
-            // Send response to the user
-            response.setJsonPayload(responseMessage);
-            check caller->respond(response);
-        } else {
-            response.statusCode = 400;
-            response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
-            check caller->respond(response);
-            return;
-        }
-
-    }
-}
-```
+<!-- INCLUDE_CODE: guide/http_message_receiver.bal -->
 
 **message_forwarder.bal**
-```ballerina
-import ballerina/jms;
-import ballerina/log;
-import ballerina/http;
-import ballerina/io;
-listener jms:QueueReceiver consumerEndpoint = new({
-        initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://localhost:61616",
-        acknowledgementMode: "AUTO_ACKNOWLEDGE"   //remove message from broker as soon as it is received
-    }, queueName = "appointments");
-
-service jmsListener on consumerEndpoint {
-    //invoked upon JMS message receive 
-    resource function onMessage(jms:QueueReceiverCaller consumer,
-    jms:Message message) {
-        //receive message as a text
-        var messageText = message.getTextMessageContent();
-        if (messageText is string) {
-            http:Client clientEP = new("http://localhost:9090");
-            //convert text message received to a Json message and construct request for HTTP service
-            http:Request req = new;
-            io:StringReader sr = new(messageText, encoding = "UTF-8");
-            json j = checkpanic sr.readJson();
-            //invoke the HTTP service
-            var response = clientEP->post("/grandoaks/categories/surgery/reserve ", untaint j);
-            //at this point we can only log the response 
-            if (response is http:Response) {
-                var resPayload = response.getJsonPayload();
-                if (resPayload is json) {
-                    io:println("Response is : " + resPayload.toString());
-                } else {
-                    io:println("Error1 " + <string> resPayload.detail().message);
-                }
-            } else {
-                io:println("Error2 " + <string> response.detail().message);
-            }
-        } else {
-            io:println("Error occurred while reading message ", messageText);
-        }
-    }
-}
-```
+<!-- INCLUDE_CODE: guide/message_forwarder.bal -->
 
 ### Creating the project structure
 Ballerina is a complete programming language that supports custom project structures. 
