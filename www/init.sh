@@ -2,11 +2,9 @@
 
 HOME=`pwd`
 HUGO_VERSION=$(hugo version)
-HUGO_CONTENT_INTRO_DIR=$HOME/hugo-www/content/intro
 
 function build_www {
-    mkdir ${HUGO_CONTENT_INTRO_DIR}
-    # mvn clean install -f $HOME/pom.xml # Uncomment this line if want to build the project again.
+    mvn clean install -f $HOME/pom.xml # Comment this line if do not want to build the project again.
     java -jar $HOME/target/www-builder-1.0-jar-with-dependencies.jar
     cd $HOME/hugo-www
     hugo server -D
