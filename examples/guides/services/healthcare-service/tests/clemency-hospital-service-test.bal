@@ -21,17 +21,16 @@ import ballerina/log;
 
 http:Client clientEPclemency = new("http://localhost:9090/clemency/categories");
 
-# Description: This test verifies if an appoinment can be reserved successfully. 
-# TC001 - Verify if appoinement reservation can be done by providing all the valid inputs. 
-# TC002 - Verify if appoinment reservation can be done by not providing non-mandatory feilds.
-# TC003 - Verify if appoinment reservation can be done for an unavailable doctor in the hospital. 
+# Description: This test verifies if an appointment can be reserved successfully. 
+# TC001 - Verify if appointment reservation can be done by providing all the valid inputs. 
+# TC002 - Verify if appointment reservation can be done by not providing non-mandatory feilds.
+# TC003 - Verify if appointment reservation can be done for an unavailable doctor in the hospital. 
 #
 # + dataset - dataset Parameter Description
 @test:Config {
     dataProvider: "testReserveAppointmentDataProvider",
     dependsOn: ["testAddDoctor"]
 }
-
 function testReserveAppointment(json dataset, json expectedStrings) {
     // set the json payload
     http:Request request = new;
@@ -42,8 +41,8 @@ function testReserveAppointment(json dataset, json expectedStrings) {
 
     if (response is http:Response) {
         string doctor = dataset.doctor.toString();
-        int | error responseStatusCode = int.convert(response.statusCode);
-        int | error expectedStatusCode = int.convert(expectedStrings.statusCode);
+        var responseStatusCode = response.statusCode;
+        var expectedStatusCode = expectedStrings.statusCode;
         string expectedResponseText = expectedStrings.responseMessage.toString();
 
         if (doctor == "T Uyanage") {
@@ -52,24 +51,24 @@ function testReserveAppointment(json dataset, json expectedStrings) {
                                                             msg = "Assertion Failed for Doctor " + doctor);
             test:assertEquals(responseStatusCode, expectedStatusCode, msg = "Status code mismatch!");
         } else {
-            json | error resonsePayload = response.getJsonPayload();
+            json | error responsePayload = response.getJsonPayload();
             json | error expectedIncludesAppoinmentNumber = expectedStrings.appoinmentNumber;
             json | error expectedIncludesDoctorAvailibility = expectedStrings.doctorAvailibility;
             json | error expectedIncludesDoctorFee = expectedStrings.doctorFee;
 
-            if (resonsePayload is json) {
+            if (responsePayload is json) {
                 boolean responseIncludesAppoinmentNumber = false;
                 boolean responseIncludesDoctorAvailibility = false;
                 boolean responseIncludesDoctorFee = false;
 
                 // Verifying if response json payload includes appointmentNumber, availability and fee
-                if (resonsePayload.toString().contains("appointmentNumber")) {
+                if (responsePayload.toString().contains("appointmentNumber")) {
                     responseIncludesAppoinmentNumber = true;
                 }
-                if (resonsePayload.doctor.toString().contains("availability")) {
+                if (responsePayload.doctor.toString().contains("availability")) {
                     responseIncludesDoctorAvailibility = true;
                 }
-                if (resonsePayload.toString().contains("fee")) {
+                if (responsePayload.toString().contains("fee")) {
                     responseIncludesDoctorFee = true;
                 }
 
@@ -88,7 +87,6 @@ function testReserveAppointment(json dataset, json expectedStrings) {
         test:assertFail(msg = "Error sending request");
     }
 }
-
 function testReserveAppointmentDataProvider() returns json[][]
 {
     return [
@@ -187,22 +185,21 @@ function testReserveAppointmentDataProvider() returns json[][]
     dataProvider: "testGetAppointmentClemencyDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-
 function testGetAppointmentClemency(json dataset) {
-    string expectedAppointmentNumber = dataset.appointmentNumber.toString();
+    var expectedAppointmentNumber = dataset.appointmentNumber;
     string expectedDoctorName = dataset.doctorName.toString();
     string expectedAppointmentDate = dataset.appointmentDate.toString();
 
-    http:Response | error response = clientEPclemency->get("/appointments/" + expectedAppointmentNumber);
+    http:Response | error response = clientEPclemency->get("/appointments/" + expectedAppointmentNumber.toString());
     if (response is http:Response) {
-        if (int.convert(expectedAppointmentNumber) == 200) {
+        if (expectedAppointmentNumber == 200) {
             string | error responsePayload = response.getTextPayload();
             test:assertEquals(responsePayload, "Invalid appointment number.", 
                                                             msg = "Appointment number is not as expected");
         } else {
             json | error responsePayload = response.getJsonPayload();
             if (responsePayload is json) {
-                string responseAppointmentNumber = responsePayload.appointmentNumber.toString();
+                var responseAppointmentNumber = responsePayload.appointmentNumber;
                 string responseDoctorName = responsePayload.doctor.name.toString();
                 string responseAppoinmentDate = responsePayload.appointmentDate.toString();
 
@@ -219,9 +216,7 @@ function testGetAppointmentClemency(json dataset) {
     } else {
         test:assertFail(msg = "Error sending request");
     }
-
 }
-
 function testGetAppointmentClemencyDataProvider() returns json[][] {
     return [
     [
@@ -248,7 +243,6 @@ function testGetAppointmentClemencyDataProvider() returns json[][] {
     dataProvider: "testCheckChannellingFeeDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-
 function testCheckChannellingFee(json dataset) {
     string expectedPatientName = dataset.patientName.toString();
     string expectedDoctorname = dataset.doctorName.toString();
@@ -279,7 +273,6 @@ function testCheckChannellingFee(json dataset) {
         test:assertFail(msg = "Error sending request");
     }
 }
-
 function testCheckChannellingFeeDataProvider() returns json[][] {
     return [
     [
@@ -306,7 +299,6 @@ function testCheckChannellingFeeDataProvider() returns json[][] {
     dataProvider: "testUpdatePatientRecordDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-
 function testUpdatePatientRecord(json dataset, json resultset) {
     http:Request request = new;
     request.setPayload(dataset);
@@ -314,7 +306,7 @@ function testUpdatePatientRecord(json dataset, json resultset) {
     http:Response | error response = clientEPclemency->post("/patient/updaterecord", request);
     string expectedText = resultset.expectedText.toString();
 
-    int | error expectedStatusCode = int.convert(resultset.statusCode);
+    var expectedStatusCode = resultset.statusCode;
 
     if (response is http:Response) {
         string | error responsePayload = response.getTextPayload();
@@ -326,7 +318,6 @@ function testUpdatePatientRecord(json dataset, json resultset) {
         test:assertFail(msg = "Error sending request");
     }
 }
-
 function testUpdatePatientRecordDataProvider() returns json[][] {
     return [
     [
@@ -353,7 +344,6 @@ function testUpdatePatientRecordDataProvider() returns json[][] {
     dataProvider: "testGetPatientRecordDataProvider",
     dependsOn: ["testUpdatePatientRecord"]
 }
-
 function testGetPatientRecord(json dataset) {
     string expectedPatientName = dataset.patientName.toString();
     string expectedDob = dataset.dob.toString();
@@ -387,7 +377,6 @@ function testGetPatientRecord(json dataset) {
         test:assertFail(msg = "Error sending the request");
     }
 }
-
 function testGetPatientRecordDataProvider() returns json[][] {
     return [
     [
@@ -411,10 +400,9 @@ function testGetPatientRecordDataProvider() returns json[][] {
     dataProvider: "testIsEligibleForDiscountDataProvider",
     dependsOn: ["testUpdatePatientRecord"]
 }
-
 function testIsEligibleForDiscount(json dataset) {
     string expectedAppointmentNumber = dataset.appointmentNumber.toString();
-    boolean | error expectedEligilibity = boolean.convert(dataset.eligibility);
+    var expectedEligilibity = dataset.eligibility;
     http:Response | error response = clientEPclemency->get("/patient/appointment/"
     + expectedAppointmentNumber + "/discount");
     if (response is http:Response) {
@@ -430,7 +418,6 @@ function testIsEligibleForDiscount(json dataset) {
         test:assertFail(msg = "Error sending request");
     }
 }
-
 function testIsEligibleForDiscountDataProvider() returns json[][] {
     return [
     [

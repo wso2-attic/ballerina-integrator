@@ -43,7 +43,7 @@ function testAddDoctor(json dataset, json resultset){
     if (response is http:Response){
         string | error responsePayload = response.getTextPayload();
         string expectedResponse = resultset.expectedResponse.toString();
-        int | error expectedStatusCode = int.convert(resultset.expectedStatusCode);
+        var expectedStatusCode = resultset.expectedStatusCode;
 
         test:assertEquals(responsePayload, expectedResponse,msg = "Response mismatch!");
         test:assertEquals(response.statusCode, expectedStatusCode,msg = "Status Code mismatch");

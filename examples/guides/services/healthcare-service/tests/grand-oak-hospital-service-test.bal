@@ -42,8 +42,8 @@ function testReserveAppointmentGrandoaks(json dataset, json expectedStrings){
 
     if (response is http:Response){
         string doctor = dataset.doctor.toString();
-        int | error responseStatusCode = int.convert(response.statusCode);
-        int | error expectedStatusCode = int.convert(expectedStrings.statusCode);
+        var responseStatusCode = response.statusCode;
+        var expectedStatusCode = expectedStrings.statusCode;
         string expectedResponseText = expectedStrings.responseMessage.toString();
 
         if (doctor == "T Uyanage"){
@@ -53,10 +53,9 @@ function testReserveAppointmentGrandoaks(json dataset, json expectedStrings){
             test:assertEquals(responseStatusCode, expectedStatusCode, msg = "Status code mismatch!");
         }else{
             json | error resonsePayload = response.getJsonPayload();
-            boolean | error expectedIncludesAppoinmentNumber = boolean.convert(expectedStrings.appoinmentNumber);
-            boolean | error expectedIncludesDoctorAvailibility = 
-                                                    boolean.convert(expectedStrings.doctorAvailibility);
-            boolean | error expectedIncludesDoctorFee = boolean.convert(expectedStrings.doctorFee);
+            var expectedIncludesAppoinmentNumber = expectedStrings.appoinmentNumber;
+            var expectedIncludesDoctorAvailibility = expectedStrings.doctorAvailibility;
+            var expectedIncludesDoctorFee = expectedStrings.doctorFee;
 
             if (resonsePayload is json){
                 boolean responseIncludesAppoinmentNumber = false;
@@ -205,7 +204,7 @@ function testGetAppointmentGrandoaks(json dataset){
         }else{
             json | error responsePayload = response.getJsonPayload();
             if (responsePayload is json){
-                int | error responseAppointmentNumber = int.convert(responsePayload.appointmentNumber);
+                var responseAppointmentNumber = responsePayload.appointmentNumber;
                 string responseDoctorName = responsePayload.doctor.name.toString();
                 string responseAppoinmentDate = responsePayload.appointmentDate.toString();
 
@@ -408,7 +407,7 @@ function testGetPatientRecordGrandoaksDataProvider() returns json[][] {
 
 function testIsEligibleForDiscountGrandoaks(json dataset){
     string expectedAppointmentNumber = dataset.appointmentNumber.toString();
-    boolean | error expectedEligilibity = boolean.convert(dataset.eligibility);
+    var expectedEligilibity = dataset.eligibility;
     http:Response | error response = clientEPGrandoaks->get("/patient/appointment/"
                                                          + expectedAppointmentNumber + "/discount");
     if (response is http:Response){
