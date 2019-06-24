@@ -104,16 +104,18 @@
         {{if eq .UniqueID $currentNode.UniqueID}}active{{end}}
         {{if .Params.alwaysopen}}parent{{end}}
         ">
+      {{ if not (eq .Params.Layout  "template-static") }} <!--added-->
       <a href="{{.RelPermalink}}">
           {{safeHTML .Params.Pre}}{{or .Params.menuTitle .LinkTitle .Title}}{{safeHTML .Params.Post}}
           {{ if $showvisitedlinks}}
             <i class="fas fa-check read-icon"></i>
           {{ end }}
       </a>
+      {{end}} <!--added-->
       {{ $numberOfPages := (add (len .Pages) (len .Sections)) }}
       {{ if ne $numberOfPages 0 }}
         <ul>
-          {{ if not (eq $currentNode.Type  "intro") }} <!--added-->
+          {{ if not (eq $currentNode.Layout  "template-static") }} <!--added-->
           {{ $currentNode.Scratch.Set "pages" .Pages }}
           {{ if .Sections}}
             {{ $currentNode.Scratch.Set "pages" (.Pages | union .Sections) }}
@@ -141,7 +143,7 @@
     </li>
   {{else}}
     {{ if not .Params.Hidden }}
-      {{ if not (eq .Params.Type  "intro") }} <!--added-->
+      {{ if not (eq .Params.Layout  "template-static") }} <!--added-->
         <li data-nav-id="{{.URL}}" title="{{.Title}}" class="dd-item {{if eq .UniqueID $currentNode.UniqueID}}active{{end}}">
           <a href="{{ .RelPermalink}}">
           {{safeHTML .Params.Pre}}{{or .Params.menuTitle .LinkTitle .Title}}{{safeHTML .Params.Post}} <!--- {{.Params.Type}}-->
