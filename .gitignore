@@ -123,11 +123,7 @@ fabric.properties
 ### Hugo ###
 # generated files by hugo
 */resources/_gen/
-www/hugo-www/content/guides/
-www/hugo-www/content/integration-tutorials/
-www/hugo-www/content/intro/
-www/hugo-www/content/tempDirectory.md
-
+www/hugo-www/content/
 www/hugo-www/public/
 www/*.iml
 www/.project
