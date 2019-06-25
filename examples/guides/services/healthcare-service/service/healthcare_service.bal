@@ -171,8 +171,11 @@ service HealthcareService on httpListener {
                     if(payment is daos:Payment) {
                         payment["status"] = "Settled";
                         self.healthcareDao["payments"][<string>payment["paymentID"]] = payment;
-                        util:sendResponse(caller, "Settled payment successfully with payment ID: " 
-                                                                        + <string>payment["paymentID"]);
+                        json payload = {
+                            status: "success",
+                            paymentId: <string>payment["paymentID"]
+                        };
+                        util:sendResponse(caller, payload);
                     } else {
                         log:printError("User error Invalid payload recieved, payload: ", err = payment);
                         util:sendResponse(caller, "Invalid payload recieved, " + payment.reason(), 

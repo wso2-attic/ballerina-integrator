@@ -34,10 +34,6 @@ hs_err_pid*
 target/
 .ballerina/
 
-### Intellij ###
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
-
 # CMake
 cmake-build-*/
 
@@ -82,3 +78,24 @@ target
 .project
 .settings
 
+# Sonarlint plugin
+.idea/sonarlint
+
+### Hugo ###
+# generated files by hugo
+*/resources/_gen/
+www/hugo-www/content/guides/
+www/hugo-www/content/integration-tutorials/
+www/hugo-www/content/intro/*
+!www/hugo-www/content/intro/_index.md
+www/hugo-www/content/tempDirectory.md
+
+www/hugo-www/public/
+www/*.iml
+www/.project
+www/.settings/
+www/bin/
+# executable may be added to repository
+hugo.exe
+hugo.darwin
+hugo.linux

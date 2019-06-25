@@ -1,4 +1,5 @@
 # Gmail Connector
+
 Demonstrate the use of Ballerina's GMail module to send an email to a sepecific email address. 
 
 
@@ -52,87 +53,11 @@ Now that you have created the project structure, the next step is to develop the
 ### - Developing the service
 Sending emails using the Gmail connector requires you to create a `gmailClient` with the necessary tokens obtained from the Google API Console
 
-```ballerina
-gmail:Client gmailClient = new(gmailConfig);
-
-gmail:GmailConfiguration gmailConfig = {
-    clientConfig: {
-        auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: testAccessToken,
-                    refreshConfig: {
-                        refreshUrl: gmail:REFRESH_URL,
-                        refreshToken: testRefreshToken,
-                        clientId: testClientId,
-                        clientSecret: testClientSecret
-                    }
-                }
-            }
-        }
-    }
-};
-```
-
 With the defined `gmailClient`, a function to send the mail needs to be defined. The sender and recipient of the email is specified and the client is used to send the message. 
-
-```ballerina
-
-function sendEmail(string email) returns http:Response {
-    string messageBody = email;
-    http:Response response = new;
-
-    string userId = "me";
-    gmail:MessageRequest messageRequest = {};
-    messageRequest.recipient = "someone@gmail.com";
-    messageRequest.sender = "somebody@gmail.com";
-    messageRequest.subject = "Gmail Connector test : Payment Status";
-    messageRequest.messageBody = messageBody;
-    messageRequest.contentType = gmail:TEXT_HTML;
-
-    // Send the message.
-    var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
-
-    if (sendMessageResponse is (string, string)) {
-        // If successful, print the message ID and thread ID.
-        (string, string) (messageId, threadId) = sendMessageResponse;
-        io:println("Sent Message ID: " + messageId);
-        io:println("Sent Thread ID: " + threadId);
-
-        json payload = {
-            Message: "The email has been successfully sent",
-            Recipient: messageRequest.recipient
-        };
-        response.setJsonPayload(payload, contentType = "application/json");
-    } else {
-        // If unsuccessful, print the error returned.
-        io:println("Error: ", sendMessageResponse);
-        response.setPayload("Failed to send the Email");
-    }
-
-    return response;
-}
-```
 
 An optional Email Generator can be defined to send a email with specific data obtained from the response payload
 
-```js
-function generateEmail(json jsonPayload) returns string{
-    string email = "<html>";
-    email += "<h1> GRAND OAK COMMUNITY HOSPITAL </h1>";
-    email += "<h3> Patient Name : " + jsonPayload.patient.name.toString() +"</h3>";
-    email += "<p> This is a confimation for your appointment with Dr." + jsonPayload.doctor.name.toString() + "</p>";
-    email += "<p> Assigned time : " + jsonPayload.doctor.availability.toString() + "</p>";
-    email += "<p> Appointment number : " + jsonPayload.appointmentNumber.toString() + "</p>";
-    email += "<p> Appointment date : " + jsonPayload.appointmentDate.toString() + "</p>";
-    email += "<p><b> FEE : " + jsonPayload.fee.toString() + "</b></p>";
-
-    return email;
-}
-```
-
+<!-- INCLUDE_CODE: gmail_connector.bal -->
 
 ## Deployment
 You can build the Ballerina executable archives (.balx) as follows
