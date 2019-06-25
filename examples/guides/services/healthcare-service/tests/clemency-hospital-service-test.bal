@@ -36,48 +36,38 @@ function testReserveAppointment(json dataset, json expectedStrings) {
     http:Response | error response = clientEPclemency->post("/surgery/reserve", request);
 
     if (response is http:Response) {
-        string doctor = dataset.doctor.toString();
-        var responseStatusCode = response.statusCode;
+        json | error responsePayload = response.getJsonPayload();
+
         var expectedStatusCode = expectedStrings.statusCode;
-        string expectedResponseText = expectedStrings.responseMessage.toString();
+        json | error expectedIncludesAppoinmentNumber = expectedStrings.appoinmentNumber;
+        json | error expectedIncludesDoctorAvailibility = expectedStrings.doctorAvailibility;
+        json | error expectedIncludesDoctorFee = expectedStrings.doctorFee;
 
-        if (doctor == "T Uyanage") {
-            string | error responsePayload = response.getTextPayload();
-            test:assertEquals(responsePayload, expectedResponseText, 
-                                                            msg = "Assertion Failed for Doctor " + doctor);
-            test:assertEquals(responseStatusCode, expectedStatusCode, msg = "Status code mismatch!");
-        } else {
-            json | error responsePayload = response.getJsonPayload();
-            json | error expectedIncludesAppoinmentNumber = expectedStrings.appoinmentNumber;
-            json | error expectedIncludesDoctorAvailibility = expectedStrings.doctorAvailibility;
-            json | error expectedIncludesDoctorFee = expectedStrings.doctorFee;
+        if (responsePayload is json) {
+            boolean responseIncludesAppoinmentNumber = false;
+            boolean responseIncludesDoctorAvailibility = false;
+            boolean responseIncludesDoctorFee = false;
 
-            if (responsePayload is json) {
-                boolean responseIncludesAppoinmentNumber = false;
-                boolean responseIncludesDoctorAvailibility = false;
-                boolean responseIncludesDoctorFee = false;
-
-                // Verifying if response json payload includes appointmentNumber, availability and fee
-                if (responsePayload.toString().contains("appointmentNumber")) {
-                    responseIncludesAppoinmentNumber = true;
-                }
-                if (responsePayload.doctor.toString().contains("availability")) {
-                    responseIncludesDoctorAvailibility = true;
-                }
-                if (responsePayload.toString().contains("fee")) {
-                    responseIncludesDoctorFee = true;
-                }
-
-                test:assertEquals(response.statusCode, expectedStatusCode, msg = "Status Code mismatch!");
-                test:assertEquals(responseIncludesAppoinmentNumber, expectedIncludesAppoinmentNumber, 
-                                                                msg = "Appoinment number is not as expected");
-                test:assertEquals(responseIncludesDoctorAvailibility, expectedIncludesDoctorAvailibility, 
-                                                                msg = "Doctor availability is not as expected");
-                test:assertEquals(responseIncludesDoctorFee, expectedIncludesDoctorFee, 
-                                                                msg = "Doctor fee is not as expected");
-            } else {
-                test:assertFail(msg = "Test Failed!, Invalid Payload");
+            // Verifying if response json payload includes appointmentNumber, availability and fee
+            if (responsePayload.toString().contains("appointmentNumber")) {
+                responseIncludesAppoinmentNumber = true;
             }
+            if (responsePayload.doctor.toString().contains("availability")) {
+                responseIncludesDoctorAvailibility = true;
+            }
+            if (responsePayload.toString().contains("fee")) {
+                responseIncludesDoctorFee = true;
+            }
+
+            test:assertEquals(response.statusCode, expectedStatusCode, msg = "Status Code mismatch!");
+            test:assertEquals(responseIncludesAppoinmentNumber, expectedIncludesAppoinmentNumber, 
+                                                                msg = "Appoinment number is not as expected");
+            test:assertEquals(responseIncludesDoctorAvailibility, expectedIncludesDoctorAvailibility, 
+                                                                msg = "Doctor availability is not as expected");
+            test:assertEquals(responseIncludesDoctorFee, expectedIncludesDoctorFee, 
+                                                                msg = "Doctor fee is not as expected");
+        } else {
+            test:assertFail(msg = "Test Failed!, Invalid Payload");
         }
     } else {
         test:assertFail(msg = "Error sending request");
@@ -87,7 +77,7 @@ function testReserveAppointment(json dataset, json expectedStrings) {
 function testReserveAppointmentDataProvider() returns json[][]
 {
     return [
-    // TC001 - Verify if appointment reservation can be done by providing all the valid inputs. 
+    // TC001 - Verify if appointment reservation can be done by providing all the valid inputs.
     [
     {
         "patient": {
@@ -108,7 +98,6 @@ function testReserveAppointmentDataProvider() returns json[][]
         "doctorAvailibility": true,
         "doctorFee": true
     }
-
     ],
     // TC002 - Verify if appointment reservation can be done by not providing non-mandatory feilds.
     [
@@ -132,27 +121,7 @@ function testReserveAppointmentDataProvider() returns json[][]
         "doctorFee": true
     }
     ],
-    // TC003 - Verify if appointment reservation can be done for an unavailable doctor in the hospital. 
-    [
-    {
-        "patient": {
-            "name": "D Serasinghe",
-            "dob": "1983-12-03",
-            "ssn": "777-29-585",
-            "address": "Colombo SL",
-            "phone": "5578521755",
-            "email": "dserasinghe@hotmail.com"
-        },
-        "doctor": "T Uyanage",
-        "hospital": "clemency medical center",
-        "appointmentDate": "2019-12-31"
-    },
-    {
-        "statusCode": 400,
-        "responseMessage": "Doctor T Uyanage is not available in clemency medical center"
-    }
-    ],
-    // TC004 - Verify if appointment reservation can be made for a child. 
+    // TC003 - Verify if appointment reservation can be made for a child.
     [
     {
         "patient": {
@@ -177,6 +146,63 @@ function testReserveAppointmentDataProvider() returns json[][]
     ];
 }
 
+# Description: This test verifies if an error occurs when appointment reservation is done for an 
+# unavilable doctor in clemency hospital. 
+# + dataset - dataset Parameter Description
+@test:Config {
+    dataProvider: "testReserveAppointmentNegativeDataProvider",
+    dependsOn: ["testAddDoctor"]
+}
+function testReserveAppointmentNegative(json dataset, json expectedStrings) {
+    http:Request request = new;
+    request.setPayload(dataset);
+
+    // sending the post request to the endpoint
+    http:Response | error response = clientEPclemency->post("/surgery/reserve", request);
+    if (response is http:Response) {
+        string doctor = dataset.doctor.toString();
+        var expectedResponseText = expectedStrings.responseMessage;
+        var expectedStatusCode = expectedStrings.statusCode;
+
+        string | error responsePayload = response.getTextPayload();
+        var responseStatusCode = response.statusCode;
+
+        test:assertEquals(responsePayload, expectedResponseText, 
+                                                            msg = "Assertion Failed for Doctor " + doctor);
+        test:assertEquals(responseStatusCode, expectedStatusCode, msg = "Status code mismatch!");
+    }
+    else
+    {
+        test:assertFail(msg = "Error sending request");
+    }
+}
+
+function testReserveAppointmentNegativeDataProvider() returns json[][] {
+    return [
+    // TC004 - Verify if an error message is thrown when appointment reservation can be done for an
+    // unavailable doctor in the hospital.
+    [
+    {
+        "patient": {
+            "name": "D Serasinghe",
+            "dob": "1983-12-03",
+            "ssn": "777-29-585",
+            "address": "Colombo SL",
+            "phone": "5578521755",
+            "email": "dserasinghe@hotmail.com"
+        },
+        "doctor": "T Uyanage",
+        "hospital": "clemency medical center",
+        "appointmentDate": "2019-12-31"
+    },
+    {
+        "statusCode": 400,
+        "responseMessage": "Doctor T Uyanage is not available in clemency medical center"
+    }
+    ]
+    ];
+}
+
 # Description: This test scenario verifies if details of the reserved appoinment can be retrived. 
 # + dataset - dataset Parameter Description
 @test:Config {
@@ -188,28 +214,23 @@ function testGetAppointmentClemency(json dataset) {
     string expectedDoctorName = dataset.doctorName.toString();
     string expectedAppointmentDate = dataset.appointmentDate.toString();
 
-    http:Response | error response = clientEPclemency->get("/appointments/" + expectedAppointmentNumber.toString());
+    http:Response | error response = clientEPclemency->get("/appointments/" 
+                                                            + expectedAppointmentNumber.toString());
     if (response is http:Response) {
-        if (expectedAppointmentNumber == 200) {
-            string | error responsePayload = response.getTextPayload();
-            test:assertEquals(responsePayload, "Invalid appointment number.", 
-                                                            msg = "Appointment number is not as expected");
-        } else {
-            json | error responsePayload = response.getJsonPayload();
-            if (responsePayload is json) {
-                var responseAppointmentNumber = responsePayload.appointmentNumber;
-                string responseDoctorName = responsePayload.doctor.name.toString();
-                string responseAppoinmentDate = responsePayload.appointmentDate.toString();
+        json | error responsePayload = response.getJsonPayload();
+        if (responsePayload is json) {
+            var responseAppointmentNumber = responsePayload.appointmentNumber;
+            string responseDoctorName = responsePayload.doctor.name.toString();
+            string responseAppoinmentDate = responsePayload.appointmentDate.toString();
 
-                test:assertEquals(responseAppointmentNumber, expectedAppointmentNumber, 
+            test:assertEquals(responseAppointmentNumber, expectedAppointmentNumber, 
                                                             msg = "Appointment number is not as expected!");
-                test:assertEquals(responseDoctorName, expectedDoctorName, 
+            test:assertEquals(responseDoctorName, expectedDoctorName, 
                                                             msg = "Doctor's name is not as expected!");
-                test:assertEquals(responseAppoinmentDate, expectedAppointmentDate, 
+            test:assertEquals(responseAppoinmentDate, expectedAppointmentDate, 
                                                             msg = "Appointment date is not as expected!");
-            } else {
-                test:assertFail(msg = "Test Failed! Invalid Payload");
-            }
+        } else {
+            test:assertFail(msg = "Test Failed! Invalid Payload");
         }
     } else {
         test:assertFail(msg = "Error sending request");
@@ -225,11 +246,39 @@ function testGetAppointmentClemencyDataProvider() returns json[][] {
         "doctorName": "anne clement",
         "appointmentDate": "2019-07-02"
     }
-    ],
-    // TC006 - Verify if an error occurs by providing an invalid appointment number.  
+    ]
+    ];
+}
+
+# Description: This test scenario verifies if it throws an error message when an invalid appointment ID is 
+# going to be retrieved.
+# + dataset - dataset Parameter Description
+@test:Config {
+    dataProvider: "testGetAppointmentClemencyNegativeDataProvider",
+    dependsOn: ["testReserveAppointment"]
+}
+function testGetAppointmentClemencyNegative(json dataset) {
+    var expectedAppointmentNumber = dataset.appointmentNumber;
+    var expectedSeerorMessage = dataset.expectedErrorMessage;
+
+    http:Response | error response = clientEPclemency->get("/appointments/" 
+                                                    + expectedAppointmentNumber.toString());
+    if (response is http:Response) {
+        string | error responsePayload = response.getTextPayload();
+        test:assertEquals(responsePayload, expectedSeerorMessage, msg = "Error message is not as expected");
+    }
+    else{
+        test:assertFail(msg = "Error sending request");
+    }
+}
+
+function testGetAppointmentClemencyNegativeDataProvider() returns json[][] {
+    return [
+    // TC006 - Verify if an error occurs by providing an invalid appointment number.
     [
     {
-        "appointmentNumber": 200
+        "appointmentNumber": 200,
+        "expectedErrorMessage": "Invalid appointment number."
     }
     ]
     ];
@@ -245,26 +294,20 @@ function testCheckChannellingFee(json dataset) {
     string expectedPatientName = dataset.patientName.toString();
     string expectedDoctorname = dataset.doctorName.toString();
     string expectedFee = dataset.actualFee.toString();
-    string expectedResponseText = "Error. Could not Find the Requested appointment ID.";
     string appointmentNumber = dataset.appointmentNumber.toString();
 
     http:Response | error response = clientEPclemency->get("/appointments/" + appointmentNumber + "/fee");
     if (response is http:Response) {
-        if (dataset.appointmentNumber == 200) {
-            string | error responsePayload = response.getTextPayload();
-            test:assertEquals(responsePayload, expectedResponseText, msg = "Assertion Failed!");
-        } else {
-            json | error responsePaylaod = response.getJsonPayload();
-            if (responsePaylaod is json) {
-                test:assertEquals(responsePaylaod.patientName, expectedPatientName, 
+        json | error responsePaylaod = response.getJsonPayload();
+        if (responsePaylaod is json) {
+            test:assertEquals(responsePaylaod.patientName, expectedPatientName, 
                                                     msg = "Assertion Failed!, Patient name is not as expected");
-                test:assertEquals(responsePaylaod.doctorName, expectedDoctorname, 
+            test:assertEquals(responsePaylaod.doctorName, expectedDoctorname, 
                                                     msg = "Assertion Failed!, Doctor name is not as expected");
-                test:assertEquals(responsePaylaod.actualFee, expectedFee, 
+            test:assertEquals(responsePaylaod.actualFee, expectedFee, 
                                                     msg = "Assertion Failed!, Actual fee is not as expected");
-            } else {
-                test:assertFail(msg = "Invalid Payload. Test Failed!");
-            }
+        } else {
+            test:assertFail(msg = "Invalid Payload. Test Failed!");
         }
     }
     else {
@@ -282,11 +325,38 @@ function testCheckChannellingFeeDataProvider() returns json[][] {
         "doctorName": "anne clement",
         "actualFee": "12000.0"
     }
-    ],
-    // TC008 - Verify if an error occurs by providing an invalid appointment number.
+    ]
+    ];
+}
+
+# Description: This test scenario verifies if it throws an error message when it is going to check the fee of an 
+# invalid appointment ID. 
+# + dataset - dataset Parameter Description
+@test:Config {
+    dataProvider: "testCheckChannellingFeeNegativeDataProvider",
+    dependsOn: ["testReserveAppointment"]
+}
+function testCheckChannellingFeeNegative(json dataset) {
+    string appointmentNumber = dataset.appointmentNumber.toString();
+    http:Response | error response = clientEPclemency->get("/appointments/" + appointmentNumber + "/fee");
+    string expectedResponseText = dataset.errorMessage.toString();
+
+    if (response is http:Response) {
+        string | error responsePayload = response.getTextPayload();
+        test:assertEquals(responsePayload, expectedResponseText, msg = "Error message is not as expected.");
+    } else {
+        test:assertFail(msg = "Error sending request!");
+    }
+}
+
+function testCheckChannellingFeeNegativeDataProvider() returns json[][] {
+    return [
+    // TC008 - Verify if the error message returns when an invalid appointment number is provided when it
+    // is going to check the channelling fee. 
     [
     {
-        "appointmentNumber": 200
+        "appointmentNumber": 200,
+        "errorMessage": "Error. Could not Find the Requested appointment ID."
     }
     ]
     ];
@@ -301,7 +371,7 @@ function testCheckChannellingFeeDataProvider() returns json[][] {
 function testUpdatePatientRecord(json dataset, json resultset) {
     http:Request request = new;
     request.setPayload(dataset);
-    
+
     http:Response | error response = clientEPclemency->post("/patient/updaterecord", request);
     string expectedText = resultset.expectedText.toString();
 
@@ -424,14 +494,14 @@ function testIsEligibleForDiscountDataProvider() returns json[][] {
         "appointmentNumber": 1
     }
     ],
-    // TC012 - Verify if patient above 55 is eligible for a discount. 
+    // TC012 - Verify if patient above 55 is eligible for a discount.
     [
     {
         "eligibility": true,
         "appointmentNumber": 2
     }
     ],
-    // TC013 - Verify if patient below 12 is eligible for a discount. 
+    // TC013 - Verify if patient below 12 is eligible for a discount.
     [
     {
         "eligibility": true,

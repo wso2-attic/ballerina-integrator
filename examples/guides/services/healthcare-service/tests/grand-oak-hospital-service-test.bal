@@ -21,7 +21,7 @@ import ballerina/log;
 
 http:Client clientEPGrandoaks = new("http://localhost:9090/grandoaks/categories");
 
-# Description: This test verifies if an appoinment can be reserved successfully. 
+# Description: This test verifies if an appoinment can be reserved successfully in grand oaks hospital. 
 # + dataset - dataset Parameter Description
 @test:Config{
     dataProvider: "testReserveAppointmentGrandoaksDataProvider",
@@ -35,51 +35,41 @@ function testReserveAppointmentGrandoaks(json dataset, json expectedStrings){
     // sending the post request to the endpoint
     http:Response | error response = clientEPGrandoaks->post("/surgery/reserve", request);
 
-    if (response is http:Response){
-        string doctor = dataset.doctor.toString();
-        var responseStatusCode = response.statusCode;
+    if (response is http:Response) {
+        json | error responsePayload = response.getJsonPayload();
+
         var expectedStatusCode = expectedStrings.statusCode;
-        string expectedResponseText = expectedStrings.responseMessage.toString();
+        json | error expectedIncludesAppoinmentNumber = expectedStrings.appoinmentNumber;
+        json | error expectedIncludesDoctorAvailibility = expectedStrings.doctorAvailibility;
+        json | error expectedIncludesDoctorFee = expectedStrings.doctorFee;
 
-        if (doctor == "T Uyanage"){
-            string | error responsePayload = response.getTextPayload();
-            test:assertEquals(responsePayload, expectedResponseText, 
-                                                    msg = "Assertion Failed for Doctor " + doctor);
-            test:assertEquals(responseStatusCode, expectedStatusCode, msg = "Status code mismatch!");
-        }else{
-            json | error resonsePayload = response.getJsonPayload();
-            var expectedIncludesAppoinmentNumber = expectedStrings.appoinmentNumber;
-            var expectedIncludesDoctorAvailibility = expectedStrings.doctorAvailibility;
-            var expectedIncludesDoctorFee = expectedStrings.doctorFee;
+        if (responsePayload is json) {
+            boolean responseIncludesAppoinmentNumber = false;
+            boolean responseIncludesDoctorAvailibility = false;
+            boolean responseIncludesDoctorFee = false;
 
-            if (resonsePayload is json){
-                boolean responseIncludesAppoinmentNumber = false;
-                boolean responseIncludesDoctorAvailibility = false;
-                boolean responseIncludesDoctorFee = false;
-
-                // Verifying if response json payload includes appointmentNumber, availability and fee
-                if (resonsePayload.toString().contains("appointmentNumber")){
-                    responseIncludesAppoinmentNumber = true;
-                }
-                if (resonsePayload.doctor.toString().contains("availability")){
-                    responseIncludesDoctorAvailibility = true;
-                }
-                if (resonsePayload.toString().contains("fee")){
-                    responseIncludesDoctorFee = true;
-                }
-
-                test:assertEquals(response.statusCode, expectedStatusCode, msg = "Status Code mismatch!");
-                test:assertEquals(responseIncludesAppoinmentNumber, expectedIncludesAppoinmentNumber, 
-                                                                msg = "Appoinment number is not as expected");
-                test:assertEquals(responseIncludesDoctorAvailibility, expectedIncludesDoctorAvailibility, 
-                                                                msg = "Doctor availability is not as expected");
-                test:assertEquals(responseIncludesDoctorFee, expectedIncludesDoctorFee, 
-                                                                msg = "Doctor fee is not as expected");
-            }else{
-                test:assertFail(msg = "Invalid Payload!");
+            // Verifying if response json payload includes appointmentNumber, availability and fee
+            if (responsePayload.toString().contains("appointmentNumber")) {
+                responseIncludesAppoinmentNumber = true;
             }
+            if (responsePayload.doctor.toString().contains("availability")) {
+                responseIncludesDoctorAvailibility = true;
+            }
+            if (responsePayload.toString().contains("fee")) {
+                responseIncludesDoctorFee = true;
+            }
+
+            test:assertEquals(response.statusCode, expectedStatusCode, msg = "Status Code mismatch!");
+            test:assertEquals(responseIncludesAppoinmentNumber, expectedIncludesAppoinmentNumber, 
+                                                                msg = "Appoinment number is not as expected");
+            test:assertEquals(responseIncludesDoctorAvailibility, expectedIncludesDoctorAvailibility, 
+                                                                msg = "Doctor availability is not as expected");
+            test:assertEquals(responseIncludesDoctorFee, expectedIncludesDoctorFee, 
+                                                                msg = "Doctor fee is not as expected");
+        } else {
+            test:assertFail(msg = "Test Failed!, Invalid Payload");
         }
-    }else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -131,27 +121,7 @@ function testReserveAppointmentGrandoaksDataProvider() returns json[][]
         "doctorFee": true
     }
     ],
-    // TC003 - Verify if appoinment reservation can be done for an unavailable doctor in the hospital. 
-    [
-    {
-        "patient": {
-            "name": "D Serasinghe",
-            "dob": "1983-12-03",
-            "ssn": "777-29-585",
-            "address": "Colombo SL",
-            "phone": "5578521755",
-            "email": "dserasinghe@hotmail.com"
-        },
-        "doctor": "T Uyanage",
-        "hospital": "grand oak community hospital",
-        "appointmentDate": "2019-12-31"
-    },
-    {
-        "statusCode": 400,
-        "responseMessage": "Doctor T Uyanage is not available in grand oak community hospital"
-    }
-    ],
-    // TC004 - Verify if appointment reservation can be made for a child. 
+    // TC003 - Verify if appointment reservation can be made for a child. 
     [
     {
         "patient": {
@@ -176,11 +146,67 @@ function testReserveAppointmentGrandoaksDataProvider() returns json[][]
     ];
 }
 
+# Description: This test verifies if an error occurs when appointment reservation is done for an 
+# unavilable doctor in grandoak hospital. 
+# + dataset - dataset Parameter Description
+@test:Config {
+    dataProvider: "testReserveAppointmentGrandOakNegativeDataProvider",
+    dependsOn: ["testAddDoctor"]
+}
+function testReserveAppointmentGrandOakNegative(json dataset, json expectedStrings) {
+    http:Request request = new;
+    request.setPayload(dataset);
+
+    // sending the post request to the endpoint
+    http:Response | error response = clientEPGrandoaks->post("/surgery/reserve", request);
+    if (response is http:Response) {
+        string doctor = dataset.doctor.toString();
+        var expectedResponseText = expectedStrings.responseMessage;
+        var expectedStatusCode = expectedStrings.statusCode;
+
+        string | error responsePayload = response.getTextPayload();
+        var responseStatusCode = response.statusCode;
+
+        test:assertEquals(responsePayload, expectedResponseText, 
+                                                            msg = "Assertion Failed for Doctor " + doctor);
+        test:assertEquals(responseStatusCode, expectedStatusCode, msg = "Status code mismatch!");
+    }
+    else{
+        test:assertFail(msg = "Error sending request");
+    }
+}
+
+function testReserveAppointmentGrandOakNegativeDataProvider() returns json[][] {
+    return [
+    // TC004 - Verify if an error message is thrown when appointment reservation can be done for an
+    // unavailable doctor in the hospital.
+    [
+    {
+        "patient": {
+            "name": "D Serasinghe",
+            "dob": "1983-12-03",
+            "ssn": "777-29-585",
+            "address": "Colombo SL",
+            "phone": "5578521755",
+            "email": "dserasinghe@hotmail.com"
+        },
+        "doctor": "Ranil Perera",
+        "hospital": "grand oak community hospital",
+        "appointmentDate": "2019-12-31"
+    },
+    {
+        "statusCode": 400,
+        "responseMessage": "Doctor Ranil Perera is not available in grand oak community hospital"
+    }
+    ]
+    ];
+}
+
 # Description: This test scenario verifies if details of the reserved appoinment can be retrived. 
 # + dataset - dataset Parameter Description
 @test:Config{
     dataProvider: "testGetAppointmentGrandoaksDataProvider",
-    dependsOn: ["testReserveAppointmentGrandoaks"]
+    dependsOn: ["testReserveAppointment"]
 }
 function testGetAppointmentGrandoaks(json dataset){
     json expectedAppointmentNumber = dataset.appointmentNumber;
@@ -188,30 +214,24 @@ function testGetAppointmentGrandoaks(json dataset){
     string expectedAppointmentDate = dataset.appointmentDate.toString();
 
     http:Response | error response = clientEPGrandoaks->get("/appointments/"
-    + expectedAppointmentNumber.toString());
-    if (response is http:Response){
-        if (expectedAppointmentNumber == 200){
-            string | error responsePayload = response.getTextPayload();
-            test:assertEquals(responsePayload, "Invalid appointment number.", 
-                                                                    msg = "Error message is not as expected");
-        }else{
-            json | error responsePayload = response.getJsonPayload();
-            if (responsePayload is json){
-                var responseAppointmentNumber = responsePayload.appointmentNumber;
-                string responseDoctorName = responsePayload.doctor.name.toString();
-                string responseAppoinmentDate = responsePayload.appointmentDate.toString();
+                                                        + expectedAppointmentNumber.toString());
+    if (response is http:Response) {
+        json | error responsePayload = response.getJsonPayload();
+        if (responsePayload is json) {
+            var responseAppointmentNumber = responsePayload.appointmentNumber;
+            string responseDoctorName = responsePayload.doctor.name.toString();
+            string responseAppoinmentDate = responsePayload.appointmentDate.toString();
 
-                test:assertEquals(responseAppointmentNumber, expectedAppointmentNumber, 
-                                                                msg = "Appointment number is not as expected!");
-                test:assertEquals(responseDoctorName, expectedDoctorName, 
-                                                                msg = "Doctor's name is not as expected!");
-                test:assertEquals(responseAppoinmentDate, expectedAppointmentDate, 
-                                                                msg = "Appointment date is not as expected!");
-            }else{
-                test:assertFail(msg = "Invalid Payload!");
-            }
+            test:assertEquals(responseAppointmentNumber, expectedAppointmentNumber, 
+                                                            msg = "Appointment number is not as expected!");
+            test:assertEquals(responseDoctorName, expectedDoctorName, 
+                                                            msg = "Doctor's name is not as expected!");
+            test:assertEquals(responseAppoinmentDate, expectedAppointmentDate, 
+                                                            msg = "Appointment date is not as expected!");
+        } else {
+            test:assertFail(msg = "Test Failed! Invalid Payload");
         }
-    }else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -225,11 +245,39 @@ function testGetAppointmentGrandoaksDataProvider() returns json[][] {
         "doctorName": "thomas collins",
         "appointmentDate": "2019-07-02"
     }
-    ],
-    // TC006 - Verify if an error occurs by providing an invalid appointment number.  
+    ]
+    ];
+}
+
+# Description: This test scenario verifies if it throws an error message when an invalid appointment ID is 
+# going to be retrieved.
+# + dataset - dataset Parameter Description
+@test:Config {
+    dataProvider: "testGetAppointmentGrandOakNegativeDataProvider",
+    dependsOn: ["testReserveAppointment"]
+}
+function testGetAppointmentGrandOakNegative(json dataset) {
+    var expectedAppointmentNumber = dataset.appointmentNumber;
+    var expectedSeerorMessage = dataset.expectedErrorMessage;
+
+    http:Response | error response = clientEPGrandoaks->get("/appointments/" 
+                                                    + expectedAppointmentNumber.toString());
+    if (response is http:Response) {
+        string | error responsePayload = response.getTextPayload();
+        test:assertEquals(responsePayload, expectedSeerorMessage, msg = "Error message is not as expected");
+    }
+    else{
+        test:assertFail(msg = "Error sending request");
+    }
+}
+
+function testGetAppointmentGrandOakNegativeDataProvider() returns json[][] {
+    return [
+    // TC006 - Verify if an error occurs by providing an invalid appointment number.
     [
     {
-        "appointmentNumber": 200
+        "appointmentNumber": 200,
+        "expectedErrorMessage": "Invalid appointment number."
     }
     ]
     ];
@@ -239,34 +287,29 @@ function testGetAppointmentGrandoaksDataProvider() returns json[][] {
 # + dataset - dataset Parameter Description
 @test:Config {
     dataProvider: "testCheckChannellingFeeGrandoaksDataProvider",
-    dependsOn: ["testReserveAppointmentGrandoaks"]
+    dependsOn: ["testReserveAppointment"]
 }
 function testCheckChannellingFeeGrandoaks(json dataset){
     string expectedPatientName = dataset.patientName.toString();
     string expectedDoctorname = dataset.doctorName.toString();
     string expectedFee = dataset.actualFee.toString();
-    string expectedResponseText = "Error. Could not Find the Requested appointment ID.";
     string appointmentNumber = dataset.appointmentNumber.toString();
 
     http:Response | error response = clientEPGrandoaks->get("/appointments/" + appointmentNumber + "/fee");
-    if (response is http:Response){
-        if (dataset.appointmentNumber == 200){
-            string | error responsePayload = response.getTextPayload();
-            test:assertEquals(responsePayload, expectedResponseText, msg = "Error message is not as expected");
-        }else{
-            json | error responsePaylaod = response.getJsonPayload();
-            if (responsePaylaod is json){
-                test:assertEquals(responsePaylaod.patientName, expectedPatientName, 
+    if (response is http:Response) {
+        json | error responsePaylaod = response.getJsonPayload();
+        if (responsePaylaod is json) {
+            test:assertEquals(responsePaylaod.patientName, expectedPatientName, 
                                                     msg = "Assertion Failed!, Patient name is not as expected");
-                test:assertEquals(responsePaylaod.doctorName, expectedDoctorname, 
+            test:assertEquals(responsePaylaod.doctorName, expectedDoctorname, 
                                                     msg = "Assertion Failed!, Doctor name is not as expected");
-                test:assertEquals(responsePaylaod.actualFee, expectedFee, 
+            test:assertEquals(responsePaylaod.actualFee, expectedFee, 
                                                     msg = "Assertion Failed!, Actual fee is not as expected");
-            }else{
-                test:assertFail(msg = "Invalid Payload!");
-            }
+        } else {
+            test:assertFail(msg = "Invalid Payload. Test Failed!");
         }
-    }else{
+    }
+    else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -281,11 +324,38 @@ function testCheckChannellingFeeGrandoaksDataProvider() returns json[][] {
         "doctorName": "anne clement",
         "actualFee": "12000.0"
     }
-    ],
-    // TC008 - Verify if an error occurs by providing an invalid appointment number.  
+    ]
+    ];
+}
+
+# Description: This test scenario verifies if an error occures when an invalid appointment id is provided
+# when checking the channelling fee.
+# + dataset - dataset Parameter Description
+@test:Config {
+    dataProvider: "testCheckChannellingFeeGrandOakNegativeDataProvider",
+    dependsOn: ["testReserveAppointment"]
+}
+function testCheckChannellingFeeGrandOakNegative(json dataset) {
+    string appointmentNumber = dataset.appointmentNumber.toString();
+    http:Response | error response = clientEPGrandoaks->get("/appointments/" + appointmentNumber + "/fee");
+    string expectedResponseText = dataset.errorMessage.toString();
+
+    if (response is http:Response) {
+        string | error responsePayload = response.getTextPayload();
+        test:assertEquals(responsePayload, expectedResponseText, msg = "Error message is not as expected.");
+    } else {
+        test:assertFail(msg = "Error sending request!");
+    }
+}
+
+function testCheckChannellingFeeGrandOakNegativeDataProvider() returns json[][] {
+    return [
+    // TC008 - Verify if the error message returns when an invalid appointment number is provided when it
+    // is going to check the channelling fee. 
     [
     {
-        "appointmentNumber": 200
+        "appointmentNumber": 200,
+        "errorMessage": "Error. Could not Find the Requested appointment ID."
     }
     ]
     ];
