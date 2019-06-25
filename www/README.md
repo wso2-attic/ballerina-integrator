@@ -71,7 +71,7 @@ to add front matter at the beginning of the markdown file. Please note that you 
 and after adding meta data.
 ```
 layout: post
-title:  "Asynchrnous messaging"
+title:  "Asynchronous messaging"
 categories: messaging
 ```-->
 
