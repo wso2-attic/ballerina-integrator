@@ -22,10 +22,6 @@ import ballerina/log;
 http:Client clientEPclemency = new("http://localhost:9090/clemency/categories");
 
 # Description: This test verifies if an appointment can be reserved successfully. 
-# TC001 - Verify if appointment reservation can be done by providing all the valid inputs. 
-# TC002 - Verify if appointment reservation can be done by not providing non-mandatory feilds.
-# TC003 - Verify if appointment reservation can be done for an unavailable doctor in the hospital. 
-#
 # + dataset - dataset Parameter Description
 @test:Config {
     dataProvider: "testReserveAppointmentDataProvider",
@@ -87,9 +83,11 @@ function testReserveAppointment(json dataset, json expectedStrings) {
         test:assertFail(msg = "Error sending request");
     }
 }
+
 function testReserveAppointmentDataProvider() returns json[][]
 {
     return [
+    // TC001 - Verify if appointment reservation can be done by providing all the valid inputs. 
     [
     {
         "patient": {
@@ -112,6 +110,7 @@ function testReserveAppointmentDataProvider() returns json[][]
     }
 
     ],
+    // TC002 - Verify if appointment reservation can be done by not providing non-mandatory feilds.
     [
     {
         "patient": {
@@ -133,6 +132,7 @@ function testReserveAppointmentDataProvider() returns json[][]
         "doctorFee": true
     }
     ],
+    // TC003 - Verify if appointment reservation can be done for an unavailable doctor in the hospital. 
     [
     {
         "patient": {
@@ -152,6 +152,7 @@ function testReserveAppointmentDataProvider() returns json[][]
         "responseMessage": "Doctor T Uyanage is not available in clemency medical center"
     }
     ],
+    // TC004 - Verify if appointment reservation can be made for a child. 
     [
     {
         "patient": {
@@ -177,9 +178,6 @@ function testReserveAppointmentDataProvider() returns json[][]
 }
 
 # Description: This test scenario verifies if details of the reserved appoinment can be retrived. 
-# TC004 - Verify if appoinment details can be retrieved successfully by providing a valid appointment number.
-# TC005 - Verify if an error occurs by providing an invalid appointment number.  
-#
 # + dataset - dataset Parameter Description
 @test:Config {
     dataProvider: "testGetAppointmentClemencyDataProvider",
@@ -217,8 +215,10 @@ function testGetAppointmentClemency(json dataset) {
         test:assertFail(msg = "Error sending request");
     }
 }
+
 function testGetAppointmentClemencyDataProvider() returns json[][] {
     return [
+    // TC005 - Verify if appoinment details can be retrieved successfully by providing a valid appointment number.
     [
     {
         "appointmentNumber": 1,
@@ -226,6 +226,7 @@ function testGetAppointmentClemencyDataProvider() returns json[][] {
         "appointmentDate": "2019-07-02"
     }
     ],
+    // TC006 - Verify if an error occurs by providing an invalid appointment number.  
     [
     {
         "appointmentNumber": 200
@@ -235,9 +236,6 @@ function testGetAppointmentClemencyDataProvider() returns json[][] {
 }
 
 # Description: This test scenario verifies if channel fee for a particular appoitment can be retreived. 
-# TC006 - Verify if the channel fee can be retrieved by providing a valid appoitment number. 
-# TC007 - Verify if an error occurs by providing an invalid appointment number.  
-# 
 # + dataset - dataset Parameter Description
 @test:Config {
     dataProvider: "testCheckChannellingFeeDataProvider",
@@ -273,8 +271,10 @@ function testCheckChannellingFee(json dataset) {
         test:assertFail(msg = "Error sending request");
     }
 }
+
 function testCheckChannellingFeeDataProvider() returns json[][] {
     return [
+    // TC007 - Verify if the channel fee can be retrieved by providing a valid appoitment number.
     [
     {
         "appointmentNumber": 1,
@@ -283,6 +283,7 @@ function testCheckChannellingFeeDataProvider() returns json[][] {
         "actualFee": "12000.0"
     }
     ],
+    // TC008 - Verify if an error occurs by providing an invalid appointment number.
     [
     {
         "appointmentNumber": 200
@@ -292,8 +293,6 @@ function testCheckChannellingFeeDataProvider() returns json[][] {
 }
 
 # Description: This test scenario verifies if Patient record can be updated. 
-# TC008 - Verify patient's records can be updated. 
-#
 # + dataset - dataset Parameter Description
 @test:Config {
     dataProvider: "testUpdatePatientRecordDataProvider",
@@ -318,8 +317,10 @@ function testUpdatePatientRecord(json dataset, json resultset) {
         test:assertFail(msg = "Error sending request");
     }
 }
+
 function testUpdatePatientRecordDataProvider() returns json[][] {
     return [
+    // TC009 - Verify patient's records can be updated.
     [
     {
         "ssn": "111-23-505",
@@ -334,10 +335,7 @@ function testUpdatePatientRecordDataProvider() returns json[][] {
     ];
 }
 
-
 # Description: This test scenario verifies if Patient's record can be retrieved successfully. 
-# TC009 - Verify if Patient record can be retrived
-#
 # + dataset - dataset Parameter Description
 @test:Config
 {
@@ -377,8 +375,10 @@ function testGetPatientRecord(json dataset) {
         test:assertFail(msg = "Error sending the request");
     }
 }
+
 function testGetPatientRecordDataProvider() returns json[][] {
     return [
+    // TC010 - Verify if Patient record can be retrived
     [
     {
         "patientName": "Leonardo Duke",
@@ -391,10 +391,6 @@ function testGetPatientRecordDataProvider() returns json[][] {
 
 
 # Description: This test scenario verifies if patient is eligible to get a discount. 
-# TC010 - Verify if patient who are below 55 and above 12 is not eligible for a discount.
-# TC011 - Verify if patient above 55 is eligible for a discount. 
-# TC012 - Verify if patient below 12 is eligible for a discount. 
-#
 # + dataset - dataset Parameter Description
 @test:Config {
     dataProvider: "testIsEligibleForDiscountDataProvider",
@@ -418,20 +414,24 @@ function testIsEligibleForDiscount(json dataset) {
         test:assertFail(msg = "Error sending request");
     }
 }
+
 function testIsEligibleForDiscountDataProvider() returns json[][] {
     return [
+    // TC011 - Verify if patient who are below 55 and above 12 is not eligible for a discount.
     [
     {
         "eligibility": false,
         "appointmentNumber": 1
     }
     ],
+    // TC012 - Verify if patient above 55 is eligible for a discount. 
     [
     {
         "eligibility": true,
         "appointmentNumber": 2
     }
     ],
+    // TC013 - Verify if patient below 12 is eligible for a discount. 
     [
     {
         "eligibility": true,

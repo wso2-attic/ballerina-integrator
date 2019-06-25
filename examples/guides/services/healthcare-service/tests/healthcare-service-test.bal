@@ -23,15 +23,10 @@ import ballerina/time;
 http:Client healthCareEP = new("http://localhost:9090/healthcare");
 
 # Description: This test scenario verifies new docotr can be added to a hospital. 
-# TC001 - Verify if a doctor can be added to Grand oak community hospital under the category surgery.
-# TC002 - Verify if an existing doctor cannot be added. 
-# TC003 - Verify if a doctor can be added under a new category.
-#
 # + dataset - dataset Parameter Description
 @test:Config{
     dataProvider: "testAddDoctorResponseDataProvider"
 }
-
 function testAddDoctor(json dataset, json resultset){
     // set the json payload
     http:Request request = new;
@@ -55,6 +50,7 @@ function testAddDoctor(json dataset, json resultset){
 // This function passes data to testResourceAddAppoinment function for test cases.
 function testAddDoctorResponseDataProvider() returns json[][] {
     return [
+    // TC001 - Verify if a doctor can be added to Grand oak community hospital under the category surgery.
     [
     {
         "name": "T D Uyanage",
@@ -68,6 +64,7 @@ function testAddDoctorResponseDataProvider() returns json[][] {
         "expectedStatusCode": 200
     }
     ],
+    // TC002 - Verify if an existing doctor cannot be added. 
     [
     {
         "name": "T D Uyanage",
@@ -81,6 +78,7 @@ function testAddDoctorResponseDataProvider() returns json[][] {
         "expectedStatusCode": 400
     }
     ],
+    // TC003 - Verify if a doctor can be added under a new category.
     [
     {
         "name": "H Dias",
@@ -98,14 +96,11 @@ function testAddDoctorResponseDataProvider() returns json[][] {
 }
 
 # Description: This test scenario verifies if a doctor record can be retrived. 
-# TC004 - Verify if added doctor record under TC001 can be retrived under category surgery.
-# 
 # + dataset - dataset Parameter Description
 @test:Config{
     dataProvider: "testGetDoctorsDataProvider",
     dependsOn: ["testAddDoctor"]
 }
-
 function testGetDoctors(json dataset){
     string inputCategory = dataset.category.toString();
     boolean includeDoctor = false;
@@ -131,10 +126,10 @@ function testGetDoctors(json dataset){
     }
 }
 
-// This function passes data to testResourceAddAppoinment function for test cases.
 function testGetDoctorsDataProvider() returns json[][]
 {
     return [
+    // TC004 - Verify if added doctor record under TC001 can be retrived under category surgery.
     [
     {
         "category": "surgery",
@@ -145,15 +140,12 @@ function testGetDoctorsDataProvider() returns json[][]
 }
 
 # Description: This test scenario verifies if it can retreive the details of appointments.
-# TC005 - verify if appointment details can be retreived.
-#
 # + dataset - dataset Parameter Description 
 # + resultset - resultset Parameter Description
 @test:Config{
     dataProvider: "testGetAppointmentDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-
 function testGetAppointment(json dataset, json resultset){
     string inputAppointmentNumber = dataset.appointmentNumber.toString();
     http:Response | error response = healthCareEP->get("/appointments/" + inputAppointmentNumber);
@@ -174,6 +166,7 @@ function testGetAppointment(json dataset, json resultset){
 function testGetAppointmentDataProvider() returns json[][]
 {
     return [
+    // TC005 - verify if appointment details can be retreived.
     [
     {
         "appointmentNumber": 1
@@ -206,14 +199,11 @@ function testGetAppointmentDataProvider() returns json[][]
 }
 
 # Description: This test scenario verifies the validity of the appointment date.
-# TC006 - verify if the provided appointment date is valid.
-#
 # + dataset - dataset Parameter Description 
 @test:Config{
     dataProvider: "testGetAppointmentValidityTimeDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-
 function testGetAppointmentValidityTime(json dataset){
     string inputAppointmentNumber = dataset.appointmentNumber.toString();
 
@@ -258,6 +248,7 @@ function testGetAppointmentValidityTime(json dataset){
 function testGetAppointmentValidityTimeDataProvider() returns json[][]
 {
     return [
+    // TC006 - verify if the provided appointment date is valid.
     [
     {
         "appointmentNumber": 1
@@ -267,14 +258,11 @@ function testGetAppointmentValidityTimeDataProvider() returns json[][]
 }
 
 # Description: This test scenario verifies if the appointments can be removed.
-# TC004 - verify if appointments can be deleted.
-#
 # + dataset - dataset Parameter Description 
 @test:Config{
     dataProvider: "testRemoveAppointmentDataProvider",
     dependsOn: ["testIsEligibleForDiscountGrandoaks"]
 }
-
 function testRemoveAppointment(json dataset){
     string inputAppointmentNumber = dataset.appointmentNumber.toString();
     http:Response | error response = healthCareEP->delete("/appointments/"
@@ -291,6 +279,7 @@ function testRemoveAppointment(json dataset){
 function testRemoveAppointmentDataProvider() returns json[][]
 {
     return [
+    // TC007 - verify if appointments can be deleted.
     [
     {
         "appointmentNumber": 6,
@@ -301,14 +290,11 @@ function testRemoveAppointmentDataProvider() returns json[][]
 }
 
 # Description: This test scenario verifies payments can be settled successfully. 
-# TC008 - verify if payment can be setteled for a given appointment.
-#
 # + dataset - dataset Parameter Description
 @test:Config{
     dataProvider: "testSettlePaymentDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-
 function testSettlePayment(json dataset){
     http:Request request = new;
     request.setPayload(dataset);
@@ -336,6 +322,7 @@ function testSettlePayment(json dataset){
 function testSettlePaymentDataProvider() returns json[][]
 {
     return [
+    // TC008 - verify if payment can be setteled for a given appointment.
     [
     {
         "appointmentNumber": 1,

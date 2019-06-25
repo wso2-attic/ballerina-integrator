@@ -22,16 +22,11 @@ import ballerina/log;
 http:Client clientEPGrandoaks = new("http://localhost:9090/grandoaks/categories");
 
 # Description: This test verifies if an appoinment can be reserved successfully. 
-# TC001 - Verify if appoinement reservation can be done by providing all the valid inputs. 
-# TC002 - Verify if appoinment reservation can be done by not providing non-mandatory feilds.
-# TC003 - Verify if appoinment reservation can be done for an unavailable doctor in the hospital. 
-#
 # + dataset - dataset Parameter Description
 @test:Config{
     dataProvider: "testReserveAppointmentGrandoaksDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-
 function testReserveAppointmentGrandoaks(json dataset, json expectedStrings){
     // set the json payload
     http:Request request = new;
@@ -89,10 +84,10 @@ function testReserveAppointmentGrandoaks(json dataset, json expectedStrings){
     }
 }
 
-// Data provider for testReserveAppointmentGrandoaks function
 function testReserveAppointmentGrandoaksDataProvider() returns json[][]
 {
     return [
+    // TC001 - Verify if appoinement reservation can be done by providing all the valid inputs. 
     [
     {
         "patient": {
@@ -113,8 +108,8 @@ function testReserveAppointmentGrandoaksDataProvider() returns json[][]
         "doctorAvailibility": true,
         "doctorFee": true
     }
-
     ],
+    // TC002 - Verify if appoinment reservation can be done by not providing non-mandatory feilds.
     [
     {
         "patient": {
@@ -136,6 +131,7 @@ function testReserveAppointmentGrandoaksDataProvider() returns json[][]
         "doctorFee": true
     }
     ],
+    // TC003 - Verify if appoinment reservation can be done for an unavailable doctor in the hospital. 
     [
     {
         "patient": {
@@ -155,6 +151,7 @@ function testReserveAppointmentGrandoaksDataProvider() returns json[][]
         "responseMessage": "Doctor T Uyanage is not available in grand oak community hospital"
     }
     ],
+    // TC004 - Verify if appointment reservation can be made for a child. 
     [
     {
         "patient": {
@@ -180,15 +177,11 @@ function testReserveAppointmentGrandoaksDataProvider() returns json[][]
 }
 
 # Description: This test scenario verifies if details of the reserved appoinment can be retrived. 
-# TC004 - Verify if appoinment details can be retrieved successfully by providing a valid appointment number.
-# TC005 - Verify if an error occurs by providing an invalid appointment number.  
-#
 # + dataset - dataset Parameter Description
 @test:Config{
     dataProvider: "testGetAppointmentGrandoaksDataProvider",
     dependsOn: ["testReserveAppointmentGrandoaks"]
 }
-
 function testGetAppointmentGrandoaks(json dataset){
     json expectedAppointmentNumber = dataset.appointmentNumber;
     string expectedDoctorName = dataset.doctorName.toString();
@@ -221,11 +214,11 @@ function testGetAppointmentGrandoaks(json dataset){
     }else{
         test:assertFail(msg = "Error sending request");
     }
-
 }
 
 function testGetAppointmentGrandoaksDataProvider() returns json[][] {
     return [
+    // TC005 - Verify if appoinment details can be retrieved successfully by providing a valid appointment number.
     [
     {
         "appointmentNumber": 4,
@@ -233,6 +226,7 @@ function testGetAppointmentGrandoaksDataProvider() returns json[][] {
         "appointmentDate": "2019-07-02"
     }
     ],
+    // TC006 - Verify if an error occurs by providing an invalid appointment number.  
     [
     {
         "appointmentNumber": 200
@@ -242,15 +236,11 @@ function testGetAppointmentGrandoaksDataProvider() returns json[][] {
 }
 
 # Description: This test scenario verifies if channel fee for a particular appoitment can be retreived. 
-# TC006 - Verify if the channel fee can be retrieved by providing a valid appoitment number. 
-# TC007 - Verify if an error occurs by providing an invalid appointment number.  
-# 
 # + dataset - dataset Parameter Description
 @test:Config {
     dataProvider: "testCheckChannellingFeeGrandoaksDataProvider",
     dependsOn: ["testReserveAppointmentGrandoaks"]
 }
-
 function testCheckChannellingFeeGrandoaks(json dataset){
     string expectedPatientName = dataset.patientName.toString();
     string expectedDoctorname = dataset.doctorName.toString();
@@ -283,6 +273,7 @@ function testCheckChannellingFeeGrandoaks(json dataset){
 
 function testCheckChannellingFeeGrandoaksDataProvider() returns json[][] {
     return [
+    // TC007 - Verify if the channel fee can be retrieved by providing a valid appoitment number. 
     [
     {
         "appointmentNumber": 1,
@@ -291,6 +282,7 @@ function testCheckChannellingFeeGrandoaksDataProvider() returns json[][] {
         "actualFee": "12000.0"
     }
     ],
+    // TC008 - Verify if an error occurs by providing an invalid appointment number.  
     [
     {
         "appointmentNumber": 200
@@ -300,14 +292,11 @@ function testCheckChannellingFeeGrandoaksDataProvider() returns json[][] {
 }
 
 # Description: This test scenario verifies if Patient record can be updated. 
-# TC008 - Verify patient's records can be updated. 
-#
 # + dataset - dataset Parameter Description
 @test:Config {
     dataProvider: "testUpdatePatientRecordGrandoaksDataProvider",
     dependsOn: ["testReserveAppointmentGrandoaks"]
 }
-
 function testUpdatePatientRecordGrandoaks(json dataset) {
     http:Request request = new;
     request.setPayload(dataset);
@@ -326,6 +315,7 @@ function testUpdatePatientRecordGrandoaks(json dataset) {
 
 function testUpdatePatientRecordGrandoaksDataProvider() returns json[][] {
     return [
+    // TC009 - Verify patient's records can be updated. 
     [
     {
         "ssn": "111-23-505",
@@ -337,14 +327,11 @@ function testUpdatePatientRecordGrandoaksDataProvider() returns json[][] {
 }
 
 # Description: This test scenario verifies if Patient's record can be retrieved successfully. 
-# TC009 - Verify if Patient record can be retrived
-#
 # + dataset - dataset Parameter Description
 @test:Config{
     dataProvider: "testGetPatientRecordGrandoaksDataProvider",
     dependsOn: ["testUpdatePatientRecordGrandoaks"]
 }
-
 function testGetPatientRecordGrandoaks(json dataset){
     string expectedPatientName = dataset.patientName.toString();
     string expectedDob = dataset.dob.toString();
@@ -382,6 +369,7 @@ function testGetPatientRecordGrandoaks(json dataset){
 
 function testGetPatientRecordGrandoaksDataProvider() returns json[][] {
     return [
+    // TC010 - Verify if Patient record can be retrived
     [
     {
         "patientName": "Leonardo Duke",
@@ -394,17 +382,12 @@ function testGetPatientRecordGrandoaksDataProvider() returns json[][] {
 
 
 # Description: This test scenario verifies if patient is eligible to get a discount. 
-# TC010 - Verify if patient who are below 55 and above 12 is not eligible for a discount.
-# TC011 - Verify if patient above 55 is eligible for a discount. 
-# TC012 - Verify if patient below 12 is eligible for a discount. 
-#
 # + dataset - dataset Parameter Description
 @test:Config
 {
     dataProvider: "testIsEligibleForDiscountGrandoaksDataProvider",
     dependsOn: ["testUpdatePatientRecordGrandoaks"]
 }
-
 function testIsEligibleForDiscountGrandoaks(json dataset){
     string expectedAppointmentNumber = dataset.appointmentNumber.toString();
     var expectedEligilibity = dataset.eligibility;
@@ -423,21 +406,23 @@ function testIsEligibleForDiscountGrandoaks(json dataset){
     }
 }
 
-
 function testIsEligibleForDiscountGrandoaksDataProvider() returns json[][] {
     return [
+    // TC011 - Verify if patient who are below 55 and above 12 is not eligible for a discount.
     [
     {
         "eligibility": false,
         "appointmentNumber": 4
     }
     ],
+    // TC012 - Verify if patient above 55 is eligible for a discount. 
     [
     {
         "eligibility": true,
         "appointmentNumber": 5
     }
     ],
+    // TC013 - Verify if patient below 12 is eligible for a discount. 
     [
     {
         "eligibility": true,
