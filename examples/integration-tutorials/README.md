@@ -1,6 +1,6 @@
 # Integration Tutorials
 
-The integration tutorials will walk you through the main capabilities and features of Ballerina Integrator in EI, and help you understand how to build an integrated system using WSO2 EI. In these tutorials, we will build an integrated Health Care System by using the capabilities of Ballering in WSO2 EI. Each of the tutorials in this section will provide step-by-step instructions on how to build and test the various parts of this system until the integrated Health Care system is complete.
+The integration tutorials will walk you through the main capabilities and features of Ballerina Integrator in EI, and help you understand how to build an integrated system using WSO2 EI. In these tutorials, we will build an integrated Health Care System by using the capabilities of Ballerina in WSO2 EI. Each of the tutorials in this section will provide step-by-step instructions on how to build and test the various parts of this system until the integrated Health Care system is complete.
 
 Follow the links given below.
 

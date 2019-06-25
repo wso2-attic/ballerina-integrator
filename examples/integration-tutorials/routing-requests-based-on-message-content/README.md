@@ -1,146 +1,77 @@
 # Routing Requests Based on Message Content
 
-This guide demonstrates how to route a message to a HTTP service based on the content of the message and the invocation URL.
+In the [Sending a Simple Message to a Service](../../sending-a-simple-message-to-a-service/sending-a-simple-message-to-a-service/) tutorial, we routed a simple message to a single endpoint in the backend service.
+In this tutorial, we are building a service that can route a message to the relevant endpoint in backend,
+depending on the content of the message payload.
 
-The high level sections of this guide are as follows:
+## What you will build
 
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Deployment](#deployment)
-- [Testing](#testing)
+Using the Health Care System backend we have, we can schedule appointments in different hospitals.
 
-## What you'll build
-Let's consider a real world scenario where patients use a hospital service. It facilitates reserving appointments on doctors in different catagories at different hospitals registered in the system.
-
-The system is received a message for reservation from the client. The hospital name and the doctor name is extracted from the message payload. The category of service (e.g.: surgery) is extracted from the requested URL.
-
-Then the reservation request is sent to the required hospital service based on the above information. If message is sent successfully, the system will get a response message with the appointment information which would be responded to the client.
+When a client sends the appointment scheduling request to the Ballerina service _healthCareService_, the message payload contains the name of the hospital where the appointment should be confirmed. Based on the hospital name sent in the request message, our Ballerina service should route the appointment reservation to the relevant hospital's back-end service.
 
 ## Prerequisites
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 
+- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relavant to your OS.
 - A Text Editor or an IDE
-> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
-
+  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 - [cURL](https://curl.haxx.se) or any other REST client
+- Download the backend for Health Care System from [here](#).
 
+## Getting Started
 
-## Implementation
-> If you want to skip the basics and move directly to the [Testing](#testing) section, you can clone the project from Github and skip the [Implementation](#implementation) instructions.
-The following is the code of the service that performs the content based routing on the client request.
+> If you want to skip the basics and move directly to testing the implementation, you can clone the project from Github and skip to the [Testing the Implementation](#testing-the-implementation) instructions.
 
-**content_based_routing.bal**
-```ballerina
-import ballerina/http;
-import ballerina/log;
+This tutorial includes the following sections.
 
-// Endpoint URL of the backend service
-http:Client locationEP = new("http://localhost:9090");
+- [Creating the Resource to handle appointment reservation requests](#creating-the-resource-to-handle-appointment-reservation-requests)
+- [Routing requests to different hospitals](#routing-requests-to-different-hospitals)
+- [Testing the Implementation](#testing-the-implementation)
+- [Deploying the services](#deploying-the-services)
 
-// Service to reserve appointments
-@http:ServiceConfig {
-    basePath: "/healthcare"
-}
-service contentBasedRouting on new http:Listener(9080) {
+### Creating the Resource to handle appointment reservation requests
 
-    // Reserve appointments on the type of "category"
-    @http:ResourceConfig {
-        methods: ["POST"],
-        path: "/categories/{category}/reserve"
-    }
-    resource function CBRResource(http:Caller outboundEP, http:Request req, string category) {
+In the previous tutorial [Sending a Simple Message to a Service](../../sending-a-simple-message-to-a-service/sending-a-simple-message-to-a-service/), we implemented a Ballerina service **healthCareService** with a resource to handle requests from clients to the Health Care backend. For this tutorial, we add another resource to route requests to different hospitals.
 
-        // Request message payload
-        var jsonMsg = req.getJsonPayload();
-        if (jsonMsg is json) {
-            string hospitalDesc = jsonMsg["hospital"].toString();
-            string doctorName = jsonMsg["doctor"].toString();
-            string hospitalName = "";
+<!-- INCLUDE_CODE_SEGMENT: { file: guide/content_based_routing.bal, segment: segment_1 } -->
 
-            http:Response|error clientResponse;
-            if (hospitalDesc != "") {
-                match hospitalDesc {
-                    "grand oak community hospital" => hospitalName = "grandoaks";
-                    "clemency medical center" => hospitalName = "clemency";
-                    "pine valley community hospital" => hospitalName = "pinevalley";
-                    _ => respondWithError(outboundEP, "Hospital name is invalid.", "Hospital name is invalid.");
-                }
-                string sendPath = "/" + hospitalName + "/categories/" + category + "/reserve";
+### Routing requests to different hospitals
 
-                // Call the backend service related to the hospital
-                clientResponse = locationEP -> post(untaint sendPath, untaint jsonMsg);
-            } else {
-                respondWithError(outboundEP, "JSON Path $hospital cannot be empty.", "Hospital cannot be empty.");
-                return;
-            }
-            if (clientResponse is http:Response) {
-                var result = outboundEP->respond(clientResponse);
-                handleErrorResponse(result, "Error at the backend");
-            } else {
-                respondWithError(outboundEP, <string>clientResponse.detail().message, "Backend service does not properly respond");
-            }
-        } else {
-            respondWithError(outboundEP, untaint <string>jsonMsg.detail().message, "Request is not JSON");
-        }
-    }
-}
+Then, we can include the implementation for the endpoint exposed by the resource in the previous step. When a client reqeust reaches the endpoint, we will retrieve the hospital name from the payload, and send the request to the corresponding endpoint in the backend.
 
-# Error handle the responses
-function handleErrorResponse(http:Response|error? response, string errorMessage) {
-    if (response is error) {
-        log:printError(errorMessage, err = response);
-    }
-}
+<!-- INCLUDE_CODE_SEGMENT: { file: guide/content_based_routing.bal, segment: segment_2 } -->
 
-# Respond in error cases
-function respondWithError(http:Caller outboundEP, string payload, string failedMessage) {
-    http:Response res = new;
-    res.statusCode = 500;
-    res.setPayload(payload);
-    var result = outboundEP->respond(res);
-    handleErrorResponse(result, failedMessage);
-}
-```
+### Testing the Implementation
 
-## Deployment
+#### Starting the backend service
 
-Once you are done with the development, you can deploy the services using any of the methods listed below.
-
-### Deploying locally
-
-To deploy locally, navigate to asynchronous-messaging/guide, and execute the following command.
+We have completed the resource needed to add appointments at different hospitals. To test this service, first we have to start the previously downloaded Health Care System backend as below.
 
 ```
-$ ballerina build
-```
-This builds a Ballerina executable archive (.balx) of the services that you developed in the target folder.
-You can run them with the command:
-
-```
-$ ballerina run <Exec_Archive_File_Name>
+$ ballerina run backend.balx
 ```
 
-### Deploying on Docker
+#### Starting the RESTful service
 
-If necessary you can run the service that you developed above as a Docker container.The Ballerina language includes a Ballerina_Docker_Extension, which offers native support to run Ballerina programs on containers.
+Navigate to _routing-requests-based-on-message-content/guide_ and start the RESTful service as below.
 
-To run a service as a Docker container, add the corresponding Docker annotations to your service code.
-
-
-## Testing
-Follow the steps below to invoke the service.
-
-- Start the `Hospital-Service-2.0.0`.
-
-- Navigate to `routing-requests-based-on-message-content/guide`, and execute the following command to start the service:
-
-```ballerina
-   $ ballerina run content_based_routing.bal
 ```
-- Use the request message file `request.json` located in `routing-requests-based-on-message-content/resources` to invoke the service:
+$ ballerina run content_based_routing.bal
+```
+
+The service will be started and you will see the below output.
+
+```
+$ Initiating service(s) in 'content_based_routing'
+[ballerina/http] started HTTP/WS endpoint 0.0.0.0:9090
+```
+
+#### Invoking the RESTful service
+
+Use the request message file _request.json_ located in _routing-requests-based-on-message-content/resources_ to invoke the service.
 
 **request.json**
+
 ```json
 {
   "patient": {
@@ -156,34 +87,62 @@ Follow the steps below to invoke the service.
   "appointment_date": "2025-04-02"
 }
 ```
-- Navigate to `routing-requests-based-on-message-content/resources` and send the request message to the service using cURL.
+
+Navigate to _routing-requests-based-on-message-content/resources_ and send the request message to the service using cURL.
+
 ```
-curl -v -X POST --data @request.json http://localhost:9080/healthcare/categories/surgery/reserve --header "Content-Type:application/json"
+$ curl -v -X POST --data @request.json http://localhost:9080/healthcare/categories/surgery/reserve --header "Content-Type:application/json"
 ```
-#### Output
+
 You will get the following response with the appointment details.
 
 ```json
 {
-    "appointmentNumber": 1,
-    "doctor": {
-        "name": "thomas collins",
-        "hospital": "grand oak community hospital",
-        "category": "surgery",
-        "availability": "9.00 a.m - 11.00 a.m",
-        "fee": 7000.0
-    },
-    "patient": {
-        "name": "John Doe",
-        "dob": "1940-03-19",
-        "ssn": "234-23-525",
-        "address": "California",
-        "phone": "8770586755",
-        "email": "johndoe@gmail.com"
-    },
-    "fee": 7000.0,
-    "confirmed": false,
-    "appointmentDate": "2025-04-02"
+  "appointmentNumber": 1,
+  "doctor": {
+    "name": "thomas collins",
+    "hospital": "grand oak community hospital",
+    "category": "surgery",
+    "availability": "9.00 a.m - 11.00 a.m",
+    "fee": 7000.0
+  },
+  "patient": {
+    "name": "John Doe",
+    "dob": "1940-03-19",
+    "ssn": "234-23-525",
+    "address": "California",
+    "phone": "8770586755",
+    "email": "johndoe@gmail.com"
+  },
+  "fee": 7000.0,
+  "confirmed": false,
+  "appointmentDate": "2025-04-02"
 }
 ```
-`appointmentNumber` would start from `1` and increment for each response by `1`.
+
+> _appointmentNumber_ would start from 1 and increment for each response by 1.
+
+### Deploying the services
+
+Once you are done with the development, you can deploy the services using any of the methods listed below.
+
+#### Deploying locally
+
+To deploy locally, navigate to routing-requests-based-on-message-content/guide, and execute the following command.
+
+```
+$ ballerina build
+```
+
+This builds a Ballerina executable archive (.balx) of the services that you developed in the target folder.
+You can run them with the command:
+
+```
+$ ballerina run <Executable_File_Name>
+```
+
+#### Deploying on Docker
+
+If necessary you can run the service that you developed above as a Docker container. Ballerina language includes a Ballerina_Docker_Extension, which offers native support to run Ballerina programs on containers.
+
+To run a service as a Docker container, add the corresponding Docker annotations to your service code.
