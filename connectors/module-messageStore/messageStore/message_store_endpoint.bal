@@ -1,14 +1,36 @@
+// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+//
+// WSO2 Inc. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 import ballerina/jms;
 import ballerina/http;
 import ballerina/log;
+
+# Connector client for storing messages on a message broker. Internally it uses 
+# JMS connecor 
 public type Client client object {
 
+    //JMS connection related objects 
     jms:Connection jmsConnection;
     jms:Session jmsSession;
     jms:QueueSender queueSender;
 
+    //Message store client to use in case of fail to send by primary store client 
     Client? failoverStore;
 
+    //message broker queue message store client send messages to
     string queueName;
 
     public function __init(MessageStoreConfiguration storeConfig, boolean enableGuranteedDelivery = false, Client? failoverStore = ()) returns error? {
@@ -38,6 +60,10 @@ public type Client client object {
         self.queueSender = new(self.jmsSession, queueName = self.queueName);
     }
 
+    # Store HTTP request. 
+    # 
+    # + request - HTTP request to store 
+    # + return - `error` if there is an issue storing the message (i.e connection issue with broker)
     public remote function store(http:Request request) returns error? {
         map<string> requestMessageMap = {};
         string [] httpHeaders = request.getHeaderNames();
@@ -69,6 +95,13 @@ public type Client client object {
     }
 };
 
+# Configuration for Message Store 
+#
+# + messageBroker - Message broker store is connecting to 
+# + providerUrl - connection url pointing to message broker 
+# + queueName - messages will be stored to this queue on the broker  
+# + userName - userName to use when connecting to the broker
+# + password - password to use when connecting to the broker
 public type MessageStoreConfiguration record {
     MessageBroker messageBroker;
     string providerUrl;
