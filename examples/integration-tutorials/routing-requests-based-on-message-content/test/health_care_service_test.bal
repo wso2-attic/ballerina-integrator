@@ -19,41 +19,42 @@ import ballerina/http;
 import ballerina/log;
 
 json requestPayload = {
-  "patient": {
-    "name": "John Doe",
-    "dob": "1940-03-19",
-    "ssn": "234-23-525",
-    "address": "California",
-    "phone": "8770586755",
-    "email": "johndoe@gmail.com"
-  },
-  "doctor": "thomas collins",
-  "hospital": "grand oak community hospital",
-  "appointmentDate": "2025-04-02"
+    "patient": {
+        "name": "John Doe",
+        "dob": "1940-03-19",
+        "ssn": "234-23-525",
+        "address": "California",
+        "phone": "8770586755",
+        "email": "johndoe@gmail.com"
+    },
+    "doctor": "thomas collins",
+    "hospital": "grand oak community hospital",
+    "appointmentDate": "2025-04-02"
 };
 
 json expected = {
-    "appointmentNumber":1,
+    "appointmentNumber": 1,
     "appointmentDate": "2025-04-02",
     "doctor": {
-        "name":"thomas collins",
-        "hospital":"grand oak community hospital",
-        "category":"surgery","availability":"9.00 a.m - 11.00 a.m",
-        "fee":7000.0
+        "name": "thomas collins",
+        "hospital": "grand oak community hospital",
+        "category": "surgery",
+        "availability": "9.00 a.m - 11.00 a.m",
+        "fee": 7000.0
     },
     "patient": {
-        "name":"John Doe",
-        "dob":"1940-03-19",
-        "ssn":"234-23-525",
-        "address":"California",
-        "phone":"8770586755",
-        "email":"johndoe@gmail.com"
+        "name": "John Doe",
+        "dob": "1940-03-19",
+        "ssn": "234-23-525",
+        "address": "California",
+        "phone": "8770586755",
+        "email": "johndoe@gmail.com"
     },
-    "fee":7000.0,
-    "confirmed":false
+    "fee": 7000.0,
+    "confirmed": false
 };
 
-http:Client clientEP = new("http://localhost:9080");
+http:Client clientEP = new("http://localhost:9090");
 
 @test:Config
 function testReservation() {
@@ -63,8 +64,8 @@ function testReservation() {
     var response = clientEP->post("/healthcare/categories/surgery/reserve", req);
     if (response is http:Response) {
         test:assertEquals(response.statusCode, 200, msg = "Reserve-Appointment service did not respond with 200 OK signal!");
-        string|error receivedPayload = response.getTextPayload();
-        if(receivedPayload is string) {
+        string | error receivedPayload = response.getTextPayload();
+        if (receivedPayload is string) {
             var resPayload = response.getJsonPayload();
             if (resPayload is json) {
                 test:assertEquals(resPayload["confirmed"], expected["confirmed"], msg = "Response mismatch!");
