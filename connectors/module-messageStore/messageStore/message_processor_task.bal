@@ -157,7 +157,7 @@ public type MessageForwardingProcessor object {
             var consumerInitResult = initializeConsumer(storeConfig);
             if (consumerInitResult is error) {
                 log:printError("Error while re-connecting to queue "
-                + storeConfig.queueName + " retry count = " + retryCount, err = ());
+                + storeConfig.queueName + " retry count = " + retryCount, err = consumerInitResult);
                 retryCount = retryCount + 1;
                 int retryDelay = math:round(processorConfig.storeConnectionAttemptInterval *
                 processorConfig.storeConnectionBackOffFactor);
@@ -210,10 +210,11 @@ function initializeConsumer(MessageStoreConfiguration storeConfig) returns
 #                the given processor and re-init another consumer.         
 function onMessagePollingFail(MessageForwardingProcessor processor) returns function() {
     return function () {
+        log:printInfo("onMessagePollingFail is CALLED!!");
         var cleanupResult = processor.cleanUpJMSObjects();
         if (cleanupResult is error) {
-            log:printError("Error while cleaning up jms connection", err = ());
-        //TODO: we need stop the polling here?
+            log:printError("Error while cleaning up jms connection", err = cleanupResult);
+            //TODO: we need stop the polling here?
         }
         processor.retryToConnectBroker(processor.processorConfig);
     };
