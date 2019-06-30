@@ -38,8 +38,6 @@ public type MessageForwardingProcessor object {
     //task driving the message polling from the broker and forward
     task:Scheduler messageForwardingTask;
 
-    //constructor for ForwardingProcessor
-
     # Initialize `MessageForwardingProcessor` object. This will create necessary
     # connnections to the configured message broker and configured backend. Polling 
     # of messages is not started until `start` is called. 
@@ -221,7 +219,7 @@ function onMessagePollingFail(MessageForwardingProcessor processor) returns func
 }
 
 
-# Configuration for Message-forwarding-processor 
+# Configuration for Message-forwarding-processor. 
 #
 # + storeConfig - Config containing store information `MessageStoreConfiguration`  
 # + HTTPEndpoint - Messages will be forwarded to this HTTP url
@@ -264,7 +262,7 @@ public type ForwardingProcessorConfiguration record {
 
 };
 
-# Record passing required information to service attached to message processor task
+# Record passing required information to service attached to message processor task.
 #
 # + queueReceiver - `jms:QueueReceiver` receiver to use when polling messages  
 # + queueName - Name of the queue to receive messages from  

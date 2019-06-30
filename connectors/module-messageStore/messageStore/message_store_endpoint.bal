@@ -71,7 +71,7 @@ public type Client client object {
         var storeSendResult = self.tryToSendMessage(requestMessageMap);
 
         if (storeSendResult is error) {
-            if (self.storeConfig.retryConfig == ()) {                //no resiliency, give up
+            if (self.storeConfig.retryConfig == ()) {    //no resiliency, give up
                 return storeSendResult;
             } else {
                 MessageStoreRetryConfig retryConfig = self.storeConfig.retryConfig;
@@ -134,6 +134,7 @@ public type Client client object {
     # + return - `error` in case of an issue delivering the message to the queue
     function tryToSendMessage(map<string> requestMessageMap) returns error? {
         //create a map message from message detail extracted
+        //TODO: here if error occurs it is not returned as an error. Ballerina should be fixed. (/ballerina-lang/issues/16099)
         var messageToStore = self.jmsSession.createMapMessage(requestMessageMap);
         io:println("is error: " + (messageToStore is error));
         if (messageToStore is jms:Message) {
@@ -141,7 +142,6 @@ public type Client client object {
             // This sends the Ballerina message to the JMS provider.
             var returnVal = self.queueSender->send(messageToStore);
             if (returnVal is error) {
-                //TODO: try to send to failover store if defined
                 string errorMessage = "Error occurred while sending the message to the queue " + self.queueName;
                 log:printError(errorMessage, err = returnVal);
             }
