@@ -163,7 +163,8 @@ service HealthcareService on httpListener {
                                                 daos:PaymentSettlement.convert(paymentSettlementDetails);
 
             if(paymentSettlement is daos:PaymentSettlement) {
-                if(<int>paymentSettlement["appointmentNumber"] >= 0) {
+                if(util:containsAppointmentId(self.appointments, 
+                            string.convert(<int>paymentSettlement["appointmentNumber"]))) {
                     // Create new payment entry for the appointment.
                     daos:Payment|error payment = 
                             util:createNewPaymentEntry(paymentSettlement, untaint self.healthcareDao);
