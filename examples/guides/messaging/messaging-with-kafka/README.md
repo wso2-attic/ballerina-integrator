@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/messaging-with-kafka.svg?branch=master)](https://travis-ci.org/ballerina-guides/messaging-with-kafka)
-
 # Messaging with Kafka
 
 Kafka is a distributed, partitioned, replicated commit log service. It provides the functionality of a publish-subscribe messaging system with a unique design. Kafka mainly operates based on a topic model. A topic is a category or feed name to which records get published. Topics in Kafka are always multi-subscriber.
@@ -20,7 +18,7 @@ This price update message should be consumed by a couple of franchisees and an i
 In this particular use case, once the admin updates the price of a product, the update message is published to a Kafka topic called `product-price` to which the franchisees and the inventory control system subscribed to listen. The following diagram illustrates this use case.
 
 
-![alt text](/images/messaging-with-kafka.svg)
+![alt text](/resources/messaging-with-kafka.svg)
 
 
 In this example, the Ballerina Kafka Connector is used to connect Ballerina to Apache Kafka. With this Kafka Connector, Ballerina can act as both message publisher and subscriber.

@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/content-based-routing.svg?branch=master)](https://travis-ci.org/ballerina-guides/content-based-routing)
-
 # Content Based Routing
 
 The Content-Based Router (CBR) reads the content of a message and routes it to a specific recipient based on its content. This approach is useful when an implementation of a specific logical function is distributed across multiple physical systems.
@@ -21,7 +19,7 @@ The following are the sections available in this guide.
 
 To understand how you can build a content-based routing system using Ballerina, let's consider a real-world use case of a company recruitment agency service that provides recruitment details of companies. When a company recruitment agency service sends a request that includes the company name (e.g., ABC Company), that particular request is routed to its respective endpoint. After receiving the request from the content-based router (`company_recruitment_agency_service`), the relevant company's endpoint sends the response back to the caller. The following diagram illustrates this use case clearly.
 
-![alt text](/images/content-based-routing.svg)
+![alt text](/resources/content-based-routing.svg)
 
 
 ## Prerequisites

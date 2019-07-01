@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/message-filtering.svg?branch=master)](https://travis-ci.org/ballerina-guides/message-filtering)
-
 # Message-Filtering  
+
 The Message Filter checks an incoming message against certain criteria that the message should adhere to. If the criteria is not met, the filter will discard the message. Otherwise, it will route the message to the output channel.
 
 > In this guide you will learn about building a message filtering service using Ballerina. 
@@ -19,7 +18,7 @@ To understand how you can build a message filltering web service using Ballerina
 
 The following figure illustrates all the required functionalities of the Message Filtering Service that we need to build. 
 
-![Message Filtering Service](images/message-filtering.svg "Message Filtering Service")
+![Message Filtering Service](resources/message-filtering.svg "Message Filtering Service")
 
 
 ## Prerequisites

@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/eip-message-construction.svg?branch=master)](https://travis-ci.org/ballerina-guides/eip-message-construction)
-
 # Message Construction Patterns
 
 Message construction patterns describe the various forms of message content that travel across messaging systems. Message construction involves the architectural patterns of various constructs, functions, and activities involved in creating and transforming a message between applications.
@@ -33,7 +31,7 @@ As this use case is based on message construction patterns, the scenario uses re
 
 The following diagram illustrates the scenario:
 
-![alt text](/images/message_construction_patterns.svg)
+![alt text](/resources/message_construction_patterns.svg)
 
 
 For the scenario In this guide, you will use `Apache ActiveMQ` as the JMS broker. You will also use Ballerina JMS connector to connect Ballerina with the JMS message broker. When you use the Ballerina JMS connector, Ballerina can act as a JMS message consumer as well as a JMS message producer.

@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/messaging-with-activemq.svg?branch=master)](https://travis-ci.org/ballerina-guides/messaging-with-activemq)
-
 # Messaging with ActiveMQ
+
 This guide demonstrates how to use ActiveMQ as the message broker for messaging in Ballerina.
 
 > Let’s take a look at a sample scenario to understand how to do the following using ActiveMQ as the message broker in Ballerina:
@@ -26,7 +25,7 @@ As the sample scenario let’s consider a real-world use case of an online order
 
 The following diagram illustrates the scenario:
 
-![alt text](images/messaging-with-activemq.svg)
+![alt text](resources/messaging-with-activemq.svg)
 
 ## Prerequisites
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
