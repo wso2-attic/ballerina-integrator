@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/restful-service.svg?branch=master)](https://travis-ci.org/ballerina-guides/restful-service)
-
 # RESTful Service  
+
 REST (REpresentational State Transfer) is an architectural style for developing web services. It defines a set of constraints and properties based on HTTP. 
 
 > In this guide you will learn about building a comprehensive RESTful Web Service using Ballerina. 
@@ -19,7 +18,7 @@ To understand how you can build a RESTful web service using Ballerina, let’s c
 You can model the order management scenario as a RESTful web service; 'order_mgt_service',  which accepts different HTTP request for order management tasks such as order creation, retrieval, updating and deletion.
 The following diagram illustrates all the required functionality of the Order Management RESTful web service that you are going to build.
 
-![RESTful Service](images/restful-service.svg "RESTful Service")
+![RESTful Service](resources/restful-service.svg "RESTful Service")
 
 - **Create Order** : To place a new order, use an HTTP POST request that contains order details, and then send the request to the http://xyz.retail.com/order endpoint. If the request is successful, the service should respond with a 201 Created HTTP response that has the location header pointing to the newly created resource at http://xyz.retail.com/order/123456.
 - **Retrieve Order** : To retrieve order details, send an HTTP GET request to the appropriate URL that includes the order ID.http://xyz.retail.com/order/.
