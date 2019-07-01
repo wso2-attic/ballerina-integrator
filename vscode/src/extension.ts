@@ -33,8 +33,8 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = commands.registerCommand('ballerinaIntegrator.projectTemplates', () => {
 		// The code you place here will be executed every time your command is executed
 		const columnToShowIn = window.activeTextEditor
-        ? window.activeTextEditor.viewColumn
-		: undefined;
+			? window.activeTextEditor.viewColumn
+			: undefined;
 		if (currentPanel) {
 			// If we already have a panel, show it in the target column
 			currentPanel.reveal(columnToShowIn);
@@ -49,8 +49,8 @@ export function activate(context: vscode.ExtensionContext) {
 			);
 			currentPanel.onDidDispose(
 				() => {
-					  // When the panel is closed, cancel any future updates to the webview content
-					  currentPanel = undefined;
+					// When the panel is closed, cancel any future updates to the webview content
+					currentPanel = undefined;
 				},
 				null,
 				context.subscriptions
@@ -62,4 +62,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

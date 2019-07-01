@@ -16,7 +16,7 @@
 
 'use strict';
 
-import {WorkspaceConfiguration} from 'vscode';
+import { WorkspaceConfiguration } from 'vscode';
 import vscode, { workspace, window, Uri, commands } from 'vscode';
 import fs = require('fs');
 import path = require('path');
@@ -30,7 +30,7 @@ export default class ProjectTemplates {
     config: WorkspaceConfiguration;
     context: vscode.ExtensionContext;
 
-    constructor(context : vscode.ExtensionContext, config: WorkspaceConfiguration) {
+    constructor(context: vscode.ExtensionContext, config: WorkspaceConfiguration) {
         this.config = config;
         this.context = context;
     }
@@ -39,7 +39,7 @@ export default class ProjectTemplates {
      * Updates the current configuration settings.
      * @param config Workspace configuration.
      */
-    public updateConfiguration(config : WorkspaceConfiguration) {
+    public updateConfiguration(config: WorkspaceConfiguration) {
         this.config = config;
     }
 
@@ -48,9 +48,9 @@ export default class ProjectTemplates {
      * will be selected, or for multi-root a chooser will be presented to select a workspace.
      * @returns The workspace selected.
      */
-    public async selectWorkspace() : Promise<string> {
+    public async selectWorkspace(): Promise<string> {
 
-        let workspaceSelected : string = "";
+        let workspaceSelected: string = "";
         if (workspace.workspaceFolders) {
             // checks if single or multi-root
             if (workspace.workspaceFolders.length === 1) {
@@ -62,7 +62,7 @@ export default class ProjectTemplates {
                     workspaceSelected = ws.uri.fsPath;
                 }
             }
-        } 
+        }
         return workspaceSelected;
     }
 
@@ -72,16 +72,16 @@ export default class ProjectTemplates {
      */
     public async getTemplates(): Promise<string[]> {
 
-		let templateDir: string = await this.getTemplatesDir();
-        let templates: string[] = fs.readdirSync(templateDir).map( function (item) {
-			// ignore hidden folders
+        let templateDir: string = await this.getTemplatesDir();
+        let templates: string[] = fs.readdirSync(templateDir).map(function (item) {
+            // ignore hidden folders
             if (!/^\./.exec(item)) {
                 return fs.statSync(path.join(templateDir, item)).isDirectory ? item : null;
             }
             return null;
         }).filter(function (filename) {
             return filename !== null;
-		}) as string[];
+        }) as string[];
         return templates;
     }
 
@@ -109,37 +109,34 @@ export default class ProjectTemplates {
      * @param placeholders Dictionary of placeholder key-value pairs.
      * @returns Ppotentially modified data, with the same type as the input data.
      */
-    private async resolvePlaceholders(data : string | Buffer, placeholderRegExp : string,
-        placeholders : {[placeholder: string] : string | undefined} ) : Promise<string | Buffer> {
+    private async resolvePlaceholders(data: string | Buffer, placeholderRegExp: string,
+        placeholders: { [placeholder: string]: string | undefined }): Promise<string | Buffer> {
 
         // resolve each placeholder
         let regex = RegExp(placeholderRegExp, 'g');
-
         // collect set of expressions and their replacements
         let match;
         let nmatches = 0;
-        let str : string;
-        let encoding : string = "utf8";
-
+        let str: string;
+        let encoding: string = "utf8";
         if (Buffer.isBuffer(data)) {
             // get default encoding
             let fconfig = workspace.getConfiguration('files');
             encoding = fconfig.get("files.encoding", "utf8");
             try {
                 str = data.toString(encoding);
-            } catch(Err) {
+            } catch (Err) {
                 // cannot decipher text from encoding, assume raw data
                 return data;
             }
         } else {
             str = data;
         }
-
         while (match = regex.exec(str)) {
             let key = match[1];
-            let val : string | undefined = placeholders[key];
+            let val: string | undefined = placeholders[key];
             if (!val) {
-                let variableInput = <vscode.InputBoxOptions> {
+                let variableInput = <vscode.InputBoxOptions>{
                     prompt: `Please enter a value for: ` + match[0]
                 };
                 val = await window.showInputBox(variableInput).then(
@@ -154,15 +151,13 @@ export default class ProjectTemplates {
             }
             ++nmatches;
         }
-
         // reset regex
         regex.lastIndex = 0;
-
         // compute output
-        let out : string | Buffer = data;
+        let out: string | Buffer = data;
         if (nmatches > 0) {
             // replace placeholders in string
-            str = str.replace(regex, 
+            str = str.replace(regex,
                 (match, key) => {
                     let val = placeholders[key];
                     if (!val) {
@@ -171,7 +166,6 @@ export default class ProjectTemplates {
                     return val;
                 }
             );
-
             // if input was a buffer, re-encode to buffer
             if (Buffer.isBuffer(data)) {
                 out = Buffer.from(str, encoding);
@@ -179,7 +173,6 @@ export default class ProjectTemplates {
                 out = str;
             }
         }
-
         return out;
     }
 
@@ -189,50 +182,46 @@ export default class ProjectTemplates {
      * @param template Relative path to the template folder.
      * @param placeholderValues Placeholder key-value pairs.
      */
-    public async createFromTemplate(workspace : string, template : string, placeholderValues : any) {
+    public async createFromTemplate(workspace: string, template: string, placeholderValues: any) {
 
         // get template folder
         let templateRoot = await this.getTemplatesDir();
         let templateDir = path.join(templateRoot, template);
-
         if (!fs.existsSync(templateDir) || !fs.lstatSync(templateDir).isDirectory()) {
-            window.showErrorMessage("Template '" + data.find( x => x.id == template).name + "' does not exist.");
+            window.showErrorMessage("Template '" + data.find(x => x.id == template).name + "' does not exist.");
             return undefined;
         }
-
         // update placeholder configuration
         let usePlaceholders = this.config.get("usePlaceholders", false);
         let placeholderRegExp = this.config.get("placeholderRegExp", "\\${(\\w+)?}");
-        let placeholders : {[placeholder:string] : string|undefined} = this.config.get("placeholders", {});
+        let placeholders: { [placeholder: string]: string | undefined } = this.config.get("placeholders", {});
         placeholders = placeholderValues;
-        
         // re-read configuration, merge with current list of placeholders
-        let newplaceholders : {[placeholder : string] : string} = this.config.get("placeholders", {});
+        let newplaceholders: { [placeholder: string]: string } = this.config.get("placeholders", {});
         for (let key in newplaceholders) {
             placeholders[key] = newplaceholders[key];
         }
-
         // recursively copy files, replacing placeholders as necessary
-		let copyFunc = async (src : string, dest : string) => {
+        let copyFunc = async (src: string, dest: string) => {
             // maybe replace placeholders in filename
             if (usePlaceholders) {
                 dest = await this.resolvePlaceholders(dest, placeholderRegExp, placeholders) as string;
             }
-			if (fs.lstatSync(src).isDirectory()) {
+            if (fs.lstatSync(src).isDirectory()) {
                 // create directory if doesn't exist
-				if (!fs.existsSync(dest)) {
-					fs.mkdirSync(dest);
-				} else if (!fs.lstatSync(dest).isDirectory()) {
+                if (!fs.existsSync(dest)) {
+                    fs.mkdirSync(dest);
+                } else if (!fs.lstatSync(dest).isDirectory()) {
                     // fail if file exists
-					throw new Error("Failed to create directory '" + dest + "': file with same name exists.");
-				}
+                    throw new Error("Failed to create directory '" + dest + "': file with same name exists.");
+                }
             } else {
                 // ask before overwriting existing file
                 while (fs.existsSync(dest)) {
                     // if it is not a file, cannot overwrite
                     if (!fs.lstatSync(dest).isFile()) {
                         let reldest = path.relative(workspace, dest);
-                        let variableInput = <vscode.InputBoxOptions> {
+                        let variableInput = <vscode.InputBoxOptions>{
                             prompt: `Cannot overwrite "${reldest}".  Please enter a new filename"`,
                             value: reldest
                         };
@@ -252,7 +241,7 @@ export default class ProjectTemplates {
                     } else {
                         // ask if user wants to replace, otherwise prompt for new filename
                         let reldest = path.relative(workspace, dest);
-                        let choice = await window.showQuickPick(["Overwrite", "Rename", "Skip", "Abort"], { 
+                        let choice = await window.showQuickPick(["Overwrite", "Rename", "Skip", "Abort"], {
                             placeHolder: `Destination file "${reldest}" already exists.  What would you like to do?`
                         });
                         if (choice === "Overwrite") {
@@ -260,7 +249,7 @@ export default class ProjectTemplates {
                             fs.unlinkSync(dest);
                         } else if (choice === "Rename") {
                             // prompt user for new filename
-                            let variableInput = <vscode.InputBoxOptions> {
+                            let variableInput = <vscode.InputBoxOptions>{
                                 prompt: "Please enter a new filename",
                                 value: reldest
                             };
@@ -282,15 +271,15 @@ export default class ProjectTemplates {
                             return true;
                         } else {
                             // abort
-                            return Promise.reject("false");;
-                            ;
+                            return Promise.reject("false");
                         }
                     }
                 }
                 // get src file contents
-                let fileContents : Buffer = fs.readFileSync(src);
+                let fileContents: Buffer = fs.readFileSync(src);
                 if (usePlaceholders) {
-                    fileContents = await this.resolvePlaceholders(fileContents, placeholderRegExp, placeholders) as Buffer;
+                    fileContents = await this.resolvePlaceholders(fileContents, placeholderRegExp, 
+                        placeholders) as Buffer;
                 }
                 // ensure directories exist
                 let parent = path.dirname(dest);
@@ -301,7 +290,7 @@ export default class ProjectTemplates {
             return true;
         };
         // actually copy the file recursively
-        await this.recursiveApplyInDir(templateDir, workspace, copyFunc);    
+        await this.recursiveApplyInDir(templateDir, workspace, copyFunc);
         return template;
     }
 
@@ -312,24 +301,21 @@ export default class ProjectTemplates {
     * @param func Function to apply between src and dest.
     * @return If recursion should continue.
     */
-   private async recursiveApplyInDir(src : string, dest : string, 
-        func : (src : string, dest : string) => Promise<boolean>) : Promise<boolean> {
-   
+    private async recursiveApplyInDir(src: string, dest: string,
+        func: (src: string, dest: string) => Promise<boolean>): Promise<boolean> {
+
         // apply function between src/dest
         let success = await func(src, dest);
         if (!success) {
             return false;
         }
-   
         if (fs.lstatSync(src).isDirectory()) {
             // read contents of source directory and iterate
-            const entries : string[] = fs.readdirSync(src);
-            for(let entry of entries) {
-                
+            const entries: string[] = fs.readdirSync(src);
+            for (let entry of entries) {
                 // full path of src/dest
-                const srcPath = path.join(src,entry);
-                const destPath = path.join(dest,entry);
-                
+                const srcPath = path.join(src, entry);
+                const destPath = path.join(dest, entry);
                 // if directory, recursively copy, otherwise copy file
                 success = await this.recursiveApplyInDir(srcPath, destPath, func);
                 if (!success) {
@@ -338,5 +324,5 @@ export default class ProjectTemplates {
             }
         }
         return true;
-   }
+    }
 }

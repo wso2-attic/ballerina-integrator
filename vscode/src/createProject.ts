@@ -19,7 +19,7 @@ import data from './templateDetails.json';
 import ProjectTemplates from './projectTemplates';
 import { getHomeView } from './homeView';
 import { getFormView } from './formView';
-import {mapToObj} from './utils';
+import { mapToObj } from './utils';
 
 /**
  * Displays the set of templates available and once a template is selected, 
@@ -30,11 +30,12 @@ import {mapToObj} from './utils';
  * @param currentPanel WebView panel that is opened through the extension.
  * @param context ExtensionContext of the extension. 
  */
-export async function createTemplateProject(currentPanel: vscode.WebviewPanel, context: vscode.ExtensionContext){
+export async function createTemplateProject(currentPanel: vscode.WebviewPanel, context: vscode.ExtensionContext) {
     let templateSelected = undefined;
     let projectTemplates = new ProjectTemplates(context, workspace.getConfiguration('projectTemplates'));
     // get workspace folder
     let workspaceSelected = await projectTemplates.selectWorkspace();
+    // generate the home page to display templates
     currentPanel.webview.html = getHomeView();
     currentPanel.webview.onDidReceiveMessage(
         messageA => {
@@ -43,37 +44,35 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                 return;
             }
             templateSelected = messageA.command;
+            // generate the placeholder form for a specific template
             currentPanel.webview.html = getFormView(templateSelected);
             currentPanel.webview.onDidReceiveMessage(
                 async messageB => {
-                    
-                    if (messageB.command == "back"){
+                    if (messageB.command == "back") {
                         currentPanel.dispose();
                         vscode.commands.executeCommand("ballerinaIntegrator.projectTemplates");
                         return;
                     } else {
                         projectTemplates.updateConfiguration(workspace.getConfiguration('projectTemplates'));
-
-                        let templateObject = data.find( x => x.id == messageA.command);
+                        let templateObject = data.find(x => x.id == messageA.command);
                         let templatePlaceholders = templateObject.placeholders;
-                        
                         var placeholderMap = new Map();
                         templatePlaceholders.forEach(element => {
                             placeholderMap.set(element.name, messageB[element.id]);
                         });
                         let jsonObject = mapToObj(placeholderMap);
                         let placeholders = jsonObject;
-                        
-                        currentPanel.dispose(); 
+                        currentPanel.dispose();
                         projectTemplates.createFromTemplate(workspaceSelected, messageA.command, placeholders).then(
-                            (template : string | undefined) => {
+                            (template: string | undefined) => {
                                 if (template) {
-                                    window.showInformationMessage("New template project created for '" + templateObject.name + "'!");
-                                    
+                                    window.showInformationMessage("New template project created for '" +
+                                        templateObject.name + "'!");
+
                                 }
                             },
                             (reason: any) => {
-                                if (reason == "false"){
+                                if (reason == "false") {
                                     window.showInformationMessage("Project creation aborted!");
                                 } else {
                                     window.showErrorMessage("Failed to create project from template: " + reason);

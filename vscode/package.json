@@ -48,14 +48,14 @@
 						"boolean"
 					],
 					"default": true,
-					"description": "Look for and replace placeholders in template (e.g. ${author})"
+					"description": "Look for and replace placeholders in template (e.g. ${author})."
 				},
 				"projectTemplates.placeholderRegExp": {
 					"type": [
 						"string"
 					],
 					"default": "\\${(\\w+)?}",
-					"description": "Regular expression for detecting placeholders (e.g. \"\\${(\\w+?)}\").  The first capture group dictates the placeholder key."
+					"description": "Regular expression for detecting placeholders (e.g. \"\\${(\\w+?)}\")."
 				}
 			}
 		},

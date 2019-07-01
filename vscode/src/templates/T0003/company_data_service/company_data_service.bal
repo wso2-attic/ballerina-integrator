@@ -34,10 +34,14 @@ import ballerina/log;
 listener http:Listener httpListener = new http:Listener(9090);
 
 // Company data management is done using an in memory map.
-map<json> companyDataMap = {};
+map<json> companyDataMap = {
+
+};
 
 // RESTful service.
-@http:ServiceConfig { basePath: "/companies" }
+@http:ServiceConfig {
+    basePath: "/companies"
+}
 service orderMgt on httpListener {
     // Resource that handles the HTTP GET requests that are directed to data of a specific
     // company using path '/John-and-Brothers-(pvt)-Ltd'

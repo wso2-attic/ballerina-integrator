@@ -18,9 +18,9 @@ import { begin, end } from './html';
 import { formStyles } from './styles';
 import data from './templateDetails.json';
 
-export function getFormView(templateSelected: string): string{
+export function getFormView(templateSelected: string): string {
 
-    let templateObject = data.find( x => x.id == templateSelected);
+    let templateObject = data.find(x => x.id == templateSelected);
     let templateId = templateSelected;
     let templateName = templateObject.name;
     let templatePlaceholders = templateObject.placeholders;
@@ -37,7 +37,7 @@ export function getFormView(templateSelected: string): string{
         ${element.id}: elements[${i}].value,`;
         i++;
     });
-        
+
     let scriptHandling = `
             <script>
                 function myFunction(template) {
@@ -61,7 +61,7 @@ export function getFormView(templateSelected: string): string{
     templatePlaceholders.forEach(element => {
         let formElement: string = "";
         let values = element.value;
-        if (element.type != "select"){
+        if (element.type != "select") {
             formElement = `
                     <label for="${element.id}">${element.label}</label>
                     <input type="${element.type}" id="${element.id}" value="${element.value}">`;
@@ -78,7 +78,7 @@ export function getFormView(templateSelected: string): string{
         }
         allFormElements += formElement;
     });
-    
+
     let formEnd: string = `
                     <br/><br/>
                     <input type="submit" value="Create Project">

@@ -18,8 +18,8 @@ import { begin, end } from './html';
 import { homeStyles } from './styles';
 import data from './templateDetails.json';
 
-export function getHomeView(): string{
-    
+export function getHomeView(): string {
+
     let htmlCode = begin + homeStyles;
     let rowHandleStart = `
             <div class="row">`;
@@ -40,12 +40,12 @@ export function getHomeView(): string{
                         </div>
                     </a>  
                 </div>`;
-        if (numberOfColumns % 3 == 0){
+        if (numberOfColumns % 3 == 0) {
             htmlCode = htmlCode + rowHandleStart + card;
-        } 
+        }
         else if (numberOfColumns % 3 == 2) {
             htmlCode = htmlCode + card + rowHandleEnd;
-        } 
+        }
         else {
             htmlCode = htmlCode + card;
         }

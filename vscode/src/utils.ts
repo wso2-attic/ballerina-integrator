@@ -24,10 +24,10 @@ import path = require("path");
  * @param src Source folder.
  * @param dest Destination folder.
  */
-export async function copyDir(src : string, dest : string) {
+export async function copyDir(src: string, dest: string) {
 
 	// read contents of source directory
-	const entries : string[] = fs.readdirSync(src);
+	const entries: string[] = fs.readdirSync(src);
 	// synchronously create destination if it doesn't exist to ensure 
 	// its existence before we copy individual items into it
 	if (!fs.existsSync(dest)) {
@@ -40,26 +40,26 @@ export async function copyDir(src : string, dest : string) {
 		return Promise.reject(new Error("Unable to create directory '" + dest + "': already exists as file."));
 	}
 
-	let promises : Promise<boolean>[] = [];
-    for(let entry of entries) {
+	let promises: Promise<boolean>[] = [];
+	for (let entry of entries) {
 		// full path of src/dest
-		const srcPath = path.join(src,entry);
-		const destPath = path.join(dest,entry);
+		const srcPath = path.join(src, entry);
+		const destPath = path.join(dest, entry);
 		// if directory, recursively copy, otherwise copy file
-        if(fs.lstatSync(srcPath).isDirectory()) {
-            promises.push(copyDir(srcPath, destPath));
-        } else {
+		if (fs.lstatSync(srcPath).isDirectory()) {
+			promises.push(copyDir(srcPath, destPath));
+		} else {
 			try {
 				fs.copyFileSync(srcPath, destPath);
 			} catch (err) {
 				promises.push(Promise.reject(err));
 			}
-        }
+		}
 	}
 
 	await Promise.all(promises).then(
-		(value: boolean[] )  => { 
-			return value; 
+		(value: boolean[]) => {
+			return value;
 		},
 		(reason: any) => {
 			console.log(reason);
@@ -74,7 +74,7 @@ export async function copyDir(src : string, dest : string) {
  * Recursively make directories.
  * @param path Destination path.
  */
-export function mkdirsSync(dest : string, mode : string | number | null | undefined = undefined) : boolean {
+export function mkdirsSync(dest: string, mode: string | number | null | undefined = undefined): boolean {
 	// check if exists
 	if (fs.existsSync(dest)) {
 		if (fs.lstatSync(dest).isDirectory()) {
@@ -102,9 +102,9 @@ export function mkdirsSync(dest : string, mode : string | number | null | undefi
  * @param inputMap Input map that needs to be converted.
  */
 export function mapToObj(inputMap) {
-    let obj = {};
-    inputMap.forEach(function(value, key){
-        obj[key] = value
-    });
-    return obj;
+	let obj = {};
+	inputMap.forEach(function (value, key) {
+		obj[key] = value
+	});
+	return obj;
 }
