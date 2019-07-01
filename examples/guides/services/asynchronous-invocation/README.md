@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/asynchronous-invocation.svg?branch=master)](https://travis-ci.org/ballerina-guides/asynchronous-invocation)
-
 # Asynchronous Invocations
+
 [Asynchronous invocations](https://en.wikipedia.org/wiki/Asynchronous_method_invocation) or the asynchronous pattern is a design pattern in which the call site is not blocked while waiting for the code invoked to finish. Instead, the calling thread can use the result when the reply arrives.
 
 > In this guide you will learn about building a web service with asynchronous RESTful calls. 
@@ -30,7 +29,7 @@ The following figure illustrates the scenario of the Stock Quote Summary service
 &nbsp;
 &nbsp;
 
-![async invocation](images/asynchronous-invocation.svg "Asynchronous Invocation")
+![async invocation](resources/asynchronous-invocation.svg "Asynchronous Invocation")
 
 &nbsp;
 &nbsp;
