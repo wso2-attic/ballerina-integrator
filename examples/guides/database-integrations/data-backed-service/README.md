@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/data-backed-service.svg?branch=master)](https://travis-ci.org/ballerina-guides/data-backed-service)
-
 # Database Interaction
 
 Data inside a database can be exposed to the outside world by using a database backed RESTful web service. RESTful API calls enable you to add, view, update, and remove data stored in a database from the outside world.
@@ -27,7 +25,7 @@ You'll build an employee data management REST service that performs CRUD Operati
 Basically, this service will deal with a MySQL database and expose the data operations as a web service. Refer to the following diagram to understand the complete end-to-end scenario.
 
 
-![alt text](/images/data-backed-service.svg)
+![alt text](/resources/data-backed-service.svg)
 
 
 ## Prerequisites
