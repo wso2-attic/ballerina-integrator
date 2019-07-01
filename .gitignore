@@ -89,8 +89,6 @@ fabric.properties
 *.iml
 .idea
 
-target
-
 .vscode
 .classpath
 .project
