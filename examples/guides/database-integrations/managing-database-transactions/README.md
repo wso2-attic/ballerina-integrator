@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/managing-database-transactions.svg?branch=master)](https://travis-ci.org/ballerina-guides/managing-database-transactions)
-
 # Database Transactions
 
 A transaction is a small unit of a program that must maintain Atomicity, Consistency, Isolation, and Durability − 
