@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/service-composition.svg?branch=master)](https://travis-ci.org/ballerina-guides/service-composition)
-
 # Service Composition
 
 A service composition is an aggregate of services collectively composed to automate a particular task or business process. 
@@ -18,7 +16,7 @@ The following are the sections available in this guide.
 ## What you’ll build
 To understand how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation, hotel room reservation and car rental. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
 
-![alt text](/images/service-composition.svg)
+![alt text](/resources/service-composition.svg)
 
 Travel agency is the service that acts as the composition initiator. The other three services are external services that the travel agency service calls to do airline ticket booking, hotel reservation and car rental. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
