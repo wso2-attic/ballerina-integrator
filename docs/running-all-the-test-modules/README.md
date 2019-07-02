@@ -91,7 +91,7 @@ folder location:
     ```
 
     You will see the tests running similar as below. 
-    ```
+    ```bash
     example-integration-tutorials IsuruUyanage$ ballerina test
     Compiling tests
     isuruuyanage/tutorial-1:0.0.1
