@@ -23,11 +23,11 @@ http:Client clientEPGrandoaks = new("http://localhost:9090/grandoaks/categories"
 
 # Description: This test verifies if an appoinment can be reserved successfully in grand oaks hospital. 
 # + dataset - dataset Parameter Description
-@test:Config{
+@test:Config {
     dataProvider: "testReserveAppointmentGrandoaksDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-function testReserveAppointmentGrandoaks(json dataset, json expectedStrings){
+function testReserveAppointmentGrandoaks(json dataset, json expectedStrings) {
     // set the json payload
     http:Request request = new;
     request.setPayload(dataset);
@@ -77,7 +77,7 @@ function testReserveAppointmentGrandoaks(json dataset, json expectedStrings){
 function testReserveAppointmentGrandoaksDataProvider() returns json[][]
 {
     return [
-    // TC001 - Verify if appoinement reservation can be done by providing all the valid inputs. 
+    // TC001 - Verify if appoinement reservation can be done by providing all the valid inputs.
     [
     {
         "patient": {
@@ -121,7 +121,7 @@ function testReserveAppointmentGrandoaksDataProvider() returns json[][]
         "doctorFee": true
     }
     ],
-    // TC003 - Verify if appointment reservation can be made for a child. 
+    // TC003 - Verify if appointment reservation can be made for a child.
     [
     {
         "patient": {
@@ -170,8 +170,7 @@ function testReserveAppointmentGrandOakNegative(json dataset, json expectedStrin
         test:assertEquals(responsePayload, expectedResponseText, 
                                                             msg = "Assertion Failed for Doctor " + doctor);
         test:assertEquals(responseStatusCode, expectedStatusCode, msg = "Status code mismatch!");
-    }
-    else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -204,17 +203,17 @@ function testReserveAppointmentGrandOakNegativeDataProvider() returns json[][] {
 
 # Description: This test scenario verifies if details of the reserved appoinment can be retrived. 
 # + dataset - dataset Parameter Description
-@test:Config{
+@test:Config {
     dataProvider: "testGetAppointmentGrandoaksDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-function testGetAppointmentGrandoaks(json dataset){
+function testGetAppointmentGrandoaks(json dataset) {
     json expectedAppointmentNumber = dataset.appointmentNumber;
     string expectedDoctorName = dataset.doctorName.toString();
     string expectedAppointmentDate = dataset.appointmentDate.toString();
 
     http:Response | error response = clientEPGrandoaks->get("/appointments/"
-                                                        + expectedAppointmentNumber.toString());
+    + expectedAppointmentNumber.toString());
     if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
         if (responsePayload is json) {
@@ -260,13 +259,12 @@ function testGetAppointmentGrandOakNegative(json dataset) {
     var expectedAppointmentNumber = dataset.appointmentNumber;
     var expectedSeerorMessage = dataset.expectedErrorMessage;
 
-    http:Response | error response = clientEPGrandoaks->get("/appointments/" 
-                                                    + expectedAppointmentNumber.toString());
+    http:Response | error response = clientEPGrandoaks->get("/appointments/"
+    + expectedAppointmentNumber.toString());
     if (response is http:Response) {
         string | error responsePayload = response.getTextPayload();
         test:assertEquals(responsePayload, expectedSeerorMessage, msg = "Error message is not as expected");
-    }
-    else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -289,7 +287,7 @@ function testGetAppointmentGrandOakNegativeDataProvider() returns json[][] {
     dataProvider: "testCheckChannellingFeeGrandoaksDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-function testCheckChannellingFeeGrandoaks(json dataset){
+function testCheckChannellingFeeGrandoaks(json dataset) {
     string expectedPatientName = dataset.patientName.toString();
     string expectedDoctorname = dataset.doctorName.toString();
     string expectedFee = dataset.actualFee.toString();
@@ -316,7 +314,7 @@ function testCheckChannellingFeeGrandoaks(json dataset){
 
 function testCheckChannellingFeeGrandoaksDataProvider() returns json[][] {
     return [
-    // TC007 - Verify if the channel fee can be retrieved by providing a valid appoitment number. 
+    // TC007 - Verify if the channel fee can be retrieved by providing a valid appoitment number.
     [
     {
         "appointmentNumber": 1,
@@ -351,7 +349,7 @@ function testCheckChannellingFeeGrandOakNegative(json dataset) {
 function testCheckChannellingFeeGrandOakNegativeDataProvider() returns json[][] {
     return [
     // TC008 - Verify if the error message returns when an invalid appointment number is provided when it
-    // is going to check the channelling fee. 
+    // is going to check the channelling fee.
     [
     {
         "appointmentNumber": 200,
@@ -370,7 +368,7 @@ function testCheckChannellingFeeGrandOakNegativeDataProvider() returns json[][] 
 function testUpdatePatientRecordGrandoaks(json dataset) {
     http:Request request = new;
     request.setPayload(dataset);
-    
+
     http:Response | error response = clientEPGrandoaks->post("/patient/updaterecord", request);
 
     if (response is http:Response) {
@@ -385,7 +383,7 @@ function testUpdatePatientRecordGrandoaks(json dataset) {
 
 function testUpdatePatientRecordGrandoaksDataProvider() returns json[][] {
     return [
-    // TC009 - Verify patient's records can be updated. 
+    // TC009 - Verify patient's records can be updated.
     [
     {
         "ssn": "111-23-505",
@@ -398,11 +396,11 @@ function testUpdatePatientRecordGrandoaksDataProvider() returns json[][] {
 
 # Description: This test scenario verifies if Patient's record can be retrieved successfully. 
 # + dataset - dataset Parameter Description
-@test:Config{
+@test:Config {
     dataProvider: "testGetPatientRecordGrandoaksDataProvider",
     dependsOn: ["testUpdatePatientRecordGrandoaks"]
 }
-function testGetPatientRecordGrandoaks(json dataset){
+function testGetPatientRecordGrandoaks(json dataset) {
     string expectedPatientName = dataset.patientName.toString();
     string expectedDob = dataset.dob.toString();
     string expectedSsn = dataset.ssn.toString();
@@ -411,13 +409,13 @@ function testGetPatientRecordGrandoaks(json dataset){
 
     http:Response | error response = clientEPGrandoaks->get("/patient/" + expectedSsn + "/getrecord");
 
-    if (response is http:Response){
+    if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
-        if (responsePayload is json){
-            if (responsePayload.toString().contains("symptoms")){
+        if (responsePayload is json) {
+            if (responsePayload.toString().contains("symptoms")) {
                 responseContainsSymptoms = true;
             }
-            if (responsePayload.toString().contains("treatments")){
+            if (responsePayload.toString().contains("treatments")) {
                 responseContainsTreatments = true;
             }
 
@@ -429,10 +427,10 @@ function testGetPatientRecordGrandoaks(json dataset){
                                                 msg = "Assertion Failed!, Response does not contain symptoms");
             test:assertEquals(responseContainsTreatments, true, 
                                                 msg = "Assertion Failed!, Response does not contain treatments");
-        }else{
+        } else {
             test:assertFail(msg = "Invalid Payload!");
         }
-    }else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -458,20 +456,20 @@ function testGetPatientRecordGrandoaksDataProvider() returns json[][] {
     dataProvider: "testIsEligibleForDiscountGrandoaksDataProvider",
     dependsOn: ["testUpdatePatientRecordGrandoaks"]
 }
-function testIsEligibleForDiscountGrandoaks(json dataset){
+function testIsEligibleForDiscountGrandoaks(json dataset) {
     string expectedAppointmentNumber = dataset.appointmentNumber.toString();
     var expectedEligilibity = dataset.eligibility;
     http:Response | error response = clientEPGrandoaks->get("/patient/appointment/"
-                                                         + expectedAppointmentNumber + "/discount");
-    if (response is http:Response){
+    + expectedAppointmentNumber + "/discount");
+    if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
-        if (responsePayload is json){
+        if (responsePayload is json) {
             test:assertEquals(responsePayload, expectedEligilibity, 
                                         msg = "Assertion Failed for appoinmentID: "+expectedAppointmentNumber);
-        } else{
+        } else {
             test:assertFail(msg = "Invalid Payload!");
         }
-    }else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -485,14 +483,14 @@ function testIsEligibleForDiscountGrandoaksDataProvider() returns json[][] {
         "appointmentNumber": 4
     }
     ],
-    // TC012 - Verify if patient above 55 is eligible for a discount. 
+    // TC012 - Verify if patient above 55 is eligible for a discount.
     [
     {
         "eligibility": true,
         "appointmentNumber": 5
     }
     ],
-    // TC013 - Verify if patient below 12 is eligible for a discount. 
+    // TC013 - Verify if patient below 12 is eligible for a discount.
     [
     {
         "eligibility": true,

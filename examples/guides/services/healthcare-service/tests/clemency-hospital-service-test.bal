@@ -214,8 +214,8 @@ function testGetAppointmentClemency(json dataset) {
     string expectedDoctorName = dataset.doctorName.toString();
     string expectedAppointmentDate = dataset.appointmentDate.toString();
 
-    http:Response | error response = clientEPclemency->get("/appointments/" 
-                                                            + expectedAppointmentNumber.toString());
+    http:Response | error response = clientEPclemency->get("/appointments/"
+    + expectedAppointmentNumber.toString());
     if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
         if (responsePayload is json) {
@@ -261,13 +261,12 @@ function testGetAppointmentClemencyNegative(json dataset) {
     var expectedAppointmentNumber = dataset.appointmentNumber;
     var expectedSeerorMessage = dataset.expectedErrorMessage;
 
-    http:Response | error response = clientEPclemency->get("/appointments/" 
-                                                    + expectedAppointmentNumber.toString());
+    http:Response | error response = clientEPclemency->get("/appointments/"
+    + expectedAppointmentNumber.toString());
     if (response is http:Response) {
         string | error responsePayload = response.getTextPayload();
         test:assertEquals(responsePayload, expectedSeerorMessage, msg = "Error message is not as expected");
-    }
-    else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -309,8 +308,7 @@ function testCheckChannellingFee(json dataset) {
         } else {
             test:assertFail(msg = "Invalid Payload. Test Failed!");
         }
-    }
-    else {
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -352,7 +350,7 @@ function testCheckChannellingFeeNegative(json dataset) {
 function testCheckChannellingFeeNegativeDataProvider() returns json[][] {
     return [
     // TC008 - Verify if the error message returns when an invalid appointment number is provided when it
-    // is going to check the channelling fee. 
+    // is going to check the channelling fee.
     [
     {
         "appointmentNumber": 200,
@@ -479,8 +477,7 @@ function testIsEligibleForDiscount(json dataset) {
         } else {
             test:assertFail(msg = "Invalid Payload");
         }
-    }
-    else {
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }

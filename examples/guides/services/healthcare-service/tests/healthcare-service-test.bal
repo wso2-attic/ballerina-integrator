@@ -24,10 +24,10 @@ http:Client healthCareEP = new("http://localhost:9090/healthcare");
 
 # Description: This test scenario verifies new docotr can be added to a hospital. 
 # + dataset - dataset Parameter Description
-@test:Config{
+@test:Config {
     dataProvider: "testAddDoctorResponseDataProvider"
 }
-function testAddDoctor(json dataset, json resultset){
+function testAddDoctor(json dataset, json resultset) {
     // set the json payload
     http:Request request = new;
     request.setPayload(dataset);
@@ -35,14 +35,14 @@ function testAddDoctor(json dataset, json resultset){
     // sending the post request
     http:Response | error response = healthCareEP->post("/admin/newdoctor", request);
 
-    if (response is http:Response){
+    if (response is http:Response) {
         string | error responsePayload = response.getTextPayload();
         string expectedResponse = resultset.expectedResponse.toString();
         var expectedStatusCode = resultset.expectedStatusCode;
 
         test:assertEquals(responsePayload, expectedResponse,msg = "Response mismatch!");
         test:assertEquals(response.statusCode, expectedStatusCode,msg = "Status Code mismatch");
-    } else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -64,7 +64,7 @@ function testAddDoctorResponseDataProvider() returns json[][] {
         "expectedStatusCode": 200
     }
     ],
-    // TC002 - Verify if an existing doctor cannot be added. 
+    // TC002 - Verify if an existing doctor cannot be added.
     [
     {
         "name": "T D Uyanage",
@@ -97,31 +97,30 @@ function testAddDoctorResponseDataProvider() returns json[][] {
 
 # Description: This test scenario verifies if a doctor record can be retrived. 
 # + dataset - dataset Parameter Description
-@test:Config{
+@test:Config {
     dataProvider: "testGetDoctorsDataProvider",
     dependsOn: ["testAddDoctor"]
 }
-function testGetDoctors(json dataset){
+function testGetDoctors(json dataset) {
     string inputCategory = dataset.category.toString();
     boolean includeDoctor = false;
     string doctor = dataset.doctor.toString();
 
     http:Response | error response = healthCareEP->get("/" + inputCategory + "/");
 
-    if (response is http:Response){
+    if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
-        if (responsePayload is json){
-            if (responsePayload.toString().contains(doctor)){
+        if (responsePayload is json) {
+            if (responsePayload.toString().contains(doctor)) {
                 includeDoctor = true;
                 test:assertEquals(includeDoctor, true, msg = "Response does not contain the doctor " + doctor);
-            }else{
+            } else {
                 test:assertFail(msg = "Response payload does not contain the doctor!");
             }
-        }else{
+        } else {
             test:assertFail(msg = "Invalid Payload!");
         }
-    }
-    else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 }
@@ -142,22 +141,22 @@ function testGetDoctorsDataProvider() returns json[][]
 # Description: This test scenario verifies if it can retreive the details of appointments.
 # + dataset - dataset Parameter Description 
 # + resultset - resultset Parameter Description
-@test:Config{
+@test:Config {
     dataProvider: "testGetAppointmentDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-function testGetAppointment(json dataset, json resultset){
+function testGetAppointment(json dataset, json resultset) {
     string inputAppointmentNumber = dataset.appointmentNumber.toString();
     http:Response | error response = healthCareEP->get("/appointments/" + inputAppointmentNumber);
 
-    if (response is http:Response){
+    if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
-        if (responsePayload is json){
+        if (responsePayload is json) {
             test:assertEquals(responsePayload, resultset, msg = "Assertion Failed!, json payload mismatch");
-        }else{
+        } else {
             test:assertFail(msg = "Invalid Payload!");
         }
-    }else{
+    } else {
         test:assertFail(msg = "Error sending request");
     }
 
@@ -200,47 +199,46 @@ function testGetAppointmentDataProvider() returns json[][]
 
 # Description: This test scenario verifies the validity of the appointment date.
 # + dataset - dataset Parameter Description 
-@test:Config{
+@test:Config {
     dataProvider: "testGetAppointmentValidityTimeDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-function testGetAppointmentValidityTime(json dataset){
+function testGetAppointmentValidityTime(json dataset) {
     string inputAppointmentNumber = dataset.appointmentNumber.toString();
 
     // getting the expected validity days
     http:Response | error response = healthCareEP->get("/appointments/" + inputAppointmentNumber);
     int expectedValidityDays = 0;
-    if (response is http:Response){
+    if (response is http:Response) {
         var responsePayload = response.getJsonPayload();
-        if (responsePayload is json){
+        if (responsePayload is json) {
             string appointmentDateFromPayload = responsePayload.appointmentDate.toString();
             var date = time:parse(appointmentDateFromPayload, "yyyy-MM-dd");
-            if (date is time:Time){
+            if (date is time:Time) {
                 time:Time today = time:currentTime();
                 // Get no of days remaining for the appointment.
                 expectedValidityDays = (date.time - today.time) / (24 * 60 * 60 * 1000);
-            }else{
+            } else {
                 test:assertFail(msg = "Test Failed for invalid date");
             }
-        }else{
+        } else {
             test:assertFail(msg = "Invalid Payload!");
         }
-    }
-    else{
+    } else {
         test:assertFail(msg = "Error sending request to get appointment details");
     }
 
     // getting the actual validity days
     http:Response | error responseValidity = healthCareEP->get("/appointments/validity/" + inputAppointmentNumber);
-    if (responseValidity is http:Response){
+    if (responseValidity is http:Response) {
         var responsePayloadActual = responseValidity.getJsonPayload();
-        if (responsePayloadActual is json){
+        if (responsePayloadActual is json) {
             test:assertEquals(responsePayloadActual, expectedValidityDays, 
                                         msg = "Number of validity days of the appointment is not as expected");
-        }else{
+        } else {
             test:assertFail(msg = "Invalid Payload!");
         }
-    }else{
+    } else {
         test:assertFail(msg = "Error sending request in getting actual validity days");
     }
 }
@@ -259,19 +257,19 @@ function testGetAppointmentValidityTimeDataProvider() returns json[][]
 
 # Description: This test scenario verifies if the appointments can be removed.
 # + dataset - dataset Parameter Description 
-@test:Config{
+@test:Config {
     dataProvider: "testRemoveAppointmentDataProvider",
     dependsOn: ["testIsEligibleForDiscountGrandoaks"]
 }
-function testRemoveAppointment(json dataset){
+function testRemoveAppointment(json dataset) {
     string inputAppointmentNumber = dataset.appointmentNumber.toString();
     http:Response | error response = healthCareEP->delete("/appointments/"
-                                                + inputAppointmentNumber, "Remove Appointment");
-    if (response is http:Response){
+    + inputAppointmentNumber, "Remove Appointment");
+    if (response is http:Response) {
         string | error actualResponse = response.getTextPayload();
         json | error expectedResponse = dataset.response;
         test:assertEquals(actualResponse, expectedResponse, msg = "Response message as not as expected!");
-    }else{
+    } else {
         test:assertFail(msg = "Error sending request!");
     }
 }
@@ -291,30 +289,30 @@ function testRemoveAppointmentDataProvider() returns json[][]
 
 # Description: This test scenario verifies payments can be settled successfully. 
 # + dataset - dataset Parameter Description
-@test:Config{
+@test:Config {
     dataProvider: "testSettlePaymentDataProvider",
     dependsOn: ["testReserveAppointment"]
 }
-function testSettlePayment(json dataset){
+function testSettlePayment(json dataset) {
     http:Request request = new;
     request.setPayload(dataset);
 
     http:Response | error response = healthCareEP->post("/payments", request);
-    if (response is http:Response){
+    if (response is http:Response) {
         string | error responsePayload = response.getTextPayload();
-        if (responsePayload is string){
+        if (responsePayload is string) {
             boolean isSuccessfullySettled = false;
-            if (responsePayload.contains("Settled payment successfully with payment ID")){
+            if (responsePayload.contains("Settled payment successfully with payment ID")) {
                 isSuccessfullySettled = true;
                 test:assertEquals(isSuccessfullySettled, true, 
                                              msg = "The payment settlement is not as expected!");
-            }else{
+            } else {
                 test:assertFail(msg = "Response does not contain the exact response message");
             }
-        }else{
+        } else {
             test:assertFail(msg = "Invalid Payload!");
         }
-    }else{
+    } else {
         test:assertFail(msg = "Error sending request!");
     }
 }
