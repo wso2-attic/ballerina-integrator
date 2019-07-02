@@ -18,7 +18,7 @@ We have set of integration tutorials in example-integration-tutorials folder whi
 #### Why do we need this?
 We have different tutorials as below. Sometimes the same backend resource function can be invoked through different ballerina services. If the backend is running continuously, the data can be duplicated and it can result in giving incorrect test outputs. 
 
-Therefore, through this example we will guide to start the backend service along with the ballerina services in the beginning of the test module. Then backend and the ballerina services will stop at the end of the test module and restarted in the next test module. In this approach the data will not be duplicated since the backend gets restarted at the end of the module. 
+Therefore, through this example, we will guide you to start the backend service along with the ballerina services at the beginning of the test module. Then backend and the ballerina services will stop at the end of the test module and restart in the next test module. In this approach the data will not be duplicated since the backend gets restarted at the end of the module. 
 
 In the following example, it is added the same test to the both the tutorials which adds the same data from both tests. With this approach they will not get affected from one another. 
 
