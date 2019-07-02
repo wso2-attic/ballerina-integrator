@@ -59,7 +59,7 @@ Since all the .bal files in backend service reside in service folder we have to 
     ```
     ballerina build --skiptests <module_name>
     ```
-    ```
+    ```bash
     ballerina build --skiptests healthcare
     ```
 
