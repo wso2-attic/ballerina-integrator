@@ -128,7 +128,7 @@ Once you are done with the development, you can deploy the services using any of
 
 ##### Deploying locally
 
-To deploy locally, navigate to routing-requests-based-on-message-content/guide, and execute the following command.
+To deploy locally, navigate to _routing-requests-based-on-message-content/guide_, and execute the following command.
 
 ```
 $ ballerina build

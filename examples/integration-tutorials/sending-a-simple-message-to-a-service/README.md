@@ -9,7 +9,7 @@ In this tutorial, we will build a service using Ballerina to connect with the ba
 
 #### Prerequisites
 
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relavant to your OS.
+- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
   We will call the installed directory as BALLERINA_HOME.
 - A Text Editor or an IDE
   > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)

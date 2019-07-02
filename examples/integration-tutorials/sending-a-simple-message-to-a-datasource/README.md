@@ -17,7 +17,7 @@ The RESTful service we are going to create will contain resources to carry out t
 
 #### Prerequisites
 
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relavant to your OS.
+- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
   We will call the installed directory as BALLERINA_HOME.
 - A Text Editor or an IDE
   > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
