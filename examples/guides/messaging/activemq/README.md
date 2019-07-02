@@ -1,2 +1,0 @@
-# Messaging with ActiveMQ
-
