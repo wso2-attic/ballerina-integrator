@@ -54,7 +54,7 @@ service healthCareService on new http:Listener(9090) {
         methods: ["POST"],
         path: "/categories/{category}/reserve"
     }
-    resource function addAppointment(http:Caller caller, http:Request request, string category) {
+    resource function scheduleAppointment(http:Caller caller, http:Request request, string category) {
 
         // Define new response
         http:Response | error backendResponse = new();

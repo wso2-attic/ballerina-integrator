@@ -1,6 +1,6 @@
 # Transforming Message Content
 
-When the message format sent by the client is diffrent from the format expected by the backend service, we need to transform the message into a supported format before sending the request to backend. Using Ballerina, we cna easily transform messages to a desired format.
+When the message format sent by the client is diffrent from the format expected by the backend service, we need to transform the message into a supported format before sending the request to backend. Using Ballerina, we can easily transform messages to a desired format.
 
 #### What you will build
 
@@ -46,7 +46,7 @@ The request payload message format must be transformed to match the back-end ser
 
 #### Prerequisites
 
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relavant to your OS.
+- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
 - A Text Editor or an IDE
   > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 - [cURL](https://curl.haxx.se) or any other REST client
@@ -63,7 +63,7 @@ This tutorial includes the following sections.
 
 #### Modify the resource to transform messages
 
-In the RESTful service we developed earlier, we already have a resource to add appointments in the Health Care System. Let's modify this resource so that it can transform messages before sending requests to the backend.
+In the RESTful service we developed earlier, we already have a resource to schedule appointments in the Health Care System. Let's modify this resource so that it can transform messages before sending requests to the backend.
 
 <!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_1 } -->
 
@@ -88,7 +88,7 @@ $ ballerina run health_care_service.balx
 
 - Navigate to _transforming-message-content/guide_, and execute the following command to start the service:
 
-```ballerina
+```bash
    $ ballerina run health_care_service.bal
 ```
 
@@ -111,7 +111,7 @@ $ ballerina run health_care_service.balx
 
 - Send the message to the service using curl
 
-```
+```bash
 $ curl -v -X POST --data @input.json http://localhost:9091/healthcare/categories/surgery/reserve --header "Content-Type:application/json"
 ```
 

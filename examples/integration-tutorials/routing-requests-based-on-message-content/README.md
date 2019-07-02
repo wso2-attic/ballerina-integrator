@@ -8,11 +8,11 @@ depending on the content of the message payload.
 
 Using the Health Care System backend we have, we can schedule appointments in different hospitals.
 
-When a client sends the appointment scheduling request to the Ballerina service _healthCareService_, the message payload contains the name of the hospital where the appointment should be confirmed. Based on the hospital name sent in the request message, our Ballerina service should route the appointment reservation to the relevant hospital's back-end service.
+When a user sends the appointment scheduling request to the Ballerina service _healthCareService_, the message payload contains the name of the hospital where the appointment should be confirmed. Based on the hospital name sent in the request message, our Ballerina service should route the appointment reservation to the relevant hospital's back-end service.
 
 #### Prerequisites
 
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relavant to your OS.
+- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
 - A Text Editor or an IDE
   > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 - [cURL](https://curl.haxx.se) or any other REST client

@@ -51,7 +51,7 @@ service healthCareService on httpListener {
     }
     // CODE-SEGMENT-END: segment_1
     // CODE-SEGMENT-BEGIN: segment_2
-    resource function addAppointment(http:Caller caller, http:Request req, string category)
+    resource function scheduleAppointment(http:Caller caller, http:Request req, string category)
     {
         // Get data from request message payload
         var jsonMsg = req.getJsonPayload();
