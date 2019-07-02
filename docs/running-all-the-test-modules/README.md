@@ -23,13 +23,13 @@ different ballerina services. If the backend is running continuously, the data c
 in giving incorrect test outputs. 
 
 Therefore, through this example we will guide to start the backend service along with the ballerina services in 
-the beginning of the test module. At the end of the each test module, the services will be stopped and restarted
-in the next test module. This prevents the data duplication. 
+the beginning of the test module. At the end of the each test module, the services will be restarted. This 
+prevents the data duplication. 
 
 In the following example, the same test has been added to the both folders, which adds the same data. With the
 above approach, they will not get affected from one another. 
 
-Folder structure is below for the example-integration-tutorials. 
+Following is the folder structure for the example-integration-tutorials. 
 
 
     -> ballerina_integrator
@@ -60,14 +60,14 @@ In order to do that, please follow the below steps.
 1. Find the organization name in Ballerina.toml in healthcare-service resides in ../BallerinaWork/BallerinaInt/ballerina-integrator/examples/guides/services/healthcare-service. 
 
 2. We need to build and add this to the ballerina home repository from project repository. 
-Since all my .bal files in backend service resides in service folder im building as below. 
+Since all the .bal files in backend service reside in service folder we have to build as below. 
 
     Building the module
 
     ```
     ballerina build --skiptests <module_name>
     ```
-    ```
+    ```bash
     ballerina build --skiptests healthcare
     ```
 
@@ -99,7 +99,7 @@ folder location:
     ```
 
     You will see the tests running similar as below. 
-    ```
+    ```bash
     example-integration-tutorials IsuruUyanage$ ballerina test
     Compiling tests
     isuruuyanage/tutorial-1:0.0.1
@@ -127,6 +127,5 @@ folder location:
     ```
 
 #### Known Issues
-In ballerina-0.991.0 release, there is an issue of getting increased the test execution once the number of modules 
-get increased. 
+In ballerina-0.991.0 release, there is an issue of getting increased the test execution once the number of modules get increased. 
 This issue is fixed in 0.992.0-m2 version. 
