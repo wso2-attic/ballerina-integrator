@@ -52,7 +52,7 @@ In order to do that, please follow the below steps.
 1. Find the organization name in Ballerina.toml in healthcare-service resides in ../BallerinaWork/BallerinaInt/ballerina-integrator/examples/guides/services/healthcare-service. 
 
 2. We need to build and add this to the ballerina home repository from project repository. 
-Since all my .bal files in backend service resides in service folder im building as below. 
+Since all the .bal files in backend service reside in service folder we have to build as below. 
 
     Building the module
 
