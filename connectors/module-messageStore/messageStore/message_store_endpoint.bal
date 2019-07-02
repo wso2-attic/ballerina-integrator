@@ -136,9 +136,7 @@ public type Client client object {
         //create a map message from message detail extracted
         //TODO: here if error occurs it is not returned as an error. Ballerina should be fixed. (/ballerina-lang/issues/16099)
         var messageToStore = self.jmsSession.createMapMessage(requestMessageMap);
-        io:println("is error: " + (messageToStore is error));
         if (messageToStore is jms:Message) {
-            io:println("##############" + true);
             // This sends the Ballerina message to the JMS provider.
             var returnVal = self.queueSender->send(messageToStore);
             if (returnVal is error) {
@@ -146,7 +144,6 @@ public type Client client object {
                 log:printError(errorMessage, err = returnVal);
             }
         } else {
-            io:println("##############" + false);
             log:printError("Error while creating message from ", err = messageToStore);
             return messageToStore;
         }

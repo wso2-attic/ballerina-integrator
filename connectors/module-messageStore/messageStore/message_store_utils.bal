@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
-
 public type MessageBroker ACTIVE_MQ|IBM_MQ|WSO2MB;
 
 //constants for broker types
@@ -43,8 +41,3 @@ map<string> contextFactoryMapper = {
 function getInitialContextFactory(MessageBroker brokerName) returns string {
     return <string> contextFactoryMapper[brokerName];
 }
-
-
-
-
-
