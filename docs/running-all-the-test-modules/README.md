@@ -22,7 +22,7 @@ Therefore, through this example, we will guide you to start the backend service 
 
 In the following example, it is added the same test to the both the tutorials which adds the same data from both tests. With this approach they will not get affected from one another. 
 
-Folder structure is below for the example-integration-tutorials. 
+Following is the folder structure for the example-integration-tutorials. 
 
 
     -> ballerina_integrator
