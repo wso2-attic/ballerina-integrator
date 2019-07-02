@@ -24,9 +24,7 @@ service messageForwardingService = service {
 
     resource function onTrigger(PollingServiceConfig config) {
 
-        function (http:Response resp) handleResponseFunction = config.handleResponse;
         function () onMessagePollingFailFunction = config.onMessagePollingFail;
-
         jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
         //wait for 1 second until you receive a message. If no message is received nil is returned
         var queueMessage = caller->receive(timeoutInMilliSeconds = 1000);
@@ -81,7 +79,8 @@ function evaluateForwardSuccess(PollingServiceConfig config, http:Request reques
             var ack = caller->acknowledge(queueMessage);
             if (ack is error) {
                 log:printError("Error occurred while acknowledging message", err = ack);
-            } 
+            }
+            config.handleResponse.call(response); 
         }
     } else {
         //Failure. Connection level issue
@@ -99,10 +98,10 @@ function onMessageForwardingFail(PollingServiceConfig config, http:Request reque
     Client? DLCStore = config["DLCStore"];
     if (DLCStore is Client) {
         log:printWarn("Maximum retires breached when forwading message to HTTP endpoint " + config.httpEP 
-            + ". Forwading message to DLC Store");
+            + ". Forwarding message to DLC Store");
         var storeResult = DLCStore->store(request);
         if(storeResult is error) {
-            log:printError("Error while forwading message to DLC store. Message will be lost", err = storeResult);
+            log:printError("Error while forwarding message to DLC store. Message will be lost", err = storeResult);
         }
         jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
         var ack = caller->acknowledge(queueMessage);
