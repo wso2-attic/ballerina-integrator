@@ -13,14 +13,21 @@ Assume we have ballerina healthcare service backend in ../healthcare/ folder.
                   -> healthcare-service
 
 #### Requirement: 
-We have set of integration tutorials in example-integration-tutorials folder which includes set of services(bal files) along with their tests. We need to start the services automatically while running the tests including the backend described above. 
+We have set of integration tutorials in example-integration-tutorials folder which includes set of 
+services(bal files) along with their tests. We need to start the services automatically while running the tests 
+including the backend described above. 
 
 #### Why do we need this?
-We have different tutorials as below. Sometimes the same backend resource function can be invoked through different ballerina services. If the backend is running continuously, the data can be duplicated and it can result in giving incorrect test outputs. 
+We have different tutorials as below. Sometimes the same backend resource function can be invoked through 
+different ballerina services. If the backend is running continuously, the data can be duplicated and it can result
+in giving incorrect test outputs. 
 
-Therefore, through this example we will guide to start the backend service along with the ballerina services in the beginning of the test module. Then backend and the ballerina services will stop at the end of the test module and restarted in the next test module. In this approach the data will not be duplicated since the backend gets restarted at the end of the module. 
+Therefore, through this example we will guide to start the backend service along with the ballerina services in 
+the beginning of the test module. At the end of the each test module, the services will be stopped and restarted
+in the next test module. This prevents the data duplication. 
 
-In the following example, it is added the same test to the both the tutorials which adds the same data from both tests. With this approach they will not get affected from one another. 
+In the following example, the same test has been added to the both folders, which adds the same data. With the
+above approach, they will not get affected from one another. 
 
 Folder structure is below for the example-integration-tutorials. 
 
@@ -41,7 +48,8 @@ Folder structure is below for the example-integration-tutorials.
 
 
 #### Steps
-In tutorial-1, we have addDoctor.bal file and tests folder. Through our 'testAddDoctor' test function in addDoctorTest.bal file in tests folder, we invoke particular post resource in service running in http://localhost:9091/healthcare. 
+In tutorial-1, we have addDoctor.bal file and tests folder. Through our 'testAddDoctor' test function in addDoctorTest.bal file in tests folder, we invoke particular post resource in service running in 
+http://localhost:9091/healthcare. 
 
 Please note that the backend service runs in http://localhost:9090/healthcare. 
 
@@ -103,7 +111,9 @@ folder location:
     [ballerina/http] started HTTP/WS endpoint 0.0.0.0:9090
     [ballerina/http] started HTTP/WS endpoint 0.0.0.0:9091
 
-    2019-06-23 22:34:23,135 INFO  [wso2/healthcare] - User error in addNewDoctor, Doctor Already Exists in the system. 
+    2019-06-23 22:34:23,135 INFO  [wso2/healthcare] - User error in addNewDoctor, Doctor Already Exists in the 
+    system. 
+
       2 passing
       0 failing
       0 skipped
@@ -117,5 +127,6 @@ folder location:
     ```
 
 #### Known Issues
-In ballerina-0.991.0 release, there is an issue of getting increased the test execution once the number of modules get increased. 
+In ballerina-0.991.0 release, there is an issue of getting increased the test execution once the number of modules 
+get increased. 
 This issue is fixed in 0.992.0-m2 version. 
