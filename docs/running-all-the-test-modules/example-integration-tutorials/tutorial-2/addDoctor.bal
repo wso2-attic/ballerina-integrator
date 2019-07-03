@@ -24,7 +24,6 @@ http:Client hospitalEP = new("http://localhost:9090");
 @http:ServiceConfig {
     basePath: "/healthcare"
 }
-
 service healthcareService on new http:Listener(9092) {
     // Resource to make an appointment reservation with bill payment
     @http:ResourceConfig {
@@ -32,21 +31,21 @@ service healthcareService on new http:Listener(9092) {
         path: "/admin/newdoctor"
     }
 
-    resource function addDoctor(http:Caller caller, http:Request request, string category) {
-        var requestPayload = request.getJsonPayload();
-        if (requestPayload is json) {
-            json newDoctorPayload = {
-                "name": requestPayload.name,
-                "hospital": requestPayload.hospital,
-                "category": requestPayload.category,
-                "availability": requestPayload.availability,
-                "fee": requestPayload.fee
-            };
+resource function addDoctor(http:Caller caller, http:Request request, string category) {
+    var requestPayload = request.getJsonPayload();
+    if (requestPayload is json) {
+        json newDoctorPayload = {
+            "name": requestPayload.name,
+            "hospital": requestPayload.hospital,
+            "category": requestPayload.category,
+            "availability": requestPayload.availability,
+            "fee": requestPayload.fee
+        };
             // call doctor creation
-            http:Response addDoctorResponse = addNewDoctor(caller, untaint newDoctorPayload);
-            respondToClient(caller, addDoctorResponse);
-        } else {
-            respondToClient(caller, createErrorResponse(400, "Not a valid Json payload"));
+        http:Response addDoctorResponse = addNewDoctor(caller, untaint newDoctorPayload);
+        respondToClient(caller, addDoctorResponse);
+    } else {
+        respondToClient(caller, createErrorResponse(400, "Not a valid Json payload"));
         }
     }
 }
@@ -85,7 +84,3 @@ function respondToClient(http:Caller caller, http:Response response) {
         log:printError("Error responding to client!", err = result);
     }
 }
-
-
-
-

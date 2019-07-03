@@ -85,7 +85,3 @@ function respondToClient(http:Caller caller, http:Response response) {
         log:printError("Error responding to client!", err = result);
     }
 }
-
-
-
-
