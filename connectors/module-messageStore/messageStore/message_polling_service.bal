@@ -57,10 +57,10 @@ service messageForwardingService = service {
 # + config - Message processor config `PollingServiceConfig` 
 # + queueMessage - Message polled from the queue `jms:Message`
 # + request - HTTP request forwarded `http:Request`
-function evaluateForwardSuccess(PollingServiceConfig config, http:Request request, 
-        http:Response | error response, jms:Message queueMessage) {
+function evaluateForwardSuccess(PollingServiceConfig config, http:Request request,
+http:Response | error response, jms:Message queueMessage) {
     //in case of retry status codes specified, HTTP client will retry but a response
-    //will be received. Still in case of forwarding we need to consider it as a failure 
+    //will be received. Still in case of forwarding we need to consider it as a failure
     if (response is http:Response) {
         boolean isFailingResponse = false;
         int[] retryHTTPCodes = config.retryHTTPCodes;
@@ -70,8 +70,8 @@ function evaluateForwardSuccess(PollingServiceConfig config, http:Request reques
                 break;
             }
         }
-        if(isFailingResponse) {
-            //Failure. Response has failure HTTP status code 
+        if (isFailingResponse) {
+            //Failure. Response has failure HTTP status code
             onMessageForwardingFail(config, request, queueMessage);
         } else {
             //success. Ack the message
@@ -80,7 +80,7 @@ function evaluateForwardSuccess(PollingServiceConfig config, http:Request reques
             if (ack is error) {
                 log:printError("Error occurred while acknowledging message", err = ack);
             }
-            config.handleResponse.call(response); 
+            config.handleResponse.call(response);
         }
     } else {
         //Failure. Connection level issue
@@ -94,13 +94,16 @@ function evaluateForwardSuccess(PollingServiceConfig config, http:Request reques
 # + request - HTTP request `http:Request` failed to forward 
 # + queueMessage - message received from the queue `jms:Message` that failed to process
 function onMessageForwardingFail(PollingServiceConfig config, http:Request request, jms:Message queueMessage) {
-    //if there is a DLC store is defined, store the message into that, if not drop the message
     Client? DLCStore = config["DLCStore"];
-    if (DLCStore is Client) {
-        log:printWarn("Maximum retires breached when forwading message to HTTP endpoint " + config.httpEP 
-            + ". Forwarding message to DLC Store");
+    if (config.deactivateOnFail) {        //just deactivate the processor
+        log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
+        + ". Message forwading is stopped for " + config.httpEP);
+        config.onDeactivate.call();
+    } else if (DLCStore is Client) {        //if there is a DLC store is defined, store the message into that
+        log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
+        + ". Forwarding message to DLC Store");
         var storeResult = DLCStore->store(request);
-        if(storeResult is error) {
+        if (storeResult is error) {
             log:printError("Error while forwarding message to DLC store. Message will be lost", err = storeResult);
         }
         jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
@@ -108,21 +111,17 @@ function onMessageForwardingFail(PollingServiceConfig config, http:Request reque
         if (ack is error) {
             log:printError("Error occurred while acknowledging message",
                 err = ack);
-        }    
-    } else if (config.deactivateOnFail) {
-        log:printWarn("Maximum retires breached when forwading message to HTTP endpoint " + config.httpEP 
-            + ". Message forwading is stopped for " + config.httpEP);
-        //TODO : stop message processor
-    } else {
-        log:printWarn("Maximum retires breached when forwading message to HTTP endpoint " + config.httpEP 
-            + ". Dropping message and continue");
-                jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
+        }
+    } else {        //drop the message
+        log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
+        + ". Dropping message and continue");
+        jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
         var ack = caller->acknowledge(queueMessage);
         if (ack is error) {
             log:printError("Error occurred while acknowledging message",
                 err = ack);
-        }     
-    }  
+        }
+    }
 }
 
 # Reconstruct construct HTTP message from JMS message.

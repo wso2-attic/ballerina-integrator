@@ -25,6 +25,9 @@ import ballerina/math;
 # pointed and forwards messages to the configred HTTP endpoint with reliability. 
 public type MessageForwardingProcessor object {
 
+    //TODO: remove after (ballerina-lang/issues/16201)
+    boolean active;
+
     ForwardingProcessorConfiguration processorConfig;
 
     //objects related to JMS connection
@@ -48,7 +51,7 @@ public type MessageForwardingProcessor object {
     # + return          - `error` if there is an issue initializing processor (i.e connection issue with broker)
     public function __init(ForwardingProcessorConfiguration processorConfig,
     function(http:Response resp) handleResponse) returns error? {
-
+        self.active = true;
         self.processorConfig = processorConfig;
 
         MessageStoreConfiguration storeConfig = processorConfig.storeConfig;
@@ -80,6 +83,7 @@ public type MessageForwardingProcessor object {
             httpEP: processorConfig.HTTPEndpoint,
             deactivateOnFail: processorConfig.deactivateOnFail,
             onMessagePollingFail: onMessagePollingFail(self),
+            onDeactivate: onDeactivate(self),
             handleResponse: handleResponse
         };
 
@@ -101,6 +105,13 @@ public type MessageForwardingProcessor object {
         }
     }
 
+    # Get name of the message broker queue this message processor is consuming messages from.
+    #
+    # + return - Name of the queue 
+    public function getQueueName() returns string {
+        return self.processorConfig.storeConfig.queueName;
+    }
+
     # Start Message Processor. This will start polling messages from configured message broker 
     # and forward it to the backend. 
     #
@@ -114,8 +125,16 @@ public type MessageForwardingProcessor object {
     # + return - `error` in case of stopping Message Processor
     public function stop() returns error? {
         check self.messageForwardingTask.stop();
+        self.active = false;
     }
 
+    # Keep main thread running 
+    public function keepRunning() {
+        //TODO: fix after (ballerina-lang/issues/16201)
+        while (self.active) {
+            runtime:sleep(1000);
+        }
+    }
 
     # Initialize HTTP client to forward messages.
     #
@@ -212,10 +231,25 @@ function onMessagePollingFail(MessageForwardingProcessor processor) returns func
         var cleanupResult = processor.cleanUpJMSObjects();
         if (cleanupResult is error) {
             log:printError("Error while cleaning up jms connection", err = cleanupResult);
-            //TODO: we need stop the polling here?
+        //TODO: we need stop the polling here?
         }
         processor.retryToConnectBroker(processor.processorConfig);
     };
+}
+
+# Get a function pointer with logic of deactivating message processor.
+#
+# + processor - message processor to deactivate
+# + return - A function pointer with logic that deactivates message processor
+function onDeactivate(MessageForwardingProcessor processor) returns function() {
+    return function () {
+        log:printInfo("Deactivating message processor on queue = " + processor.getQueueName());
+        var processorStopResult = processor.stop();
+        if (processorStopResult is error) {
+            log:printError("Error when stopping message polling task", err = processorStopResult);
+        }
+    };
+
 }
 
 
@@ -272,7 +306,8 @@ public type ForwardingProcessorConfiguration record {
 # + deactivateOnFail - `true` if processor needs to be deactivated on fowarding failure 
 # + retryHTTPCodes - If processor received any response after forwading the message with any of
 #                    these status codes, it will be considered as a failed invocation `int[]` 
-# + onMessagePollingFail - Lamda with logic what to execute on a failure polling messages from broker `function()`  
+# + onMessagePollingFail - Lamda with logic what to execute on a failure polling messages from broker `function()`
+# + onDeactivate - Lamda with logic what to execute to deactivate message processor  
 # + handleResponse - Lamda to execute upon response received by forwarding messages to the configured endpoint 
 #                    `function(http:Response resp)`
 public type PollingServiceConfig record {
@@ -284,6 +319,7 @@ public type PollingServiceConfig record {
     boolean deactivateOnFail;
     int[] retryHTTPCodes?;
     function() onMessagePollingFail;
+    function() onDeactivate;
     function(http:Response resp) handleResponse;
 };
 
