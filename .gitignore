@@ -34,6 +34,9 @@ hs_err_pid*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.vscode-test/
+*.vsix
+node_modules
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files

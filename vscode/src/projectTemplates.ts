@@ -17,7 +17,7 @@
 'use strict';
 
 import { WorkspaceConfiguration } from 'vscode';
-import vscode, { workspace, window, Uri, commands } from 'vscode';
+import vscode, { workspace, window } from 'vscode';
 import fs = require('fs');
 import path = require('path');
 import utils = require("./utils");
@@ -59,6 +59,7 @@ export default class ProjectTemplates {
                 // choose workspace
                 let ws = await window.showWorkspaceFolderPick();
                 if (ws) {
+                    window.showInformationMessage(ws.name);
                     workspaceSelected = ws.uri.fsPath;
                 }
             }
@@ -194,8 +195,8 @@ export default class ProjectTemplates {
         // update placeholder configuration
         let usePlaceholders = this.config.get("usePlaceholders", false);
         let placeholderRegExp = this.config.get("placeholderRegExp", "\\${(\\w+)?}");
-        let placeholders: { [placeholder: string]: string | undefined } = this.config.get("placeholders", {});
-        placeholders = placeholderValues;
+        // let placeholders: { [placeholder: string]: string | undefined } = this.config.get("placeholders", {});
+        let placeholders = placeholderValues;
         // re-read configuration, merge with current list of placeholders
         let newplaceholders: { [placeholder: string]: string } = this.config.get("placeholders", {});
         for (let key in newplaceholders) {

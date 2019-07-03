@@ -35,6 +35,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
     let projectTemplates = new ProjectTemplates(context, workspace.getConfiguration('projectTemplates'));
     // get workspace folder
     let workspaceSelected = await projectTemplates.selectWorkspace();
+    window.showInformationMessage("Workspace Selected: " + workspaceSelected);
     // generate the home page to display templates
     currentPanel.webview.html = getHomeView();
     currentPanel.webview.onDidReceiveMessage(
@@ -60,8 +61,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                         templatePlaceholders.forEach(element => {
                             placeholderMap.set(element.name, messageB[element.id]);
                         });
-                        let jsonObject = mapToObj(placeholderMap);
-                        let placeholders = jsonObject;
+                        let placeholders = mapToObj(placeholderMap);
                         currentPanel.dispose();
                         projectTemplates.createFromTemplate(workspaceSelected, messageA.command, placeholders).then(
                             (template: string | undefined) => {

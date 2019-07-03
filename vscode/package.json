@@ -4,6 +4,10 @@
 	"description": "Ballerina Integrator for WSO2 EI",
 	"version": "0.0.1",
 	"publisher": "wso2",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wso2/ballerina-integrator"
+	},
 	"engines": {
 		"vscode": "^1.35.0"
 	},
