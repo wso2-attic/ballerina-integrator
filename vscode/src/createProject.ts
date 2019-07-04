@@ -34,36 +34,35 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
     let templateSelected = undefined;
     let projectTemplates = new ProjectTemplates(context, workspace.getConfiguration('projectTemplates'));
     // get workspace folder
-    let workspaceSelected = await projectTemplates.selectWorkspace();
-    window.showInformationMessage("Workspace Selected: " + workspaceSelected);
+    let workspaceSelected = await ProjectTemplates.selectWorkspace();
     // generate the home page to display templates
     currentPanel.webview.html = getHomeView();
     currentPanel.webview.onDidReceiveMessage(
-        messageA => {
+        homePageMessage => {
             if (!workspaceSelected) {
                 window.showErrorMessage("No Workspace Selected!");
                 return;
             }
-            templateSelected = messageA.command;
+            templateSelected = homePageMessage.command;
             // generate the placeholder form for a specific template
             currentPanel.webview.html = getFormView(templateSelected);
             currentPanel.webview.onDidReceiveMessage(
-                async messageB => {
-                    if (messageB.command == "back") {
+                async formPageMessage => {
+                    if (formPageMessage.command === "back") {
                         currentPanel.dispose();
                         vscode.commands.executeCommand("ballerinaIntegrator.projectTemplates");
                         return;
                     } else {
                         projectTemplates.updateConfiguration(workspace.getConfiguration('projectTemplates'));
-                        let templateObject = data.find(x => x.id == messageA.command);
+                        let templateObject = data.find(x => x.id === homePageMessage.command);
                         let templatePlaceholders = templateObject.placeholders;
-                        var placeholderMap = new Map();
+                        let placeholderMap = new Map();
                         templatePlaceholders.forEach(element => {
-                            placeholderMap.set(element.name, messageB[element.id]);
+                            placeholderMap.set(element.name, formPageMessage[element.id]);
                         });
                         let placeholders = mapToObj(placeholderMap);
                         currentPanel.dispose();
-                        projectTemplates.createFromTemplate(workspaceSelected, messageA.command, placeholders).then(
+                        projectTemplates.createFromTemplate(workspaceSelected, homePageMessage.command, placeholders).then(
                             (template: string | undefined) => {
                                 if (template) {
                                     window.showInformationMessage("New template project created for '" +
@@ -72,7 +71,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                 }
                             },
                             (reason: any) => {
-                                if (reason == "false") {
+                                if (reason === "false") {
                                     window.showInformationMessage("Project creation aborted!");
                                 } else {
                                     window.showErrorMessage("Failed to create project from template: " + reason);

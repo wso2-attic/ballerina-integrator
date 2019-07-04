@@ -20,15 +20,14 @@ import data from './templateDetails.json';
 
 export function getFormView(templateSelected: string): string {
 
-    let templateObject = data.find(x => x.id == templateSelected);
-    let templateId = templateSelected;
+    let templateObject = data.find(x => x.id === templateSelected);
     let templateName = templateObject.name;
     let templatePlaceholders = templateObject.placeholders;
 
     let beginForm: string = `
             <h2 style="margin-left:20px;">${templateName}</h2>
             <div class="container">
-                <form action="" id="myForm" onsubmit="myFunction()">`;
+                <form action="" id="placeholderForm" onsubmit="sendPlaceholders()">`;
 
     let i = 0;
     let elements: string = "";
@@ -40,8 +39,8 @@ export function getFormView(templateSelected: string): string {
 
     let scriptHandling = `
             <script>
-                function myFunction(template) {
-                    var elements = document.getElementById("myForm").elements;
+                function sendPlaceholders() {
+                    var elements = document.getElementById("placeholderForm").elements;
                     const vscode = acquireVsCodeApi();
                     vscode.postMessage({
                         ` + elements + `
@@ -61,7 +60,7 @@ export function getFormView(templateSelected: string): string {
     templatePlaceholders.forEach(element => {
         let formElement: string = "";
         let values = element.value;
-        if (element.type != "select") {
+        if (element.type !== "select") {
             formElement = `
                     <label for="${element.id}">${element.label}</label>
                     <input type="${element.type}" id="${element.id}" value="${element.value}">`;

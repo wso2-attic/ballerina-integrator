@@ -48,7 +48,7 @@ export default class ProjectTemplates {
      * will be selected, or for multi-root a chooser will be presented to select a workspace.
      * @returns The workspace selected.
      */
-    public async selectWorkspace(): Promise<string> {
+    public static async selectWorkspace(): Promise<string> {
 
         let workspaceSelected: string = "";
         if (workspace.workspaceFolders) {
@@ -65,25 +65,6 @@ export default class ProjectTemplates {
             }
         }
         return workspaceSelected;
-    }
-
-    /**
-     * Returns a list of available project templates by reading the templates directory.
-     * @returns List of templates found.
-     */
-    public async getTemplates(): Promise<string[]> {
-
-        let templateDir: string = await this.getTemplatesDir();
-        let templates: string[] = fs.readdirSync(templateDir).map(function (item) {
-            // ignore hidden folders
-            if (!/^\./.exec(item)) {
-                return fs.statSync(path.join(templateDir, item)).isDirectory ? item : null;
-            }
-            return null;
-        }).filter(function (filename) {
-            return filename !== null;
-        }) as string[];
-        return templates;
     }
 
     /**
@@ -189,7 +170,7 @@ export default class ProjectTemplates {
         let templateRoot = await this.getTemplatesDir();
         let templateDir = path.join(templateRoot, template);
         if (!fs.existsSync(templateDir) || !fs.lstatSync(templateDir).isDirectory()) {
-            window.showErrorMessage("Template '" + data.find(x => x.id == template).name + "' does not exist.");
+            window.showErrorMessage("Template '" + data.find(x => x.id === template).name + "' does not exist.");
             return undefined;
         }
         // update placeholder configuration
@@ -198,9 +179,9 @@ export default class ProjectTemplates {
         // let placeholders: { [placeholder: string]: string | undefined } = this.config.get("placeholders", {});
         let placeholders = placeholderValues;
         // re-read configuration, merge with current list of placeholders
-        let newplaceholders: { [placeholder: string]: string } = this.config.get("placeholders", {});
-        for (let key in newplaceholders) {
-            placeholders[key] = newplaceholders[key];
+        let newPlaceholders: { [placeholder: string]: string } = this.config.get("placeholders", {});
+        for (let key in newPlaceholders) {
+            placeholders[key] = newPlaceholders[key];
         }
         // recursively copy files, replacing placeholders as necessary
         let copyFunc = async (src: string, dest: string) => {

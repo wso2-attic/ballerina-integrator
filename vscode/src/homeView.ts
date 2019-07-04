@@ -40,10 +40,10 @@ export function getHomeView(): string {
                         </div>
                     </a>  
                 </div>`;
-        if (numberOfColumns % 3 == 0) {
+        if (numberOfColumns % 3 === 0) {
             htmlCode = htmlCode + rowHandleStart + card;
         }
-        else if (numberOfColumns % 3 == 2) {
+        else if (numberOfColumns % 3 === 2) {
             htmlCode = htmlCode + card + rowHandleEnd;
         }
         else {
