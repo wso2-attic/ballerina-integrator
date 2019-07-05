@@ -30,7 +30,7 @@ json requestPayload = {
     "appointment_date": "2025-04-02"
 };
 
-http:Client clientEP = new("http://localhost:9090/healthcare");
+http:Client clientEP = new("http://localhost:9092/hospitalMgtService");
 
 @test:Config
 function testReservation() {
@@ -38,7 +38,8 @@ function testReservation() {
     req.setJsonPayload(requestPayload);
     var response = clientEP->post("/categories/surgery/reserve", req);
     if (response is http:Response) {
-        test:assertEquals(response.statusCode, 200, msg = "Reserve-Appointment service did not respond with 200 OK signal!");
+        test:assertEquals(response.statusCode, 200,
+                msg = "Reserve-Appointment service did not respond with 200 OK signal!");
         json expected = "Settled";
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {

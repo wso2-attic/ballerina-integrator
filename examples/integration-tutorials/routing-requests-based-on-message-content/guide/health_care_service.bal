@@ -14,19 +14,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina / http;
-import ballerina / log;
+import ballerina/http;
+import ballerina/log;
 
-listener http:Listener httpListener = new(9090);
+listener http:Listener httpListener = new(9092);
 
 // Endpoint URL of the backend service
-http:Client healthcareEndpoint = new("http://localhost:9091/healthcare");
+http:Client healthcareEndpoint = new("http://localhost:9095/healthcare");
 
 // RESTful service
 @http:ServiceConfig {
-    basePath: "/healthCareService"
+    basePath: "/hospitalMgtService"
 }
-service healthCareService on httpListener {
+service hospitalMgtService on httpListener {
 
     @http:ResourceConfig {
         methods: ["GET"],
@@ -80,7 +80,8 @@ service healthCareService on httpListener {
                 var result = caller->respond(clientResponse);
                 handleErrorResponse(result, "Error at the backend");
             } else {
-                respondWithError(caller, < string > clientResponse.detail().message, "Backend service does not properly respond");
+                respondWithError(caller, < string > clientResponse.detail().message,
+                        "Backend service does not properly respond");
             }
         } else {
             respondWithError(caller, untaint < string > jsonMsg.detail().message, "Request is not JSON");

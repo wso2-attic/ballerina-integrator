@@ -13,7 +13,8 @@ Before you begin,<br>
 - Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relavant to your OS.
   We will call the installed directory as BALLERINA_HOME.
 
-- A Text Editor or an IDE > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+- A Text Editor or an IDE > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), 
+[IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 
 - [cURL](https://curl.haxx.se) or any other REST client
 

@@ -54,16 +54,17 @@ json expected = {
     "confirmed": false
 };
 
-http:Client clientEP = new("http://localhost:9090");
+http:Client clientEP = new("http://localhost:9092/hospitalMgtService");
 
 @test:Config
 function testReservation() {
     http:Request req = new;
     req.setJsonPayload(requestPayload);
     req.addHeader("content-type", "application/json");
-    var response = clientEP->post("/healthcare/categories/surgery/reserve", req);
+    var response = clientEP->post("/categories/surgery/reserve", req);
     if (response is http:Response) {
-        test:assertEquals(response.statusCode, 200, msg = "Reserve-Appointment service did not respond with 200 OK signal!");
+        test:assertEquals(response.statusCode, 200,
+            msg = "Reserve-Appointment service did not respond with 200 OK signal!");
         string | error receivedPayload = response.getTextPayload();
         if (receivedPayload is string) {
             var resPayload = response.getJsonPayload();

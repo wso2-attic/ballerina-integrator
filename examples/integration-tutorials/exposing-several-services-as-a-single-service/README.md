@@ -17,14 +17,18 @@ We will use the same Health Care service used in previous steps as the backend f
 - Download the backend for Health Care System from [here](#).
 - If you did not try the [Transforming Message Content](../../transforming-message-content/transforming-message-content/) tutorial yet, you can clone the project from GitHub and follow the steps as mentioned below.
 
-#### Getting Started
+### Let's Get Started!
 
 This tutorial includes the following sections.
 
-- [Scheduling an appointment](#scheduling-an-appointment)
-- [Adding payment for the appointment](#adding-payment-for-the-appointment)
-- [Sending response back to client](#sending-response-back-to-client)
+- [Implementation](#implementation)
+  - [Scheduling an appointment](#scheduling-an-appointment)
+  - [Adding payment for the appointment](#adding-payment-for-the-appointment)
+  - [Sending response back to client](#sending-response-back-to-client)
+- [Deploying the Service](#deploying-the-service)
 - [Testing the Implementation](#testing-the-implementation)
+
+### Implementation
 
 #### Scheduling an appointment
 
@@ -46,15 +50,40 @@ After invoking the appointment scheduling endpoint, we get the first response an
 
 Finally we get the response from payment endpoint and send it back to the user. We throw errors if the backend response or the original request payload are not in a valid format.
 
-#### Testing the Implementation
+### Deploying the Service
 
-Let's start the service by navigating to the folder _guide/health_care_service.bal_ file is and executing the following command.
+Once you are done with the development, you can deploy the services using any of the methods listed below.
+
+#### Deploying Locally
+
+To deploy locally, navigate to *routing-requests-based-on-message-content/guide*, and execute the following command.
+
+```
+$ ballerina build
+```
+
+This builds a Ballerina executable archive (.balx) of the services that you developed in the target folder.
+You can run them with the command:
+
+```
+$ ballerina run <Executable_File_Name>
+```
+
+#### Deploying on Docker
+
+If necessary you can run the service that you developed above as a Docker container. Ballerina language includes a Ballerina_Docker_Extension, which offers native support to run Ballerina programs on containers.
+
+To run a service as a Docker container, add the corresponding Docker annotations to your service code.
+
+### Testing the Implementation
+
+Let's start the service by navigating to the folder *guide/health_care_service.bal* file is and executing the following command.
 
 ```
 $ ballerina run health_care_service.bal
 ```
 
-The 'healthCareService' service will start on port 9090. Now we can send an HTTP request to this service.
+The 'hospitalMgtService' service will start on port 9092. Now we can send an HTTP request to this service.
 
 Let's create a file called _request.json_ and add the following content.
 
@@ -76,7 +105,7 @@ Let's create a file called _request.json_ and add the following content.
 And issue a curl request as follows.
 
 ```
-$ curl -v http://localhost:9091/healthcare/categories/surgery/reserve -H 'Content-Type:application/json' --data @request.json '
+$ curl -v http://localhost:9092/hospitalMgtService/categories/surgery/reserve -H 'Content-Type:application/json' --data @request.json '
 ```
 
 Following will be a sample response of a succesful appointment reservation.

@@ -30,7 +30,7 @@ json sampleRequest = {
     "appointment_date": "2025-04-02"
 };
 
-http:Client clientEP = new("http://localhost:9090/healthcare");
+http:Client clientEP = new("http://localhost:9092/hospitalMgtService");
 
 @test:Config
 function testTransformation() {

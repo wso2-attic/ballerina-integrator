@@ -18,16 +18,16 @@ import ballerina/http;
 import ballerina/log;
 
 // hospital service endpoint
-http:Client hospitalEP = new("http://localhost:9091");
+http:Client hospitalEP = new("http://localhost:9095");
 
 const string GRAND_OAK = "grand oak community hospital";
 const string CLEMENCY = "clemency medical center";
 const string PINE_VALLEY = "pine valley community hospital";
 
 @http:ServiceConfig {
-    basePath: "/healthcare"
+    basePath: "/hospitalMgtService"
 }
-service healthcareService on new http:Listener(9090) {
+service hospitalMgtService on new http:Listener(9092) {
     // Resource to make an appointment reservation with bill payment
     @http:ResourceConfig {
         methods: ["POST"],
@@ -84,13 +84,16 @@ function createAppointment(http:Caller caller, json payload, string category) re
     http:Response | error reservationResponse = new;
     match hospitalName {
         GRAND_OAK => {
-            reservationResponse = hospitalEP->post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->
+                post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
         }
         CLEMENCY => {
-            reservationResponse = hospitalEP->post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->
+                post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
         }
         PINE_VALLEY => {
-            reservationResponse = hospitalEP->post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->
+                post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
         }
         _ => {
             respondToClient(caller, createErrorResponse(500, "Unknown hospital name"));

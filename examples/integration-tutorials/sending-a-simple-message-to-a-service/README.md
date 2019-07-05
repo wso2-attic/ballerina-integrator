@@ -16,24 +16,25 @@ In this tutorial, we will build a service using Ballerina to connect with the ba
 - [cURL](https://curl.haxx.se) or any other REST client
 - Download the backend for Health Care System from [here](#).
 
-#### Getting Started
+### Let's Get Started!
 
 This tutorial includes the following sections.
 
-- [Creating the RESTful service](#creating-the-restful-service)
-- [Creating the resource that handles the GET requests](#creating-the-resource-that-handles-the-get-requests)
-- [Creating the client to connect to the backend of Health Care System](#creating-the-client-to-connect-to-the-backend-of-health-care-system)
-- [Handling the response from the backend](#handling-the-response-from-the-backend)
-- [Starting the backend service](#starting-the-backend-service)
-- [Starting the RESTful service](#starting-the-restful-service)
-- [Invoking the RESTful service](#invoking-the-restful-service)
+- [Implementation](#implementation)
+  - [Creating the Project Structure](#creating-the-project-structure)
+  - [Creating the RESTful service](#creating-the-restful-service)
+  - [Creating the resource to handle GET requests](#creating-the-resource-to-handle-the-requests)
+  - [Creating the client to connect to Health Care System backend](#creating-the-client-to-connect-to-health-care-system-backend)
+  - [Handling the response from the backend](#handling-the-response-from-the-backend)
+- [Deployment](#deployment)
+  - [Deploying Locally](#deploying-locally)
+  - [Deploying on Docker](#deploying-on-docker)
+- [Testing](#testing)
+  - [Starting the backend service](#starting-the-backend-service)
+  - [Starting the RESTful service](#starting-the-restful-service)
+  - [Invoking the RESTful service](#invoking-the-restful-service)
 
-<!--This implementation consists of one service with multiple resources. Each of these resources can be used for the testing of following Ballerina scenarios.
-
-- POST medical appointment details.
-- UPDATE appointments details.
-- GET appointments details.
-- DELETE appointments details.-->
+### Implementation
 
 #### Creating the Project Structure
 
@@ -41,15 +42,13 @@ Ballerina is a complete programming language that supports custom project struct
 
 ```
   └──sending-a-simple-message-to-a-service
-    ├── guide
-    |   ├── health_care_service.bal
-    └── test
-        └── health_care_service_test.bal
+    └──guide
+        └──health_care_service.bal
 ```
 
 Create the above directories in your local machine and create the empty .bal files as mentioned.
 
-Then open the terminal and navigate to _sending-a-simple-message-to-a-service_ directory. Run the following command to initialize a Ballerina project.
+Then open the terminal and navigate to *sending-a-simple-message-to-a-service* directory. Run the following command to initialize a Ballerina project.
 
 ```
 $ ballerina init
@@ -61,11 +60,11 @@ We first create a listener to listen to requests to the RESTful service.
 
 <!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_1 } -->
 
-Then we add the service which listens for requests using the above listener on port 9090.
+Then we add the service which listens for requests using the above listener on port 9092.
 
 <!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_2 } -->
 
-#### Creating the resource that handles the GET requests
+#### Creating the resource to handle GET requests
 
 Now we can add resources to handle each request type to the service. In this sample, we will add a single resource to handle GET requests to the service.
 
@@ -87,12 +86,39 @@ Once a response is received, it has to be set to the outgoing response of the se
 
 <!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_6 } -->
 
+### Deployment
+
+Once you are done with the development, you can deploy the services using any of the methods listed below.
+
+#### Deploying Locally
+
+To deploy locally, navigate to _routing-requests-based-on-message-content/guide_, and execute the following command.
+
+```
+$ ballerina build
+```
+
+This builds a Ballerina executable archive (.balx) of the services that you developed in the target folder.
+You can run them with the command:
+
+```
+$ ballerina run <Executable_File_Name>
+```
+
+#### Deploying on Docker
+
+If necessary you can run the service that you developed above as a Docker container. Ballerina language includes a Ballerina_Docker_Extension, which offers native support to run Ballerina programs on containers.
+
+To run a service as a Docker container, add the corresponding Docker annotations to your service code.
+
+### Testing
+
 #### Starting the backend service
 
 We have completed the service and resource needed to get the list of doctors from backend. To test this service, first we have to start the Health Care System backend as below.
 
 ```
-$ ballerina run backend.balx
+$ ballerina run health-care-backend.balx
 ```
 
 #### Starting the RESTful service
@@ -107,7 +133,7 @@ The service will be started and you will see the below output.
 
 ```
 $ Initiating service(s) in 'health_care_service'
-[ballerina/http] started HTTP/WS endpoint 0.0.0.0:9090
+[ballerina/http] started HTTP/WS endpoint 0.0.0.0:9092
 ```
 
 #### Invoking the RESTful Service
@@ -115,7 +141,7 @@ $ Initiating service(s) in 'health_care_service'
 Let us invoke the REST service endpoint we just created.
 
 ```
-$ curl -v http://localhost:9090/healthcare/querydoctor/surgery
+$ curl -v http://localhost:9092/hospitalMgtService/getdoctor/surgery
 ```
 
 You will see the response message from the _HealthcareService_ with a list of available doctors and the relevant details.
@@ -144,31 +170,4 @@ You will see the response message from the _HealthcareService_ with a list of av
     "fee": 8000.0
   }
 ]
-```
-
-#### Data Driven Testing
-
-We can implement data driven tests by providing a function pointer as a data-provider. The function returns a value-set of data and you can iterate the same test over the returned data-set.
-
-In this example we have implemented a health_care_service which gets user input and provide a response as REST service.For simplicity, here use an in-memory map to keep all the appointments details.
-
-Following test cases have been implemented in health_care_service_test.bal.
-
-| Test Case ID | Test Case                                                                        | Test Case Description                                                                                                                                                                      | Status    |
-| ------------ | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
-| TC001        | Verify the response when a valid HTTP POST request is sent.                      | **Given**:Healthcare Service should be up and running. </br> **When**:A input should be sent to the service with a valid payload. </br> **Then**:User should get a valid output.           | Automated |
-| TC002        | Verify the response when a valid HTTP POST request with space character is sent. | **Given**:Healthcare Service should be up and running.. </br> **When**:A input should be sent to the service with a valid payload. </br> **Then**:User should get a valid output.          | Automated |
-| TC003        | Verify the response when a valid HTTP POST request is sent as empty json object. | **Given**:Healthcare Service should be up and running.. </br> **When**:A input should be sent to the service with a valid payload. </br> **Then**:User should get a valid output.          | Automated |
-| TC004        | Verify the response when an valid ID is sent to update the details.              | **Given**:Healthcare Service should be up and running.. </br> **When**:A input should be sent to the service with a valid payload. </br> **Then**:User should get a valid output.          | Automated |
-| TC005        | Verify the response when an valid ID is sent to retrieve the details.            | **Given**:Healthcare Service should be up and running.. </br> **When**:A input should be sent to the service with a valid payload. </br> **Then**:User should get a valid output.          | Automated |
-| TC006        | Verify the response when an valid ID is sent to delete the details.              | **Given**:Healthcare Service should be up and running.. </br> **When**:A input should be sent to the service with a valid payload. </br> **Then**:User should get a valid output.          | Automated |
-| NT001        | Verify the response when an invalid ID is sent to update the details.            | **Given**:Healthcare Service should be up and running.. </br> **When**:A input should be sent to the service with a invalid ID. </br> **Then**:It should return an error as ID is invalid. | Automated |
-| NT002        | Verify the response when an invalid ID is sent to retrieve the details.          | **Given**:Healthcare Service should be up and running.. </br> **When**:A input should be sent to the service with a invalid ID. </br> **Then**:It should return an error as ID is invalid. | Automated |
-
-**Running the tests**
-
-Navigate to the folder 'sending-a-simple-message-to-a-service' and run the tests as below.
-
-```
-$ ballerina test
 ```

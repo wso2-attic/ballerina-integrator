@@ -18,7 +18,7 @@ import ballerina/http;
 import ballerina/log;
 
 // Endpoint for the backend service
-http:Client healthcareEndpoint = new("http://localhost:9091/healthcare");
+http:Client healthcareEndpoint = new("http://localhost:9095/healthcare");
 
 // Constants for request paths
 const GRAND_OAK_EP_PATH = "/grandoaks/categories/";
@@ -29,9 +29,9 @@ const PINE_VALLEY_EP_PATH = "/pinevalley/categories/";
 const string ERROR_CODE = "Sample Error";
 
 @http:ServiceConfig {
-    basePath: "/healthCareService"
+    basePath: "/hospitalMgtService"
 }
-service healthCareService on new http:Listener(9090) {
+service hospitalMgtService on new http:Listener(9092) {
 
     // Get list of doctors in a given category
     @http:ResourceConfig {
@@ -92,16 +92,18 @@ service healthCareService on new http:Listener(9090) {
 
             match hospitalName {
                 "grand oak community hospital" => {
-                    backendResponse = healthcareEndpoint->post(untaint string `${GRAND_OAK_EP_PATH}/${category}/reserve`,
+                    backendResponse = healthcareEndpoint->
+                        post(untaint string `${GRAND_OAK_EP_PATH}/${category}/reserve`,
                     backendRequest);
                 }
                 "clemency medical center" => {
-                    backendResponse = healthcareEndpoint->post(untaint string `${CLEMENCY_EP_PATH}/${category}/reserve`,
+                    backendResponse = healthcareEndpoint->
+                        post(untaint string `${CLEMENCY_EP_PATH}/${category}/reserve`,
                     backendRequest);
                 }
                 "pine valley community hospital" => {
-                    backendResponse = healthcareEndpoint->post(untaint string `${PINE_VALLEY_EP_PATH}/${category}/reserve`,
-                    backendRequest);
+                    backendResponse = healthcareEndpoint->
+                        post(untaint string `${PINE_VALLEY_EP_PATH}/${category}/reserve`, backendRequest);
                 }
                 _ => {
                     error err = error(ERROR_CODE, {

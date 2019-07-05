@@ -19,15 +19,18 @@ This example requires the Hospital Service to be running in the background, as t
 - Download the backend for Health Care System from [here](#).
 - If you did not try the [Exposing Several Services as a Single Service](../../exposing-several-services-as-a-single-service/exposing-several-services-as-a-single-service/) tutorial yet, you can clone the project from GitHub and follow the steps as mentioned below.
 
-#### Getting Started
+### Let's Get Started!
 
 This tutorial includes the following sections.
 
-- [Obtaining auth tokens to access Google APIs](#obtaining-auth-tokens-to-access-google-apis)
-- [Adding Gmail configuration](#adding-gmail-configuration)
-- [Generating mail body](#generating-mail-body)
-- [Sending email to user](#sending-email-to-user)
+- [Implementation](#implementation)
+  - [Obtaining auth tokens to access Google APIs](#obtaining-auth-tokens-to-access-google-apis)
+  - [Adding Gmail configuration](#adding-gmail-configuration)
+  - [Generating mail body](#generating-mail-body)
+  - [Sending email to user](#sending-email-to-user)
 - [Testing the Implementation](#testing-the-implementation)
+
+### Implementation
 
 #### Obtaining auth tokens to access Google APIs
 
@@ -65,15 +68,15 @@ Once the mail body is generated, we can send the email to the user's email addre
 
 <!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_4 } -->
 
-#### Testing the Implementation
+### Testing the Implementation
 
-Let's start the service by navigating to the folder _guide/health_care_service.bal_ file is and executing the following command.
+Let's start the service by navigating to the folder *guide/health_care_service.bal* file is and executing the following command.
 
 ```
 $ ballerina run health_care_service.bal
 ```
 
-The 'healthCareService' service will start on port 9090. Now we can send an HTTP request to this service.
+The 'healthCareService' service will start on port 9092. Now we can send an HTTP request to this service.
 
 Let's create a file called _request.json_ and add the following content.
 
@@ -96,7 +99,7 @@ Let's create a file called _request.json_ and add the following content.
 Navigate to _using-the-gmail-connector/guide_ and send the request message to the service using cURL.
 
 ```
-$ curl -v -X POST --data @request.json http://localhost:9090/surgery/reserve --header "Content-Type:application/json"
+$ curl -v -X POST --data @request.json http://localhost:9092/hospitalMgtService/surgery/reserve --header "Content-Type:application/json"
 ```
 
 A request is made to the _healthCareService_ which returns a JSON payload with the confirmation details such as the appointment number and fees.

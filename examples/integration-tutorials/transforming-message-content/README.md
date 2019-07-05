@@ -53,13 +53,16 @@ The request payload message format must be transformed to match the back-end ser
 - Download the backend for Health Care System from [here](#).
 - If you did not try the [Routing Requests Based on Message Content](../../routing-requests-based-on-message-content/routing-requests-based-on-message-content/) tutorial yet, you can clone the project from GitHub and follow the steps as mentioned below.
 
-#### Getting Started
+### Let's Get Started!
 
 This tutorial includes the following sections.
 
-- [Modify the resource to transform messages](#modify-the-resource-to-transform-messages)
-- [Deploying the service](#deploying-the-service)
+- [Implementation](#implementation)
+  - [Modify the resource to transform messages](#modify-the-resource-to-transform-messages)
+- [Deploying the Service](#deploying-the-service)
 - [Testing the Implementation](#testing-the-implementation)
+
+### Implementation
 
 #### Modify the resource to transform messages
 
@@ -67,12 +70,11 @@ In the RESTful service we developed earlier, we already have a resource to sched
 
 <!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_1 } -->
 
-#### Deploying the service
+### Deploying the Service
 
 You can deploy the above services in your local environment. First you can create the Ballerina executable archives (.balx) as follows.
 
-**Building**
-Navigate to _transforming-message-content/guide_ and execute the following command.
+Navigate to _transforming-message-content/guide_ and execute the following command to build the service.
 
 ```bash
 $ ballerina build
@@ -84,7 +86,7 @@ After the build is successful, there will be a _.balx_ file inside the _target_ 
 $ ballerina run health_care_service.balx
 ```
 
-#### Testing the Implementation
+### Testing the Implementation
 
 - Navigate to _transforming-message-content/guide_, and execute the following command to start the service:
 
@@ -112,7 +114,7 @@ $ ballerina run health_care_service.balx
 - Send the message to the service using curl
 
 ```bash
-$ curl -v -X POST --data @input.json http://localhost:9091/healthcare/categories/surgery/reserve --header "Content-Type:application/json"
+$ curl -v -X POST --data @input.json http://localhost:9092/hospitalMgtService/categories/surgery/reserve --header "Content-Type:application/json"
 ```
 
 You will see the response as follows:

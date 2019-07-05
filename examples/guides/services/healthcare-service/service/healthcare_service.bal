@@ -21,7 +21,7 @@ import ballerina/time;
 import daos;
 import util;
 
-listener http:Listener httpListener = new(9091);
+listener http:Listener httpListener = new(9095);
 
 // Healthcare REST service.
 @http:ServiceConfig {

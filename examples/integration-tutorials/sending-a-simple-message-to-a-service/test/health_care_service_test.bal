@@ -17,7 +17,7 @@
 import ballerina/test;
 import ballerina/http;
 import ballerina/io;
-http:Client clientEP = new("http://localhost:9090/hospitalmgt/");
+http:Client clientEP = new("http://localhost:9092/hospitalMgtService/");
 
 // Define the data provider for function testResourceAddAppoinment
 @test:Config {
