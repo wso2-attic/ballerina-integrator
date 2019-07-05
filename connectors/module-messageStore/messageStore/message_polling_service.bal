@@ -131,10 +131,10 @@ function onMessageForwardingFail(PollingServiceConfig config, http:Request reque
 function constructHTTPRequest(jms:Message message) returns http:Request | error {
     var messageContent = check message.getMapMessageContent();
     http:Request httpRequest = new();
+    byte[] payload = <byte[]>messageContent.PAYLOAD; 
+    httpRequest.setBinaryPayload(untaint payload);
     foreach (string, any) (key, value) in messageContent {
-        if (key == PAYLOAD) {
-            httpRequest.setPayload(untaint <string>value);        // TODO: should we parse the message here looking at content-type header?
-        } else {
+        if (key != PAYLOAD) {
             httpRequest.setHeader(untaint key, <string>value);
         }
     }

@@ -57,17 +57,17 @@ public type Client client object {
     # + request - HTTP request to store 
     # + return - `error` if there is an issue storing the message (i.e connection issue with broker) 
     public remote function store(http:Request request) returns error? {
-        map<string> requestMessageMap = {
-        
+        map<any> requestMessageMap = {
+
         };
         string[] httpHeaders = request.getHeaderNames();
         foreach var headerName in httpHeaders {
             requestMessageMap[headerName] = request.getHeader(untaint headerName);
         }
         //set payload as an entry to the map message
-        string payloadAsText = check request.getTextPayload();
-        requestMessageMap[PAYLOAD] = payloadAsText;
-
+        byte[] binaryPayload = check request.getBinaryPayload(); 
+        requestMessageMap[PAYLOAD] = binaryPayload;
+    
         var storeSendResult = self.tryToSendMessage(requestMessageMap);
 
         if (storeSendResult is error) {
@@ -132,7 +132,7 @@ public type Client client object {
     #
     # + requestMessageMap - Map representation `map<string>` of the message to store  
     # + return - `error` in case of an issue delivering the message to the queue
-    function tryToSendMessage(map<string> requestMessageMap) returns error? {
+    function tryToSendMessage(map<any> requestMessageMap) returns error? {
         //create a map message from message detail extracted
         //TODO: here if error occurs it is not returned as an error. Ballerina should be fixed. (/ballerina-lang/issues/16099)
         var messageToStore = self.jmsSession.createMapMessage(requestMessageMap);
