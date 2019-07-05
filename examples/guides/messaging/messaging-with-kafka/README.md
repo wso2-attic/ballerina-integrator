@@ -63,7 +63,7 @@ messaging-with-kafka
 
 - Create the above directories in your local machine and also create empty `.bal` files.
 
-- Then open the terminal and navigate to `messaging-with-kafka/guide` and run Ballerina project initializing toolkit.
+- Then open the terminal and navigate to above created `messaging-with-kafka/guide` directory and run Ballerina project initializing toolkit.
 ```bash
    $ ballerina init
 ```
@@ -87,10 +87,10 @@ kafka:ConsumerConfig consumerConfig = {
 };
 
 // Create kafka listener
-listener kafka:SimpleConsumer consumer = new(consumerConfig);
+listener kafka:Consumer consumer = new(consumerConfig);
 ```
 
-A Kafka subscriber in Ballerina needs to consist of a `kafka:SimpleConsumer` listener with providing required configurations for a Kafka subscriber. 
+A Kafka subscriber in Ballerina needs to consist of a `kafka:Consumer` listener with providing required configurations for a Kafka subscriber.
 
 The `bootstrapServers` field provides the list of host and port pairs, which are the addresses of the Kafka brokers in a "bootstrap" Kafka cluster. 
 
@@ -99,6 +99,45 @@ The `groupId` field specifies the Id of the consumer group.
 The `topics` field specifies the topics that must be listened by this consumer. 
 
 The `pollingInterval` field is the time interval that a consumer polls the topic. 
+
+Please find other subscriber configuration parameters below:
+
+| Parameter | Description  |
+| :---   | :- |
+| offsetReset | Offset reset strategy if no initial offset. |
+| partitionAssignmentStrategy | Strategy class for handling the partition assignment among consumers. |
+| metricsRecordingLevel | Metrics recording level. |
+| metricsReporterClasses | Metrics reporter classes. |
+| clientId | ID to be used for server side logging. |
+| interceptorClasses | Interceptor classes to be used before sending records. |
+| isolationLevel | Transactional message reading method. Use "read_committed" to read committed messages only in transactional mode when poll() is called. Use "read_uncommitted" to read all the messages, even the aborted ones. |
+| properties | Additional properties if required. |
+| sessionTimeout | Timeout used to detect consumer failures when heartbeat threshold is reached. |
+| heartBeatInterval | Expected time between heartbeats. |
+| metadataMaxAge | Maximum time to force a refresh of metadata. |
+| autoCommitInterval | Auto committing interval for commit offset, when auto-commit is enabled. |
+| maxPartitionFetchBytes | The maximum amount of data per-partition the server returns. |
+| sendBuffer | Size of the TCP send buffer (SO_SNDBUF). |
+| receiveBuffer | Size of the TCP receive buffer (SO_RCVBUF). |
+| fetchMinBytes | Minimum amount of data the server should return for a fetch request. |
+| fetchMaxBytes | Maximum amount of data the server should return for a fetch request. |
+| fetchMaxWait | Maximum amount of time the server will block before answering the fetch request. |
+| reconnectBackoffMax | Maximum amount of time in milliseconds to wait when reconnecting. |
+| retryBackoff | Time to wait before attempting to retry a failed request. |
+| metricsSampleWindow | Window of time a metrics sample is computed over. |
+| metricsNumSamples | Number of samples maintained to compute metrics. |
+| requestTimeout | Wait time for response of a request. |
+| connectionMaxIdle | Close idle connections after the number of milliseconds. |
+| maxPollRecords | Maximum number of records returned in a single call to poll. |
+| maxPollInterval | Maximum delay between invocations of poll. |
+| reconnectBackoff | Time to wait before attempting to reconnect. |
+| pollingTimeout | Timeout interval for polling. |
+| concurrentConsumers | Number of concurrent consumers. |
+| defaultApiTimeout | Default API timeout value for APIs with duration. |
+| autoCommit | Enables auto committing offsets. |
+| checkCRCS | Check the CRC32 of the records consumed. |
+| excludeInternalTopics | Whether records from internal topics should be exposed to the consumer. |
+| decoupleProcessing | Decouples processing. |
 
 Let's now see the complete implementation of the `inventory_control_system`, which is a Kafka topic subscriber.
 
@@ -120,14 +159,14 @@ kafka:ConsumerConfig consumerConfig = {
 };
 
 // Create kafka listener
-listener kafka:SimpleConsumer consumer = new(consumerConfig);
+listener kafka:Consumer consumer = new(consumerConfig);
 
 // Kafka service that listens from the topic 'product-price'
 // 'inventoryControlService' subscribed to new product price updates from
 // the product admin and updates the Database.
 service kafkaService on consumer {
     // Triggered whenever a message added to the subscribed topic
-    resource function onMessage(kafka:SimpleConsumer simpleConsumer, kafka:ConsumerRecord[] records) {
+    resource function onMessage(kafka:Consumer consumer, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
         foreach var entry in records {
             byte[] serializedMsg = entry.value;
@@ -155,6 +194,40 @@ Let's next focus on the implementation of the `product_admin_portal`, which acts
 First, let's see how to add the Kafka configurations for a Kafka publisher written in Ballerina language. Refer to the code segment attached below.
 
 ##### Kafka producer configurations
+
+Please find the producer configuration parameters below:
+
+| Parameter | Description  |
+| :---   | :- |
+| bootstrapServers | List of remote server endpoints of Kafka brokers. |
+| acks | Number of acknowledgments. |
+| compressionType | Compression type to be used for messages. |
+| clientID | ID to be used for server side logging. |
+| metricsRecordingLevel | Metrics recording level. |
+| metricReporterClasses | Metrics reporter classes. |
+| partitionerClass | Partitioner class to be used to select partition to which the message is sent. |
+| interceptorClasses | Interceptor classes to be used before sending records. |
+| transactionalID | Transactional ID to be used in transactional delivery. |
+| bufferMemory | Total bytes of memory the producer can use to buffer records. |
+| noRetries | Number of retries to resend a record. |
+| batchSize | Number of records to be batched for a single request. Use 0 for no batching. |
+| linger | Delay to allow other records to be batched. |
+| sendBuffer | Size of the TCP send buffer (SO_SNDBUF). |
+| receiveBuffer | Size of the TCP receive buffer (SO_RCVBUF). |
+| maxRequestSize | The maximum size of a request in bytes. |
+| reconnectBackoff | Time to wait before attempting to reconnect. |
+| reconnectBackoffMax | Maximum amount of time in milliseconds to wait when reconnecting. |
+| retryBackoff | Time to wait before attempting to retry a failed request. |
+| maxBlock | Maximum block time which the send is blocked, when the buffer is full. |
+| requestTimeout | Wait time for response of a request. |
+| metadataMaxAge | Maximum time to force a refresh of metadata. |
+| metricsSampleWindow | Time window for a metrics sample to computed over. |
+| metricsNumSamples | Number of samples maintained to compute metrics. |
+| maxInFlightRequestsPerConnection | Maximum number of unacknowledged requests on a single connection. |
+| connectionsMaxIdle | Close idle connections after the number of milliseconds. |
+| transactionTimeout | Timeout for transaction status update from the producer. |
+| enableIdempotence | Exactly one copy of each message is written in the stream when enabled. |
+
 ```ballerina
 kafka:ProducerConfig producerConfigs = {
     bootstrapServers: "localhost:9092",
@@ -163,10 +236,10 @@ kafka:ProducerConfig producerConfigs = {
     noRetries: 3
 };
 
-kafka:SimpleProducer kafkaProducer = new(producerConfigs);
+kafka:Producer kafkaProducer = new(producerConfigs);
 ```
 
-A Kafka producer in Ballerina needs to consist of a `kafka:SimpleProducer` object with specifying the required configurations for a Kafka publisher. 
+A Kafka producer in Ballerina needs to consist of a `kafka:Producer` object with specifying the required configurations for a Kafka publisher.
 
 Let's now see the complete implementation of the `product_admin_portal`, which is a Kafka topic publisher. Inline comments added for better understanding.
 
@@ -187,7 +260,7 @@ kafka:ProducerConfig producerConfigs = {
     noRetries: 3
 };
 
-kafka:SimpleProducer kafkaProducer = new(producerConfigs);
+kafka:Producer kafkaProducer = new(producerConfigs);
 
 // HTTP service endpoint
 listener http:Listener httpListener = new(9090);
@@ -256,7 +329,118 @@ service productAdminService on httpListener {
 }
 ```
 
-## Testing 
+#### Enabling Security for the kafka
+Ballerina kafka connector allows to secure a Kafka cluster using Transport Layer Security (TLS) authentication.
+
+##### Generating TLS keys and certificates
+
+Please execute the following bash script to generate the keystore and trust-store for broker (kafka.server.keystore.jks and kafka.server.truststore.jks) and client (kafka.client.keystore.jks and kafka.client.truststore.jks):
+
+```ballerina
+#!/bin/bash
+PASSWORD=test1234
+VALIDITY=365
+keytool -keystore kafka.server.keystore.jks -alias localhost -validity $VALIDITY -genkey
+openssl req -new -x509 -keyout ca-key -out ca-cert -days $VALIDITY
+keytool -keystore kafka.server.truststore.jks -alias CARoot -import -file ca-cert
+keytool -keystore kafka.client.truststore.jks -alias CARoot -import -file ca-cert
+keytool -keystore kafka.server.keystore.jks -alias localhost -certreq -file cert-file
+openssl x509 -req -CA ca-cert -CAkey ca-key -in cert-file -out cert-signed -days $VALIDITY -CAcreateserial -passin pass:$PASSWORD
+keytool -keystore kafka.server.keystore.jks -alias CARoot -import -file ca-cert
+keytool -keystore kafka.server.keystore.jks -alias localhost -import -file cert-signed
+keytool -keystore kafka.client.keystore.jks -alias localhost -validity $VALIDITY -genkey
+keytool -keystore kafka.client.keystore.jks -alias localhost -certreq -file cert-file
+openssl x509 -req -CA ca-cert -CAkey ca-key -in cert-file -out cert-signed -days $VALIDITY -CAcreateserial -passin pass:$PASSWORD
+keytool -keystore kafka.client.keystore.jks -alias CARoot -import -file ca-cert
+keytool -keystore kafka.client.keystore.jks -alias localhost -import -file cert-signed
+```
+
+##### Configuring TLS authentication for the Kafka broker
+
+We have to configure the following properties in <KAFKA_HOME>/config/server.properties file.
+
+* Configure the required security protocols and ports for the listeners.
+```ballerina
+listeners=SSL://<your.host.name>:9093
+```
+
+* Select SSL as the security protocol for inter-broker communication.
+```ballerina
+security.inter.broker.protocol=SSL
+```
+
+* Configure the following TLS protocol-specific properties
+```ballerina
+ssl.client.auth=required
+ssl.keystore.location={file-path}/kafka.server.keystore.jks
+ssl.keystore.password=test1234
+ssl.key.password=test1234
+ssl.truststore.location={file-path}/kafka.server.truststore.jks
+ssl.truststore.password=test1234
+```
+
+##### Configuring TLS authentication for Kafka subscribers & producers
+
+Following are TLS authentication parameters for Kafka subscribers & producers:
+
+| Parameter | Description  |
+| :---   | :- |
+| sslEnabledProtocols | The list of protocols enabled for SSL connections. |
+| securityProtocol | Protocol used to communicate with brokers. |
+| sslProtocol | The SSL protocol used to generate the SSLContext. Default setting is TLS, which is fine for most cases. Allowed values in recent JVMs are TLS, TLSv1.1 and TLSv1.2. SSL, SSLv2 and SSLv3 may be supported in older JVMs, but their usage is discouraged due to known security vulnerabilities. |
+| sslProvider | The name of the security provider used for SSL connections. Default value is the default security provider of the JVM. |
+| sslKeyPassword | The password of the private key in the key store file. This is optional for client. |
+| sslKeystoreType | The file format of the key store file. This is optional for client. |
+| sslKeystoreLocation | The location of the key store file. This is optional for client and can be used for two-way authentication for client. |
+| sslKeystorePassword | The store password for the key store file. This is optional for client and only needed if ssl.keystore.location is configured. |
+| sslTruststoreType | The file format of the trust store file. |
+| sslTruststoreLocation | The location of the trust store file. |
+| sslTruststorePassword | The password for the trust store file. If a password is not set access to the truststore is still available, but integrity checking is disabled. |
+| sslCipherSuites | A list of cipher suites. This is a named combination of authentication, encryption, MAC and key exchange algorithm used to negotiate the security settings for a network connection using TLS or SSL network protocol. By default all the available cipher suites are supported. |
+| sslEndpointIdentificationAlgorithm | The endpoint identification algorithm to validate server hostname using server certificate. |
+| sslKeymanagerAlgorithm | The algorithm used by key manager factory for SSL connections. Default value is the key manager factory algorithm configured for the Java Virtual Machine. |
+| sslTrustmanagerAlgorithm | The algorithm used by trust manager factory for SSL connections. Default value is the trust manager factory algorithm configured for the Java Virtual Machine. |
+| sslSecureRandomImplementation | The SecureRandom PRNG implementation to use for SSL cryptography operations. |
+
+Let's see a sample for the Kafka topic publisher with SSL parameters.
+
+##### message_producer_with_ssl.bal
+```ballerina
+import wso2/kafka;
+import ballerina/log;
+
+kafka:ProducerConfig producerConfigs = {
+    // Here we create a producer configs with SSL parameters.
+    bootstrapServers: "localhost:9093",
+    clientID:"basic-producer",
+    acks:"all",
+    noRetries:3,
+    sslEnabledProtocols:"TLSv1.2,TLSv1.1,TLSv1",
+    securityProtocol:"SSL",
+    sslTruststoreLocation:"<FILE_PATH>/kafka.client.truststore.jks",
+    sslTruststorePassword:"test1234",
+    sslKeystoreLocation:"<FILE_PATH>/kafka.client.keystore.jks",
+    sslKeystorePassword:"test1234",
+    sslKeyPassword:"test1234"
+};
+
+kafka:Producer kafkaProducer = new(producerConfigs);
+
+public function main (string... args) {
+    string msg = "Hello World, Ballerina";
+    byte[] serializedMsg = msg.toByteArray("UTF-8");
+    var sendResult = kafkaProducer->send(serializedMsg, "test-kafka-topic");
+    if (sendResult is error) {
+        log:printError("Kafka producer failed to send data", err = sendResult);
+    }
+    var flushResult = kafkaProducer->flushRecords();
+    if (flushResult is error) {
+        log:printError("Kafka producer failed to flush the records", err = flushResult);
+    }
+}
+```
+
+## Testing
 
 ### Invoking the service
 
@@ -283,7 +467,7 @@ service productAdminService on httpListener {
 ```
    Here we created a new topic that consists of two partitions with a single replication factor.
    
-- Start the `productAdminService`, which is an HTTP service that publishes messages to the Kafka topic by entering the following command from `messaging-with-kafka/guide` directory.
+- Start the `productAdminService` (implemented in the above mentioned sample), which is an HTTP service that publishes messages to the Kafka topic by entering the following command from `messaging-with-kafka/guide` directory.
 ```bash
    $ ballerina run product_admin_portal
 ```
