@@ -29,7 +29,7 @@ public type Client client object {
     jms:QueueSender queueSender;
 
     //Message store client to use in case of fail to send by primary store client
-    Client? failoverStore;
+    Client? secondaryStore;
 
     //sote client config
     MessageStoreConfiguration storeConfig;
@@ -37,11 +37,17 @@ public type Client client object {
     //message broker queue message store client send messages to
     string queueName;
 
+    //TODO: implement transaction support
+    # Intiliazes MessageStore client. 
+    # 
+    # + storeConfig - `MessageStoreConfiguration` containing configurations
+    # + enableGuranteedDelivery - This is not yet supported. Use JMS transactions to ensure message is stored 
+    # + return - `error` if there is an issue initlaizing connection to configured broker
     public function __init(MessageStoreConfiguration storeConfig, 
-                boolean enableGuranteedDelivery = false, Client? failoverStore = ()) returns error? {
+                boolean enableGuranteedDelivery = false) returns error? {
         self.storeConfig = storeConfig;
         self.queueName = storeConfig.queueName;
-        self.failoverStore = failoverStore;
+        self.secondaryStore = storeConfig["secondaryStore"];
         var jmsObjects = check self.intializeMessageSender(storeConfig);
         if (jmsObjects is ((jms:Connection, jms:Session, jms:QueueSender))) {
             (self.jmsConnection, self.jmsSession, self.queueSender) = jmsObjects;
@@ -50,22 +56,22 @@ public type Client client object {
         }
     }
 
-    # Store HTTP request. This has receliency for the delivery of the message to the message broker queue 
+    # Store HTTP message. This has receliency for the delivery of the message to the message broker queue 
     # accroding to `MessageStoreRetryConfig`. Will return an `error` of all reries are elapsed, and if all retries 
-    # configured to failover message store are elapsed (if one specified)
+    # configured to secondary message store are elapsed (if one specified)
     # 
-    # + request - HTTP request to store 
+    # + message - HTTP message to store 
     # + return - `error` if there is an issue storing the message (i.e connection issue with broker) 
-    public remote function store(http:Request request) returns error? {
+    public remote function store(http:Request message) returns error? {
         map<any> requestMessageMap = {
 
         };
-        string[] httpHeaders = request.getHeaderNames();
+        string[] httpHeaders = message.getHeaderNames();
         foreach var headerName in httpHeaders {
-            requestMessageMap[headerName] = request.getHeader(untaint headerName);
+            requestMessageMap[headerName] = message.getHeader(untaint headerName);
         }
         //set payload as an entry to the map message
-        byte[] binaryPayload = check request.getBinaryPayload(); 
+        byte[] binaryPayload = check message.getBinaryPayload(); 
         requestMessageMap[PAYLOAD] = binaryPayload;
     
         var storeSendResult = self.tryToSendMessage(requestMessageMap);
@@ -109,10 +115,10 @@ public type Client client object {
 
                 //if max retries breached. Check for failover store
                 if (retryCount == retryConfig.count) {
-                    Client? failoverClient = self.failoverStore;
+                    Client? failoverClient = self.secondaryStore;
                     //try failover store
                     if (failoverClient is Client) {
-                        var failOverClientStoreResult = failoverClient->store(request);
+                        var failOverClientStoreResult = failoverClient->store(message);
                         if (failOverClientStoreResult is error) {
                             log:printError("Error while sending message to failover store. Message store queue = "
                             + self.queueName, err = failOverClientStoreResult);
@@ -159,6 +165,7 @@ public type Client client object {
         string providerUrl = storeConfig.providerUrl;
         self.queueName = storeConfig.queueName;
 
+        //TODO: JMS connector need to use these for security. Currenlty, no usage. 
         string? userName = storeConfig["userName"];
         string? password = storeConfig["password"];
 
@@ -209,9 +216,10 @@ public type Client client object {
     }
 };
 
-# Configuration for Message Store 
+# Configuration for Message Store.MessageForwardingProcessor 
 #
 # + messageBroker - Message broker store is connecting to 
+# + secondaryStore - `Client` which is used to forward messages when primary store is not reachable 
 # + retryConfig - `MessageStoreRetryConfig` related to recelliency of message store client (optional)
 # + providerUrl - connection url pointing to message broker 
 # + queueName - messages will be stored to this queue on the broker  
@@ -219,6 +227,7 @@ public type Client client object {
 # + password - password to use when connecting to the broker (optional)
 public type MessageStoreConfiguration record {
     MessageBroker messageBroker;
+    Client secondaryStore?;
     MessageStoreRetryConfig retryConfig?;
     string providerUrl;
     string queueName;

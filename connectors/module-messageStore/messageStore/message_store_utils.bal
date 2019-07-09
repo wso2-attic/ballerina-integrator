@@ -16,6 +16,23 @@
 
 public type MessageBroker ACTIVE_MQ|IBM_MQ|WSO2MB;
 
+public type MessageForwardFailAction DROP|DLCSTORE|DEACTIVATE;
+
+public type HttpVerb POST|GET|PUT|PATCH|DELETE;
+
+//constants for HTTP verbs
+public const POST = "POST";
+public const GET = "GET";
+public const PUT = "PUT";
+public const PATCH = "PATCH";
+public const DELETE = "DELETE";
+
+
+//constants for message forwarding failure actions
+public const DROP = "DROP";
+public const DLCSTORE = "DLCSTORE";
+public const DEACTIVATE = "DEACTIVATE";
+
 //constants for broker types
 public const ACTIVE_MQ = "ACTIVE_MQ";
 public const IBM_MQ = "IBM_MQ";
@@ -23,6 +40,8 @@ public const WSO2MB = "WSO2MB";
 
 //constant used as key for paload in JMS map message
 const PAYLOAD = "PAYLOAD";
+
+const string CLIENT_ACKNOWLEDGE = "CLIENT_ACKNOWLEDGE";
 
 // Error Codes
 final string MESSAGE_STORE_ERROR_CODE = "(wso2/messageStore)MessageStoreError";

@@ -31,9 +31,14 @@ service messageForwardingService = service {
         if (queueMessage is jms:Message) {
             var httpRequest = constructHTTPRequest(queueMessage);
             if(httpRequest is http:Request) {
+                //invoke pre-process logic 
+                if(config.preProcessRequest is function(http:Request request)) {
+                    config.preProcessRequest.call(httpRequest);
+                }
                 //invoke the backend using HTTP Client, it will use receliecy parameters
                 http:Client clientEP = config.httpClient;
-                var response = clientEP->post("", httpRequest);
+                string httpVerb = config.HttpOperation;
+                var response = clientEP->execute(untaint httpVerb, "", httpRequest);
                 evaluateForwardSuccess(config, httpRequest, response, queueMessage);
             } else {
                 log:printError("Error occurred while converting message received from queue " 
@@ -63,7 +68,7 @@ http:Response | error response, jms:Message queueMessage) {
     //will be received. Still in case of forwarding we need to consider it as a failure
     if (response is http:Response) {
         boolean isFailingResponse = false;
-        int[] retryHTTPCodes = config.retryHTTPCodes;
+        int[] retryHTTPCodes = config.retryHttpCodes;
         foreach var statusCode in retryHTTPCodes {
             if (statusCode == response.statusCode) {
                 isFailingResponse = true;
@@ -94,17 +99,21 @@ http:Response | error response, jms:Message queueMessage) {
 # + request - HTTP request `http:Request` failed to forward 
 # + queueMessage - message received from the queue `jms:Message` that failed to process
 function onMessageForwardingFail(PollingServiceConfig config, http:Request request, jms:Message queueMessage) {
-    Client? DLCStore = config["DLCStore"];
-    if (config.deactivateOnFail) {        //just deactivate the processor
+    if (config.forwardingFailAction == DEACTIVATE) {        //just deactivate the processor
         log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
         + ". Message forwading is stopped for " + config.httpEP);
         config.onDeactivate.call();
-    } else if (DLCStore is Client) {        //if there is a DLC store is defined, store the message into that
+    } else if (config.forwardingFailAction == DLCSTORE) {  //if there is a DLC store is defined, store the message into that
         log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
         + ". Forwarding message to DLC Store");
-        var storeResult = DLCStore->store(request);
-        if (storeResult is error) {
-            log:printError("Error while forwarding message to DLC store. Message will be lost", err = storeResult);
+        Client? DLCStore = config["DLCStore"];
+        if(DLCStore is Client) {
+            var storeResult = DLCStore->store(request);
+            if (storeResult is error) {
+                log:printError("Error while forwarding message to DLC store. Message will be lost", err = storeResult);
+            }
+        } else {
+             log:printError("Error while forwarding message to DLC store. DLC store is not specified. Message will be lost");
         }
         jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
         var ack = caller->acknowledge(queueMessage);
@@ -112,7 +121,7 @@ function onMessageForwardingFail(PollingServiceConfig config, http:Request reque
             log:printError("Error occurred while acknowledging message",
                 err = ack);
         }
-    } else {        //drop the message
+    } else {        //drop the message and continue
         log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
         + ". Dropping message and continue");
         jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();

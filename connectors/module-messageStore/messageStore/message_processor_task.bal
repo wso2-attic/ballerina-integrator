@@ -19,6 +19,7 @@ import ballerina/task;
 import ballerina/log;
 import ballerina/runtime;
 import ballerina/math;
+import ballerina/http;
 
 
 # Definition of forwarding Processor object. It polls messages from Message Broker
@@ -48,15 +49,16 @@ public type MessageForwardingProcessor object {
     # + processorConfig - `ForwardingProcessorConfiguration` processor configuration 
     # + handleResponse  - `function (http:Response resp)` lamda to process the response from HTTP BE 
     #                      after forwarding the request by processor
+    # + preProcessRequest - `function(http:Request requst)` lamda to process the request before forwarding to the backend
     # + return          - `error` if there is an issue initializing processor (i.e connection issue with broker)
     public function __init(ForwardingProcessorConfiguration processorConfig,
-    function(http:Response resp) handleResponse) returns error? {
+    function(http:Response resp) handleResponse, function(http:Request request)? preProcessRequest = ()) returns error? {
         self.active = true;
         self.processorConfig = processorConfig;
 
         MessageStoreConfiguration storeConfig = processorConfig.storeConfig;
         string initialContextFactory = getInitialContextFactory(storeConfig.messageBroker);
-        string acknowledgementMode = "CLIENT_ACKNOWLEDGE";
+        string acknowledgementMode = CLIENT_ACKNOWLEDGE;
         string queueName = storeConfig.queueName;
 
         //init connection to the broker
@@ -80,10 +82,12 @@ public type MessageForwardingProcessor object {
             queueReceiver: self.queueReceiver,
             queueName: queueName,
             httpClient: self.httpClient,
-            httpEP: processorConfig.HTTPEndpoint,
-            deactivateOnFail: processorConfig.deactivateOnFail,
+            httpEP: processorConfig.HttpEndpoint,
+            HttpOperation: processorConfig.HttpOperation,
+            forwardingFailAction: processorConfig.forwardingFailAction,
             onMessagePollingFail: onMessagePollingFail(self),
             onDeactivate: onDeactivate(self),
+            preProcessRequest: preProcessRequest,
             handleResponse: handleResponse
         };
 
@@ -92,7 +96,7 @@ public type MessageForwardingProcessor object {
             pollingServiceConfig.DLCStore = dlcStore;
         }
 
-        int[]? retryHTTPCodes = processorConfig["retryHTTPStatusCodes"];
+        int[]? retryHTTPCodes = processorConfig["retryHttpStatusCodes"];
         if (retryHTTPCodes is int[]) {
             pollingServiceConfig.retryHTTPCodes = retryHTTPCodes;
         }
@@ -141,14 +145,14 @@ public type MessageForwardingProcessor object {
     # + processorConfig - `ForwardingProcessorConfiguration` config 
     # + return - `http:Client` in case of successful initialization or `error` in case of issue
     function initializeHTTPClient(ForwardingProcessorConfiguration processorConfig) returns http:Client | error {
-        http:Client backendClientEP = new(processorConfig.HTTPEndpoint, config = {
+        http:Client backendClientEP = new(processorConfig.HttpEndpoint, config = {
 
             retryConfig: {
                 interval: processorConfig.retryInterval, //Retry interval in milliseconds
                 count: processorConfig.maxRedeliveryAttempts,   //Number of retry attempts before giving up
                 backOffFactor: 1.0, //Multiplier of the retry interval
                 maxWaitInterval: 20000,  //Maximum time of the retry interval in milliseconds
-                statusCodes: processorConfig.retryHTTPStatusCodes //HTTP response status codes which are considered as failures
+                statusCodes: processorConfig.retryHttpStatusCodes //HTTP response status codes which are considered as failures
             },
             timeoutMillis: 2000
         });
@@ -256,11 +260,12 @@ function onDeactivate(MessageForwardingProcessor processor) returns function() {
 # Configuration for Message-forwarding-processor. 
 #
 # + storeConfig - Config containing store information `MessageStoreConfiguration`  
-# + HTTPEndpoint - Messages will be forwarded to this HTTP url
+# + HttpEndpoint - Messages will be forwarded to this HTTP url
+# + HttpOperation - HTTP Verb to use when forwarding the message
 # + pollTimeConfig - Interval messages should be polled from the 
 #                    broker (Milliseconds) or cron expression for polling task  
 # + retryInterval - Interval messages should be re-tried in case of forwading failure (Milliseconds) 
-# + retryHTTPStatusCodes - If processor received any response after forwading the message with any of 
+# + retryHttpStatusCodes - If processor received any response after forwading the message with any of 
 #                          these status codes, it will be considered as a failed invocation `int[]` 
 # + maxRedeliveryAttempts - Max number of times a message should be re-tried in case of forwading failure 
 # + maxStoreConnectionAttemptInterval - Max time interval to attempt connecting to broker (seconds)  
@@ -268,32 +273,37 @@ function onDeactivate(MessageForwardingProcessor processor) returns function() {
 #                                     get multiplied by `storeConnectionBackOffFactor` until `maxStoreConnectionAttemptInterval`
 #                                     is reached
 # + storeConnectionBackOffFactor - Multiplier for interval to attempt connecting to broker
-# + DLCStore - In case of forwarding failure, messages will be stored using this backup `Client`
-# + deactivateOnFail - `true` if processor needs to be deactivated on fowarding failure 
+# + forwardingFailAction - Action to take when a message is failed to forward. `MessageForwardFailAction`
+#                          `DROP` - drop message and continue (default)
+#                          `DLCSTORE`- store message in configured  `DLCStore` 
+#                          `DEACTIVATE` - stop message processor 
+# + DLCStore - In case of forwarding failure, messages will be stored using this backup `Client`. Make sure `forwardingFailAction` is
+#              `DLCSTORE`
 public type ForwardingProcessorConfiguration record {
     MessageStoreConfiguration storeConfig;
-    string HTTPEndpoint;
+    string HttpEndpoint;
+    http:HttpOperation HttpOperation;
 
     //configured in milliseconds for polling interval
     //can specify a cron instead
-    int | string pollTimeConfig;
+    int|string pollTimeConfig;
 
     //forwarding retry
     int retryInterval;    //configured in milliseconds
-    int[] retryHTTPStatusCodes?;
+    int[] retryHttpStatusCodes?;
     int maxRedeliveryAttempts;
 
     //connection retry
     //TODO: make these optional with defaults
-    int maxStoreConnectionAttemptInterval = 60;    //configured ins econds
+    int maxStoreConnectionAttemptInterval = 60;    //configured in seconds
     int storeConnectionAttemptInterval = 5;    //configured in seconds
-    float storeConnectionBackOffFactor = 1.2;    //configured ins econds
+    float storeConnectionBackOffFactor = 1.2;    
+
+    //action on forwarding fail of a message
+    MessageForwardFailAction forwardingFailAction = DROP;
 
     //specify message store client to forward failing messages
     Client DLCStore?;
-    //specify if processor should deactivate on forwading failure
-    boolean deactivateOnFail = false;
-
 };
 
 # Record passing required information to service attached to message processor task.
@@ -302,12 +312,14 @@ public type ForwardingProcessorConfiguration record {
 # + queueName - Name of the queue to receive messages from  
 # + httpClient - `http:Client` http client used to forward messages 
 # + httpEP - Messages will be forwarded to this HTTP url 
+# + HttpOperation - HTTP Verb to use when forwarding the message
 # + DLCStore - In case of forwarding failure, messages will be stored using this backup `Client`  
-# + deactivateOnFail - `true` if processor needs to be deactivated on fowarding failure 
-# + retryHTTPCodes - If processor received any response after forwading the message with any of
+# + forwardingFailAction - `MessageForwardFailAction` specifing processor behaviour on fowarding failure 
+# + retryHttpCodes - If processor received any response after forwading the message with any of
 #                    these status codes, it will be considered as a failed invocation `int[]` 
 # + onMessagePollingFail - Lamda with logic what to execute on a failure polling messages from broker `function()`
 # + onDeactivate - Lamda with logic what to execute to deactivate message processor  
+# + preProcessRequest - Lamda to execute upon request which is stored, before forwarding to the configured endpoint
 # + handleResponse - Lamda to execute upon response received by forwarding messages to the configured endpoint 
 #                    `function(http:Response resp)`
 public type PollingServiceConfig record {
@@ -315,11 +327,13 @@ public type PollingServiceConfig record {
     string queueName;
     http:Client httpClient;
     string httpEP;
+    http:HttpOperation HttpOperation;
     Client DLCStore?;
-    boolean deactivateOnFail;
-    int[] retryHTTPCodes?;
+    MessageForwardFailAction forwardingFailAction;
+    int[] retryHttpCodes?;
     function() onMessagePollingFail;
     function() onDeactivate;
+    function(http:Request request)? preProcessRequest;
     function(http:Response resp) handleResponse;
 };
 
