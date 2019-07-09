@@ -17,29 +17,22 @@
 import ballerina/test;
 import ballerina/http;
 
-json requestPayload = {
-    "name": "John Doe",
-    "dob": "1940-03-19",
-    "ssn": "234-23-525",
-    "address": "California",
-    "phone": "8770586755",
-    "email": "johndoe@gmail.com",
-    "doctor": "thomas collins",
-    "hospital": "grand oak community hospital",
-    "cardNo": "7844481124110331",
-    "appointment_date": "2025-04-02"
-};
-
 http:Client clientEP = new("http://localhost:9091/healthcare");
 
-@test:Config
-function testReservation() {
+# Description: This test scenario verifies if appointment can be reserved and payments can be settled using a 
+# single service. 
+# + dataset - dataset Parameter Description
+@test:Config {
+    dataProvider: "testReservationDataProvider"
+}
+function testReservation(json dataset, json resultset) {
     http:Request req = new;
-    req.setJsonPayload(requestPayload);
+    req.setJsonPayload(dataset);
     var response = clientEP->post("/categories/surgery/reserve", req);
     if (response is http:Response) {
-        test:assertEquals(response.statusCode, 200, msg = "Reserve-Appointment service did not respond with 200 OK signal!");
-        json expected = "Settled";
+        test:assertEquals(response.statusCode, 200, msg = "Reserve-Appointment service did not respond with
+                                                                                                200 OK signal!");
+        json expected = resultset.expected;
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
             test:assertEquals(resPayload.status, expected, msg = "Response mismatch!");
@@ -49,4 +42,26 @@ function testReservation() {
     } else {
         test:assertFail(msg = "Response from reservation service is invalid");
     }
+}
+
+function testReservationDataProvider() returns json[][] {
+    return [
+    [
+    {
+        "name": "John Doe",
+        "dob": "1940-03-19",
+        "ssn": "234-23-525",
+        "address": "California",
+        "phone": "8770586755",
+        "email": "johndoe@gmail.com",
+        "doctor": "thomas collins",
+        "hospital": "grand oak community hospital",
+        "cardNo": "7844481124110331",
+        "appointmentDate": "2025-04-02"
+    },
+    {
+        "expected": "success"
+    }
+    ]
+    ];
 }
