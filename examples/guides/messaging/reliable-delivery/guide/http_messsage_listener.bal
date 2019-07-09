@@ -19,12 +19,12 @@ import ballerina/http;
 import wso2/messageStore;
 
 
-messageStore:MessageStoreConfiguration messageStoreConfig = {
+messageStore:MessageStoreConfiguration secondaryMessageStoreConfig = {
     messageBroker: "ACTIVE_MQ",
     providerUrl: "tcp://localhost:61616",
-    queueName: "myStore",
-    retryConfig: storeRetryConfig
+    queueName: "myFailoverStore"
 };
+messageStore:Client secondaryStoreClient = check new messageStore:Client(secondaryMessageStoreConfig);
 
 messageStore:MessageStoreRetryConfig storeRetryConfig = {
     count: 4,
@@ -33,15 +33,15 @@ messageStore:MessageStoreRetryConfig storeRetryConfig = {
     maxWaitInterval: 15000
 };
 
-messageStore:MessageStoreConfiguration failOverMessageStoreConfig = {
+messageStore:MessageStoreConfiguration messageStoreConfig = {
     messageBroker: "ACTIVE_MQ",
     providerUrl: "tcp://localhost:61616",
-    queueName: "myFailoverStore"
+    queueName: "myStore",
+    retryConfig: storeRetryConfig,
+    secondaryStore: secondaryStoreClient
 };
 
-//create storing endpoints
-messageStore:Client failoverStoreClient = checkpanic new messageStore:Client(failOverMessageStoreConfig);
-messageStore:Client storeClient = checkpanic new messageStore:Client(messageStoreConfig, failoverStore = failoverStoreClient);
+messageStore:Client storeClient = check new messageStore:Client(messageStoreConfig);
 
 //export http listner port on 9091
 listener http:Listener httpListener = new(9091);

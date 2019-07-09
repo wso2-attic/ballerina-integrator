@@ -39,13 +39,14 @@ public function main(string... args) {
 
     messageStore:ForwardingProcessorConfiguration myProcessorConfig = {
         storeConfig: myMessageStoreConfig,
-        HTTPEndpoint: "http://127.0.0.1:9095/testservice/test",
+        HttpEndpoint: "http://127.0.0.1:9095/testservice/test",
+        HttpOperation: "POST", 
         
         pollTimeConfig: "0/2 * * * * ?" , 
 
         //forwarding retry 
         retryInterval: 3000,
-        retryHTTPStatusCodes:[500,400],
+        retryHttpStatusCodes:[500,400],
         maxRedeliveryAttempts: 5,
         
         //connection retry 
@@ -53,7 +54,7 @@ public function main(string... args) {
         storeConnectionAttemptInterval: 15,
         storeConnectionBackOffFactor: 1.5,
 
-        deactivateOnFail: false,
+        forwardingFailAction: "DLCSTORE",
         
         DLCStore: dlcStoreClient
 
