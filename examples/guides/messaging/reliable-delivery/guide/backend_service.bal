@@ -46,7 +46,7 @@ service healthcareService on httpListener {
                 log:printInfo("HIT!! - payload = " + payload.toString() + "Headers = " + headers);
                 json responseMessage = { "Message": "This is Test Service" };
                 response.setPayload(responseMessage);
-                response.statusCode = 500;
+                response.statusCode = 200;
             check caller->respond(response);
         } else {
             response.statusCode = 500;
