@@ -16,6 +16,7 @@
 
 import ballerina/test;
 import ballerina/http;
+import wso2/healthcare;
 
 http:Client clientEP = new("http://localhost:9091/healthcare");
 
@@ -34,6 +35,7 @@ function testReservation(json dataset, json resultset) {
                                                                                                 200 OK signal!");
         json expected = resultset.expected;
         var resPayload = response.getJsonPayload();
+
         if (resPayload is json) {
             test:assertEquals(resPayload.status, expected, msg = "Response mismatch!");
         } else {

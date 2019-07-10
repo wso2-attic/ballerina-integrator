@@ -17,7 +17,7 @@
 import ballerina/http;
 import ballerina/log;
 
-listener http:Listener httpListener = new(9090);
+listener http:Listener httpListener = new(9091);
 
 // Health Care Management is done using an in-memory map.
 map<json> appoinmentMap = {};
