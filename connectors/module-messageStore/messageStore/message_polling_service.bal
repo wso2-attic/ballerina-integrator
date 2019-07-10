@@ -22,38 +22,49 @@ import ballerina/log;
 service messageForwardingService = service {
 
     resource function onTrigger(PollingServiceConfig config) {
-
-        function () onMessagePollingFailFunction = config.onMessagePollingFail;
-        jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
-        //wait for 1 second until you receive a message. If no message is received nil is returned
-        var queueMessage = caller->receive(timeoutInMilliSeconds = 1000);
-        if (queueMessage is jms:Message) {
-            var httpRequest = constructHTTPRequest(queueMessage);
-            if(httpRequest is http:Request) {
-                //invoke pre-process logic 
-                if(config.preProcessRequest is function(http:Request request)) {
-                    config.preProcessRequest.call(httpRequest);
-                }
-                //invoke the backend using HTTP Client, it will use receliecy parameters
-                http:Client clientEP = config.httpClient;
-                string httpVerb = config.HttpOperation;
-                var response = clientEP->execute(untaint httpVerb, "", httpRequest);
-                evaluateForwardSuccess(config, httpRequest, response, queueMessage);
-            } else {
-                log:printError("Error occurred while converting message received from queue " 
-                            + config.queueName + " to an HTTP request");
-            }
-
-        } else if (queueMessage is ()) {
-            log:printDebug("Message not received on current trigger");
-        } else {
-            // Error when message receival. Need to reset the connection. session and consumer 
-            log:printError("Error occurred while receiving message from queue " + config.queueName);
-            onMessagePollingFailFunction.call();
+        int messageCount = 0;
+        while (messageCount < config.batchSize) {
+            //poll and forward message
+            pollAndForward(config);
+            runtime:sleep(config.forwardingInterval);
+            messageCount = messageCount + 1;
         }
     }
-  
 };
+
+# Poll a message from message store and forward it to defined endpoint.
+#
+# + config - Configuration for message processing service
+function pollAndForward(PollingServiceConfig config) {
+    function () onMessagePollingFailFunction = config.onMessagePollingFail;
+    jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
+    //wait for 1 second until you receive a message. If no message is received nil is returned
+    var queueMessage = caller->receive(timeoutInMilliSeconds = 1000);
+    if (queueMessage is jms:Message) {
+        var httpRequest = constructHTTPRequest(queueMessage);
+        if(httpRequest is http:Request) {
+            //invoke pre-process logic 
+            if(config.preProcessRequest is function(http:Request request)) {
+                config.preProcessRequest.call(httpRequest);
+            }
+            //invoke the backend using HTTP Client, it will use receliecy parameters
+            http:Client clientEP = config.httpClient;
+            string httpVerb = config.HttpOperation;
+            var response = clientEP->execute(untaint httpVerb, "", httpRequest);
+            evaluateForwardSuccess(config, httpRequest, response, queueMessage);
+        } else {
+            log:printError("Error occurred while converting message received from queue " 
+                        + config.queueName + " to an HTTP request");
+        }
+
+    } else if (queueMessage is ()) {
+        log:printDebug("Message not received on current trigger");
+    } else {
+        // Error when message receival. Need to reset the connection. session and consumer 
+        log:printError("Error occurred while receiving message from queue " + config.queueName);
+        onMessagePollingFailFunction.call();
+    }
+}
 
 # Evaluate if HTTP response forwarding is success or failure and take actions. 
 #

@@ -91,6 +91,8 @@ public type MessageForwardingProcessor object {
             HttpOperation: processorConfig.HttpOperation,
             retryHttpCodes: retryHttpCodes,
             forwardingFailAction: processorConfig.forwardingFailAction,
+            batchSize: processorConfig.batchSize,
+            forwardingInterval: processorConfig.forwardingInterval,
             onMessagePollingFail: onMessagePollingFail(self),
             onDeactivate: onDeactivate(self),
             preProcessRequest: preProcessRequest,
@@ -276,7 +278,9 @@ function onDeactivate(MessageForwardingProcessor processor) returns function() {
 # + forwardingFailAction - Action to take when a message is failed to forward. `MessageForwardFailAction`
 #                          `DROP` - drop message and continue (default)
 #                          `DLCSTORE`- store message in configured  `DLCStore` 
-#                          `DEACTIVATE` - stop message processor 
+#                          `DEACTIVATE` - stop message processor                           
+# + batchSize - Maximum number of messages to forward upon message process task is executed 
+# + forwardingInterval - Time in milliseconds between two message forwards in a batch
 # + DLCStore - In case of forwarding failure, messages will be stored using this backup `Client`. Make sure `forwardingFailAction` is
 #              `DLCSTORE`
 public type ForwardingProcessorConfiguration record {
@@ -301,6 +305,10 @@ public type ForwardingProcessorConfiguration record {
     //action on forwarding fail of a message
     MessageForwardFailAction forwardingFailAction = DROP;
 
+    //batching messages for forwarding
+    int batchSize = 1;
+    int forwardingInterval = 0;
+
     //specify message store client to forward failing messages
     Client DLCStore?;
 };
@@ -316,6 +324,8 @@ public type ForwardingProcessorConfiguration record {
 # + forwardingFailAction - `MessageForwardFailAction` specifing processor behaviour on fowarding failure 
 # + retryHttpCodes - If processor received any response after forwading the message with any of
 #                    these status codes, it will be considered as a failed invocation `int[]` 
+# + batchSize - Maximum number of messages to forward upon message process task is executed 
+# + forwardingInterval - Time in milliseconds between two message forwards in a batch
 # + onMessagePollingFail - Lamda with logic what to execute on a failure polling messages from broker `function()`
 # + onDeactivate - Lamda with logic what to execute to deactivate message processor  
 # + preProcessRequest - Lamda to execute upon request which is stored, before forwarding to the configured endpoint
@@ -330,6 +340,8 @@ public type PollingServiceConfig record {
     Client DLCStore?;
     MessageForwardFailAction forwardingFailAction;
     int[] retryHttpCodes;
+    int batchSize;
+    int forwardingInterval;
     function() onMessagePollingFail;
     function() onDeactivate;
     function(http:Request request)? preProcessRequest;
