@@ -163,24 +163,30 @@ service HealthcareService on httpListener {
                                                 daos:PaymentSettlement.convert(paymentSettlementDetails);
 
             if(paymentSettlement is daos:PaymentSettlement) {
-                if(<int>paymentSettlement["appointmentNumber"] >= 0) {
+                string appointmentNo = string.convert(paymentSettlement.appointmentNumber);
+                if(util:containsAppointmentId(self.appointments, appointmentNo)) {
                     // Create new payment entry for the appointment.
                     daos:Payment|error payment = 
                             util:createNewPaymentEntry(paymentSettlement, untaint self.healthcareDao);
 
                     if(payment is daos:Payment) {
+                        // Make payment status `Settled`.
                         payment["status"] = "Settled";
                         self.healthcareDao["payments"][<string>payment["paymentID"]] = payment;
-                        util:sendResponse(caller, "Settled payment successfully with payment ID: " 
-                                                                        + <string>payment["paymentID"]);
+                        json payload = {
+                            status: "success",
+                            paymentId: <string>payment["paymentID"]
+                        };
+                        // Make appointment confirmed `true`.
+                        self.appointments[appointmentNo].confirmed = true;
+                        util:sendResponse(caller, payload);
                     } else {
                         log:printError("User error Invalid payload recieved, payload: ", err = payment);
                         util:sendResponse(caller, "Invalid payload recieved, " + payment.reason(), 
                                                                                         statusCode = 400);
                     }
                 } else {
-                    log:printError("Could not Find the Requested appointment ID: " 
-                                                    + <int>paymentSettlementDetails["appointmentNumber"]);
+                    log:printError("Could not Find the Requested appointment ID: " + appointmentNo);
                     util:sendResponse(caller, "Error. Could not Find the Requested appointment ID.", 
                                                                                         statusCode = 400);
                 }
