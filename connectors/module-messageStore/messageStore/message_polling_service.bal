@@ -17,7 +17,6 @@
 import ballerina/http;
 import ballerina/jms;
 import ballerina/log;
-import ballerina/io;
 
 //service with steps done upon message processor task trigger
 service messageForwardingService = service {
@@ -69,12 +68,15 @@ http:Response | error response, jms:Message queueMessage) {
     if (response is http:Response) {
         boolean isFailingResponse = false;
         int[] retryHTTPCodes = config.retryHttpCodes;
-        foreach var statusCode in retryHTTPCodes {
-            if (statusCode == response.statusCode) {
-                isFailingResponse = true;
-                break;
+        if (retryHTTPCodes.length() > 0) {
+            foreach var statusCode in retryHTTPCodes {
+                if (statusCode == response.statusCode) {
+                    isFailingResponse = true;
+                    break;
+                }
             }
         }
+
         if (isFailingResponse) {
             //Failure. Response has failure HTTP status code
             onMessageForwardingFail(config, request, queueMessage);
@@ -89,6 +91,7 @@ http:Response | error response, jms:Message queueMessage) {
         }
     } else {
         //Failure. Connection level issue
+        log:printError("Error when invoking the backend" + config.httpEP, err = response);
         onMessageForwardingFail(config, request, queueMessage);
     }
 }

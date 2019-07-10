@@ -76,6 +76,11 @@ public type MessageForwardingProcessor object {
             self.messageForwardingTask = new({interval: currentpollTimeConfig});
         }
 
+        int[] retryHttpCodes = [];
+        int[]? retryHttpCodesFromConfig = processorConfig["retryHttpStatusCodes"];
+        if (retryHttpCodesFromConfig is int[]) {
+            retryHttpCodes = retryHttpCodesFromConfig;
+        }
 
         //create a record with objects needed by the polling service
         PollingServiceConfig pollingServiceConfig = {
@@ -84,6 +89,7 @@ public type MessageForwardingProcessor object {
             httpClient: self.httpClient,
             httpEP: processorConfig.HttpEndpoint,
             HttpOperation: processorConfig.HttpOperation,
+            retryHttpCodes: retryHttpCodes,
             forwardingFailAction: processorConfig.forwardingFailAction,
             onMessagePollingFail: onMessagePollingFail(self),
             onDeactivate: onDeactivate(self),
@@ -94,11 +100,6 @@ public type MessageForwardingProcessor object {
         Client? dlcStore = processorConfig["DLCStore"];
         if (dlcStore is Client) {
             pollingServiceConfig.DLCStore = dlcStore;
-        }
-
-        int[]? retryHTTPCodes = processorConfig["retryHttpStatusCodes"];
-        if (retryHTTPCodes is int[]) {
-            pollingServiceConfig.retryHTTPCodes = retryHTTPCodes;
         }
 
         //attach the task work
@@ -235,7 +236,6 @@ function onMessagePollingFail(MessageForwardingProcessor processor) returns func
         var cleanupResult = processor.cleanUpJMSObjects();
         if (cleanupResult is error) {
             log:printError("Error while cleaning up jms connection", err = cleanupResult);
-        //TODO: we need stop the polling here?
         }
         processor.retryToConnectBroker(processor.processorConfig);
     };
@@ -294,7 +294,6 @@ public type ForwardingProcessorConfiguration record {
     int maxRedeliveryAttempts;
 
     //connection retry
-    //TODO: make these optional with defaults
     int maxStoreConnectionAttemptInterval = 60;    //configured in seconds
     int storeConnectionAttemptInterval = 5;    //configured in seconds
     float storeConnectionBackOffFactor = 1.2;    
@@ -330,7 +329,7 @@ public type PollingServiceConfig record {
     http:HttpOperation HttpOperation;
     Client DLCStore?;
     MessageForwardFailAction forwardingFailAction;
-    int[] retryHttpCodes?;
+    int[] retryHttpCodes;
     function() onMessagePollingFail;
     function() onDeactivate;
     function(http:Request request)? preProcessRequest;

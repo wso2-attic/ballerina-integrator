@@ -18,15 +18,7 @@ public type MessageBroker ACTIVE_MQ|IBM_MQ|WSO2MB;
 
 public type MessageForwardFailAction DROP|DLCSTORE|DEACTIVATE;
 
-public type HttpVerb POST|GET|PUT|PATCH|DELETE;
-
-//constants for HTTP verbs
-public const POST = "POST";
-public const GET = "GET";
-public const PUT = "PUT";
-public const PATCH = "PATCH";
 public const DELETE = "DELETE";
-
 
 //constants for message forwarding failure actions
 public const DROP = "DROP";
