@@ -40,7 +40,7 @@ public function main(string... args) {
     messageStore:ForwardingProcessorConfiguration myProcessorConfig = {
         storeConfig: myMessageStoreConfig,
         HttpEndpoint: "http://127.0.0.1:9095/testservice/test",
-        HttpOperation: "POST", 
+        HttpOperation: http:HTTP_POST, 
         
         pollTimeConfig: "0/2 * * * * ?" , 
 
@@ -54,7 +54,7 @@ public function main(string... args) {
         storeConnectionAttemptInterval: 15,
         storeConnectionBackOffFactor: 1.5,
 
-        forwardingFailAction: "DLCSTORE",
+        forwardingFailAction: messageStore:DLCSTORE,
         
         DLCStore: dlcStoreClient
 

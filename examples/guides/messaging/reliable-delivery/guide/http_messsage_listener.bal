@@ -24,7 +24,7 @@ messageStore:MessageStoreConfiguration secondaryMessageStoreConfig = {
     providerUrl: "tcp://localhost:61616",
     queueName: "myFailoverStore"
 };
-messageStore:Client secondaryStoreClient = check new messageStore:Client(secondaryMessageStoreConfig);
+messageStore:Client secondaryStoreClient = checkpanic new messageStore:Client(secondaryMessageStoreConfig);
 
 messageStore:MessageStoreRetryConfig storeRetryConfig = {
     count: 4,
@@ -41,7 +41,7 @@ messageStore:MessageStoreConfiguration messageStoreConfig = {
     secondaryStore: secondaryStoreClient
 };
 
-messageStore:Client storeClient = check new messageStore:Client(messageStoreConfig);
+messageStore:Client storeClient = checkpanic new messageStore:Client(messageStoreConfig);
 
 //export http listner port on 9091
 listener http:Listener httpListener = new(9091);
