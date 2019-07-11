@@ -18,6 +18,7 @@ import ballerina/test;
 import ballerina/http;
 import ballerina/io;
 import ballerina/log;
+import wso2/healthcare;
 
 http:Client clientEPGrandoaks = new("http://localhost:9090/grandoaks/categories");
 

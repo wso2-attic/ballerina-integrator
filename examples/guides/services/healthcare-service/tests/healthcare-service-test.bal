@@ -19,6 +19,7 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/log;
 import ballerina/time;
+import wso2/healthcare;
 
 http:Client healthCareEP = new("http://localhost:9090/healthcare");
 
