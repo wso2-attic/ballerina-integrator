@@ -16,6 +16,7 @@
 
 import ballerina/http;
 import ballerina/log;
+import ballerina/io;
 
 // hospital service endpoint
 http:Client hospitalEP = new("http://localhost:9095");
@@ -48,7 +49,7 @@ service hospitalMgtService on new http:Listener(9092) {
                 },
                 "doctor": requestPayload.doctor,
                 "hospital": requestPayload.hospital,
-                "appointment_date": requestPayload.appointment_date
+                "appointmentDate": requestPayload.appointmentDate
             };
             // call appointment creation
             // CODE-SEGMENT-BEGIN: segment_2
@@ -63,6 +64,7 @@ service hospitalMgtService on new http:Listener(9092) {
                     return;
                 }
                 // call payment settlement
+                io:println("Appointment details : " + responsePayload.toString());
                 http:Response paymentResponse = doPayment(untaint responsePayload);
                 // send the response back to the client
                 respondToClient(caller, paymentResponse);

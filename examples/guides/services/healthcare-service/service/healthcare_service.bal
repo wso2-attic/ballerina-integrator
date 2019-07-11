@@ -60,7 +60,7 @@ service HealthcareService on httpListener {
     // Get doctors for a given category.
     @http:ResourceConfig {
         methods: ["GET"],
-        path: "/{category}"
+        path: "/queryDoctor/{category}"
     }
     resource function getDoctors(http:Caller caller, http:Request req, string category) {
         // Get doctors for a given category from healthcare DAO.
