@@ -1,11 +1,11 @@
-// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
 // in compliance with the License.
 // You may obtain a copy of the License at
 //
-// http://www.apache.org/licenses/LICENSE-2.0
+//    http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
@@ -14,26 +14,60 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/io;
 import ballerina/http;
 import ballerina/log;
+// CODE-SEGMENT-BEGIN: segment_1
+import wso2/gmail;
+
+// Gmail client endpoint declaration with oAuth2 client configurations.
+gmail:GmailConfiguration gmailConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: "accessToken",
+                    refreshConfig: {
+                        refreshUrl: gmail:REFRESH_URL,
+                        refreshToken: "refreshToken",
+                        clientId: "clientId",
+                        clientSecret: "clientSecret"
+                    }
+                }
+            }
+        }
+    }
+};
+// CODE-SEGMENT-END: segment_1
+
+const RECIPIENT_EMAIL = "someone@gmail.com";
+const SENDER_EMAIL = "somebody@gmail.com";
+
+// Gmail client that handles sending payloads to email address.
+// CODE-SEGMENT-BEGIN: segment_2
+gmail:Client gmailClient = new(gmailConfig);
+// CODE-SEGMENT-END: segment_2
 
 // hospital service endpoint
-http:Client hospitalEP = new("http://localhost:9090");
+http:Client hospitalEP = new("http://localhost:9095");
 
 const string GRAND_OAK = "grand oak community hospital";
 const string CLEMENCY = "clemency medical center";
 const string PINE_VALLEY = "pine valley community hospital";
 
+//Change the service URL to base /surgery
 @http:ServiceConfig {
-    basePath: "/healthcare"
+    basePath: "/hospitalMgtService"
 }
-service healthcareService on new http:Listener(9091) {
+service hospitalMgtService on new http:Listener(9092) {
     // Resource to make an appointment reservation with bill payment
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/categories/{category}/reserve"
     }
-    resource function makeReservation(http:Caller caller, http:Request request, string category) {
+    resource function scheduleAppointment(http:Caller caller, http:Request request, string category) {
         var requestPayload = request.getJsonPayload();
         if (requestPayload is json) {
             // tranform the request payload to the format expected by the backend end service
@@ -63,7 +97,8 @@ service healthcareService on new http:Listener(9091) {
                 // call payment settlement
                 http:Response paymentResponse = doPayment(untaint responsePayload);
                 // send the response back to the client
-                respondToClient(caller, paymentResponse);
+                //respondToClient(caller, paymentResponse);
+                respondToClient(caller, sendEmail(generateEmail(untaint paymentResponse)));
             } else {
                 respondToClient(caller, createErrorResponse(500, "Backend did not respond with json"));
             }
@@ -73,6 +108,62 @@ service healthcareService on new http:Listener(9091) {
     }
 }
 
+// Generates an email based on the recieved payload.
+// CODE-SEGMENT-BEGIN: segment_3
+function generateEmail(json jsonPayload) returns string {
+    string email = "<html>";
+    email += "<h1> GRAND OAK COMMUNITY HOSPITAL </h1>";
+    email += "<h3> Patient Name : " + jsonPayload.patient.name.toString() + "</h3>";
+    email += "<p> This is a confimation for your appointment with Dr." + jsonPayload.doctor.name.toString() + "</p>";
+    email += "<p> Assigned time : " + jsonPayload.doctor.availability.toString() + "</p>";
+    email += "<p> Appointment number : " + jsonPayload.appointmentNumber.toString() + "</p>";
+    email += "<p> Appointment date : " + jsonPayload.appointmentDate.toString() + "</p>";
+    email += "<p><b> FEE : " + jsonPayload.fee.toString() + "</b></p>";
+
+    return email;
+}
+// CODE-SEGMENT-END: segment_3
+
+// Sends the payload to an Email account
+// CODE-SEGMENT-BEGIN: segment_4
+function sendEmail(string email) returns http:Response {
+    string messageBody = email;
+    http:Response response = new;
+
+    string userId = "me";
+    gmail:MessageRequest messageRequest = {
+
+    };
+    messageRequest.recipient = RECIPIENT_EMAIL;
+    messageRequest.sender = SENDER_EMAIL;
+    messageRequest.subject = "Gmail Connector test : Payment Status";
+    messageRequest.messageBody = messageBody;
+    messageRequest.contentType = gmail:TEXT_HTML;
+
+    // Send the message.
+    var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+
+    if (sendMessageResponse is (string, string)) {
+        // If successful, print the message ID and thread ID.
+        (string, string) (messageId, threadId) = sendMessageResponse;
+        io:println("Sent Message ID: " + messageId);
+        io:println("Sent Thread ID: " + threadId);
+
+        json payload = {
+            Message: "The email has been successfully sent",
+            Recipient: messageRequest.recipient
+        };
+        response.setJsonPayload(payload, contentType = "application/json");
+    } else {
+        // If unsuccessful, print the error returned.
+        log:printError("Failed to send the email", err = sendMessageResponse);
+        response.setPayload("Failed to send the Email");
+    }
+
+    return response;
+}
+// CODE-SEGMENT-END: segment_4
+
 // function to call hospital service backend and make an appointment reservation
 function createAppointment(http:Caller caller, json payload, string category) returns http:Response {
     string hospitalName = payload.hospital.toString();
@@ -81,13 +172,16 @@ function createAppointment(http:Caller caller, json payload, string category) re
     http:Response | error reservationResponse = new;
     match hospitalName {
         GRAND_OAK => {
-            reservationResponse = hospitalEP->post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->
+                post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
         }
         CLEMENCY => {
-            reservationResponse = hospitalEP->post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->
+                post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
         }
         PINE_VALLEY => {
-            reservationResponse = hospitalEP->post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->
+                post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
         }
         _ => {
             respondToClient(caller, createErrorResponse(500, "Unknown hospital name"));
