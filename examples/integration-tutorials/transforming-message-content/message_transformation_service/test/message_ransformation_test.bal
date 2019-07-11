@@ -18,25 +18,14 @@ import ballerina/test;
 import ballerina/http;
 import wso2/healthcare;
 
-json sampleRequest = {
-    "name": "John Doe",
-    "dob": "1940-03-19",
-    "ssn": "234-23-525",
-    "address": "California",
-    "phone": "8770586755",
-    "email": "johndoe@gmail.com",
-    "doctor": "thomas collins",
-    "hospital": "grand oak community hospital",
-    "cardNo": "7844481124110331",
-    "appointment_date": "2025-04-02"
-};
-
 http:Client clientEP = new("http://localhost:9091/healthcare");
 
-@test:Config
-function testTransformation() {
+@test:Config {
+    dataProvider: "testTransformationDataProvider"
+}
+function testTransformation(json dataset) {
     http:Request req = new;
-    req.setJsonPayload(sampleRequest);
+    req.setJsonPayload(dataset);
     var response = clientEP->post("/categories/surgery/reserve", req);
     if (response is http:Response) {
         test:assertEquals(response.statusCode, 200, 
@@ -51,4 +40,23 @@ function testTransformation() {
     } else {
         test:assertFail(msg = "Response from reservation service is invalid");
     }
+}
+
+function testTransformationDataProvider() returns json[][] {
+    return [
+    [
+    {
+    "name": "John Doe",
+    "dob": "1940-03-19",
+    "ssn": "234-23-525",
+    "address": "California",
+    "phone": "8770586755",
+    "email": "johndoe@gmail.com",
+    "doctor": "thomas collins",
+    "hospital": "grand oak community hospital",
+    "cardNo": "7844481124110331",
+    "appointment_date": "2025-04-02"
+    }
+    ]
+    ];
 }
