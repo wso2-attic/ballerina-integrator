@@ -191,7 +191,7 @@ function testGetAppointmentDataProvider() returns json[][]
             "email": "jduke@gmail.com"
         },
         "fee": 12000.0,
-        "confirmed": false,
+        "confirmed": true,
         "appointmentDate": "2019-07-02"
     }
     ]
@@ -300,18 +300,12 @@ function testSettlePayment(json dataset) {
 
     http:Response | error response = healthCareEP->post("/payments", request);
     if (response is http:Response) {
-        string | error responsePayload = response.getTextPayload();
-        if (responsePayload is string) {
-            boolean isSuccessfullySettled = false;
-            if (responsePayload.contains("Settled payment successfully with payment ID")) {
-                isSuccessfullySettled = true;
-                test:assertEquals(isSuccessfullySettled, true, 
+        json | error responsePayload = response.getJsonPayload();
+        if (responsePayload is json) {
+            test:assertEquals(responsePayload.status, "success", 
                                              msg = "The payment settlement is not as expected!");
-            } else {
-                test:assertFail(msg = "Response does not contain the exact response message");
-            }
         } else {
-            test:assertFail(msg = "Invalid Payload!");
+            test:assertFail(msg = "Response does not contain the exact response message");
         }
     } else {
         test:assertFail(msg = "Error sending request!");
