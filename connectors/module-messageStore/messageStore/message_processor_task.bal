@@ -148,17 +148,24 @@ public type MessageForwardingProcessor object {
     # + processorConfig - `ForwardingProcessorConfiguration` config 
     # + return - `http:Client` in case of successful initialization or `error` in case of issue
     function initializeHTTPClient(ForwardingProcessorConfiguration processorConfig) returns http:Client | error {
-        http:Client backendClientEP = new(processorConfig.HttpEndpoint, config = {
-
-            retryConfig: {
-                interval: processorConfig.retryInterval, //Retry interval in milliseconds
-                count: processorConfig.maxRedeliveryAttempts,   //Number of retry attempts before giving up
-                backOffFactor: 1.0, //Multiplier of the retry interval
-                maxWaitInterval: 20000,  //Maximum time of the retry interval in milliseconds
-                statusCodes: processorConfig.retryHttpStatusCodes //HTTP response status codes which are considered as failures
-            },
-            timeoutMillis: 2000
-        });
+        http:ClientEndpointConfig endpointConfig;
+        http:RetryConfig retryConfig = {
+            interval: processorConfig.retryInterval, //Retry interval in milliseconds
+            count: processorConfig.maxRedeliveryAttempts,   //Number of retry attempts before giving up
+            backOffFactor: 1.0, //Multiplier of the retry interval
+            maxWaitInterval: 20000,  //Maximum time of the retry interval in milliseconds
+            statusCodes: processorConfig.retryHttpStatusCodes //HTTP response status codes which are considered as failures 
+        };
+        var httpEndpointConfig = processorConfig.HttpEndpointConfig;
+        if(httpEndpointConfig is http:ClientEndpointConfig) {
+            endpointConfig = httpEndpointConfig;
+            endpointConfig.retryConfig = retryConfig;
+        } else {
+            endpointConfig = {
+                retryConfig: retryConfig
+            };
+        }
+        http:Client backendClientEP = new(processorConfig.HttpEndpoint, config = endpointConfig);
         return backendClientEP;
     }
 
@@ -264,6 +271,7 @@ function onDeactivate(MessageForwardingProcessor processor) returns function() {
 # + storeConfig - Config containing store information `MessageStoreConfiguration`  
 # + HttpEndpoint - Messages will be forwarded to this HTTP url
 # + HttpOperation - HTTP Verb to use when forwarding the message
+# + HttpEndpointConfig - `ClientEndpointConfig` HTTP client config to use when forwarding messages to HTTP endpoint
 # + pollTimeConfig - Interval messages should be polled from the 
 #                    broker (Milliseconds) or cron expression for polling task  
 # + retryInterval - Interval messages should be re-tried in case of forwading failure (Milliseconds) 
@@ -283,10 +291,11 @@ function onDeactivate(MessageForwardingProcessor processor) returns function() {
 # + forwardingInterval - Time in milliseconds between two message forwards in a batch
 # + DLCStore - In case of forwarding failure, messages will be stored using this backup `Client`. Make sure `forwardingFailAction` is
 #              `DLCSTORE`
-public type ForwardingProcessorConfiguration record {
+public type ForwardingProcessorConfiguration record {|
     MessageStoreConfiguration storeConfig;
     string HttpEndpoint;
     http:HttpOperation HttpOperation;
+    http:ClientEndpointConfig? HttpEndpointConfig = ();
 
     //configured in milliseconds for polling interval
     //can specify a cron instead
@@ -311,7 +320,7 @@ public type ForwardingProcessorConfiguration record {
 
     //specify message store client to forward failing messages
     Client DLCStore?;
-};
+|};
 
 # Record passing required information to service attached to message processor task.
 #
@@ -331,7 +340,7 @@ public type ForwardingProcessorConfiguration record {
 # + preProcessRequest - Lamda to execute upon request which is stored, before forwarding to the configured endpoint
 # + handleResponse - Lamda to execute upon response received by forwarding messages to the configured endpoint 
 #                    `function(http:Response resp)`
-public type PollingServiceConfig record {
+type PollingServiceConfig record {
     jms:QueueReceiver queueReceiver;
     string queueName;
     http:Client httpClient;

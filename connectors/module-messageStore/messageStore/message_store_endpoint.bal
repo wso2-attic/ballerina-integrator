@@ -225,7 +225,7 @@ public type Client client object {
 # + queueName - messages will be stored to this queue on the broker  
 # + userName - userName to use when connecting to the broker (optional)
 # + password - password to use when connecting to the broker (optional)
-public type MessageStoreConfiguration record {
+public type MessageStoreConfiguration record {|
     MessageBroker messageBroker;
     Client secondaryStore?;
     MessageStoreRetryConfig retryConfig?;
@@ -233,7 +233,7 @@ public type MessageStoreConfiguration record {
     string queueName;
     string userName?;
     string password?;
-};
+|};
 
 # Message Store retry configuration. Message store will retry to store a message 
 # according to this config.
@@ -242,9 +242,9 @@ public type MessageStoreConfiguration record {
 # + count - Number of retry attempts before giving up 
 # + backOffFactor - Multiplier of the retry `interval` 
 # + maxWaitInterval - Maximum time of the retry interval in milliseconds
-public type MessageStoreRetryConfig record {
+public type MessageStoreRetryConfig record {|
     int interval;
     int count;
     float backOffFactor;
     int maxWaitInterval;
-};
+|};
