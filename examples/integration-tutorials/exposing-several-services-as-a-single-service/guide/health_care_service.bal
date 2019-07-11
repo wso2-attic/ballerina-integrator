@@ -19,22 +19,22 @@ import ballerina/log;
 import ballerina/io;
 
 // hospital service endpoint
-http:Client hospitalEP = new("http://localhost:9090");
+http:Client hospitalEP = new("http://localhost:9095");
 
 const string GRAND_OAK = "grand oak community hospital";
 const string CLEMENCY = "clemency medical center";
 const string PINE_VALLEY = "pine valley community hospital";
 
 @http:ServiceConfig {
-    basePath: "/healthcare"
+    basePath: "/hospitalMgtService"
 }
-service healthcareService on new http:Listener(9091) {
+service hospitalMgtService on new http:Listener(9092) {
     // Resource to make an appointment reservation with bill payment
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/categories/{category}/reserve"
     }
-    resource function makeReservation(http:Caller caller, http:Request request, string category) {
+    resource function scheduleAppointment(http:Caller caller, http:Request request, string category) {
         var requestPayload = request.getJsonPayload();
         if (requestPayload is json) {
             // tranform the request payload to the format expected by the backend end service
@@ -52,7 +52,9 @@ service healthcareService on new http:Listener(9091) {
                 "appointmentDate": requestPayload.appointmentDate
             };
             // call appointment creation
+            // CODE-SEGMENT-BEGIN: segment_2
             http:Response reservationResponse = createAppointment(caller, untaint reservationPayload, category);
+            // CODE-SEGMENT-END: segment_2
 
             json | error responsePayload = reservationResponse.getJsonPayload();
             if (responsePayload is json) {
@@ -76,6 +78,7 @@ service healthcareService on new http:Listener(9091) {
 }
 
 // function to call hospital service backend and make an appointment reservation
+// CODE-SEGMENT-BEGIN: segment_1
 function createAppointment(http:Caller caller, json payload, string category) returns http:Response {
     string hospitalName = payload.hospital.toString();
     http:Request reservationRequest = new;
@@ -83,13 +86,16 @@ function createAppointment(http:Caller caller, json payload, string category) re
     http:Response | error reservationResponse = new;
     match hospitalName {
         GRAND_OAK => {
-            reservationResponse = hospitalEP->post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->
+                post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
         }
         CLEMENCY => {
-            reservationResponse = hospitalEP->post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->
+                post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
         }
         PINE_VALLEY => {
-            reservationResponse = hospitalEP->post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->
+                post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
         }
         _ => {
             respondToClient(caller, createErrorResponse(500, "Unknown hospital name"));
@@ -97,14 +103,17 @@ function createAppointment(http:Caller caller, json payload, string category) re
     }
     return handleResponse(reservationResponse);
 }
+// CODE-SEGMENT-END: segment_1
 
 // function to call hospital service backend and make payment for an appointment reservation
+// CODE-SEGMENT-BEGIN: segment_3
 function doPayment(json payload) returns http:Response {
     http:Request paymentRequest = new;
     paymentRequest.setPayload(payload);
     http:Response | error paymentResponse = hospitalEP->post("/healthcare/payments", paymentRequest);
     return handleResponse(paymentResponse);
 }
+// CODE-SEGMENT-END: segment_3
 
 // util method to handle response
 function handleResponse(http:Response | error response) returns http:Response {

@@ -24,11 +24,15 @@ We will write a set of functions to invoke the Health Care Service backend, so t
 
 This tutorial includes the following sections.
 
-- [Implementation](#implementation)
-  - [Writing functions to invoke the Health Care System](#writing-functions-to-invoke-the-health-care-system)
-  - [Setting up Prometheus](#setting-up-prometheus)
-  - [Setting up Grafana](#setting-up-grafana)
-- [Running the Implementation and viewing analytics](#running-the-implementation-and-viewing-analytics)
+- [Using the Analytics Dashboard](#Using-the-Analytics-Dashboard)
+      - [What you will build](#What-you-will-build)
+      - [Prerequisites](#Prerequisites)
+    - [Let's Get Started!](#Lets-Get-Started)
+    - [Implementation](#Implementation)
+      - [Writing functions to invoke the Health Care System](#Writing-functions-to-invoke-the-Health-Care-System)
+      - [Setting up Prometheus](#Setting-up-Prometheus)
+      - [Setting up Grafana](#Setting-up-Grafana)
+    - [Running the Implementation and viewing analytics](#Running-the-Implementation-and-viewing-analytics)
 
 ### Implementation
 

@@ -30,14 +30,14 @@ mysql:Client testDB = new({
         dbOptions: { useSSL: false }
     });
 
-listener http:Listener doctorEP = new(9095);
+listener http:Listener httpListener = new(9092);
 
 @http:ServiceConfig {
-    basePath: "/hospital"
+    basePath: "/hospitalMgtService"
 }
 
 // RESTful service
-service dbTransactions on doctorEP {
+service dbTransactionService on doctorEP {
     // Resource that handles the HTTP GET requests that are directed to doctors specialized on a specific area using 
     // path '/doctor/<name>'
     @http:ResourceConfig {

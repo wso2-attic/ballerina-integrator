@@ -1,57 +1,84 @@
-# sending-a-simple-message-to-a-datasource
+# Sending a Simple Message to a Datasource
 
-This example demonstrates how to expose mysql databse as a service in Ballerina.
+In this tutorial, let’s try a simple scenario where a user can execute operations related to doctors in a Health Care System. Information about doctors is stored in a MySql database. We will configure a RESTful service using Ballerina to receive the client request, and to expose the information in the database, thereby decoupling the client and the back-end database.
 
-## What you'll build
+#### What you will build
 
-In this example, let's use a real world scenario where opeartions related to Doctors for easy understanding. Here we can carry out the following actions.
+The RESTful service we are going to create will contain resources to carry out the following actions.
 
-* Insert details about the doctors that can be consulted by a patient   
-* Update doctors' information
-* Delete records about a particular doctor
-* Retrieve the details about doctors by specifying the speciality
-        list of doctors the hospital, availability and consultant fee of doctors for the speciality given by the user
+- Insert details about doctors
+- Update doctor information
+- Delete records of a particular doctor
+- Retrieve a list of doctors given the doctor's speciality (category)
 
-## Prerequisites
+#### Prerequisites
 
-* Ballerina Distribution
-* A Text Editor or an IDE <br/>
-    Tip: For a better development experience, install one of the following Ballerina IDE plugins: VSCode, IntelliJ IDEA
-* MySQL
-* JDBC driver <br/>
-    Copy the downloaded JDBC driver jar file into the<BALLERINA_HOME>/bre/lib folder
-* Run the Doctors.sql script inside resources folder  create the required table   and insert data.
+- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
+  We will call the installed directory as BALLERINA_HOME.
+- A Text Editor or an IDE
+  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+- Download and install MySQL <!--version-->
+- Download the JDBC Driver jar file and copy it into the BALLERINA_HOME>/bre/lib folder.
+- Download and run the **Doctors.sql** script file from [here](https://github.com/wso2/ballerina-integrator/raw/master/examples/integration-tutorials/sending-a-simple-message-to-a-datasource/sql-data-service/resources/Doctors.sql) to create the backend database.
 
-## Implementation
+### Let's Get Started!
 
-### Create the project structure
+This tutorial includes the following sections.
 
-Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
-
-```
-  └──sending-a-simple-message-to-a-datasource
-    └── sqlDataService
-        ├── ballerina.conf
-        └── dbInteraction
-             ├── dataService.bal
-             ├── sqlUtilities.bal
-             ├── sqlQueries.bal
-             └── sqlServiceConstants.bal
-```
-
-
-        
-Create the above directories in your local machine and also create empty .bal files.
-
-Then open the terminal and navigate to sqlDataService and run Ballerina project initializing toolkit.
-
-   $ ballerina init
+- [Implementation](#implementation)
+  - [Creating the Project Structure](#creating-the-project-structure)
+  - [Creating the Client to access the Backend Database](#creating-the-client-to-access-the-backend-database)
+  - [Creating the RESTful service to perform database transactions](#creating-the-restful-service-to-perform-database-transactions)
+  - [Creating the resources for accessing the database](#creating-the-resources-for-accessing-the-database)
+- [Deployment](#deployment)
+  - [Deploying Locally](#deploying-locally)
+  - [Deploying on Docker](#deploying-on-docker)
+- [Testing](#testing)
+  - [Starting the Database Service](#starting-the-database-service)
+  - [Invoking the Database Service](#invoking-the-database-service)
 
 ### Implementation
 
-Let's get started with implementing the services perform database transactions.
+#### Creating the Project Structure
 
-1. First we have to define the mysql endpoint. Here we are reading data from the ballerina.conf file where the host, port, database name, user name and password is defined.  
+Ballerina is a complete programming language that supports custom project structures. We will use the following package structure for this guide.
+
+```
+  └──sending-a-simple-message-to-a-datasource
+    └── guide
+        ├── ballerina.conf
+        └── db_interaction
+             ├── data_service.bal
+             ├── sql_utilities.bal
+             ├── sql_queries.bal
+             └── sql_service_constants.bal
+```
+
+Create the above directories in your local machine and create the empty .bal files as mentioned.
+
+Then open the terminal and navigate to _sending-a-simple-message-to-a-datasource/guide_ directory. Run the following command to initialize a Ballerina project.
+
+```
+$ ballerina init
+```
+
+#### Creating the Client to access the Backend Database
+
+First we have to define the MySql client in the *data_service.bal* file.
+
+The properties of the database connection should be added to a configuration file, and accessed from the file at runtime. In Ballerina, name of this config file has to be **ballerina.conf**.
+
+Navigate to *sending-a-simple-message-to-a-datasource/guide* directory, create the config file *ballerina.conf* and add the following database connection properties in the file.
+
+```
+MYSQL_DB_HOST = "localhost"
+MYSQL_DB_PORT = "3306"
+MYSQL_DB_NAME = "Hospital"
+MYSQL_DB_USERNAME = "sqlUsername"
+MYSQL_DB_PASSWORD = "sqlPassword"
+```
+
+In the **data_service.bal** file, create the MySql client as below.
 
 ```ballerina
 mysql:Client testDB = new({
@@ -61,25 +88,33 @@ mysql:Client testDB = new({
         username: config:getAsString("MYSQL_DB_USERNAME"),
         password: config:getAsString("MYSQL_DB_PASSWORD"),
         dbOptions: { useSSL: false }
-    });
-
+});
 ```
-2. Define the http listener port as follows.
-   ```ballerina
-   listener http:Listener doctorEP = new(9095);
-   ```
 
-3. Add the base path.
+#### Creating the RESTful service to perform database transactions
 
-    ```ballerina
-    @http:ServiceConfig {
-        basePath: "/hello"
-    }
-    ```
+Let's get started with implementing the services which perform database transactions.
 
-4. Following files describe the skeleton of the dataService.bal, sqlUtilities.bal, sqlQueries.bal files.
+In the **data_service.bal** file, create a listener to listen to API requests on port 9092 as below.
 
-First let's define the service in dataService.bal.
+```ballerina
+listener http:Listener httpListener = new(9092);
+```
+
+Add the base path of the service.
+
+```ballerina
+@http:ServiceConfig {
+    basePath: "/hospitalMgtService"
+}
+service dbTransactionService on httpListener {
+    // Implementation of resources
+}
+```
+
+#### Creating the resources for accessing the database
+
+Now, let's define the resources required to access the database in the service we created above, in the **data_service.bal** file.
 
 ```ballerina
     @http:ResourceConfig {
@@ -87,9 +122,7 @@ First let's define the service in dataService.bal.
         path: "/doctor/{name}"
     }
     resource function doctorData(http:Caller caller, http:Request req, string name) {
-        
         // implementation
-       
     }
 
     @http:ResourceConfig {
@@ -97,7 +130,6 @@ First let's define the service in dataService.bal.
         path: "/doctor"
     }
     resource function addDoctorData(http:Caller caller, http:Request request, string fname) {
-
         // implementation
     }
 
@@ -106,9 +138,7 @@ First let's define the service in dataService.bal.
         path: "/doctor/{docName}"
     }
     resource function updateDoctorData(http:Caller caller, http:Request request, string docName) {
-             
          // implementation
-        
     }
 
     @http:ResourceConfig {
@@ -120,7 +150,7 @@ First let's define the service in dataService.bal.
     }
 ```
 
-Then let's implement the logic related to querying the database for a defined query inside sqlUtilities.bal file.
+Then let's implement the logic related to querying the database for a defined query inside **sql_utilities.bal** file.
 
 ```ballerina
 public function getDoctorDetails(string speciality) returns json|error {
@@ -130,24 +160,25 @@ public function getDoctorDetails(string speciality) returns json|error {
 }
 
 public function addDoctorDetails(string name, string hospital, string speciality, string availability, int charge) returns sql:UpdateResult|error {
-    
+
         // implementation
-        // returns sql:UpdateResult|error   
+        // returns sql:UpdateResult|error
 }
 
 public function updateDoctorDetails(string name ,string hospital, string speciality, string availability, int charge) returns sql:UpdateResult|error {
-        
+
         // implementation
-        // returns sql:UpdateResult|error        
+        // returns sql:UpdateResult|error
 }
 
 public function deleteDoctorDetails(string name) returns sql:UpdateResult|error {
 
         // implementation
-        // returns sql:UpdateResult|error       
-    }
+        // returns sql:UpdateResult|error
+}
 ```
-Finally we'll define the the mysql queries inside sqlQueries.bal file which is used to query the Doctors table.
+
+Finally we will define the the mysql queries inside **sql_queries.bal** file which is used to query the Doctors table.
 
 ```ballerina
 final string QUERY_SELECT_DOCTOR_INFORMATION =
@@ -159,84 +190,133 @@ final string QUERY_INSERT_DOCTOR_INFORMATION =
 final string QUERY_UPDATE_DOCTOR =
         //  update query
 
-final string QUERY_DELETE_DOCTOR_INFORMATION = 
+final string QUERY_DELETE_DOCTOR_INFORMATION =
        // delete query
 
 ```
 
-## Invoking the service
+### Deployment
 
-To test the functionality of the dbTransactions RESTFul service, send HTTP requests for each order management operation.<br/>
-Following are sample json requests that you can use to test each operation of the dbTransactions service.
+Once you are done with the development, you can deploy the services using any of the methods listed below.
 
-###### Retrieve Doctor Information
+#### Deploying Locally
+
+To deploy locally, navigate to *routing-requests-based-on-message-content/guide*, and execute the following command.
+
+```
+$ ballerina build
+```
+
+This builds a Ballerina executable archive (.balx) of the services that you developed in the target folder.
+You can run them with the command:
+
+```
+$ ballerina run <Executable_File_Name>
+```
+
+#### Deploying on Docker
+
+If necessary you can run the service that you developed above as a Docker container. Ballerina language includes a Ballerina_Docker_Extension, which offers native support to run Ballerina programs on containers.
+
+To run a service as a Docker container, add the corresponding Docker annotations to your service code.
+
+### Testing
+
+#### Starting the Database Service
+
+After adding the implementation, we can start the RESTful service as below.
+
+```
+$ ballerina run data_service.bal
+```
+
+The service will be started and you will see the below output.
+
+```
+$ Initiating service(s) in 'data_service'
+[ballerina/http] started HTTP/WS endpoint 0.0.0.0:9092
+```
+
+#### Invoking the Database Service
+
+Now we can test the functionality of the database service by sending HTTP requests for each order management operation.<br/>
+Following are sample json requests that you can use to test each operation of the database service.
+
+**Retrieve Doctor Information**
 
 We can send the following request to the service by defining the speciality as a URL parameter.
 
-```json 
- http://localhost:9095/hello/doctor/surgery 
- ```
-
-Output:
-
 ```json
-{
-    "name": "thomas collins",
-    "hospital": "grand oak community hospital",
-    "availability": "9.00 a.m - 11.00 a.m",
-    "speciality": "surgery",
-    "charge": 7000
-},
+ http://localhost:9092/hospitalMgtService/doctor/surgery
 ```
-###### Insert a new doctor's information
 
-Request:
+Response:
+
 ```json
 {
-    "docName" : "Jacob Black",
-    "hospital": "grand oak community hospital",
-    "availability": "9.00 a.m - 11.00 a.m",
-    "speciality": "Cardiology",
-    "charge": 10000	
+  "name": "thomas collins",
+  "hospital": "grand oak community hospital",
+  "availability": "9.00 a.m - 11.00 a.m",
+  "speciality": "surgery",
+  "charge": 7000
 }
 ```
-Output:
+
+**Insert a new doctor's information**
+
+Request:
+
+```json
+{
+  "docName": "Jacob Black",
+  "hospital": "grand oak community hospital",
+  "availability": "9.00 a.m - 11.00 a.m",
+  "speciality": "Cardiology",
+  "charge": 10000
+}
+```
+
+Response:
+
 ```json
 "Insert successful"
 ```
 
-###### Update a doctor's information
+**Update a doctor's information**
 
 We can send the following request to the service by defining the name of the doctor whose information is needed to be updated as a URL parameter along with the payload.
 
 Request :
 
 ```json
-http://10.100.0.71.:9095/hello/doctor/thomas kirk
+http://localhost:9092/hospitalMgtService/doctor/thomas kirk
 ```
 
 Payload :
+
 ```json
 {
-    "hospital": "'willow gardens general hospital'",
-    "availability": "7.30 a.m - 11.00 a.m",
-    "speciality": "Surgery",
-    "charge": 3000
+  "hospital": "'willow gardens general hospital'",
+  "availability": "7.30 a.m - 11.00 a.m",
+  "speciality": "Surgery",
+  "charge": 3000
 }
 ```
-Output :
+
+Response :
+
 ```json
 "Update successful"
 ```
 
-###### Delete a doctor's information
+**Delete a doctor's information**
 
-```json 
-http://10.100.0.71.:9095/hello/doctor/thomas kirk
+```json
+http://localhost:9092/hospitalMgtService/doctor/thomas kirk
 ```
 
-Output :
+Response :
+
 ```json
 "Delete successful"
 ```
-
