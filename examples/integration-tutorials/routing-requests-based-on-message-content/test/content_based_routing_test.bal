@@ -17,6 +17,7 @@
 import ballerina/test;
 import ballerina/http;
 import ballerina/log;
+import wso2/healthcare;
 
 json requestPayload = {
   "patient": {

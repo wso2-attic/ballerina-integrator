@@ -16,6 +16,7 @@
 
 import ballerina/http;
 import ballerina/log;
+import ballerina/io;
 
 // hospital service endpoint
 http:Client hospitalEP = new("http://localhost:9090");
@@ -83,13 +84,16 @@ function createAppointment(http:Caller caller, json payload, string category) re
     http:Response | error reservationResponse = new;
     match hospitalName {
         GRAND_OAK => {
-            reservationResponse = hospitalEP->post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->post("/grandoaks/categories/" + untaint category + "/reserve", 
+                                                                        reservationRequest);
         }
         CLEMENCY => {
-            reservationResponse = hospitalEP->post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->post("/clemency/categories/" + untaint category + "/reserve", 
+                                                                        reservationRequest);
         }
         PINE_VALLEY => {
-            reservationResponse = hospitalEP->post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
+            reservationResponse = hospitalEP->post("/pinevalley/categories/" + untaint category + "/reserve", 
+                                                                        reservationRequest);
         }
         _ => {
             respondToClient(caller, createErrorResponse(500, "Unknown hospital name"));

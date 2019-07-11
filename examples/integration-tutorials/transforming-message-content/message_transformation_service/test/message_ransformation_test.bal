@@ -16,6 +16,7 @@
 
 import ballerina/test;
 import ballerina/http;
+import wso2/healthcare;
 
 json sampleRequest = {
     "name": "John Doe",

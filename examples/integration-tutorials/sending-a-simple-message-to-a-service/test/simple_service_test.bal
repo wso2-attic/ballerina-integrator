@@ -16,8 +16,9 @@
 
 import ballerina/test;
 import ballerina/http;
-import ballerina/io;
-http:Client clientEP = new("http://localhost:9090/hospitalmgt/");
+import wso2/healthcare;
+
+http:Client clientEP = new("http://localhost:9091/hospitalmgt/");
 
 // Define the data provider for function testResourceAddAppoinment
 @test:Config {
@@ -226,8 +227,8 @@ function testResourceCancelAppoinment(json dataset) {
         test:assertEquals(response.statusCode, 200,
             msg = "cancelAppoinment resource did not respond with expected response code!");        
         var resPayload = response.getJsonPayload();
-        if (resPayload is json) {                        
-            test:assertEquals(resPayload, "Medical reservation :  " + testInput + " removed.",
+        if (resPayload is json) {                  
+            test:assertEquals(resPayload, "Medical reservation : " + testInput + " removed.",
                   msg = "Response mismatch!");            
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
