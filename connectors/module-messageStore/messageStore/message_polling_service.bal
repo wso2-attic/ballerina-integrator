@@ -23,10 +23,20 @@ service messageForwardingService = service {
 
     resource function onTrigger(PollingServiceConfig config) {
         int messageCount = 0;
-        while (messageCount < config.batchSize) {
-            //poll and forward message
-            pollAndForward(config);
-            runtime:sleep(config.forwardingInterval);
+        while (config.batchSize == -1 || messageCount < config.batchSize) {
+            ForwardStatus forwardStatus = pollAndForward(config);
+            //if there is no message on message store or if processor should get deactivated on forwarding fail
+            //need to immediately return from the loop
+            if(!forwardStatus.success && (config.forwardingFailAction == DEACTIVATE) || forwardStatus.storeEmpty) {
+                if(forwardStatus.storeEmpty) {
+                    log:printInfo("Message store is empty. Queue = " + config.queueName 
+                    + ". Message forwarding is stopped until next trigger");
+                }
+                break;
+            }
+            if(config.forwardingInterval > 0) {
+                runtime:sleep(config.forwardingInterval);
+            }
             messageCount = messageCount + 1;
         }
     }
@@ -35,7 +45,10 @@ service messageForwardingService = service {
 # Poll a message from message store and forward it to defined endpoint.
 #
 # + config - Configuration for message processing service
-function pollAndForward(PollingServiceConfig config) {
+# + return - `true` if message forwarding is successful
+function pollAndForward(PollingServiceConfig config) returns ForwardStatus {
+    boolean forwardSuccess = true;
+    boolean messageStoreEmpty = false;
     function () onMessagePollingFailFunction = config.onMessagePollingFail;
     jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
     //wait for 1 second until you receive a message. If no message is received nil is returned
@@ -51,7 +64,7 @@ function pollAndForward(PollingServiceConfig config) {
             http:Client clientEP = config.httpClient;
             string httpVerb = config.HttpOperation;
             var response = clientEP->execute(untaint httpVerb, "", httpRequest);
-            evaluateForwardSuccess(config, httpRequest, response, queueMessage);
+            forwardSuccess = evaluateForwardSuccess(config, httpRequest, response, queueMessage);
         } else {
             log:printError("Error occurred while converting message received from queue " 
                         + config.queueName + " to an HTTP request");
@@ -59,11 +72,21 @@ function pollAndForward(PollingServiceConfig config) {
 
     } else if (queueMessage is ()) {
         log:printDebug("Message not received on current trigger");
+        forwardSuccess = false;
+        messageStoreEmpty = true;
     } else {
         // Error when message receival. Need to reset the connection. session and consumer 
         log:printError("Error occurred while receiving message from queue " + config.queueName);
+        forwardSuccess = false;
         onMessagePollingFailFunction.call();
     }
+
+    ForwardStatus forwardStatus = {
+        success: forwardSuccess,
+        storeEmpty: messageStoreEmpty
+    };
+
+    return forwardStatus;
 }
 
 # Evaluate if HTTP response forwarding is success or failure and take actions. 
@@ -72,10 +95,12 @@ function pollAndForward(PollingServiceConfig config) {
 # + config - Message processor config `PollingServiceConfig` 
 # + queueMessage - Message polled from the queue `jms:Message`
 # + request - HTTP request forwarded `http:Request`
+# + return - `true` if message forwarding is a success
 function evaluateForwardSuccess(PollingServiceConfig config, http:Request request,
-http:Response | error response, jms:Message queueMessage) {
+http:Response | error response, jms:Message queueMessage) returns boolean {
     //in case of retry status codes specified, HTTP client will retry but a response
     //will be received. Still in case of forwarding we need to consider it as a failure
+    boolean fowardSucess = true;
     if (response is http:Response) {
         boolean isFailingResponse = false;
         int[] retryHTTPCodes = config.retryHttpCodes;
@@ -87,12 +112,13 @@ http:Response | error response, jms:Message queueMessage) {
                 }
             }
         }
-
         if (isFailingResponse) {
             //Failure. Response has failure HTTP status code
+            fowardSucess = false;
             onMessageForwardingFail(config, request, queueMessage);
         } else {
             //success. Ack the message
+            fowardSucess = true;
             jms:QueueReceiverCaller caller = config.queueReceiver.getCallerActions();
             var ack = caller->acknowledge(queueMessage);
             if (ack is error) {
@@ -102,9 +128,11 @@ http:Response | error response, jms:Message queueMessage) {
         }
     } else {
         //Failure. Connection level issue
+        fowardSucess = false;
         log:printError("Error when invoking the backend" + config.httpEP, err = response);
         onMessageForwardingFail(config, request, queueMessage);
     }
+    return fowardSucess;
 }
 
 # Take actions when message forwarding fails. 
@@ -116,7 +144,7 @@ function onMessageForwardingFail(PollingServiceConfig config, http:Request reque
     if (config.forwardingFailAction == DEACTIVATE) {        //just deactivate the processor
         log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
         + ". Message forwading is stopped for " + config.httpEP);
-        config.onDeactivate.call();
+        config.onDeactivate.call();  
     } else if (config.forwardingFailAction == DLCSTORE) {  //if there is a DLC store is defined, store the message into that
         log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
         + ". Forwarding message to DLC Store");
@@ -164,5 +192,11 @@ function constructHTTPRequest(jms:Message message) returns http:Request | error 
     return httpRequest;
 }
 
-
-
+# Record carrying information on message forwarding status
+#
+# + success - `true` if forwarding message is successful
+# + storeEmpty - `true` if message store is empty and no message is received
+public type ForwardStatus record {
+    boolean success;
+    boolean storeEmpty;
+};
