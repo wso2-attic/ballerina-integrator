@@ -16,6 +16,7 @@
 
 import ballerina/http;
 import ballerina/log;
+import ballerina/io;
 
 // Define endpoint for the backen service.
 http:Client hospitalEP = new("http://localhost:9090");
@@ -62,10 +63,8 @@ service healthcareService on new http:Listener(9091) {
                 },
                 "doctor": requestPayload.doctor,
                 "hospital": hospitalName,
-                "appointment_date": requestPayload.appointment_date
+                "appointmentDate": requestPayload.appointment_date
             };
-            // Log the modified payload.
-            log:printInfo(modifiedPayload.toString());
 
             // Create new request to call the back-end service with the modified payload.
             http:Request backendRequest = new();
@@ -73,15 +72,15 @@ service healthcareService on new http:Listener(9091) {
 
             match hospitalName {
                 "grand oak community hospital" => {
-                    backendResponse = hospitalEP->post(untaint string `${GRAND_OSK_EP_PATH}/${category}/reserve`,
-                                                backendRequest);  
+                    backendResponse = hospitalEP->post(GRAND_OSK_EP_PATH + untaint category + "/reserve",
+                                                backendRequest);
                 }
                 "clemency medical center" => {
-                    backendResponse = hospitalEP->post(untaint string `${CLEMENCY_EP_PATH}/${category}/reserve`, 
+                    backendResponse = hospitalEP->post(CLEMENCY_EP_PATH + untaint category + "/reserve", 
                                                 backendRequest); 
                 }
                 "pine valley community hospital" => {
-                    backendResponse = hospitalEP->post(untaint string `${PINE_VALLEY_EP_PATH}/${category}/reserve`, 
+                    backendResponse = hospitalEP->post(PINE_VALLEY_EP_PATH + untaint category + "/reserve", 
                                                 backendRequest);
                 }          
                 _ => {
