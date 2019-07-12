@@ -25,7 +25,13 @@ public function main(string... args) {
     messageStore:MessageStoreConfiguration myMessageStoreConfig = {
         messageBroker: "ACTIVE_MQ",
         providerUrl: "tcp://localhost:61616",
-        queueName: "myStore"
+        queueName: "myStore",
+        retryConfig: {
+            count: -1,
+            interval: 10,
+            backOffFactor: 1.5,
+            maxWaitInterval: 60
+        }
     };
 
     //create a DLC store
@@ -48,16 +54,9 @@ public function main(string... args) {
         retryInterval: 3000,
         retryHttpStatusCodes:[500,400],
         maxRedeliveryAttempts: 5,
-        
-        //connection retry 
-        maxStoreConnectionAttemptInterval: 120,
-        storeConnectionAttemptInterval: 15,
-        storeConnectionBackOffFactor: 1.5,
 
         forwardingFailAction: messageStore:DLCSTORE,
-        
         DLCStore: dlcStoreClient
-
     };
 
     //create message processor 
