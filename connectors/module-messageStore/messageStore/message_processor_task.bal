@@ -97,7 +97,7 @@ public type MessageForwardingProcessor object {
             queueReceiver: self.queueReceiver,
             queueName: queueName,
             httpClient: self.httpClient,
-            httpEP: processorConfig.HttpEndpoint,
+            httpEP: processorConfig.HttpEndpointUrl,
             HttpOperation: processorConfig.HttpOperation,
             retryHttpCodes: retryHttpCodes,
             forwardingFailAction: processorConfig.forwardingFailAction,
@@ -106,13 +106,9 @@ public type MessageForwardingProcessor object {
             onMessagePollingFail: onMessagePollingFail(self),
             onDeactivate: onDeactivate(self),
             preProcessRequest: preProcessRequest,
-            handleResponse: handleResponse
+            handleResponse: handleResponse,
+            DLCStore: processorConfig["DLCStore"]
         };
-
-        Client? dlcStore = processorConfig["DLCStore"];
-        if (dlcStore is Client) {
-            pollingServiceConfig.DLCStore = dlcStore;
-        }
 
         //attach the task work
         var assignmentResult = self.messageForwardingTask.attach(messageForwardingService,  attachment = pollingServiceConfig);
@@ -175,7 +171,7 @@ public type MessageForwardingProcessor object {
                 retryConfig: retryConfig
             };
         }
-        http:Client backendClientEP = new(processorConfig.HttpEndpoint, config = endpointConfig);
+        http:Client backendClientEP = new(processorConfig.HttpEndpointUrl, config = endpointConfig);
         return backendClientEP;
     }
 
@@ -214,7 +210,7 @@ public type MessageForwardingProcessor object {
                 break;
             }
         }
-        log:printError("Maximum retries re-connecting to broker is elapsed. Count = " + maxRetryCount
+        log:printError("Could not connect to message broker. Maximum retry count exceeded. Count = " + maxRetryCount
                        + ". Giving up retrying.");
     }
 };
@@ -284,7 +280,7 @@ function onDeactivate(MessageForwardingProcessor processor) returns function() {
 # Configuration for Message-forwarding-processor. 
 #
 # + storeConfig - Config containing store information `MessageStoreConfiguration`  
-# + HttpEndpoint - Messages will be forwarded to this HTTP url
+# + HttpEndpointUrl - Messages will be forwarded to this HTTP url
 # + HttpOperation - HTTP Verb to use when forwarding the message
 # + HttpEndpointConfig - `ClientEndpointConfig` HTTP client config to use when forwarding messages to HTTP endpoint
 # + pollTimeConfig - Interval messages should be polled from the 
@@ -303,8 +299,8 @@ function onDeactivate(MessageForwardingProcessor processor) returns function() {
 #              `DLCSTORE`
 public type ForwardingProcessorConfiguration record {|
     MessageStoreConfiguration storeConfig;
-    string HttpEndpoint;
-    http:HttpOperation HttpOperation;
+    string HttpEndpointUrl;
+    http:HttpOperation HttpOperation = http:HTTP_POST;
     http:ClientEndpointConfig? HttpEndpointConfig = ();
 
     //configured in milliseconds for polling interval
@@ -351,7 +347,7 @@ type PollingServiceConfig record {
     http:Client httpClient;
     string httpEP;
     http:HttpOperation HttpOperation;
-    Client DLCStore?;
+    Client? DLCStore;
     MessageForwardFailAction forwardingFailAction;
     int[] retryHttpCodes;
     int batchSize;

@@ -37,23 +37,15 @@ public type Client client object {
     //message broker queue message store client send messages to
     string queueName;
 
-    //TODO: implement transaction support
     # Intiliazes MessageStore client. 
     # 
     # + storeConfig - `MessageStoreConfiguration` containing configurations
-    # + enableGuranteedDelivery - This is not yet supported. Use JMS transactions to ensure message is stored 
     # + return - `error` if there is an issue initlaizing connection to configured broker
-    public function __init(MessageStoreConfiguration storeConfig, 
-                boolean enableGuranteedDelivery = false) returns error? {
+    public function __init(MessageStoreConfiguration storeConfig) returns error? {
         self.storeConfig = storeConfig;
         self.queueName = storeConfig.queueName;
         self.secondaryStore = storeConfig["secondaryStore"];
-        var jmsObjects = check self.intializeMessageSender(storeConfig);
-        if (jmsObjects is ((jms:Connection, jms:Session, jms:QueueSender))) {
-            (self.jmsConnection, self.jmsSession, self.queueSender) = jmsObjects;
-        } else {
-            return jmsObjects;
-        }
+        (self.jmsConnection, self.jmsSession, self.queueSender) = check self.intializeMessageSender(storeConfig);
     }
 
     # Store HTTP message. This has receliency for the delivery of the message to the message broker queue 
@@ -63,9 +55,7 @@ public type Client client object {
     # + message - HTTP message to store 
     # + return - `error` if there is an issue storing the message (i.e connection issue with broker) 
     public remote function store(http:Request message) returns error? {
-        map<any> requestMessageMap = {
-
-        };
+        map<any> requestMessageMap = {};
         string[] httpHeaders = message.getHeaderNames();
         foreach var headerName in httpHeaders {
             requestMessageMap[headerName] = message.getHeader(untaint headerName);
@@ -112,16 +102,16 @@ public type Client client object {
                         retryCount = retryCount + 1;
                     }
                 }
-
+                log:printError("Maximum retries to store message breached queue = " + self.queueName);
                 //if max retries breached. Check for failover store
-                if (retryCount == retryConfig.count) {
+                if (retryCount >= retryConfig.count) {
                     Client? failoverClient = self.secondaryStore;
                     //try failover store
                     if (failoverClient is Client) {
+                        log:printInfo("Trying to store message in secondary configured for message store queue = " 
+                            + self.queueName);
                         var failOverClientStoreResult = failoverClient->store(message);
                         if (failOverClientStoreResult is error) {
-                            log:printError("Error while sending message to failover store. Message store queue = "
-                            + self.queueName, err = failOverClientStoreResult);
                             return failOverClientStoreResult;
                         }
                     } else {
@@ -146,11 +136,9 @@ public type Client client object {
             // This sends the Ballerina message to the JMS provider.
             var returnVal = self.queueSender->send(messageToStore);
             if (returnVal is error) {
-                string errorMessage = "Error occurred while sending the message to the queue " + self.queueName;
-                log:printError(errorMessage, err = returnVal);
+                return returnVal;
             }
         } else {
-            log:printError("Error while creating message from ", err = messageToStore);
             return messageToStore;
         }
     }
@@ -160,12 +148,12 @@ public type Client client object {
     #
     # + storeConfig -  `MessageStoreConfiguration` config of message store 
     # + return - Created JMS objects as `(jms:Connection, jms:Session, jms:QueueSender)` or an `error` in case of issue  
-    function intializeMessageSender(MessageStoreConfiguration storeConfig) returns (jms:Connection, jms:Session, jms:QueueSender)|error? {
+    function intializeMessageSender(MessageStoreConfiguration storeConfig) returns (jms:Connection, jms:Session, jms:QueueSender)|error {
 
         string providerUrl = storeConfig.providerUrl;
         self.queueName = storeConfig.queueName;
 
-        //TODO: JMS connector need to use these for security. Currenlty, no usage. 
+        //TODO: JMS connector need to use these for security (/ballerina-lang/issues/16507). Currenlty, no usage. 
         string? userName = storeConfig["userName"];
         string? password = storeConfig["password"];
 
@@ -194,8 +182,8 @@ public type Client client object {
     #
     # + return - `error` in case of closing 
     function closeMessageSender() returns error? {
-        //TODO: implement these methods
-        //self.queueSender.stop();
+        //TODO: implement these methods (/ballerina-lang/issues/16508)
+        //self.queueSender.stop(); 
         //self.jmsSession.close();
         self.jmsConnection.stop();
     }
@@ -207,12 +195,7 @@ public type Client client object {
     # + return - `error` in case of initalization issue (i.e connection to broker could not established)
     function reInitializeClient(MessageStoreConfiguration storeConfig) returns error? {
         check self.closeMessageSender();
-        var jmsObjects = check self.intializeMessageSender(storeConfig);
-        if (jmsObjects is ((jms:Connection, jms:Session, jms:QueueSender))) {
-            (self.jmsConnection, self.jmsSession, self.queueSender) = jmsObjects;
-        } else {
-            return jmsObjects;
-        }
+        (self.jmsConnection, self.jmsSession, self.queueSender) = check self.intializeMessageSender(storeConfig); 
     }
 };
 
@@ -246,8 +229,8 @@ public type MessageStoreConfiguration record {|
 # + backOffFactor - Multiplier of the retry `interval` 
 # + maxWaitInterval - Max time interval to attempt connecting to broker (seconds) and resend
 public type MessageStoreRetryConfig record {|
-    int interval;
+    int interval = 5;
     int count;
-    float backOffFactor;
-    int maxWaitInterval;
+    float backOffFactor = 1.5;
+    int maxWaitInterval = 60;
 |};
