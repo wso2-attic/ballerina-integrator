@@ -45,7 +45,7 @@ public function main(string... args) {
 
     messageStore:ForwardingProcessorConfiguration myProcessorConfig = {
         storeConfig: myMessageStoreConfig,
-        HttpEndpoint: "http://127.0.0.1:9095/testservice/test",
+        HttpEndpointUrl: "http://127.0.0.1:9095/testservice/test",
         HttpOperation: http:HTTP_POST, 
         
         pollTimeConfig: "0/2 * * * * ?" , 
