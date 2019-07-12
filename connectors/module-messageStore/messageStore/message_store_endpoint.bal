@@ -108,7 +108,7 @@ public type Client client object {
                         if (retryDelay > retryConfig.maxWaitInterval) {
                             retryDelay = retryConfig.maxWaitInterval;
                         }
-                        runtime:sleep(retryDelay);
+                        runtime:sleep(retryDelay * 1000);
                         retryCount = retryCount + 1;
                     }
                 }
@@ -236,12 +236,15 @@ public type MessageStoreConfiguration record {|
 |};
 
 # Message Store retry configuration. Message store will retry to store a message 
-# according to this config.
+# according to this config retrying to connect to message broker. In message processor 
+# same config will be use to retry polling a message retrying to connect to the message broker. 
 #
-# + interval - Retry interval in milliseconds 
+# + interval - Time interval to attempt connecting to broker (seconds). Each time this time
+#              get multiplied by `backOffFactor` until `maxWaitInterval`
+#              is reached
 # + count - Number of retry attempts before giving up 
 # + backOffFactor - Multiplier of the retry `interval` 
-# + maxWaitInterval - Maximum time of the retry interval in milliseconds
+# + maxWaitInterval - Max time interval to attempt connecting to broker (seconds) and resend
 public type MessageStoreRetryConfig record {|
     int interval;
     int count;

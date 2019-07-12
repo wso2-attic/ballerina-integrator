@@ -61,6 +61,16 @@ public type MessageForwardingProcessor object {
         string acknowledgementMode = CLIENT_ACKNOWLEDGE;
         string queueName = storeConfig.queueName;
 
+        //if retry config is not set, set one with defaults 
+        if(storeConfig.retryConfig == ()) {
+            storeConfig.retryConfig = {
+                count: -1,  //infinite retry until success
+                interval: 5,
+                backOffFactor: 1.5,
+                maxWaitInterval: 60
+            };
+        }
+
         //init connection to the broker
         var consumerInitResult = check initializeConsumer(storeConfig);
         (self.jmsConnection, self.jmsSession, self.queueReceiver) = consumerInitResult;
@@ -183,17 +193,20 @@ public type MessageForwardingProcessor object {
     # until connection get successful.  
     function retryToConnectBroker(ForwardingProcessorConfiguration processorConfig) {
         MessageStoreConfiguration storeConfig = processorConfig.storeConfig;
+        int maxRetryCount = storeConfig.retryConfig.count;
+        int retryInterval = storeConfig.retryConfig.interval;
+        int maxRetryDelay = storeConfig.retryConfig.maxWaitInterval;
         int retryCount = 0;
-        while (true) {
+        while (retryCount < maxRetryCount) {
             var consumerInitResult = initializeConsumer(storeConfig);
             if (consumerInitResult is error) {
                 log:printError("Error while re-connecting to queue "
                 + storeConfig.queueName + " retry count = " + retryCount, err = consumerInitResult);
                 retryCount = retryCount + 1;
-                int retryDelay = math:round(processorConfig.storeConnectionAttemptInterval *
-                processorConfig.storeConnectionBackOffFactor);
-                if (retryDelay > processorConfig.maxStoreConnectionAttemptInterval) {
-                    retryDelay = processorConfig.maxStoreConnectionAttemptInterval;
+                int retryDelay = retryInterval + math:round(retryCount * retryInterval *
+                storeConfig.retryConfig.backOffFactor);
+                if (retryDelay > maxRetryDelay) {
+                    retryDelay = maxRetryDelay;
                 }
                 runtime:sleep(retryDelay * 1000);
             } else {
@@ -201,6 +214,8 @@ public type MessageForwardingProcessor object {
                 break;
             }
         }
+        log:printError("Maximum retries re-connecting to broker is elapsed. Count = " + maxRetryCount
+                       + ". Giving up retrying.");
     }
 };
 
@@ -278,11 +293,6 @@ function onDeactivate(MessageForwardingProcessor processor) returns function() {
 # + retryHttpStatusCodes - If processor received any response after forwading the message with any of 
 #                          these status codes, it will be considered as a failed invocation `int[]` 
 # + maxRedeliveryAttempts - Max number of times a message should be re-tried in case of forwading failure 
-# + maxStoreConnectionAttemptInterval - Max time interval to attempt connecting to broker (seconds)  
-# + storeConnectionAttemptInterval -  Time interval to attempt connecting to broker (seconds). Each time this time
-#                                     get multiplied by `storeConnectionBackOffFactor` until `maxStoreConnectionAttemptInterval`
-#                                     is reached
-# + storeConnectionBackOffFactor - Multiplier for interval to attempt connecting to broker
 # + forwardingFailAction - Action to take when a message is failed to forward. `MessageForwardFailAction`
 #                          `DROP` - drop message and continue (default)
 #                          `DLCSTORE`- store message in configured  `DLCStore` 
@@ -304,12 +314,7 @@ public type ForwardingProcessorConfiguration record {|
     //forwarding retry
     int retryInterval;    //configured in milliseconds
     int[] retryHttpStatusCodes?;
-    int maxRedeliveryAttempts;
-
-    //connection retry
-    int maxStoreConnectionAttemptInterval = 60;    //configured in seconds
-    int storeConnectionAttemptInterval = 5;    //configured in seconds
-    float storeConnectionBackOffFactor = 1.2;    
+    int maxRedeliveryAttempts;  
 
     //action on forwarding fail of a message
     MessageForwardFailAction forwardingFailAction = DROP;
