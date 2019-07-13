@@ -72,7 +72,7 @@ public type MessageForwardingProcessor object {
         }
 
         //init connection to the broker
-        var consumerInitResult = check initializeConsumer(storeConfig);
+        var consumerInitResult = check trap initializeConsumer(storeConfig);
         (self.jmsConnection, self.jmsSession, self.queueReceiver) = consumerInitResult;
 
         //init HTTP endpoint
@@ -194,7 +194,7 @@ public type MessageForwardingProcessor object {
         int maxRetryDelay = storeConfig.retryConfig.maxWaitInterval;
         int retryCount = 0;
         while (retryCount < maxRetryCount) {
-            var consumerInitResult = initializeConsumer(storeConfig);
+            var consumerInitResult = trap initializeConsumer(storeConfig);
             if (consumerInitResult is error) {
                 log:printError("Error while re-connecting to queue "
                 + storeConfig.queueName + " retry count = " + retryCount, err = consumerInitResult);

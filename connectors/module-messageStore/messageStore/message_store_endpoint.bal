@@ -17,7 +17,6 @@
 import ballerina/jms;
 import ballerina/http;
 import ballerina/log;
-import ballerina/io;
 
 # Connector client for storing messages on a message broker. Internally it uses 
 # JMS connecor 
