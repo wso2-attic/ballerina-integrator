@@ -76,7 +76,7 @@ Lets create a file name request.json with following content.
     "doctor": "thomas collins",
     "hospital": "grand oak community hospital",
     "cardNo": "7844481124110331",
-    "appointment_date": "2025-04-02"
+    "appointmentDate": "2025-04-02"
 }
 ```
 And issue a curl request as follows. 
