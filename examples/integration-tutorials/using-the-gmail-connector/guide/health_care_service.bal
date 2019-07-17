@@ -17,7 +17,6 @@
 import ballerina/io;
 import ballerina/http;
 import ballerina/log;
-// CODE-SEGMENT-BEGIN: segment_1
 import wso2/gmail;
 
 // Gmail client endpoint declaration with oAuth2 client configurations.
@@ -40,80 +39,67 @@ gmail:GmailConfiguration gmailConfig = {
         }
     }
 };
-// CODE-SEGMENT-END: segment_1
 
 const RECIPIENT_EMAIL = "someone@gmail.com";
 const SENDER_EMAIL = "somebody@gmail.com";
 
+
 // Gmail client that handles sending payloads to email address.
-// CODE-SEGMENT-BEGIN: segment_2
 gmail:Client gmailClient = new(gmailConfig);
-// CODE-SEGMENT-END: segment_2
-
-// hospital service endpoint
-http:Client hospitalEP = new("http://localhost:9095");
-
-const string GRAND_OAK = "grand oak community hospital";
-const string CLEMENCY = "clemency medical center";
-const string PINE_VALLEY = "pine valley community hospital";
+// Listener endpoint that the service binds to.
+listener http:Listener endpoint = new(9091);
 
 //Change the service URL to base /surgery
 @http:ServiceConfig {
-    basePath: "/hospitalMgtService"
+    basePath: "/surgery"
 }
-service hospitalMgtService on new http:Listener(9092) {
-    // Resource to make an appointment reservation with bill payment
+service gmailConnector on new http:Listener(9091) {
+
+    // Decorate "reserve" resource path to accept POST requests.
     @http:ResourceConfig {
         methods: ["POST"],
-        path: "/categories/{category}/reserve"
+        path: "/reserve"
     }
-    resource function scheduleAppointment(http:Caller caller, http:Request request, string category) {
-        var requestPayload = request.getJsonPayload();
-        if (requestPayload is json) {
-            // tranform the request payload to the format expected by the backend end service
-            json reservationPayload = {
-                "patient": {
-                    "name": requestPayload.name,
-                    "dob": requestPayload.dob,
-                    "ssn": requestPayload.ssn,
-                    "address": requestPayload.address,
-                    "phone": requestPayload.phone,
-                    "email": requestPayload.email
-                },
-                "doctor": requestPayload.doctor,
-                "hospital": requestPayload.hospital,
-                "appointment_date": requestPayload.appointment_date
-            };
-            // call appointment creation
-            http:Response reservationResponse = createAppointment(caller, untaint reservationPayload, category);
+    resource function settleReservation(http:Caller caller, http:Request request) {
+        json|error payload = request.getJsonPayload();
+        http:Response response = new;
 
-            json | error responsePayload = reservationResponse.getJsonPayload();
-            if (responsePayload is json) {
-                // check if the json payload is actually an appointment confirmation response
-                if (responsePayload.appointmentNumber is ()) {
-                    respondToClient(caller, createErrorResponse(500, untaint responsePayload.toString()));
-                    return;
+        if (payload is json) {
+            http:Client clientEp = new("http://localhost:9095");
+
+            http:Response|error backendResponse = clientEp->post("/grandoaks/categories/surgery/reserve", 
+                                                                                            untaint payload);
+
+            if (backendResponse is http:Response) {
+                json|error jsonPayload = backendResponse.getJsonPayload();
+                
+                if (jsonPayload is json) {
+                    io:println("Appointment Confirmation Payload : " + jsonPayload.toString());
+                    // Get the complete email and send it to the email address 
+                    response = sendEmail(generateEmail(untaint jsonPayload));
+                } else {
+                    log:printError("Invalid Json payload recieved from backend");
                 }
-                // call payment settlement
-                http:Response paymentResponse = doPayment(untaint responsePayload);
-                // send the response back to the client
-                //respondToClient(caller, paymentResponse);
-                respondToClient(caller, sendEmail(generateEmail(untaint paymentResponse)));
             } else {
-                respondToClient(caller, createErrorResponse(500, "Backend did not respond with json"));
+                log:printError("Error in sending request to backend. Invalid response", err = backendResponse);
             }
         } else {
-            respondToClient(caller, createErrorResponse(400, "Not a valid Json payload"));
+            response.statusCode = 500;
+            response.setPayload("Payload is not a valid JSON format");
+        }
+
+        http:Response|error? result = caller->respond(response);
+        if (result is error) {
+            log:printError("Error in responding", err = result);
         }
     }
 }
 
 // Generates an email based on the recieved payload.
-// CODE-SEGMENT-BEGIN: segment_3
-function generateEmail(json jsonPayload) returns string {
+function generateEmail(json jsonPayload) returns string{
     string email = "<html>";
     email += "<h1> GRAND OAK COMMUNITY HOSPITAL </h1>";
-    email += "<h3> Patient Name : " + jsonPayload.patient.name.toString() + "</h3>";
+    email += "<h3> Patient Name : " + jsonPayload.patient.name.toString() +"</h3>";
     email += "<p> This is a confimation for your appointment with Dr." + jsonPayload.doctor.name.toString() + "</p>";
     email += "<p> Assigned time : " + jsonPayload.doctor.availability.toString() + "</p>";
     email += "<p> Appointment number : " + jsonPayload.appointmentNumber.toString() + "</p>";
@@ -122,18 +108,14 @@ function generateEmail(json jsonPayload) returns string {
 
     return email;
 }
-// CODE-SEGMENT-END: segment_3
 
-// Sends the payload to an Email account
-// CODE-SEGMENT-BEGIN: segment_4
+// Sends the payload to an Email account.
 function sendEmail(string email) returns http:Response {
     string messageBody = email;
     http:Response response = new;
 
     string userId = "me";
-    gmail:MessageRequest messageRequest = {
-
-    };
+    gmail:MessageRequest messageRequest = {};
     messageRequest.recipient = RECIPIENT_EMAIL;
     messageRequest.sender = SENDER_EMAIL;
     messageRequest.subject = "Gmail Connector test : Payment Status";
@@ -161,64 +143,4 @@ function sendEmail(string email) returns http:Response {
     }
 
     return response;
-}
-// CODE-SEGMENT-END: segment_4
-
-// function to call hospital service backend and make an appointment reservation
-function createAppointment(http:Caller caller, json payload, string category) returns http:Response {
-    string hospitalName = payload.hospital.toString();
-    http:Request reservationRequest = new;
-    reservationRequest.setPayload(payload);
-    http:Response | error reservationResponse = new;
-    match hospitalName {
-        GRAND_OAK => {
-            reservationResponse = hospitalEP->
-                post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
-        }
-        CLEMENCY => {
-            reservationResponse = hospitalEP->
-                post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
-        }
-        PINE_VALLEY => {
-            reservationResponse = hospitalEP->
-                post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
-        }
-        _ => {
-            respondToClient(caller, createErrorResponse(500, "Unknown hospital name"));
-        }
-    }
-    return handleResponse(reservationResponse);
-}
-
-// function to call hospital service backend and make payment for an appointment reservation
-function doPayment(json payload) returns http:Response {
-    http:Request paymentRequest = new;
-    paymentRequest.setPayload(payload);
-    http:Response | error paymentResponse = hospitalEP->post("/healthcare/payments", paymentRequest);
-    return handleResponse(paymentResponse);
-}
-
-// util method to handle response
-function handleResponse(http:Response | error response) returns http:Response {
-    if (response is http:Response) {
-        return response;
-    } else {
-        return createErrorResponse(500, <string> response.detail().message);
-    }
-}
-
-//util method to respond to a caller and handle error
-function respondToClient(http:Caller caller, http:Response response) {
-    var result = caller->respond(response);
-    if (result is error) {
-        log:printError("Error responding to client!", err = result);
-    }
-}
-
-// util method to create error response
-function createErrorResponse(int statusCode, string msg) returns http:Response {
-    http:Response errorResponse = new;
-    errorResponse.statusCode = statusCode;
-    errorResponse.setPayload(msg);
-    return errorResponse;
 }

@@ -35,21 +35,21 @@ service hospitalMgtService on new http:Listener(9092) {
         path: "/categories/{category}/reserve"
     }
     resource function scheduleAppointment(http:Caller caller, http:Request request, string category) {
-        var requestPayload = request.getJsonPayload();
-        if (requestPayload is json) {
+        var requestDataset = request.getJsonPayload();
+        if (requestDataset is json) {
             // tranform the request payload to the format expected by the backend end service
             json reservationPayload = {
                 "patient": {
-                    "name": requestPayload.name,
-                    "dob": requestPayload.dob,
-                    "ssn": requestPayload.ssn,
-                    "address": requestPayload.address,
-                    "phone": requestPayload.phone,
-                    "email": requestPayload.email
+                    "name": requestDataset.name,
+                    "dob": requestDataset.dob,
+                    "ssn": requestDataset.ssn,
+                    "address": requestDataset.address,
+                    "phone": requestDataset.phone,
+                    "email": requestDataset.email
                 },
-                "doctor": requestPayload.doctor,
-                "hospital": requestPayload.hospital,
-                "appointmentDate": requestPayload.appointmentDate
+                "doctor": requestDataset.doctor,
+                "hospital": requestDataset.hospital,
+                "appointmentDate": requestDataset.appointmentDate
             };
             // call appointment creation
             // CODE-SEGMENT-BEGIN: segment_2
@@ -63,8 +63,10 @@ service hospitalMgtService on new http:Listener(9092) {
                     respondToClient(caller, createErrorResponse(500, untaint responsePayload.toString()));
                     return;
                 }
-                // call payment settlement
-                io:println("Appointment details : " + responsePayload.toString());
+                
+                // add cardNo to the response payload
+                responsePayload.cardNumber = requestDataset.cardNo;
+
                 http:Response paymentResponse = doPayment(untaint responsePayload);
                 // send the response back to the client
                 respondToClient(caller, paymentResponse);
