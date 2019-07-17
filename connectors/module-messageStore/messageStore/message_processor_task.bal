@@ -72,7 +72,7 @@ public type MessageForwardingProcessor object {
         }
 
         //init connection to the broker
-        var consumerInitResult = check initializeConsumer(storeConfig);
+        var consumerInitResult = check trap initializeConsumer(storeConfig);
         (self.jmsConnection, self.jmsSession, self.queueReceiver) = consumerInitResult;
 
         //init HTTP endpoint
@@ -182,7 +182,7 @@ public type MessageForwardingProcessor object {
         check self.queueReceiver.__stop();
         //TODO: Ballerina has no method to close session
         //TODO: Ballerina has no method to close connection
-        self.jmsConnection.stop();
+        check trap self.jmsConnection.stop();
     }
 
     # Retry connecting to broker according to given config. This will try forever
@@ -193,8 +193,8 @@ public type MessageForwardingProcessor object {
         int retryInterval = storeConfig.retryConfig.interval;
         int maxRetryDelay = storeConfig.retryConfig.maxWaitInterval;
         int retryCount = 0;
-        while (retryCount < maxRetryCount) {
-            var consumerInitResult = initializeConsumer(storeConfig);
+        while (maxRetryCount == -1 || retryCount < maxRetryCount) {
+            var consumerInitResult = trap initializeConsumer(storeConfig);
             if (consumerInitResult is error) {
                 log:printError("Error while re-connecting to queue "
                 + storeConfig.queueName + " retry count = " + retryCount, err = consumerInitResult);
@@ -206,12 +206,15 @@ public type MessageForwardingProcessor object {
                 }
                 runtime:sleep(retryDelay * 1000);
             } else {
+                log:printInfo("Successfuly re-connected to message broker queue = " + processorConfig.storeConfig.queueName);
                 (self.jmsConnection, self.jmsSession, self.queueReceiver) = consumerInitResult;
                 break;
             }
         }
-        log:printError("Could not connect to message broker. Maximum retry count exceeded. Count = " + maxRetryCount
+        if(retryCount >= maxRetryCount && maxRetryCount != -1) {
+            log:printError("Could not connect to message broker. Maximum retry count exceeded. Count = " + maxRetryCount
                        + ". Giving up retrying.");
+        }
     }
 };
 
