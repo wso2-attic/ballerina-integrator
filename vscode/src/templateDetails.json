@@ -109,5 +109,72 @@
                 ]
             }
         ]
+    },
+    {
+        "id": "T0004",
+        "name": "File Integration with FTP Listener",
+        "description": "Contains a project template for implementing ftp listener.",
+        "placeholders": [
+            {
+                "id": "P001",
+                "label": "Protocol",
+                "name": "protocol",
+                "type": "text",
+                "value": [
+                    "FTP"
+                ]
+            },
+            {
+                "id": "P002",
+                "label": "FTP Host",
+                "name": "ftpHost",
+                "type": "text"
+            },
+            {
+                "id": "P003",
+                "label": "FTP Port",
+                "name": "ftpListenerPort",
+                "type": "number",
+                "value": [
+                    21
+                ]
+            },
+            {
+                "id": "P003",
+                "label": "Polling Interval",
+                "name": "ftpPollingInterval",
+                "type": "number",
+                "value": [
+                    60000
+                ]
+            },
+            {
+                "id": "P004",
+                "label": "FIle Name Pattern",
+                "name": "fileNamePattern",
+                "type": "text",
+                "value": [
+                    "xml"
+                ]
+            },
+            {
+                "id": "P005",
+                "label": "User Name",
+                "name": "ftpUserName",
+                "type": "text"
+            },
+            {
+                "id": "P006",
+                "label": "Password",
+                "name": "ftpPassword",
+                "type": "text"
+            },
+            {
+                "id": "7",
+                "label": "Folder",
+                "name": "folder",
+                "type": "text"
+            }
+        ]
     }
 ]
