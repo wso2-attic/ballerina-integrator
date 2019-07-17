@@ -46,7 +46,7 @@ Config conf = {
     opr: MOVE
 };
 
-// Creating a ftp listener instance by defining the configuration.
+// Creating a smb listener instance by defining the configuration.
 listener ftp:Listener remoteServer = new({
     protocol: ftp:SMB,
     host: config:getAsString("SMB_HOST"),
@@ -62,8 +62,8 @@ listener ftp:Listener remoteServer = new({
     path: "/sambaInFolder"
 });
 
-// Defining the configuration of the ftp client endpoint.
-ftp:ClientEndpointConfig ftpConfig = {
+// Defining the configuration of the smb client endpoint.
+ftp:ClientEndpointConfig smbConfig = {
     protocol: ftp:SMB,
     host: config:getAsString("SMB_HOST"),
     port: config:getAsInt("SMB_LISTENER_PORT"),
@@ -75,8 +75,8 @@ ftp:ClientEndpointConfig ftpConfig = {
     }
 };
 
-// Creating a ftpClient object.
-ftp:Client ftpClient = new(ftpConfig);
+// Creating a smbClient object.
+ftp:Client smbClient = new(smbConfig);
 
 service monitor on remoteServer {
     resource function fileResource(ftp:WatchEvent m) {
@@ -90,14 +90,14 @@ service monitor on remoteServer {
             // Moving the file to another location on the same ftp server after processing.
             if (proRes == MOVE) {
                 string destFilePath = createFolderPath(v1, conf.destFolder);
-                error? renameErr = ftpClient->rename(srcPath, destFilePath);
+                error? renameErr = smbClient->rename(srcPath, destFilePath);
                 log:printInfo("Moved File after processing");
             } else if (proRes == DELETE) {
-                error? fileDelCreErr = ftpClient->delete(srcPath);
+                error? fileDelCreErr = smbClient->delete(srcPath);
                 log:printInfo("Deleted File after processing");
             } else {
                 string errFoldPath = createFolderPath(v1, conf.errFolder);
-                error? processErr = ftpClient->rename(srcPath, errFoldPath);
+                error? processErr = smbClient->rename(srcPath, errFoldPath);
             }
         }
     }
@@ -108,7 +108,7 @@ public function processFile(string sourcePath) returns Operation {
 
     string getFileName = conf.srcFolder + sourcePath;
 
-    var getResult = ftpClient->get(getFileName);
+    var getResult = smbClient->get(getFileName);
 
     Operation res = MOVE;
 

@@ -1,8 +1,8 @@
 # Ballerina as a JMS Producer and a Consumer
 
-This guide walks you through the process of using Ballerina to handle files read using FTP protocol, with JMS queues using a message broker. 
+This guide walks you through the process of using Ballerina to handle files read using FTP protocol and how to scale the file processing with JMS queues using a message broker. 
 
-## What you'll build
+#### What you'll build
 
 In this example, we'll implement the following.
 * ftp listener which will listen to a remote directory and periodically notify the file addition of the specified file pattern.
@@ -17,7 +17,7 @@ In this example Apache ActiveMQ has been used as the JMS broker.<br/>
 Ballerina JMS Connector is used to connect Ballerina and JMS Message Broker.<br/>
 With this JMS Connector, Ballerina can act as both JMS Message Consumer and JMS Message Producer.
 
-## Prerequisites
+#### Prerequisites
 
 * Ballerina Distribution
 * A Text Editor or an IDE <br/>
@@ -30,11 +30,31 @@ https://github.com/wso2-ballerina/module-ftp<br/>
 4. FTP server and client
 5. A JMS Broker (Example: Apache ActiveMQ)
 6. After installing the JMS broker, copy its .jar files into the <BALLERINA_HOME>/bre/lib folder <br/>
-For ActiveMQ 5.15.4: Copy activemq-client-5.15.4.jar, geronimo-j2ee-management_1.1_spec-1.0.1.jar and hawtbuf-1.11.jar  
+For ActiveMQ 5.15.4: Copy activemq-client-5.15.4.jar, geronimo-j2ee-management_1.1_spec-1.0.1.jar and hawtbuf-1.11.jar 
 
-## Implementation
 
-### Create the project structure
+### Let's Get Started!
+
+This tutorial includes the following sections.
+
+- [Implementation](#implementation)
+  - [Creating the Project Structure](#creating-the-project-structure)
+  - [Implementing the FTP Listener and JMS Producer.](#Implementing-the-FTP-Listener-and-JMS-Producer)
+     - [Implementing the FTP Listener](#Implementing-the-FTP-Listener)
+     - [Implementing the JMS Producer](#Implementing-the-JMS-Producer)   
+  - [Implement the FTP client and JMS message receiver](#Implement-the-FTP-client-and-JMS-message-receiver)
+    - [Implementing the FTP Client](#Implementing-the-FTP-Client)
+    - [Implementing the JMS Consumer](#Implementing-the-JMS-Consumer) 
+  - [Scaling the message processing using multiple jms consumers](#Scaling-the-message-processing-using-multiple-jms-consumers)
+- [Deployment](#deployment)
+  - [Deploying Locally](#deploying-locally)
+  - [Deploying on Docker](#deploying-on-docker)
+- [Testing](#testing)
+  - [Invoking the Database Service](#invoking-the-database-service)
+
+### Implementation
+
+#### Creating the project structure
 
 Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
 
@@ -56,8 +76,6 @@ Then open the terminal and navigate to file-integration and run Ballerina projec
 ```ballerina
    $ ballerina init
 ```
-
-### Implementation
 
 #### Implementing the FTP Listener and JMS Producer.
 
@@ -238,7 +256,7 @@ service monitor on remoteServer {
 }
 ```
 #### Implement the FTP client and JMS message receiver
-##### Implement FTP client
+##### Implement FTP Client
 
 The FTP Client can be used to connect to a FTP server and perform I/O operations.
 
@@ -273,7 +291,7 @@ ftp:ClientEndpointConfig ftpConfig = {
 ftp:Client ftpClient = new(ftpConfig);
 
 
-##### Implement the JMS message receiver
+##### Implement the JMS message Consumer
 
 In the below code, fileConsumingSystem is a JMS consumer service that handles the JMS message consuming logic.<br/>
 This service is attached to a jms:QueueReceiver endpoint that defines the jms:Session and the queue to which the messages are added.
@@ -383,8 +401,33 @@ service fileConsumingSystems on jmsConsumer1 {
     }
 }
 ```
+### Deployment
 
-## Invoking the service
+Once you are done with the development, you can deploy the services using any of the methods listed below.
+
+#### Deploying Locally
+
+To deploy locally, navigate to *guides/file-integration*, and execute the following command.
+
+```
+$ ballerina build
+```
+
+This builds a Ballerina executable archive (.balx) of the services that you developed in the target folder.
+You can run them with the command:
+
+```
+$ ballerina run <Executable_File_Name>
+```
+
+#### Deploying on Docker
+
+If necessary you can run the service that you developed above as a Docker container. Ballerina language includes a Ballerina_Docker_Extension, which offers native support to run Ballerina programs on containers.
+
+To run a service as a Docker container, add the corresponding Docker annotations to your service code.
+
+### Testing
+#### Invoking the service
 
 When we upload a file with the same file name pattern defined in the configs to the folder defined in the ftp listener instance the ftp listener will invoke, process the file and do the operation defined in the configs (i.e either Move to the defined folder or Delete the processed) if the processing is successful. <br/>
 If the processing is unsuccessful the file is moved to the folder defined.

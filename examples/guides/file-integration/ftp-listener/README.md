@@ -1,10 +1,10 @@
-# Implementing smb listener with Ballerina
+# Implementing ftp listener with Ballerina
 
-This example demonstrates how implement smb listener in Ballerina.
+This example demonstrates how implement ftp listener in Ballerina.
 
 #### What you'll build
 
-In this example, we'll implement smb listener which will listen to a remote directory and periodically notify the file addition of the specified file pattern.
+In this example, we'll implement ftp listener which will listen to a remote directory and periodically notify the file addition of the specified file pattern.
 
 Then we can define the processing we need to upon the file content.
 
@@ -20,7 +20,7 @@ Finally we can move the processed file to the specified location or delete it.
 https://github.com/wso2-ballerina/module-ftp<br/>
 2. Unzip package distribution.<br/>
 3. Run the install.<sh|bat> script to install the package. You can uninstall the package by running uninstall.<sh|bat>.  <br/>
-* SMB server and client  
+* FTP server and client  
 
 ### Let's Get Started!
 
@@ -28,8 +28,8 @@ This tutorial includes the following sections.
 
 - [Implementation](#implementation)
   - [Creating the Project Structure](#creating-the-project-structure)
-  - [Implementing the SMB Listener](#Implementing-the-SMB-Listener)
-  - [Implementing the SMB Client](#Implementing-the-SMB-Client) 
+  - [Implementing the FTP Listener](#Implementing-the-FTP-Listener)
+  - [Implementing the FTP Client](#Implementing-the-FTP-Client) 
 - [Deployment](#deployment)
   - [Deploying Locally](#deploying-locally)
   - [Deploying on Docker](#deploying-on-docker)
@@ -45,8 +45,8 @@ Ballerina is a complete programming language that supports custom project struct
 
 ```
   └──file-integration
-    └── smb-listener
-        └── smb_listener.bal            
+    └── ftp-listener
+        └── ftp_listener.bal            
 ```
         
 Create the above directories in your local machine and also create empty .bal files.
@@ -57,11 +57,11 @@ Then open the terminal and navigate to ftp-template and run Ballerina project in
    $ ballerina init
 ```
 
-#### Implementing the SMB Listener
+#### Implementing the FTP Listener
 
-Let's get started with implementing the smb listener.<br/>
+Let's get started with implementing the ftp listener.<br/>
 
-First we have to import the ballerina ftp module as smb protocol is also is supported by the ftp module .
+First we have to import the ballerina ftp_module.
 
 ```ballerina
 import wso2/ftp;
@@ -98,12 +98,11 @@ Define a record to get the following configurations for processing the file.
 Give the configurations as inputs.
 
  ```ballerina
-   Config conf = {
-        fileNamePattern: ".*.xml",
-        destFolder: "/sambaOutFolder",
-        errFolder: "/sambaFaultFolder",
-        srcFolder: "/sambaInFolder",
-        opr: MOVE
+Config conf = {
+    fileNamePattern: ".*.json",
+    destFolder: "/movedFolder",
+    errFolder: "/errFoldr",
+    opr: MOVE  
 };
 ```
 
@@ -111,46 +110,46 @@ Create a ftp listener instance by defining the configuration.
 
 ```ballerina
 listener ftp:Listener remoteServer = new({
-    protocol: ftp:SMB,
-    host: config:getAsString("SMB_HOST"),
-    port: config:getAsInt("SMB_LISTENER_PORT"),
-    pollingInterval:config:getAsInt("SMB_POLLING_INTERVAL"),
+    protocol: ftp:FTP,
+    host: config:getAsString("FTP_HOST"),
+    port: config:getAsInt("FTP_LISTENER_PORT"),
+    pollingInterval:config:getAsInt("FTP_POLLING_INTERVAL"),
     fileNamePattern:conf.fileNamePattern,  
-     secureSocket: {
+    secureSocket: {
         basicAuth: {
-            username: config:getAsString("SMB_USERNAME"),
-            password: password: config:getAsString("SMB_PASSWORD")
+            username: config:getAsString("FTP_USERNAME"),
+            password: config:getAsString("FTP_PASSWORD")
         }
     },
-    path: "/sambaInFolder"
+    path: "/newFolder"
 });
 ```
 
-#### Implementing the SMB Client
+#### Implementing the FTP Client
 
 Implement the ftp client endpoint to do the file processing.
 
 ```ballerina
 ftp:ClientEndpointConfig ftpConfig = {
-    protocol: ftp:SMB,
-    host: config:getAsString("SMB_HOST"),
-    port: config:getAsInt("SMB_LISTENER_PORT"),
+    protocol: ftp:FTP,
+    host: config:getAsString("FTP_HOST"),
+    port: config:getAsInt("FTP_LISTENER_PORT"),
     secureSocket: {
         basicAuth: {
-            username: config:getAsString("SMB_USERNAME"),
-            password: config:getAsString("SMB_PASSWORD")
+            username: config:getAsString("FTP_USERNAME"),
+            password: config:getAsString("FTP_PASSWORD")
         }
     }
 };
 ```
 
-Create a smbClient object.
+Create a ftpClient object.
 
 ```ballerina
-ftp:Client smbClient = new(ftpConfig);
+ftp:Client ftpClient = new(ftpConfig);
 ```
 
-Create the file listening resource which will listen to a remote directory on the smb server and periodically notify the addition of a file with the specified file pattern.
+Create the file listening resource which will listen to a remote directory on the ftp server and periodically notify the addition of a file with the specified file pattern.
 
 ```ballerina
 service monitor on remoteServer {
@@ -162,7 +161,7 @@ service monitor on remoteServer {
                 // implementation
 
                 string destFilePath = createFolderPath(v1,conf.destFolder);
-                error? renameErr = smbClient->rename(v1.path, destFilePath);
+                error? renameErr = ftpClient->rename(v1.path, destFilePath);
 
             } else if (proRes == DELETE) {
                 // implementation
@@ -179,7 +178,7 @@ This function will return MOVE or DELETE of Operation type based on the function
 ```ballerina
 public function processFile(string sourcePath) returns Operation {
 
-    var getResult = smbClient->get(sourcePath);
+    var getResult = ftpClient->get(sourcePath);
     Operation res = ERROR;
 
     // implementation
