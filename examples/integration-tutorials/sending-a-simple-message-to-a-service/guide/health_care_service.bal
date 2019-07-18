@@ -20,13 +20,17 @@ import ballerina/log;
 listener http:Listener httpListener = new(9092);
 
 // Health Care Management is done using an in-memory map.
-map<json> appoinmentMap = {};
+map<json> appoinmentMap = {
+
+};
 
 // RESTful service.
-@http:ServiceConfig { basePath: "/hospitalMgtService" }
-service hospitalMgt on httpListener {    
-    
-    // Resource that handles the HTTP GET requests  
+@http:ServiceConfig {
+    basePath: "/hospitalMgtService"
+}
+service hospitalMgt on httpListener {
+
+    // Resource that handles the HTTP GET requests
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/medicalreservation/{patientID}"
@@ -57,12 +61,12 @@ service hospitalMgt on httpListener {
         var patientReq = req.getJsonPayload();
         if (patientReq is json) {
             string patientID = patientReq.Appoinment.ID.toString();
-            appoinmentMap[patientID] = patientReq;            
+            appoinmentMap[patientID] = patientReq;
             response.setJsonPayload(untaint patientReq);
             // Set 201 Created status code in the response message.
-            response.statusCode = 201;            
-            response.setHeader("Location", 
-                "http://localhost:9095/hospitalMgtService/medicalreservation/" + patientID);
+            response.statusCode = 201;
+            response.setHeader("Location",
+            "http://localhost:9095/hospitalMgtService/medicalreservation/" + patientID);
             // Send response to the client.
             var result = caller->respond(response);
             if (result is error) {
@@ -93,7 +97,7 @@ service hospitalMgt on httpListener {
             // Updating existing appoinment with the attributes of the updated appoinment.
             if (existingAppoinment != null) {
                 existingAppoinment.Appoinment.Name = updatedAppoinment.Appoinment.Name;
-                
+
                 appoinmentMap[patientID] = existingAppoinment;
             } else {
                 existingAppoinment = "Medical reservation : " + patientID + " cannot be found.";

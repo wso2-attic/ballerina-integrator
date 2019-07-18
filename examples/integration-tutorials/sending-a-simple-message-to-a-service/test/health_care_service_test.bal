@@ -28,9 +28,9 @@ http:Client clientEP = new("http://localhost:9092/hospitalMgtService");
 
 function testResourceAddAppoinment(json dataset) {
     // Initialize the empty http request.
-    http:Request req = new;    
+    http:Request req = new;
     req.setJsonPayload(dataset);
-    
+
     // Send 'POST' request and obtain the response.
     var response = clientEP->post("/medicalreservation", req);
     if (response is http:Response) {
@@ -39,8 +39,8 @@ function testResourceAddAppoinment(json dataset) {
             msg = "Add appoinment resource did not respond with expected response code!");
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
-        if (resPayload is json) {            
-            test:assertEquals(dataset,resPayload,
+        if (resPayload is json) {
+            test:assertEquals(dataset, resPayload,
                 msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
@@ -48,7 +48,7 @@ function testResourceAddAppoinment(json dataset) {
     } else {
         test:assertFail(msg = "Error sending request");
     }
-}   
+}
 
 // This function verifies for the response of the POST service.
 // It asserts for the response text and the status code.
@@ -57,11 +57,16 @@ function testResourceAddAppoinment(json dataset) {
 // TC002 - Verify the response when a valid request is sent as " ".
 // TC003 - Verify the response when a valid request is sent as empty json object.
 // This function passes data to testResourceAddAppoinment function for test cases.
-function testResourceInsertDataProvider() returns json[][]{
-     return [[{ "Appoinment": { "ID": "001", "Name": "XYZ"} }],
-            [{ "": { "": ""} }],
-            [{}]];            
-  }
+function testResourceInsertDataProvider() returns json[][] {
+    return [[{         "Appoinment": {
+            "ID": "001",
+            "Name": "XYZ"
+        } }],
+    [{         "": {
+            "": ""
+        } }],
+    [{}]];
+}
 
 // Define the data provider for function testResourceUpdateAppoinment_Negative
 @test:Config {
@@ -75,7 +80,7 @@ function testResourceUpdateAppoinment_Negative(json dataset) {
     // Construct the request payload.
     json payload = dataset;
     req.setJsonPayload(payload);
-    string testInput = payload.Appoinment.ID.toString();    
+    string testInput = payload.Appoinment.ID.toString();
     // Send 'PUT' request and obtain the response.
     var response = clientEP->put("/medicalreservation/" + testInput, req);
     if (response is http:Response) {
@@ -84,8 +89,8 @@ function testResourceUpdateAppoinment_Negative(json dataset) {
             msg = "Update appoinment resource did not respond with expected response code!");
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
-        if (resPayload is json) {                     
-            test:assertEquals(resPayload,"Medical reservation : " + testInput + " cannot be found.",
+        if (resPayload is json) {
+            test:assertEquals(resPayload, "Medical reservation : " + testInput + " cannot be found.",
                 msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
@@ -99,8 +104,11 @@ function testResourceUpdateAppoinment_Negative(json dataset) {
 // This negative function verifies the failure when an invalid ID is sent.
 // This function covers the below test case.
 // NTC001 - Verify the response when an invalid ID is sent.
-function testResourceUpdateDataProvider_Negative() returns json[][]{
-    return [[{ "Appoinment": { "ID": "002", "Name": "XYZAA"} }]];
+function testResourceUpdateDataProvider_Negative() returns json[][] {
+    return [[{         "Appoinment": {
+            "ID": "002",
+            "Name": "XYZAA"
+        } }]];
 }
 
 // Define the data provider for function testResourceUpdateAddAppoinment
@@ -115,7 +123,7 @@ function testResourceUpdateAppoinment(json dataset) {
     // Construct the request payload.
     json payload = dataset;
     req.setJsonPayload(payload);
-    string testInput = payload.Appoinment.ID.toString();    
+    string testInput = payload.Appoinment.ID.toString();
     // Send 'PUT' request and obtain the response.
     var response = clientEP->put("/medicalreservation/" + testInput, req);
     if (response is http:Response) {
@@ -125,7 +133,7 @@ function testResourceUpdateAppoinment(json dataset) {
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
-            test:assertEquals(dataset,resPayload,
+            test:assertEquals(dataset, resPayload,
                 msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
@@ -139,8 +147,11 @@ function testResourceUpdateAppoinment(json dataset) {
 // This negative function verifies the when an valid ID is sent.
 // This function covers the below test case.
 // TC004 - Verify the response when an valid ID is sent to update the details.
-function testResourceUpdateDataProvider() returns json[][]{
-    return [[{ "Appoinment": { "ID": "001", "Name": "XYZAA"} }]];
+function testResourceUpdateDataProvider() returns json[][] {
+    return [[{         "Appoinment": {
+            "ID": "001",
+            "Name": "XYZAA"
+        } }]];
 }
 
 // Define the data provider for function testResourceGetDetails_Negative
@@ -149,7 +160,7 @@ function testResourceUpdateDataProvider() returns json[][]{
     dependsOn: ["testResourceUpdateAppoinment"]
 }
 
-function testResourceGetDetails_Negative(json dataset) {    
+function testResourceGetDetails_Negative(json dataset) {
     string testInput = dataset.Appoinment.ID.toString();
     var response = clientEP->get("/medicalreservation/" + testInput);
     if (response is http:Response) {
@@ -158,8 +169,8 @@ function testResourceGetDetails_Negative(json dataset) {
             msg = "Search appoinment resource did not respond with expected response code!");
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
-        if (resPayload is json) {                       
-            test:assertEquals(resPayload,"Medical reservation : " + testInput + " cannot be found.",
+        if (resPayload is json) {
+            test:assertEquals(resPayload, "Medical reservation : " + testInput + " cannot be found.",
                  msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
@@ -174,8 +185,11 @@ function testResourceGetDetails_Negative(json dataset) {
 // This function covers the below test case.
 // NTC002 - Verify the response when an invalid ID is sent.
 function testResourceGetDataProvider_Negative() returns json[][] {
-    return [[{ "Appoinment": { "ID": "002", "Name": "XYZAA"} }]];
-    
+    return [[{         "Appoinment": {
+            "ID": "002",
+            "Name": "XYZAA"
+        } }]];
+
 }
 
 // Define the data provider for function testResourceGetDetails.
@@ -194,8 +208,8 @@ function testResourceGetDetails(json dataset) {
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
-            string testresponseId = resPayload.Appoinment.ID.toString();            
-            test:assertEquals(testresponseId,testInput,
+            string testresponseId = resPayload.Appoinment.ID.toString();
+            test:assertEquals(testresponseId, testInput,
                 msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
@@ -210,7 +224,10 @@ function testResourceGetDetails(json dataset) {
 // This function covers the below test case.
 // TC005 - Verify the response when an valid ID is sent.
 function testResourceGetDataProvider() returns json[][] {
-    return [[{ "Appoinment": { "ID": "001", "Name": "XYZAA"} }]];
+    return [[{         "Appoinment": {
+            "ID": "001",
+            "Name": "XYZAA"
+        } }]];
 }
 
 @test:Config {
@@ -219,18 +236,18 @@ function testResourceGetDataProvider() returns json[][] {
 }
 
 // Function to test DELETE resource.
-function testResourceCancelAppoinment(json dataset) {   
-    http:Request req = new;    
+function testResourceCancelAppoinment(json dataset) {
+    http:Request req = new;
     //string b = id;
     string testInput = dataset.Appoinment.ID.toString();
     var response = clientEP->delete("/medicalreservation/" + testInput, req);
-    if (response is http:Response) {       
+    if (response is http:Response) {
         test:assertEquals(response.statusCode, 200,
-            msg = "cancelAppoinment resource did not respond with expected response code!");        
+            msg = "cancelAppoinment resource did not respond with expected response code!");
         var resPayload = response.getJsonPayload();
-        if (resPayload is json) {                        
+        if (resPayload is json) {
             test:assertEquals(resPayload, "Medical reservation : " + testInput + " removed.",
-                  msg = "Response mismatch!");            
+                  msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Failed to retrieve the payload");
         }
@@ -244,5 +261,8 @@ function testResourceCancelAppoinment(json dataset) {
 // This function covers the below test case.
 // TC006 - Verify the response when an valid ID is sent to delete the details.
 function testResourceCancelDataProvider() returns json[][] {
-    return [[{ "Appoinment": { "ID": "001", "Name": "XYZAA"} }]];
+    return [[{         "Appoinment": {
+            "ID": "001",
+            "Name": "XYZAA"
+        } }]];
 }

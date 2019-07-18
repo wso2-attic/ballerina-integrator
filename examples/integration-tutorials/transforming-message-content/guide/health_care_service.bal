@@ -91,15 +91,15 @@ service hospitalMgtService on new http:Listener(9092) {
             match hospitalName {
                 "grand oak community hospital" => {
                     backendResponse = healthcareEndpoint->post(GRAND_OAK_EP_PATH + untaint category + "/reserve",
-                                                backendRequest);
+                    backendRequest);
                 }
                 "clemency medical center" => {
                     backendResponse = healthcareEndpoint->post(CLEMENCY_EP_PATH + untaint category + "/reserve",
-                                                backendRequest);
+                    backendRequest);
                 }
                 "pine valley community hospital" => {
                     backendResponse = healthcareEndpoint->post(PINE_VALLEY_EP_PATH + untaint category + "/reserve",
-                                                backendRequest);
+                    backendRequest);
                 }
                 _ => {
                     error err = error(ERROR_CODE, {
