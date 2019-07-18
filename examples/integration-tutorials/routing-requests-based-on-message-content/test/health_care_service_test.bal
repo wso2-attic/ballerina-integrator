@@ -17,49 +17,16 @@
 import ballerina/test;
 import ballerina/http;
 import ballerina/log;
-
-json requestPayload = {
-    "patient": {
-        "name": "John Doe",
-        "dob": "1940-03-19",
-        "ssn": "234-23-525",
-        "address": "California",
-        "phone": "8770586755",
-        "email": "johndoe@gmail.com"
-    },
-    "doctor": "thomas collins",
-    "hospital": "grand oak community hospital",
-    "appointmentDate": "2025-04-02"
-};
-
-json expected = {
-    "appointmentNumber": 1,
-    "appointmentDate": "2025-04-02",
-    "doctor": {
-        "name": "thomas collins",
-        "hospital": "grand oak community hospital",
-        "category": "surgery",
-        "availability": "9.00 a.m - 11.00 a.m",
-        "fee": 7000.0
-    },
-    "patient": {
-        "name": "John Doe",
-        "dob": "1940-03-19",
-        "ssn": "234-23-525",
-        "address": "California",
-        "phone": "8770586755",
-        "email": "johndoe@gmail.com"
-    },
-    "fee": 7000.0,
-    "confirmed": false
-};
+import wso2/healthcare;
 
 http:Client clientEP = new("http://localhost:9092/hospitalMgtService");
 
-@test:Config
-function testReservation() {
+@test:Config {
+    dataProvider: "testReservationDataProvider"
+}
+function testReservation(json dataset, json resultset) {
     http:Request req = new;
-    req.setJsonPayload(requestPayload);
+    req.setJsonPayload(dataset);
     req.addHeader("content-type", "application/json");
     var response = clientEP->post("/categories/surgery/reserve", req);
     if (response is http:Response) {
@@ -69,7 +36,7 @@ function testReservation() {
         if (receivedPayload is string) {
             var resPayload = response.getJsonPayload();
             if (resPayload is json) {
-                test:assertEquals(resPayload["confirmed"], expected["confirmed"], msg = "Response mismatch!");
+                test:assertEquals(resPayload, resultset, msg = "Response mismatch!");
             } else {
                 test:assertFail(msg = "Payload from reservation service is invalid");
             }
@@ -79,4 +46,45 @@ function testReservation() {
     } else {
         test:assertFail(msg = "Response from reservation service is invalid");
     }
+}
+
+function testReservationDataProvider() returns json[][] {
+    return [
+    [
+    {
+        "patient": {
+            "name": "John Doe",
+            "dob": "1940-03-19",
+            "ssn": "234-23-525",
+            "address": "California",
+            "phone": "8770586755",
+            "email": "johndoe@gmail.com"
+        },
+        "doctor": "thomas collins",
+        "hospital": "grand oak community hospital",
+        "appointmentDate": "2025-04-02"
+    },
+    {
+        "appointmentNumber": 1,
+        "appointmentDate": "2025-04-02",
+        "doctor": {
+            "name": "thomas collins",
+            "hospital": "grand oak community hospital",
+            "category": "surgery",
+            "availability": "9.00 a.m - 11.00 a.m",
+            "fee": 7000.0
+        },
+        "patient": {
+            "name": "John Doe",
+            "dob": "1940-03-19",
+            "ssn": "234-23-525",
+            "address": "California",
+            "phone": "8770586755",
+            "email": "johndoe@gmail.com"
+        },
+        "fee": 7000.0,
+        "confirmed": false
+    }
+    ]
+    ];
 }

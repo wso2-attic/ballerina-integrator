@@ -20,7 +20,7 @@ import ballerina/log;
 listener http:Listener httpListener = new(9092);
 
 // Endpoint URL of the backend service
-http:Client healthcareEndpoint = new("http://localhost:9095/healthcare");
+http:Client healthcareEndpoint = new("http://localhost:9095");
 
 // RESTful service
 @http:ServiceConfig {
@@ -81,7 +81,7 @@ service hospitalMgtService on httpListener {
                 handleErrorResponse(result, "Error at the backend");
             } else {
                 respondWithError(caller, < string > clientResponse.detail().message,
-                        "Backend service does not properly respond");
+                "Backend service does not properly respond");
             }
         } else {
             respondWithError(caller, untaint < string > jsonMsg.detail().message, "Request is not JSON");
