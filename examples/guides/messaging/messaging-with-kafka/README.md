@@ -385,22 +385,22 @@ Following are TLS authentication parameters for Kafka subscribers & producers:
 
 | Parameter | Description  |
 | :---   | :- |
-| sslEnabledProtocols | The list of protocols enabled for SSL connections. |
-| securityProtocol | Protocol used to communicate with brokers. |
-| sslProtocol | The SSL protocol used to generate the SSLContext. Default setting is TLS, which is fine for most cases. Allowed values in recent JVMs are TLS, TLSv1.1 and TLSv1.2. SSL, SSLv2 and SSLv3 may be supported in older JVMs, but their usage is discouraged due to known security vulnerabilities. |
-| sslProvider | The name of the security provider used for SSL connections. Default value is the default security provider of the JVM. |
-| sslKeyPassword | The password of the private key in the key store file. This is optional for client. |
-| sslKeystoreType | The file format of the key store file. This is optional for client. |
-| sslKeystoreLocation | The location of the key store file. This is optional for client and can be used for two-way authentication for client. |
-| sslKeystorePassword | The store password for the key store file. This is optional for client and only needed if ssl.keystore.location is configured. |
-| sslTruststoreType | The file format of the trust store file. |
-| sslTruststoreLocation | The location of the trust store file. |
-| sslTruststorePassword | The password for the trust store file. If a password is not set access to the truststore is still available, but integrity checking is disabled. |
-| sslCipherSuites | A list of cipher suites. This is a named combination of authentication, encryption, MAC and key exchange algorithm used to negotiate the security settings for a network connection using TLS or SSL network protocol. By default all the available cipher suites are supported. |
-| sslEndpointIdentificationAlgorithm | The endpoint identification algorithm to validate server hostname using server certificate. |
-| sslKeymanagerAlgorithm | The algorithm used by key manager factory for SSL connections. Default value is the key manager factory algorithm configured for the Java Virtual Machine. |
-| sslTrustmanagerAlgorithm | The algorithm used by trust manager factory for SSL connections. Default value is the trust manager factory algorithm configured for the Java Virtual Machine. |
-| sslSecureRandomImplementation | The SecureRandom PRNG implementation to use for SSL cryptography operations. |
+| secureSocket.keyStore.keyStoreType | The file format of the key store file. This is optional for client. |
+| secureSocket.keyStore.location | The location of the key store file. This is optional for client and can be used for two-way authentication for client. |
+| secureSocket.keyStore.password | The store password for the key store file. This is optional for client and only needed if ssl.keystore.location is configured. |
+| secureSocket.keyStore.keyManagerAlgorithm | The algorithm used by key manager factory for SSL connections. Default value is the key manager factory algorithm configured for the Java Virtual Machine. |
+| secureSocket.trustStore.trustStoreType | The file format of the trust store file. |
+| secureSocket.trustStore.location | The location of the trust store file. |
+| secureSocket.trustStore.password | The password for the trust store file. If a password is not set access to the truststore is still available, but integrity checking is disabled. |
+| secureSocket.trustStore.trustManagerAlgorithm | The algorithm used by trust manager factory for SSL connections. Default value is the trust manager factory algorithm configured for the Java Virtual Machine. |
+| secureSocket.protocol.securityProtocol | Protocol used to communicate with brokers. |
+| secureSocket.protocol.sslProtocol | The SSL protocol used to generate the SSLContext. Default setting is TLS, which is fine for most cases. Allowed values in recent JVMs are TLS, TLSv1.1 and TLSv1.2. SSL, SSLv2 and SSLv3 may be supported in older JVMs, but their usage is discouraged due to known security vulnerabilities. |
+| secureSocket.protocol.sslProtocolVersions | The list of protocols enabled for SSL connections. |
+| secureSocket.sslProvider | The name of the security provider used for SSL connections. Default value is the default security provider of the JVM. |
+| secureSocket.sslKeyPassword | The password of the private key in the key store file. This is optional for client. |
+| secureSocket.sslCipherSuites | A list of cipher suites. This is a named combination of authentication, encryption, MAC and key exchange algorithm used to negotiate the security settings for a network connection using TLS or SSL network protocol. By default all the available cipher suites are supported. |
+| secureSocket.sslEndpointIdentificationAlgorithm | The endpoint identification algorithm to validate server hostname using server certificate. |
+| secureSocket.sslSecureRandomImplementation | The SecureRandom PRNG implementation to use for SSL cryptography operations. |
 
 Let's see a sample for the Kafka topic publisher with SSL parameters.
 
@@ -415,13 +415,22 @@ kafka:ProducerConfig producerConfigs = {
     clientID:"basic-producer",
     acks:"all",
     noRetries:3,
-    sslEnabledProtocols:"TLSv1.2,TLSv1.1,TLSv1",
-    securityProtocol:"SSL",
-    sslTruststoreLocation:"<FILE_PATH>/kafka.client.truststore.jks",
-    sslTruststorePassword:"test1234",
-    sslKeystoreLocation:"<FILE_PATH>/kafka.client.keystore.jks",
-    sslKeystorePassword:"test1234",
-    sslKeyPassword:"test1234"
+    secureSocket: {
+        keyStore:{
+            location:"<FILE_PATH>/kafka.client.keystore.jks",
+            password:"test1234"
+        },
+        trustStore: {
+            location:"<FILE_PATH>/kafka.client.truststore.jks",
+            password:"test1234"
+        },
+        protocol: {
+            sslProtocol:"TLS",
+            sslProtocolVersions:"TLSv1.2,TLSv1.1,TLSv1",
+            securityProtocol:"SSL"
+        },
+        sslKeyPassword:"test1234"
+    }
 };
 
 kafka:Producer kafkaProducer = new(producerConfigs);
