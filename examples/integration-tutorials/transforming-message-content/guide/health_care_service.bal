@@ -18,7 +18,7 @@ import ballerina/http;
 import ballerina/log;
 
 // Endpoint for the backend service
-http:Client healthcareEndpoint = new("http://localhost:9095/healthcare");
+http:Client healthcareEndpoint = new("http://localhost:9095");
 
 // Constants for request paths
 const GRAND_OAK_EP_PATH = "/grandoaks/categories/";
@@ -80,10 +80,8 @@ service hospitalMgtService on new http:Listener(9092) {
                 },
                 "doctor": requestPayload.doctor,
                 "hospital": hospitalName,
-                "appointment_date": requestPayload.appointment_date
+                "appointmentDate": requestPayload.appointment_date
             };
-            // Log the modified payload
-            log:printInfo(modifiedPayload.toString());
             // CODE-SEGMENT-END: segment_1
 
             // Create new request to call the back-end service with the modified payload
@@ -92,18 +90,16 @@ service hospitalMgtService on new http:Listener(9092) {
 
             match hospitalName {
                 "grand oak community hospital" => {
-                    backendResponse = healthcareEndpoint->
-                        post(untaint string `${GRAND_OAK_EP_PATH}/${category}/reserve`,
-                    backendRequest);
+                    backendResponse = healthcareEndpoint->post(GRAND_OAK_EP_PATH + untaint category + "/reserve",
+                                                backendRequest);
                 }
                 "clemency medical center" => {
-                    backendResponse = healthcareEndpoint->
-                        post(untaint string `${CLEMENCY_EP_PATH}/${category}/reserve`,
-                    backendRequest);
+                    backendResponse = healthcareEndpoint->post(CLEMENCY_EP_PATH + untaint category + "/reserve",
+                                                backendRequest);
                 }
                 "pine valley community hospital" => {
-                    backendResponse = healthcareEndpoint->
-                        post(untaint string `${PINE_VALLEY_EP_PATH}/${category}/reserve`, backendRequest);
+                    backendResponse = healthcareEndpoint->post(PINE_VALLEY_EP_PATH + untaint category + "/reserve",
+                                                backendRequest);
                 }
                 _ => {
                     error err = error(ERROR_CODE, {
