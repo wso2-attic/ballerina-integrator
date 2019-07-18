@@ -19,8 +19,9 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/log;
 import ballerina/time;
+import wso2/healthcare;
 
-http:Client healthCareEP = new("http://localhost:9090/healthcare");
+http:Client healthCareEP = new("http://localhost:9095/healthcare");
 
 # Description: This test scenario verifies new docotr can be added to a hospital. 
 # + dataset - dataset Parameter Description
@@ -106,7 +107,7 @@ function testGetDoctors(json dataset) {
     boolean includeDoctor = false;
     string doctor = dataset.doctor.toString();
 
-    http:Response | error response = healthCareEP->get("/" + inputCategory + "/");
+    http:Response | error response = healthCareEP->get("/queryDoctor/" + inputCategory + "/");
 
     if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
@@ -190,7 +191,7 @@ function testGetAppointmentDataProvider() returns json[][]
             "email": "jduke@gmail.com"
         },
         "fee": 12000.0,
-        "confirmed": false,
+        "confirmed": true,
         "appointmentDate": "2019-07-02"
     }
     ]
@@ -302,7 +303,7 @@ function testSettlePayment(json dataset) {
         string | error responsePayload = response.getTextPayload();
         if (responsePayload is string) {
             boolean isSuccessfullySettled = false;
-            if (responsePayload.contains("Settled payment successfully with payment ID")) {
+            if (responsePayload.contains("success")) {
                 isSuccessfullySettled = true;
                 test:assertEquals(isSuccessfullySettled, true, 
                                              msg = "The payment settlement is not as expected!");
