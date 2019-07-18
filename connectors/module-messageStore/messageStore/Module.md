@@ -26,8 +26,8 @@ forward them reliably to HTTP endpoint.
 
 HTTP connector has resiliency configurations (max retry attempts, retry interval etc.). In order to obtain reliable message 
 forwarding, `messageStore` connector makes use of resiliency provided by HTTP Client of Ballerina. In case of a failure case,
-we need to keep message in the queue. Hence, as the acknowledgement mode the `messageStore:MessageForwardingProcessor` component
-uses `CLIENT ACKNOWLEDGE` when polling message. Only if message forwarding is successful, the JMS message is acknowledged. 
+we need to keep the message in the queue. Hence, as the acknowledgement mode the `messageStore:MessageForwardingProcessor` component
+uses `CLIENT ACKNOWLEDGE` when polling message. Only if the message forwarding is successful, the JMS message is acknowledged. 
 
 Before storing the inbound HTTP message into the message broker queue, we need to convert the HTTP message into a JMS message. 
 At the same time, we need to ensure we capture all information in the HTTP message. (JMS Map message)[https://docs.oracle.com/javaee/6/api/javax/jms/MapMessage.html] is used as the JMS message type in the design. The header names and values are converted to map entries. 
@@ -45,7 +45,6 @@ and many other features bundled into HTTP client.
 Both `Client` and `MessageForwardingProcessor` components have resiliency for connecting to message broker. If it lost 
 connection to the broker, both can recover automatically. 
 
-
 # Features
 
 ## Storing messages
@@ -59,8 +58,7 @@ Active MQ, IBM MQ and WSO2 MB.
 ### 2. Store messages reliably
 
 If storing a message failed, the connector will try to store it to the same message store a few times before giving up. 
-Underlying, this will try to re-initialize the connection to the broker and retry to send the message over JMS. If there
-is a sudden connection issue to the message broker when storing the message, this feature can recover the situation. 
+The store connector will try to re-initialize the connection to the broker and retry to send the message over JMS. If this is a transient connection issue  while storing the message, this feature can recover from that situation. 
 
 When retrying, users can configure
 
@@ -73,8 +71,7 @@ If failed to store the message after all retries `store` method will return an e
  
 ### 3. Configure a secondary message store
 
-If all retries to store the message to the primary store as discussed under point no:2 has elapsed, then if configured
-message store will try to store it in the secondary store. This can be a separate queue of the same broker. However, 
+If all retries to store the message to the primary store has failed and if a secondary store is configured store connector will try to store it in the secondary store. This can be a separate queue of the same broker. However, 
 configuring a queue of a different broker instance will give more reliability in case of primary broker is not responding.
 Secondary store can also have resiliency parameters. 
 
@@ -94,7 +91,6 @@ in the fail-over chain. As the connector uses JMS, this feature is inherited.
 
 Example: https://activemq.apache.org/failover-transport-reference
          https://docs.wso2.com/display/MB320/Handling+Failover 
-
 
 ## Forwarding messages
 
@@ -147,17 +143,7 @@ Sample config : retry 5 times with 3 second interval
     };
 ```
 
-
-
-
-### 3. Forwarding messages to dynamic HTTP services
-
-Message processor has the capability to look at a property in the message and forward
-the request to the HTTP url specified in there. 
-
-Not supported
-
-### 4. Control message forwarding rate
+### 3. Control message forwarding rate
 
 Message forwarding rate is controlled by following parameters
 
@@ -192,8 +178,7 @@ Sample config: Forward a message once 100ms
     };
 ```
 
-
-### 5. Scheduled message forwarding
+### 4. Scheduled message forwarding
 
 When you need to trigger message forwarding at a specific time of the day, or at a specific
 time every day, every week, you can specify a cron. 
@@ -237,8 +222,7 @@ Sample config: Fire every minute starting at 2pm and ending at 2:59pm, every day
     };
 ```
 
-
-### 6. Consider responses with configured HTTP status codes as forwarding failures
+### 5. Consider responses with configured HTTP status codes as forwarding failures
 
 Sometimes, even if the backend HTTP service sent a response, we need to consider it as a failure. For an example, if
 HTTP status code is 500 or 404, it is in fact not processed by the service. To cater the cases, you can specify a set of
@@ -257,7 +241,7 @@ Sample config;
     };
 ```
 
-### 7. Different actions upon a message forwarding failure
+### 6. Different actions upon a message forwarding failure
 
 Depending on the use-case, uses will need to do either of following when message processor failed to forward it to the
 HTTP service. 
@@ -283,14 +267,12 @@ Sample config: Try to forward each message 5 times. If there is a failure, deact
     };
 ```
 
-
-### 8. Ability to configure a Dead Letter Store
+### 7. Ability to configure a Dead Letter Store
 
 Dead Letter Store is a pattern where the message processing will set aside the messages those failed to store. Those messages
 are moved to a separate store and the user can deal with them manually later. 
 
 Sample config: Try to forward each message 5 times. If there is a failure, move the message to queue `myDLCStore`. 
-
 
 ```Ballerina
     messageStore:MessageStoreConfiguration dlcMessageStoreConfig = {
@@ -312,7 +294,7 @@ Sample config: Try to forward each message 5 times. If there is a failure, move 
     };
 ```
 
-### 9. Pre-process message before forwarding to the backend service
+### 8. Pre-process message before forwarding to the backend service
 
 By design message processor will reconstruct the HTTP request that is stored in the message store and forward to the service.
 However, sometimes there is a requirement to modify the HTTP request before sending it out to a HTTP service (i.e a heavy transformation).
@@ -332,7 +314,7 @@ var myMessageProcessor = new messageStore:MessageForwardingProcessor(myProcessor
 
 >Note The time taken to pre-process the message will get added to the message forwarding interval. 
 
-### 10. Process response received by backend service after the forward
+### 9. Process response received by backend service after the forward
 
 User need to do some operation on the response received by the backend service. This may be calling
 another service with the response, or store details of the response in a database.  User can define a function with the 
@@ -352,8 +334,6 @@ var myMessageProcessor = new messageStore:MessageForwardingProcessor(myProcessor
 ```
 
 >Note The time taken to process the response message will get added to the message forwarding interval. 
-
-
 
 ## Integration patterns 
 
@@ -382,14 +362,12 @@ Messages can be stored in the incoming rate. Message forwarding rate is governed
 * forwardingInterval - By default this is configured to`0`. It is effective only when `batchSize > 1`. The messages in a 
                        batch will be forwarded to the HTTP service with a delay of `forwardingInterval` between the messages configured in milliseconds. By default `batchSize = 1`. 
 
-
 ### 4. Asynchronous messaging 
 
 By design, messages are not processed in a synchronous manner. Inbound messages are stored and then they are processed. Processing can be scheduled 
 so that messages came in are processed later in off-peak hours. Storing service and processing service can be two separate containers. 
 These are the semantics of asynchronous message processing. Reliable delivery is added on top of it. Thus, in places where asynchronous messaging
 is required, this connector can be used. 
-
 
 ## Extensibility
 
