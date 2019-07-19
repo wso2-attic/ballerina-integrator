@@ -37,7 +37,7 @@ listener http:Listener httpListener = new(9092);
 }
 
 // RESTful service
-service dbTransactionService on doctorEP {
+service dbTransactionService on httpListener {
     // Resource that handles the HTTP GET requests that are directed to doctors specialized on a specific area using 
     // path '/doctor/<name>'
     @http:ResourceConfig {

@@ -96,9 +96,13 @@ service hospitalMgtService on new http:Listener(9092) {
                 }
                 // call payment settlement
                 http:Response paymentResponse = doPayment(untaint responsePayload);
-                // send the response back to the client
-                //respondToClient(caller, paymentResponse);
-                respondToClient(caller, sendEmail(generateEmail(untaint paymentResponse)));
+            // send the response back to the client
+            //respondToClient(caller, paymentResponse);
+
+            // Commenting this line since it falis the build
+            // https://github.com/wso2/ballerina-integrator/issues/130
+            //respondToClient(caller, sendEmail(generateEmail(untaint paymentResponse)));
+
             } else {
                 respondToClient(caller, createErrorResponse(500, "Backend did not respond with json"));
             }
@@ -173,15 +177,15 @@ function createAppointment(http:Caller caller, json payload, string category) re
     match hospitalName {
         GRAND_OAK => {
             reservationResponse = hospitalEP->
-                post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
+            post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
         }
         CLEMENCY => {
             reservationResponse = hospitalEP->
-                post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
+            post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
         }
         PINE_VALLEY => {
             reservationResponse = hospitalEP->
-                post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
+            post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
         }
         _ => {
             respondToClient(caller, createErrorResponse(500, "Unknown hospital name"));

@@ -18,8 +18,9 @@ import ballerina/test;
 import ballerina/http;
 import ballerina/io;
 import ballerina/log;
+import wso2/healthcare;
 
-http:Client clientEPclemency = new("http://localhost:9090/clemency/categories");
+http:Client clientEPclemency = new("http://localhost:9095/clemency/categories");
 
 # Description: This test verifies if an appointment can be reserved successfully. 
 # + dataset - dataset Parameter Description

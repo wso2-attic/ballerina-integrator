@@ -16,26 +16,16 @@
 
 import ballerina/test;
 import ballerina/http;
-
-json sampleRequest = {
-    "name": "John Doe",
-    "dob": "1940-03-19",
-    "ssn": "234-23-525",
-    "address": "California",
-    "phone": "8770586755",
-    "email": "johndoe@gmail.com",
-    "doctor": "thomas collins",
-    "hospital": "grand oak community hospital",
-    "cardNo": "7844481124110331",
-    "appointment_date": "2025-04-02"
-};
+import wso2/healthcare;
 
 http:Client clientEP = new("http://localhost:9092/hospitalMgtService");
 
-@test:Config
-function testTransformation() {
+@test:Config {
+    dataProvider: "testTransformationDataProvider"
+}
+function testTransformation(json dataset, json resultset) {
     http:Request req = new;
-    req.setJsonPayload(sampleRequest);
+    req.setJsonPayload(dataset);
     var response = clientEP->post("/categories/surgery/reserve", req);
     if (response is http:Response) {
         test:assertEquals(response.statusCode, 200, 
@@ -43,11 +33,54 @@ function testTransformation() {
         json expected = false;
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
-            test:assertEquals(resPayload.confirmed, expected, msg = "Response mismatch!");
+            test:assertEquals(resPayload, resultset, msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Payload from reservation service is invalid");
         }
     } else {
         test:assertFail(msg = "Response from reservation service is invalid");
     }
+}
+
+function testTransformationDataProvider() returns json[][] {
+    return [
+    [
+    {
+        "name": "John Doe",
+        "dob": "1940-03-19",
+        "ssn": "234-23-525",
+        "address": "California",
+        "phone": "8770586755",
+        "email": "johndoe@gmail.com",
+        "doctor": "thomas collins",
+        "hospital": "grand oak community hospital",
+        "cardNo": "7844481124110331",
+        "appointment_date": "2025-04-02"
+    },
+    {
+        "appointmentNumber": 1,
+        "doctor":
+        {
+            "name": "thomas collins",
+            "hospital": "grand oak community hospital",
+            "category": "surgery",
+            "availability": "9.00 a.m - 11.00 a.m",
+            "fee": 7000.0
+        },
+        "patient":
+        {
+            "name": "John Doe",
+            "dob": "1940-03-19",
+            "ssn": "234-23-525",
+            "address": "California",
+            "phone": "8770586755",
+            "email": "johndoe@gmail.com",
+            "cardNo": "7844481124110331"
+        },
+        "fee": 7000.0,
+        "confirmed": false,
+        "appointmentDate": "2025-04-02"
+    }
+    ]
+    ];
 }

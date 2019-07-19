@@ -18,8 +18,9 @@ import ballerina/test;
 import ballerina/http;
 import ballerina/io;
 import ballerina/log;
+import wso2/healthcare;
 
-http:Client clientEPGrandoaks = new("http://localhost:9090/grandoaks/categories");
+http:Client clientEPGrandoaks = new("http://localhost:9095/grandoaks/categories");
 
 # Description: This test verifies if an appoinment can be reserved successfully in grand oaks hospital. 
 # + dataset - dataset Parameter Description
