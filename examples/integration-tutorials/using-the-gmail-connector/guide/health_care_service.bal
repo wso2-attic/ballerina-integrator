@@ -100,6 +100,7 @@ service hospitalMgtService on new http:Listener(9092) {
             //respondToClient(caller, paymentResponse);
 
             // Commenting this line since it falis the build
+            // https://github.com/wso2/ballerina-integrator/issues/130
             //respondToClient(caller, sendEmail(generateEmail(untaint paymentResponse)));
 
             } else {
