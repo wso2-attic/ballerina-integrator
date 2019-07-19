@@ -1,4 +1,4 @@
-// Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -21,7 +21,7 @@ import ballerina/mime;
 
 import wso2/amazons3;
 
-// Constants for error code and messages.
+// Constants for error codes and messages.
 const string ERROR_CODE = "Sample Error";
 const string RESPOND_ERROR_MSG = "Error in responding to client.";
 const string CLIENT_CREATION_ERROR_MSG = "Error while creating the AmazonS3 client.";
@@ -36,7 +36,7 @@ const string INVALID_PAYLOAD_MSG = "Invalid request payload";
 string accessKeyId = config:getAsString("ACCESS_KEY_ID");
 string secretAccessKey = config:getAsString("SECRET_ACCESS_KEY");
 
-// Create Amazons3 client configration with the above accesskey and secretKey values.
+// Create Amazons3 client configuration with the above accesskey and secretKey values.
 amazons3:ClientConfiguration amazonS3Config = {
     accessKeyId: accessKeyId,
     secretAccessKey: secretAccessKey
@@ -124,7 +124,7 @@ service amazonS3Service on new http:Listener(9090) {
         if (amazonS3Client is amazons3:AmazonS3Client) {     
             // Define new response. 
             http:Response backendResponse = new();
-            //Get the reponse content type from query params.
+            //Get the response content type from query params.
             var params = request.getQueryParams();
             string responseContentType = <string>params.responseContentType;
 
