@@ -45,17 +45,16 @@ Let's use the following module structure for this project.
 
 ```
 restful-service
- └── exposing-a-rest-service
-      └── guide
-           └── restful_service
-                ├── order_mgt_service.bal
-       	        └── tests
-	                 └── order_mgt_service_test.bal
+ └── guide
+      └── restful_service
+           ├── order_mgt_service.bal
+  	   └── tests
+	        └── order_mgt_service_test.bal
 ```
 
 - Create the above directories in your local machine, along with the empty `.bal` files.
 
-- Then open the terminal, navigate to restful-service/exposing-a-rest-service/guide, and run the Ballerina project initializing toolkit.
+- Then open the terminal, navigate to restful-service/guide, and run the Ballerina project initializing toolkit.
 ```bash
    $ ballerina init
 ```
@@ -274,7 +273,7 @@ service orderMgt on httpListener {
 
 ### Invoking the RESTful service 
 
-You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `restful-service/exposing-a-rest-service/guide`, and execute the following command.
+You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `restful-service/guide`, and execute the following command.
 ```bash
     $ ballerina run restful_service
 ```
@@ -339,12 +338,12 @@ In Ballerina, the unit test cases should be in the same module inside a folder n
   
 The source code for this guide contains unit test cases for each resource available in the 'orderMgt' service implemented above.
 
-To run the unit tests, open your terminal and navigate to `restful-service/exposing-a-rest-service/guide`, and run the following command.
+To run the unit tests, open your terminal and navigate to `restful-service/guide`, and run the following command.
 ```bash
     $ ballerina test
 ```
 
-> The source code for the tests can be found at [order_mgt_service_test.bal](https://github.com/wso2/ballerina-integrator/tree/master/examples/guides/services/restful-service/exposing-a-rest-service/guide/restful_service/tests/order_mgt_service_test.bal).
+> The source code for the tests can be found at [order_mgt_service_test.bal](https://github.com/ballerina-guides/restful-service/blob/master/guide/restful_service/tests/order_mgt_service_test.bal).
 
 
 ## Deployment
@@ -353,7 +352,7 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying locally
 
-- As the first step, you can build a Ballerina executable archive (.balx) of the service that you developed. Navigate to `restful-service/exposing-a-rest-service/guide` and run the following command.
+- As the first step, you can build a Ballerina executable archive (.balx) of the service that you developed. Navigate to `restful-service/guide` and run the following command.
 ```bash
     $ ballerina build restful_service
 ```
@@ -399,7 +398,7 @@ service orderMgt on httpListener {
 
 - `@docker:Config` annotation is used to provide the basic Docker image configurations for the sample. `@docker:Expose {}` is used to expose the port to which the listener is bound to.
 
-- Now you can build a Ballerina executable archive (.balx) of the service that you developed above. This also creates the corresponding Docker image using the configurations provided through the annotations. Navigate to `restful-service/exposing-a-rest-service/guide` and run the following command:
+- Now you can build a Ballerina executable archive (.balx) of the service that you developed above. This also creates the corresponding Docker image using the configurations provided through the annotations. Navigate to `restful-service/guide` and run the following command:
 ```bash
    $ ballerina build restful_service
 
@@ -521,10 +520,10 @@ This creates the corresponding Docker image and the Kubernetes artifacts using t
 
 
             Run the following command to deploy the Kubernetes artifacts: 
-            kubectl apply -f /home/ballerina/restful-service/exposing-a-rest-service/guide/target/kubernetes/restful_service
+            kubectl apply -f /home/ballerina/restful-service/guide/target/kubernetes/restful_service
             
             Run the following command to install the application using Helm: 
-            helm install --name ballerina-guides-restful-service /home/ballerina/restful-service/exposing-a-rest-service/guide/target/kubernetes/restful_service/ballerina-guides-restful-service
+            helm install --name ballerina-guides-restful-service /home/ballerina/restful-service/guide/target/kubernetes/restful_service/ballerina-guides-restful-service
             
 ```
 
@@ -587,8 +586,8 @@ Invoke the service
 ## Observability 
 Ballerina comes with support for observability built-in to the language.
 Observability is disabled by default.
-To enable Observability, add the following configurations to the `ballerina.conf` file in `restful-service/exposing-a-rest-service/guide/`.
-A sample configuration file can be found in `restful-service/exposing-a-rest-service/guide/restful_service`.
+To enable Observability, add the following configurations to the `ballerina.conf` file in `restful-service/guide/`.
+A sample configuration file can be found in `restful-service/guide/restful_service`.
 
 ```ballerina
 [b7a.observability]
@@ -638,7 +637,7 @@ Follow the steps below to use tracing with Ballerina
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `restful-service/exposing-a-rest-service/guide` and run the restful-service using the following command
+- Navigate to `restful-service/guide` and run the restful-service using the following command
 ```
    $ ballerina run --config restful_service/ballerina.conf restful_service
 ```
@@ -690,7 +689,7 @@ Follow the below steps to set up Prometheus and view metrics for the `restful_se
    prom/prometheus
 ```
 
-- Navigate to `restful-service/exposing-a-rest-service/guide` and run the restful-service using following command
+- Navigate to `restful-service/guide` and run the restful-service using following command
 ```
   $ ballerina run --config restful_service/ballerina.conf restful_service
 ```
@@ -706,11 +705,11 @@ Follow the below steps to set up Prometheus and view metrics for the `restful_se
 Ballerina has a log module that allows you to log messages to the console. You can import the `ballerina/log` module and start logging.
 The following section describes how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina service with the following command from `restful-service/exposing-a-rest-service/guide`
+- Start the Ballerina service with the following command from `restful-service/guide`
 ```
    $ nohup ballerina run restful_service &>> ballerina.log&
 ```
-> NOTE: This writes the console log to the `ballerina.log` file in the `restful-service/exposing-a-rest-service/guide` directory
+> NOTE: This writes the console log to the `ballerina.log` file in the `restful-service/guide` directory
 
 - Start Elasticsearch using the following command
 ```
