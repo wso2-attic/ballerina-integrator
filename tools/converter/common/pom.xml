@@ -22,20 +22,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.wso2.ei</groupId>
-        <artifactId>tools</artifactId>
+        <groupId>org.wso2.ei.ballerina</groupId>
+        <artifactId>converter</artifactId>
         <version>7.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <artifactId>common</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>converter</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <modules>
-        <module>common</module>
-        <module>mule2ballerina</module>
-        <module>ds2ballerina</module>
-        <module>synapse2ballerina</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.ballerinalang</groupId>
+            <artifactId>ballerina-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ballerinalang</groupId>
+            <artifactId>ballerina-native</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -18,6 +18,13 @@
 
 package org.wso2.ei.tools.converter.common.generator;
 
+import org.ballerinalang.bre.ConnectorVarLocation;
+import org.ballerinalang.bre.ConstantLocation;
+import org.ballerinalang.bre.GlobalVarLocation;
+import org.ballerinalang.bre.ServiceVarLocation;
+import org.ballerinalang.bre.StackVarLocation;
+import org.ballerinalang.bre.StructVarLocation;
+import org.ballerinalang.bre.WorkerVarLocation;
 import org.ballerinalang.model.AnnotationAttachment;
 import org.ballerinalang.model.AnnotationAttributeDef;
 import org.ballerinalang.model.AnnotationDef;
@@ -46,6 +53,7 @@ import org.ballerinalang.model.expressions.AndExpression;
 import org.ballerinalang.model.expressions.ArrayInitExpr;
 import org.ballerinalang.model.expressions.ArrayLengthExpression;
 import org.ballerinalang.model.expressions.ArrayMapAccessExpr;
+import org.ballerinalang.model.expressions.BacktickExpr;
 import org.ballerinalang.model.expressions.BasicLiteral;
 import org.ballerinalang.model.expressions.ConnectorInitExpr;
 import org.ballerinalang.model.expressions.DivideExpr;
@@ -69,12 +77,14 @@ import org.ballerinalang.model.expressions.NotEqualExpression;
 import org.ballerinalang.model.expressions.NullLiteral;
 import org.ballerinalang.model.expressions.OrExpression;
 import org.ballerinalang.model.expressions.RefTypeInitExpr;
+import org.ballerinalang.model.expressions.ResourceInvocationExpr;
 import org.ballerinalang.model.expressions.StructInitExpr;
 import org.ballerinalang.model.expressions.SubtractExpression;
 import org.ballerinalang.model.expressions.TypeCastExpression;
 import org.ballerinalang.model.expressions.TypeConversionExpr;
 import org.ballerinalang.model.expressions.UnaryExpression;
 import org.ballerinalang.model.expressions.VariableRefExpr;
+import org.ballerinalang.model.invokers.MainInvoker;
 import org.ballerinalang.model.statements.AbortStmt;
 import org.ballerinalang.model.statements.ActionInvocationStmt;
 import org.ballerinalang.model.statements.AssignStmt;
@@ -953,6 +963,11 @@ public class CodeGenVisitor implements NodeVisitor {
         }
     }
 
+    @Override
+    public void visit(BacktickExpr backtickExpr) {
+
+    }
+
     /*@Override
     public void visit(BacktickExpr backtickExpr) {
         logger.debug("Visit - BacktickExpr");
@@ -1087,6 +1102,51 @@ public class CodeGenVisitor implements NodeVisitor {
 
     @Override
     public void visit(NullLiteral nullLiteral) {
+
+    }
+
+    @Override
+    public void visit(StackVarLocation stackVarLocation) {
+
+    }
+
+    @Override
+    public void visit(ServiceVarLocation serviceVarLocation) {
+
+    }
+
+    @Override
+    public void visit(GlobalVarLocation globalVarLocation) {
+
+    }
+
+    @Override
+    public void visit(ConnectorVarLocation connectorVarLocation) {
+
+    }
+
+    @Override
+    public void visit(ConstantLocation constantLocation) {
+
+    }
+
+    @Override
+    public void visit(StructVarLocation structVarLocation) {
+
+    }
+
+    @Override
+    public void visit(ResourceInvocationExpr resourceInvocationExpr) {
+
+    }
+
+    @Override
+    public void visit(MainInvoker mainInvoker) {
+
+    }
+
+    @Override
+    public void visit(WorkerVarLocation workerVarLocation) {
 
     }
 
