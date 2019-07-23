@@ -100,45 +100,6 @@ The `topics` field specifies the topics that must be listened by this consumer.
 
 The `pollingInterval` field is the time interval that a consumer polls the topic. 
 
-Please find other subscriber configuration parameters below:
-
-| Parameter | Description  |
-| :---   | :- |
-| offsetReset | Offset reset strategy if no initial offset. |
-| partitionAssignmentStrategy | Strategy class for handling the partition assignment among consumers. |
-| metricsRecordingLevel | Metrics recording level. |
-| metricsReporterClasses | Metrics reporter classes. |
-| clientId | ID to be used for server side logging. |
-| interceptorClasses | Interceptor classes to be used before sending records. |
-| isolationLevel | Transactional message reading method. Use "read_committed" to read committed messages only in transactional mode when poll() is called. Use "read_uncommitted" to read all the messages, even the aborted ones. |
-| properties | Additional properties if required. |
-| sessionTimeout | Timeout used to detect consumer failures when heartbeat threshold is reached. |
-| heartBeatInterval | Expected time between heartbeats. |
-| metadataMaxAge | Maximum time to force a refresh of metadata. |
-| autoCommitInterval | Auto committing interval for commit offset, when auto-commit is enabled. |
-| maxPartitionFetchBytes | The maximum amount of data per-partition the server returns. |
-| sendBuffer | Size of the TCP send buffer (SO_SNDBUF). |
-| receiveBuffer | Size of the TCP receive buffer (SO_RCVBUF). |
-| fetchMinBytes | Minimum amount of data the server should return for a fetch request. |
-| fetchMaxBytes | Maximum amount of data the server should return for a fetch request. |
-| fetchMaxWait | Maximum amount of time the server will block before answering the fetch request. |
-| reconnectBackoffMax | Maximum amount of time in milliseconds to wait when reconnecting. |
-| retryBackoff | Time to wait before attempting to retry a failed request. |
-| metricsSampleWindow | Window of time a metrics sample is computed over. |
-| metricsNumSamples | Number of samples maintained to compute metrics. |
-| requestTimeout | Wait time for response of a request. |
-| connectionMaxIdle | Close idle connections after the number of milliseconds. |
-| maxPollRecords | Maximum number of records returned in a single call to poll. |
-| maxPollInterval | Maximum delay between invocations of poll. |
-| reconnectBackoff | Time to wait before attempting to reconnect. |
-| pollingTimeout | Timeout interval for polling. |
-| concurrentConsumers | Number of concurrent consumers. |
-| defaultApiTimeout | Default API timeout value for APIs with duration. |
-| autoCommit | Enables auto committing offsets. |
-| checkCRCS | Check the CRC32 of the records consumed. |
-| excludeInternalTopics | Whether records from internal topics should be exposed to the consumer. |
-| decoupleProcessing | Decouples processing. |
-
 Let's now see the complete implementation of the `inventory_control_system`, which is a Kafka topic subscriber.
 
 ##### inventory_control_system.bal
@@ -194,39 +155,6 @@ Let's next focus on the implementation of the `product_admin_portal`, which acts
 First, let's see how to add the Kafka configurations for a Kafka publisher written in Ballerina language. Refer to the code segment attached below.
 
 ##### Kafka producer configurations
-
-Please find the producer configuration parameters below:
-
-| Parameter | Description  |
-| :---   | :- |
-| bootstrapServers | List of remote server endpoints of Kafka brokers. |
-| acks | Number of acknowledgments. |
-| compressionType | Compression type to be used for messages. |
-| clientID | ID to be used for server side logging. |
-| metricsRecordingLevel | Metrics recording level. |
-| metricReporterClasses | Metrics reporter classes. |
-| partitionerClass | Partitioner class to be used to select partition to which the message is sent. |
-| interceptorClasses | Interceptor classes to be used before sending records. |
-| transactionalID | Transactional ID to be used in transactional delivery. |
-| bufferMemory | Total bytes of memory the producer can use to buffer records. |
-| noRetries | Number of retries to resend a record. |
-| batchSize | Number of records to be batched for a single request. Use 0 for no batching. |
-| linger | Delay to allow other records to be batched. |
-| sendBuffer | Size of the TCP send buffer (SO_SNDBUF). |
-| receiveBuffer | Size of the TCP receive buffer (SO_RCVBUF). |
-| maxRequestSize | The maximum size of a request in bytes. |
-| reconnectBackoff | Time to wait before attempting to reconnect. |
-| reconnectBackoffMax | Maximum amount of time in milliseconds to wait when reconnecting. |
-| retryBackoff | Time to wait before attempting to retry a failed request. |
-| maxBlock | Maximum block time which the send is blocked, when the buffer is full. |
-| requestTimeout | Wait time for response of a request. |
-| metadataMaxAge | Maximum time to force a refresh of metadata. |
-| metricsSampleWindow | Time window for a metrics sample to computed over. |
-| metricsNumSamples | Number of samples maintained to compute metrics. |
-| maxInFlightRequestsPerConnection | Maximum number of unacknowledged requests on a single connection. |
-| connectionsMaxIdle | Close idle connections after the number of milliseconds. |
-| transactionTimeout | Timeout for transaction status update from the producer. |
-| enableIdempotence | Exactly one copy of each message is written in the stream when enabled. |
 
 ```ballerina
 kafka:ProducerConfig producerConfigs = {
@@ -380,27 +308,6 @@ ssl.truststore.password=test1234
 ```
 
 ##### Configuring TLS authentication for Kafka subscribers & producers
-
-Following are TLS authentication parameters for Kafka subscribers & producers:
-
-| Parameter | Description  |
-| :---   | :- |
-| secureSocket.keyStore.keyStoreType | The file format of the key store file. This is optional for client. |
-| secureSocket.keyStore.location | The location of the key store file. This is optional for client and can be used for two-way authentication for client. |
-| secureSocket.keyStore.password | The store password for the key store file. This is optional for client and only needed if ssl.keystore.location is configured. |
-| secureSocket.keyStore.keyManagerAlgorithm | The algorithm used by key manager factory for SSL connections. Default value is the key manager factory algorithm configured for the Java Virtual Machine. |
-| secureSocket.trustStore.trustStoreType | The file format of the trust store file. |
-| secureSocket.trustStore.location | The location of the trust store file. |
-| secureSocket.trustStore.password | The password for the trust store file. If a password is not set access to the truststore is still available, but integrity checking is disabled. |
-| secureSocket.trustStore.trustManagerAlgorithm | The algorithm used by trust manager factory for SSL connections. Default value is the trust manager factory algorithm configured for the Java Virtual Machine. |
-| secureSocket.protocol.securityProtocol | Protocol used to communicate with brokers. |
-| secureSocket.protocol.sslProtocol | The SSL protocol used to generate the SSLContext. Default setting is TLS, which is fine for most cases. Allowed values in recent JVMs are TLS, TLSv1.1 and TLSv1.2. SSL, SSLv2 and SSLv3 may be supported in older JVMs, but their usage is discouraged due to known security vulnerabilities. |
-| secureSocket.protocol.sslProtocolVersions | The list of protocols enabled for SSL connections. |
-| secureSocket.sslProvider | The name of the security provider used for SSL connections. Default value is the default security provider of the JVM. |
-| secureSocket.sslKeyPassword | The password of the private key in the key store file. This is optional for client. |
-| secureSocket.sslCipherSuites | A list of cipher suites. This is a named combination of authentication, encryption, MAC and key exchange algorithm used to negotiate the security settings for a network connection using TLS or SSL network protocol. By default all the available cipher suites are supported. |
-| secureSocket.sslEndpointIdentificationAlgorithm | The endpoint identification algorithm to validate server hostname using server certificate. |
-| secureSocket.sslSecureRandomImplementation | The SecureRandom PRNG implementation to use for SSL cryptography operations. |
 
 Let's see a sample for the Kafka topic publisher with SSL parameters.
 
