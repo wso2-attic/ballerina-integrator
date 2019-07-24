@@ -16,13 +16,13 @@
 
 public type MessageBroker ACTIVE_MQ|IBM_MQ|WSO2MB;
 
-public type MessageForwardFailAction DROP|DLCSTORE|DEACTIVATE;
+public type MessageForwardFailAction DROP|DLC_STORE|DEACTIVATE;
 
 public const DELETE = "DELETE";
 
 //constants for message forwarding failure actions
 public const DROP = "DROP";
-public const DLCSTORE = "DLCSTORE";
+public const DLC_STORE = "DLC_STORE";
 public const DEACTIVATE = "DEACTIVATE";
 
 //constants for broker types

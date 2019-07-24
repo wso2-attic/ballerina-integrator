@@ -249,7 +249,7 @@ HTTP service.
 * DROP - drop the message and continue with the next message on the store
 * DEACTIVATE - stop message processing further. User will need to manually remove 
                the message or fix the issue and restart message polling service. 
-* DLCSTORE - move the failing message to a configured message store and continue with the next message. Later user can 
+* DLC_STORE - move the failing message to a configured message store and continue with the next message. Later user can 
              deal with the messages in the DLC store manually. 
 
 By default, the behavior is to DROP. 
@@ -289,7 +289,7 @@ Sample config: Try to forward each message 5 times. If there is a failure, move 
         pollTimeConfig: "0/2 * * * * ?",
         retryInterval: 3000,
         maxRedeliveryAttempts: 5,
-        forwardingFailAction: messageStore:DLCSTORE,
+        forwardingFailAction: messageStore:DLC_STORE,
         DLCStore: dlcStoreClient 
     };
 ```
