@@ -122,10 +122,6 @@ Now we can define the Message Processor and start it.
 
 <!-- INCLUDE_CODE_SEGMENT: { file: guide/reliable_message_forwarder.bal, segment: segment_3 } -->
 
-When handling the response from the backend, we can save the appointment request to a csv file if the appointment scheduling is successful. 
-
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/reliable_message_forwarder.bal, segment: segment_4 } -->
-
 When this service is running, it will listen to messages on the Message Store and forward them to the backend of the Health care System. 
 
 ### Deploying the Service
@@ -200,11 +196,10 @@ $ ballerina run reliable_message_forwarder.bal
 - Send the message using curl.
 
 ```bash
-curl -v -X POST --data @input.json http://localhost:9091/healthcare/appointment --header "Content-Type:application/json"
+curl -v -X POST --data @input.json http://localhost:9092/hospitalMgtService/categories/surgery/reserve --header "Content-Type:application/json"
 ```
 
-- You will receive a response with HTTP Status code *202*. The CSV file with appointment details will get updated with a new 
-record containing the information of the appointment made. 
+- You will receive a response with HTTP Status code *202*. 
 
 ```bash
 2019-07-05 17:34:22,387 INFO  [] - Response received Response status code= 200: {"appointmentNumber":1, "doctor":{"name":"thomas collins", "hospital":"grand oak community hospital", "category":"surgery", "availability":"9.00 a.m - 11.00 a.m", "fee":7000.0}, "patient":{"name":"John Doe", "dob":"1940-03-19", "ssn":"234-23-525", "address":"California", "phone":"8770586755", "email":"johndoe@gmail.com"}, "fee":7000.0, "confirmed":false, "appointmentDate":"2025-04-02"}
@@ -227,7 +222,4 @@ to DLC Store. You can check the message count of queue *myDLCStore* using Active
 2019-07-05 17:42:40,877 WARN  [wso2/messageStore] - Maximum retires breached when forwarding message to HTTP endpoint http://localhost:9090/grandoaks/categories/surgery/reserve. Forwarding message to DLC Store
 ``` 
 
-If you start back the Health care service within 15 seconds, message will be delivered to the service and appointment file
-will get updated. 
-
-
+If you restart the Health care service within 15 seconds, message will be delivered to the service and you will get the response with the HTTP Status code 202. 

@@ -88,7 +88,6 @@ public function main(string... args) {
 // CODE-SEGMENT-END: segment_3
 }
 
-// CODE-SEGMENT-BEGIN: segment_4
 //function to handle response
 function handleResponseFromBE(http:Response resp) {
     var payload =  resp.getJsonPayload();
@@ -106,7 +105,6 @@ function handleResponseFromBE(http:Response resp) {
         log:printError("Error while getting response payload", err=payload);
     }
 }
-// CODE-SEGMENT-END: segment_4
 
 
 function prepareCSV(string path) returns io:WritableCSVChannel {
