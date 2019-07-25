@@ -50,19 +50,19 @@ const SENDER_EMAIL = "somebody@gmail.com";
 gmail:Client gmailClient = new(gmailConfig);
 // CODE-SEGMENT-END: segment_2
 
-// hospital service endpoint
+// Hospital service endpoint.
 http:Client hospitalEP = new("http://localhost:9095");
 
 const string GRAND_OAK = "grand oak community hospital";
 const string CLEMENCY = "clemency medical center";
 const string PINE_VALLEY = "pine valley community hospital";
 
-//Change the service URL to base /surgery
+// Change the service URL to base `/surgery`.
 @http:ServiceConfig {
     basePath: "/hospitalMgtService"
 }
 service hospitalMgtService on new http:Listener(9092) {
-    // Resource to make an appointment reservation with bill payment
+    // Resource to make an appointment reservation with bill payment.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/categories/{category}/reserve"
@@ -70,7 +70,7 @@ service hospitalMgtService on new http:Listener(9092) {
     resource function scheduleAppointment(http:Caller caller, http:Request request, string category) {
         var requestPayload = request.getJsonPayload();
         if (requestPayload is json) {
-            // tranform the request payload to the format expected by the backend end service
+            // Tranform the request payload to the format expected by the backend end service.
             json reservationPayload = {
                 "patient": {
                     "name": requestPayload.name,
@@ -84,30 +84,33 @@ service hospitalMgtService on new http:Listener(9092) {
                 "hospital": requestPayload.hospital,
                 "appointment_date": requestPayload.appointment_date
             };
-            // call appointment creation
+            // Call appointment creation.
             http:Response reservationResponse = createAppointment(caller, untaint reservationPayload, category);
 
             json | error responsePayload = reservationResponse.getJsonPayload();
             if (responsePayload is json) {
-                // check if the json payload is actually an appointment confirmation response
+                // Check if the json payload is actually an appointment confirmation response.
                 if (responsePayload.appointmentNumber is ()) {
-                    respondToClient(caller, createErrorResponse(500, untaint responsePayload.toString()));
+                    respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, 
+                    untaint responsePayload.toString()));
                     return;
                 }
-                // call payment settlement
+                // Call payment settlement.
                 http:Response paymentResponse = doPayment(untaint responsePayload);
-            // send the response back to the client
-            //respondToClient(caller, paymentResponse);
+                // Send the response back to the client.
+                //respondToClient(caller, paymentResponse);
 
-            // Commenting this line since it falis the build
-            // https://github.com/wso2/ballerina-integrator/issues/130
-            //respondToClient(caller, sendEmail(generateEmail(untaint paymentResponse)));
-
+                json | error paymentResPayload = paymentResponse.getJsonPayload();
+                if (paymentResPayload is json) {
+                    respondToClient(caller, sendEmail(generateEmail(untaint paymentResPayload)));
+                } else {
+                    respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, "Backend did not respond with json"));
+                }
             } else {
-                respondToClient(caller, createErrorResponse(500, "Backend did not respond with json"));
+                respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, "Backend did not respond with json"));
             }
         } else {
-            respondToClient(caller, createErrorResponse(400, "Not a valid Json payload"));
+            respondToClient(caller, createErrorResponse(http:BAD_REQUEST_400, "Not a valid Json payload"));
         }
     }
 }
@@ -128,7 +131,7 @@ function generateEmail(json jsonPayload) returns string {
 }
 // CODE-SEGMENT-END: segment_3
 
-// Sends the payload to an Email account
+// Sends the payload to an Email account.
 // CODE-SEGMENT-BEGIN: segment_4
 function sendEmail(string email) returns http:Response {
     string messageBody = email;
@@ -168,7 +171,7 @@ function sendEmail(string email) returns http:Response {
 }
 // CODE-SEGMENT-END: segment_4
 
-// function to call hospital service backend and make an appointment reservation
+// Function to call hospital service backend and make an appointment reservation.
 function createAppointment(http:Caller caller, json payload, string category) returns http:Response {
     string hospitalName = payload.hospital.toString();
     http:Request reservationRequest = new;
@@ -188,13 +191,13 @@ function createAppointment(http:Caller caller, json payload, string category) re
             post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
         }
         _ => {
-            respondToClient(caller, createErrorResponse(500, "Unknown hospital name"));
+            respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, "Unknown hospital name"));
         }
     }
     return handleResponse(reservationResponse);
 }
 
-// function to call hospital service backend and make payment for an appointment reservation
+// Function to call hospital service backend and make payment for an appointment reservation.
 function doPayment(json payload) returns http:Response {
     http:Request paymentRequest = new;
     paymentRequest.setPayload(payload);
@@ -202,16 +205,16 @@ function doPayment(json payload) returns http:Response {
     return handleResponse(paymentResponse);
 }
 
-// util method to handle response
+// Util method to handle response.
 function handleResponse(http:Response | error response) returns http:Response {
     if (response is http:Response) {
         return response;
     } else {
-        return createErrorResponse(500, <string> response.detail().message);
+        return createErrorResponse(http:INTERNAL_SERVER_ERROR_500, <string> response.detail().message);
     }
 }
 
-//util method to respond to a caller and handle error
+// Util method to respond to a caller and handle error.
 function respondToClient(http:Caller caller, http:Response response) {
     var result = caller->respond(response);
     if (result is error) {
@@ -219,7 +222,7 @@ function respondToClient(http:Caller caller, http:Response response) {
     }
 }
 
-// util method to create error response
+// Util method to create error response.
 function createErrorResponse(int statusCode, string msg) returns http:Response {
     http:Response errorResponse = new;
     errorResponse.statusCode = statusCode;
