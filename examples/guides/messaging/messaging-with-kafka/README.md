@@ -63,7 +63,7 @@ messaging-with-kafka
 
 - Create the above directories in your local machine and also create empty `.bal` files.
 
-- Then open the terminal and navigate to `messaging-with-kafka/guide` and run Ballerina project initializing toolkit.
+- Then open the terminal and navigate to above created `messaging-with-kafka/guide` directory and run Ballerina project initializing toolkit.
 ```bash
    $ ballerina init
 ```
@@ -87,10 +87,10 @@ kafka:ConsumerConfig consumerConfig = {
 };
 
 // Create kafka listener
-listener kafka:SimpleConsumer consumer = new(consumerConfig);
+listener kafka:Consumer consumer = new(consumerConfig);
 ```
 
-A Kafka subscriber in Ballerina needs to consist of a `kafka:SimpleConsumer` listener with providing required configurations for a Kafka subscriber. 
+A Kafka subscriber in Ballerina needs to consist of a `kafka:Consumer` listener with providing required configurations for a Kafka subscriber.
 
 The `bootstrapServers` field provides the list of host and port pairs, which are the addresses of the Kafka brokers in a "bootstrap" Kafka cluster. 
 
@@ -120,14 +120,14 @@ kafka:ConsumerConfig consumerConfig = {
 };
 
 // Create kafka listener
-listener kafka:SimpleConsumer consumer = new(consumerConfig);
+listener kafka:Consumer consumer = new(consumerConfig);
 
 // Kafka service that listens from the topic 'product-price'
 // 'inventoryControlService' subscribed to new product price updates from
 // the product admin and updates the Database.
 service kafkaService on consumer {
     // Triggered whenever a message added to the subscribed topic
-    resource function onMessage(kafka:SimpleConsumer simpleConsumer, kafka:ConsumerRecord[] records) {
+    resource function onMessage(kafka:Consumer consumer, kafka:ConsumerRecord[] records) {
         // Dispatched set of Kafka records to service, We process each one by one.
         foreach var entry in records {
             byte[] serializedMsg = entry.value;
@@ -155,6 +155,7 @@ Let's next focus on the implementation of the `product_admin_portal`, which acts
 First, let's see how to add the Kafka configurations for a Kafka publisher written in Ballerina language. Refer to the code segment attached below.
 
 ##### Kafka producer configurations
+
 ```ballerina
 kafka:ProducerConfig producerConfigs = {
     bootstrapServers: "localhost:9092",
@@ -163,10 +164,10 @@ kafka:ProducerConfig producerConfigs = {
     noRetries: 3
 };
 
-kafka:SimpleProducer kafkaProducer = new(producerConfigs);
+kafka:Producer kafkaProducer = new(producerConfigs);
 ```
 
-A Kafka producer in Ballerina needs to consist of a `kafka:SimpleProducer` object with specifying the required configurations for a Kafka publisher. 
+A Kafka producer in Ballerina needs to consist of a `kafka:Producer` object with specifying the required configurations for a Kafka publisher.
 
 Let's now see the complete implementation of the `product_admin_portal`, which is a Kafka topic publisher. Inline comments added for better understanding.
 
@@ -187,7 +188,7 @@ kafka:ProducerConfig producerConfigs = {
     noRetries: 3
 };
 
-kafka:SimpleProducer kafkaProducer = new(producerConfigs);
+kafka:Producer kafkaProducer = new(producerConfigs);
 
 // HTTP service endpoint
 listener http:Listener httpListener = new(9090);
@@ -256,7 +257,106 @@ service productAdminService on httpListener {
 }
 ```
 
-## Testing 
+#### Enabling Security for the kafka
+Ballerina kafka connector allows to secure a Kafka cluster using Transport Layer Security (TLS) authentication.
+
+##### Generating TLS keys and certificates
+
+Please execute the following bash script to generate the keystore and trust-store for broker (kafka.server.keystore.jks and kafka.server.truststore.jks) and client (kafka.client.keystore.jks and kafka.client.truststore.jks):
+
+```ballerina
+#!/bin/bash
+PASSWORD=test1234
+VALIDITY=365
+keytool -keystore kafka.server.keystore.jks -alias localhost -validity $VALIDITY -genkey
+openssl req -new -x509 -keyout ca-key -out ca-cert -days $VALIDITY
+keytool -keystore kafka.server.truststore.jks -alias CARoot -import -file ca-cert
+keytool -keystore kafka.client.truststore.jks -alias CARoot -import -file ca-cert
+keytool -keystore kafka.server.keystore.jks -alias localhost -certreq -file cert-file
+openssl x509 -req -CA ca-cert -CAkey ca-key -in cert-file -out cert-signed -days $VALIDITY -CAcreateserial -passin pass:$PASSWORD
+keytool -keystore kafka.server.keystore.jks -alias CARoot -import -file ca-cert
+keytool -keystore kafka.server.keystore.jks -alias localhost -import -file cert-signed
+keytool -keystore kafka.client.keystore.jks -alias localhost -validity $VALIDITY -genkey
+keytool -keystore kafka.client.keystore.jks -alias localhost -certreq -file cert-file
+openssl x509 -req -CA ca-cert -CAkey ca-key -in cert-file -out cert-signed -days $VALIDITY -CAcreateserial -passin pass:$PASSWORD
+keytool -keystore kafka.client.keystore.jks -alias CARoot -import -file ca-cert
+keytool -keystore kafka.client.keystore.jks -alias localhost -import -file cert-signed
+```
+
+##### Configuring TLS authentication for the Kafka broker
+
+We have to configure the following properties in <KAFKA_HOME>/config/server.properties file.
+
+* Configure the required security protocols and ports for the listeners.
+```ballerina
+listeners=SSL://<your.host.name>:9093
+```
+
+* Select SSL as the security protocol for inter-broker communication.
+```ballerina
+security.inter.broker.protocol=SSL
+```
+
+* Configure the following TLS protocol-specific properties
+```ballerina
+ssl.client.auth=required
+ssl.keystore.location={file-path}/kafka.server.keystore.jks
+ssl.keystore.password=test1234
+ssl.key.password=test1234
+ssl.truststore.location={file-path}/kafka.server.truststore.jks
+ssl.truststore.password=test1234
+```
+
+##### Configuring TLS authentication for Kafka subscribers & producers
+
+Let's see a sample for the Kafka topic publisher with SSL parameters.
+
+##### message_producer_with_ssl.bal
+```ballerina
+import wso2/kafka;
+import ballerina/log;
+
+kafka:ProducerConfig producerConfigs = {
+    // Here we create a producer configs with SSL parameters.
+    bootstrapServers: "localhost:9093",
+    clientID:"basic-producer",
+    acks:"all",
+    noRetries:3,
+    secureSocket: {
+        keyStore:{
+            location:"<FILE_PATH>/kafka.client.keystore.jks",
+            password:"test1234"
+        },
+        trustStore: {
+            location:"<FILE_PATH>/kafka.client.truststore.jks",
+            password:"test1234"
+        },
+        protocol: {
+            sslProtocol:"TLS",
+            sslProtocolVersions:"TLSv1.2,TLSv1.1,TLSv1",
+            securityProtocol:"SSL"
+        },
+        sslKeyPassword:"test1234"
+    }
+};
+
+kafka:Producer kafkaProducer = new(producerConfigs);
+
+public function main (string... args) {
+    string msg = "Hello World, Ballerina";
+    byte[] serializedMsg = msg.toByteArray("UTF-8");
+    var sendResult = kafkaProducer->send(serializedMsg, "test-kafka-topic");
+    if (sendResult is error) {
+        log:printError("Kafka producer failed to send data", err = sendResult);
+    }
+    var flushResult = kafkaProducer->flushRecords();
+    if (flushResult is error) {
+        log:printError("Kafka producer failed to flush the records", err = flushResult);
+    }
+}
+```
+
+## Testing
 
 ### Invoking the service
 
@@ -283,7 +383,7 @@ service productAdminService on httpListener {
 ```
    Here we created a new topic that consists of two partitions with a single replication factor.
    
-- Start the `productAdminService`, which is an HTTP service that publishes messages to the Kafka topic by entering the following command from `messaging-with-kafka/guide` directory.
+- Start the `productAdminService` (implemented in the above mentioned sample), which is an HTTP service that publishes messages to the Kafka topic by entering the following command from `messaging-with-kafka/guide` directory.
 ```bash
    $ ballerina run product_admin_portal
 ```
