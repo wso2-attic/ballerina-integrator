@@ -43,12 +43,14 @@ messageStore:MessageStoreConfiguration messageStoreConfig = {
 
 messageStore:Client storeClient = checkpanic new messageStore:Client(messageStoreConfig);
 
-//export http listner port on 9091
+// Export http listner port on 9091
 listener http:Listener httpListener = new(9091);
 
 
-//http --> store message and respond client with 202
-@http:ServiceConfig { basePath: "/healthcare" }
+// Service to store message and respond to client with 202
+@http:ServiceConfig {
+    basePath: "/healthcare"
+}
 service healthcareService on httpListener {
     // HTTP resource listening for messages
     @http:ResourceConfig {
@@ -58,24 +60,20 @@ service healthcareService on httpListener {
         path: "/appointment"
     }
     resource function make_appointment(http:Caller caller, http:Request request) returns error? {
-
         http:Response response = new;
-
-        // Try parsing the JSON payload from the request
         var payload = request.getJsonPayload();
-
         var result = storeClient->store(request);
         if (result is error) {
-            //hanlde error occured during storing message
-            response.statusCode = 500;
+            // Hanlde error occured during storing message
+            response.statusCode = http:INTERNAL_SERVER_ERROR_500;
             response.setJsonPayload({
                 "Message": "Error while storing the message on JMS broker"
             });
             check caller->respond(response);
             return;
         } else {
-            //send 202
-            response.statusCode = 202;
+            // Respond with 202
+            response.statusCode = http:ACCEPTED_202;
             check caller->respond(response);
             return;
         }

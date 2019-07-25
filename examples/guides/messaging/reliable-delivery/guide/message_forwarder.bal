@@ -34,7 +34,7 @@ public function main(string... args) {
         }
     };
 
-    //create a DLC store
+    // Create a DLC store
     messageStore:MessageStoreConfiguration dlcMessageStoreConfig = {
         messageBroker: "ACTIVE_MQ",
         providerUrl: "tcp://localhost:61616",
@@ -46,43 +46,39 @@ public function main(string... args) {
     messageStore:ForwardingProcessorConfiguration myProcessorConfig = {
         storeConfig: myMessageStoreConfig,
         HttpEndpointUrl: "http://127.0.0.1:9095/testservice/test",
-        HttpOperation: http:HTTP_POST, 
-        
-        pollTimeConfig: "0/2 * * * * ?" , 
+        HttpOperation: http:HTTP_POST,
+        pollTimeConfig: "0/2 * * * * ?",
 
-        //forwarding retry 
+        // Forwarding retry
         retryInterval: 3000,
-        retryHttpStatusCodes:[500,400],
+        retryHttpStatusCodes: [http:INTERNAL_SERVER_ERROR_500, http:BAD_REQUEST_400],
         maxRedeliveryAttempts: 5,
-
-        forwardingFailAction: messageStore:DLCSTORE,
+        forwardingFailAction: messageStore:DLC_STORE,
         DLCStore: dlcStoreClient
     };
 
-    //create message processor 
+    // Create message processor
     var myMessageProcessor = new messageStore:MessageForwardingProcessor(myProcessorConfig, handleResponseFromBE);
-    if(myMessageProcessor is error) {
+    if (myMessageProcessor is error) {
         log:printError("Error while initializing Message Processor", err = myMessageProcessor);
         panic myMessageProcessor;
     } else {
-        //start the processor
-        var processorStartResult = myMessageProcessor.start();
-        if(processorStartResult is error) {
+        // Start the processor
+        var processorStartResult = myMessageProcessor. start();
+        if (processorStartResult is error) {
             panic processorStartResult;
         } else {
-            //TODO:temp fix
+            // TODO:temp fix
             myMessageProcessor.keepRunning();
         }
     }
-    
 }
 
-
-//function to handle response
+// Function to handle response
 function handleResponseFromBE(http:Response resp) {
-    var payload =  resp.getJsonPayload();
-    if(payload is json) {
-        log:printInfo("Response received " + "Response status code= "+ resp.statusCode + ": "+ payload.toString());
+    var payload = resp.getJsonPayload();
+    if (payload is json) {
+        log:printInfo("Response received " + "Response status code= " + resp.statusCode + ": " + payload.toString());
     } else {
         log:printError("Error while getting response payload", err=payload);
     }

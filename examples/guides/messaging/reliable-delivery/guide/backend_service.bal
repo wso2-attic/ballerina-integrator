@@ -18,42 +18,47 @@ import ballerina/log;
 import ballerina/http;
 
 
-//export http listner port on 9095
+// Export http listner port on 9095
 listener http:Listener httpListener = new(9095);
 
 // Healthcare Service, which allows users to channel doctors online
-@http:ServiceConfig { basePath: "/testservice" }
+@http:ServiceConfig {
+    basePath: "/testservice"
+}
 service healthcareService on httpListener {
     // Resource that allows users to make appointments
-    @http:ResourceConfig { 
-        methods: ["POST"], 
+    @http:ResourceConfig {
+        methods: ["POST"],
         consumes: ["application/json"],
         produces: ["application/json"],
-        path: "/test" }
+        path: "/test"
+    }
     resource function make_appointment(http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
-
-        // Try parsing the JSON payload from the request
         var payload = request.getJsonPayload();
+
         if (payload is json) {
-                string[] headerNames = request.getHeaderNames();
-                string headers = "";
-                foreach var header in headerNames {
-                    headers = headers + "[" + header + ": ";
-                    string headerVal = request.getHeader(untaint header);
-                    headers = headers + headerVal + "] , ";
-                }
-                log:printInfo("HIT!! - payload = " + payload.toString() + "Headers = " + headers);
-                json responseMessage = { "Message": "This is Test Service" };
-                response.setPayload(responseMessage);
-                response.statusCode = 200;
+            string[] headerNames = request.getHeaderNames();
+            string headers = "";
+            foreach var header in headerNames {
+                headers = headers + "[" + header + ": ";
+                string headerVal = request.getHeader(untaint header);
+                headers = headers + headerVal + "] , ";
+            }
+            log:printInfo("HIT!! - payload = " + payload.toString() + "Headers = " + headers);
+            json responseMessage = {
+                "Message": "This is Test Service"
+            };
+            response.setPayload(responseMessage);
+            response.statusCode = http:ACCEPTED_202;
             check caller->respond(response);
         } else {
-            response.statusCode = 500;
-            response.setJsonPayload({ "Message": "Invalid payload - Not a valid JSON payload" });
+            response.statusCode = http:INTERNAL_SERVER_ERROR_500;
+            response.setJsonPayload({
+                "Message": "Invalid payload - Not a valid JSON payload"
+            });
             check caller->respond(response);
             return;
         }
-
     }
 }
