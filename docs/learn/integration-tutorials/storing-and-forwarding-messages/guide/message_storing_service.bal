@@ -18,6 +18,7 @@ import ballerina/log;
 import ballerina/http;
 import wso2/messageStore;
 
+// CODE-SEGMENT-BEGIN: segment_1
 
 messageStore:MessageStoreConfiguration messageStoreConfig = {
     messageBroker: "ACTIVE_MQ",
@@ -43,30 +44,31 @@ messageStore:MessageStoreConfiguration failOverMessageStoreConfig = {
 messageStore:Client failoverStoreClient = checkpanic new messageStore:Client(failOverMessageStoreConfig);
 messageStore:Client storeClient = checkpanic new messageStore:Client(messageStoreConfig, failoverStore = failoverStoreClient);
 
-//export http listner port on 9091
-listener http:Listener httpListener = new(9091);
+// CODE-SEGMENT-END: segment_1
 
+// CODE-SEGMENT-BEGIN: segment_2
 
-//http --> store message and respond client with 202
-@http:ServiceConfig { basePath: "/healthcare" }
-service healthcareService on httpListener {
+//http --> store message and respond to the client with 202
+@http:ServiceConfig { basePath: "/hospitalMgtService" }
+service hospitalMgtService on new http:Listener(9092) {
     // HTTP resource listening for messages
     @http:ResourceConfig {
         methods: ["POST"],
         consumes: ["application/json"],
         produces: ["application/json"],
-        path: "/appointment"
+        path: "/categories/{category}/reserve"
     }
-    resource function make_appointment(http:Caller caller, http:Request request) returns error? {
+    resource function scheduleAppointment(http:Caller caller, http:Request request) returns error? {
 
         http:Response response = new;
+        string:category = "surgery";
 
         // Try parsing the JSON payload from the request
         var payload = request.getJsonPayload();
 
         var result = storeClient->store(request);
         if (result is error) {
-            //hanlde error occured during storing message
+            //handle error occured during storing message
             response.statusCode = 500;
             response.setJsonPayload({
                 "Message": "Error while storing the message on JMS broker"
@@ -82,4 +84,5 @@ service healthcareService on httpListener {
     }
 }
 
+// CODE-SEGMENT-END: segment_2
 

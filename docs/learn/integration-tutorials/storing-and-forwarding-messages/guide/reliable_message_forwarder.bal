@@ -26,11 +26,16 @@ io:WritableCSVChannel csvch = prepareCSV(filePath);
 
 public function main(string... args) {
 
+// CODE-SEGMENT-BEGIN: segment_1
+
     messageStore:MessageStoreConfiguration myMessageStoreConfig = {
         messageBroker: "ACTIVE_MQ",
         providerUrl: "tcp://localhost:61616",
         queueName: "myStore"
     };
+
+// CODE-SEGMENT-END: segment_1
+// CODE-SEGMENT-BEGIN: segment_2
 
     //create a DLC store
     messageStore:MessageStoreConfiguration dlcMessageStoreConfig = {
@@ -41,6 +46,7 @@ public function main(string... args) {
 
     messageStore:Client dlcStoreClient = checkpanic new messageStore:Client(dlcMessageStoreConfig);
 
+    //config for message processor
     messageStore:ForwardingProcessorConfiguration myProcessorConfig = {
         storeConfig: myMessageStoreConfig,
         HTTPEndpoint: "http://localhost:9090/grandoaks/categories/surgery/reserve",
@@ -62,7 +68,8 @@ public function main(string... args) {
         DLCStore: dlcStoreClient
 
     };
-
+// CODE-SEGMENT-END: segment_2
+// CODE-SEGMENT-BEGIN: segment_3
     //create message processor 
     var myMessageProcessor = new messageStore:MessageForwardingProcessor(myProcessorConfig, handleResponseFromBE);
     if(myMessageProcessor is error) {
@@ -77,10 +84,11 @@ public function main(string... args) {
             //TODO:temp fix
             myMessageProcessor.keepRunning();
         }
-    }   
+    }
+// CODE-SEGMENT-END: segment_3
 }
 
-
+// CODE-SEGMENT-BEGIN: segment_4
 //function to handle response
 function handleResponseFromBE(http:Response resp) {
     var payload =  resp.getJsonPayload();
@@ -98,6 +106,7 @@ function handleResponseFromBE(http:Response resp) {
         log:printError("Error while getting response payload", err=payload);
     }
 }
+// CODE-SEGMENT-END: segment_4
 
 
 function prepareCSV(string path) returns io:WritableCSVChannel {
