@@ -62,7 +62,7 @@ restful-service
 You can add the following code segment to your `stock_quote_service.bal` file. It contains a service skeleton based on which you can build the stock quote service.
 For each operation, there is a dedicated resource. You can implement the operation logic inside each resource.
 
-##### Skeleton code for sock_quote_service.bal
+##### Skeleton code for stock_quote_service.bal
 ```ballerina
 import ballerina/http;
 
@@ -102,7 +102,7 @@ service stockQuote on httpListener {
   Following is the full source code of the stock quote management service. Here, you will see how certain HTTP status codes and headers are manipulated whenever required in addition to the main logic.
 
 
-##### sock_quote_service.bal
+##### stock_quote_service.bal
 ```ballerina
 import ballerina/http;
 import ballerina/log;
@@ -317,7 +317,7 @@ To run the unit tests, open your terminal and navigate to `restful-service/expos
     $ ballerina test
 ```
 
-> The source code for the tests can be found at [sock_quote_service_test.bal](https://github.com/wso2/ballerina-integrator/tree/master/examples/guides/services/restful-service/exposing-a-soap-service/guide/restful_service/tests/sock_quote_service_test.bal).
+> The source code for the tests can be found at [stock_quote_service_test.bal](https://github.com/wso2/ballerina-integrator/tree/master/examples/guides/services/restful-service/exposing-a-soap-service/guide/restful_service/tests/stock_quote_service_test.bal).
 
 
 ## Deployment
