@@ -25,6 +25,9 @@ This example explains how to use the S3 client to connect with the Amazon S3 ins
 Let's get started with a simple Ballerina program to integrate with Amazon S3.  
 
 ### Implementation
+The following diagram illustrates all the required functionality of the Amazon S3 Service that you are going to build.
+
+![Amazon S3 Guide Implementation](resources/s3_connector_guide_implementation.svg "Amazon S3 Guide Implementation")
 
 #### Creating the module structure
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although the 
