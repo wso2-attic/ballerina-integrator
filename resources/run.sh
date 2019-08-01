@@ -19,6 +19,7 @@
 # Run Ballerina Integrator Tests
 # ----------------------------------------------------------------------------
 HOME=`pwd`
+> $HOME/completeTestResults
 source $HOME/resources/config.properties
 
 cd $path1
@@ -52,7 +53,7 @@ do
 	cd ${executionPathList[$count]}
 	ballerina init
 	ballerina test > testResults
-	if grep -q "[1-9][0-9]* failing" testResults
+	if ((grep -q "[1-9][0-9]* failing" testResults) || ! (grep -q "Running tests" testResults))
 	then
 		echo "failure in ${executionNameList[$count]}"
 		exit 1
@@ -61,6 +62,7 @@ do
 	fi
 	echo "------End of executing ${executionNameList[$count]} tests-----"
 	((count++))
+	cat testResults >> $HOME/completeTestResults
 done;
 
 echo `date "+%Y-%m-%d-%H:%M:%S"`" : Ballerina tests built successfully!"
