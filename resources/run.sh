@@ -50,7 +50,7 @@ count=0
 for i in "${executionPathList[@]}"; 
 do 
 	echo "Executing ${executionNameList[$count]}"
-	cd ${executionPathList[$count]}
+	cd $HOME/${executionPathList[$count]}
 	ballerina init
 	ballerina test > testResults
 	if ((grep -q "[1-9][0-9]* failing" testResults) || ! (grep -q "Running tests" testResults))
