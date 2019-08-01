@@ -1,7 +1,7 @@
 # Reliable message delivery
 
 This guide describes how to use **MessageStore** module to achieve reliable message delivery. In asynchronous messaging
-scenarios we accept the HTTP message and store it in a remote **message broker** for later processing. When the message forwarder
+scenarios, we accept the HTTP message and store it in a remote **message broker** for later processing. When the message forwarder
 picks the message from the **message broker** and try to forward it to the intended HTTP service, that service may not be
 available at that moment, or it may respond with *500 (internal server error)*. In that case, the service should retry to deliver the message.
 Only upon successful message delivery, the message will be removed from the queue. Otherwise, after several retries, message
@@ -13,8 +13,8 @@ Above scenario is called **reliable message delivery**. There are also other use
    in-order message delivery pattern is also achieved. Messages are delivered to the endpoint in a reliable manner keeping
    the order of the messages they were put to the store.
 
-2. **throttling** : Consider a legacy backend which can process messages up to 100 TPS only. This service is exposed to a system
-   from which it gets message bursts sometimes exceeding its limit of 100 TPS. To regulate the load we can use message store and
+2. **throttling** : Consider a legacy backend which can process messages only up to 100 TPS. This service is exposed to a system
+   from which it gets message bursts, sometimes exceeding its limit of 100 TPS. To regulate the load we can use message store and
    forward pattern. System can store the message in the store in the speed it likes and message processor will forward the messages to
    the backend in a regulated way with its defined polling interval.
 
@@ -41,14 +41,14 @@ The high level sections of this guide are as follows:
 ## What you'll build
 
 Let's consider a scenario where an incoming HTTP request is stored using *messageStore*. The message store is pointed
-to a queue of *ActiveMQ* broker. The caller of the HTTP request will receive a HTTP accept *202* response if message
+to a queue of *ActiveMQ* broker. The caller of the HTTP request will receive an HTTP accept *202* response, if the message
 is stored successfully on the broker. Message forwarding task is initiated by another Ballerina service which polls messages
 from the above store and invoke configured backend HTTP service.
 
-This backend service is a test service which will print headers and incoming message and response with a static payload.
+This backend service is a test service which will print headers and the incoming message, and respond with a static payload.
 
 Upon receiving the response from the backend, user is allowed to perform any action upon the response as per the design
-of *messageStore* module. This action passed as a Lambda (function pointer) to the message processor when it is created.
+of *messageStore* module. This action is passed as a Lambda (function pointer) to the message processor when it is created.
 For simplicity, in this guide it will just log the response from the backend to the Ballerina log file.
 
 The following diagram illustrates the scenario in high level:
@@ -84,7 +84,7 @@ To implement the scenario in this guide, you can use the following package struc
 ```
 
 - Create the above directories in your local machine and also create the empty .bal files.
-- Then open a terminal, navigate to project directory and run the Ballerina init command.
+- Then open a terminal, navigate to project directory and run the below command to initialize a Ballerina project.
 
 ```bash
    $ ballerina init
@@ -94,8 +94,8 @@ Now that you have created the project structure, the next step is to develop the
 
 ### Setting up backend service
 
-The backend service is exposing */testservice/test* resource as a *POST* which accepts a Json message. It logs the incoming
-message payload with headers and return a static response.
+The backend service exposes */testservice/test* endpoint as a *POST* resource, which accepts a Json message. It logs the incoming
+message payload with headers and returns a static response.
 
 **backend_service.bal**
 
@@ -103,7 +103,7 @@ message payload with headers and return a static response.
 
 ### Developing message storing service
 
-This service will accept any incoming HTTP message and store it in *messageStore* defined. Note the following when configuring
+This service will accept any incoming HTTP message and store it in the previously defined *messageStore*. Note the following when configuring
 message store client.
 
 1. `MessageStoreConfiguration` is specified with required Message Broker detail when creating message store client.
@@ -115,7 +115,7 @@ message store client.
 
 <!-- INCLUDE_CODE: guide/http_message_listener.bal-->
 
-If the message is successfully stored, HTTP caller will get 202 accept message, or else *500-internal server error*. In this case,
+If the message is successfully stored, HTTP caller will get *202-accepted* message, or else *500-internal server error*. In this case,
 the caller is notified of successful message acceptance.
 
 ### Developing message forwarding service
@@ -127,11 +127,11 @@ When configuring **MessageForwardingProcessor**, there is a few things you need 
 2. You can specify the speed for message polling or specify a cron. Here we configure it to poll a message
    every 2 seconds by the cron expression `0/2 * * * * ?`. You can leverage this to run the processor at a specified time
    of the day.
-3. You can configure message processor to retry forwarding the messages it polls from the broker. In this example, message will
-   retry `5 times` with an interval of `3 seconds` between each retry. If backend responded with `500` or `400` status codes,
+3. You can configure the message processor to retry forwarding the messages it polls from the broker. In this example, message will
+   retry `5 times` with an interval of `3 seconds` between each retry. If backend responds with `500` or `400` status codes,
    processor will consider them as failed to forward messages.
-4. Once all retries to forward the message to the backend, you can either stop the message processor or drop the message and
-   continue. Optionally, if a DLC store (another messageStore) is configured message will be forwarded to it, and processor
+4. Once all retries to forward the message to the backend are over, you can either stop the message processor or drop the message and
+   continue. Optionally, if a DLC store (another messageStore) is configured, message will be forwarded to it, and processor
    will move to the next message. In this example, we have specified a DLC store.
 5. In case of connection failure to the message broker, message processor will retry to regain the connection and initialize
    message consumer back. You also have the freedom to configure that retry. In here, once every `15 seconds`, it will try
@@ -166,7 +166,7 @@ $ ballerina run <Exec_Archive_File_Name>
 
 ### Deploying on Docker
 
-If necessary, you can run the service that you developed above as a Docker container. The Ballerina language includes a Ballerina_Docker_Extension, which offers native support to run Ballerina programs on containers.
+If necessary, you can run the service that you developed above as a Docker container. The Ballerina language includes a *Ballerina_Docker_Extension*, which offers native support to run Ballerina programs on containers.
 
 To run a service as a Docker container, add the corresponding Docker annotations to your service code.
 
@@ -174,7 +174,7 @@ Since ActiveMQ is a prerequisite in this guide, there are a few more steps you n
 
 ## Testing
 
-Follow below steps below to test out the reliable message delivery functionality using the services we developed above.
+Follow the below steps to test out the reliable message delivery functionality using the services we developed above.
 
 On a new terminal, navigate to `<AMQ_HOME>/bin`, and execute the following command to start the ActiveMQ server.
 
