@@ -19,7 +19,6 @@ import ballerina/http;
 import wso2/messageStore;
 
 // CODE-SEGMENT-BEGIN: segment_1
-
 messageStore:MessageStoreConfiguration messageStoreConfig = {
     messageBroker: "ACTIVE_MQ",
     providerUrl: "tcp://localhost:61616",
@@ -40,15 +39,13 @@ messageStore:MessageStoreConfiguration failOverMessageStoreConfig = {
     queueName: "myFailoverStore"
 };
 
-//create storing endpoints
+// Create storing endpoints
 messageStore:Client failoverStoreClient = checkpanic new messageStore:Client(failOverMessageStoreConfig);
 messageStore:Client storeClient = checkpanic new messageStore:Client(messageStoreConfig, failoverStore = failoverStoreClient);
-
 // CODE-SEGMENT-END: segment_1
 
 // CODE-SEGMENT-BEGIN: segment_2
-
-//http --> store message and respond to the client with 202
+// Store message and respond to the client with 202 status code
 @http:ServiceConfig { basePath: "/hospitalMgtService" }
 service hospitalMgtService on new http:Listener(9092) {
     // HTTP resource listening for messages
@@ -59,30 +56,23 @@ service hospitalMgtService on new http:Listener(9092) {
         path: "/categories/{category}/reserve"
     }
     resource function scheduleAppointment(http:Caller caller, http:Request request) returns error? {
-
         http:Response response = new;
-        string:category = "surgery";
-
-        // Try parsing the JSON payload from the request
         var payload = request.getJsonPayload();
-
         var result = storeClient->store(request);
         if (result is error) {
-            //handle error occured during storing message
-            response.statusCode = 500;
+            // Handle error occured during storing message
+            response.statusCode = http:INTERNAL_SERVER_ERROR_500;
             response.setJsonPayload({
                 "Message": "Error while storing the message on JMS broker"
             });
             check caller->respond(response);
             return;
         } else {
-            //send 202
-            response.statusCode = 202;
+            // Respond with 202 status code
+            response.statusCode = http:ACCEPTED_202;
             check caller->respond(response);
             return;
         }
     }
 }
-
 // CODE-SEGMENT-END: segment_2
-

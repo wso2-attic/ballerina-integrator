@@ -20,24 +20,19 @@ import wso2/messageStore;
 import ballerina/runtime;
 import ballerina/io;
 
-// File channel for the CSV file
-string filePath = "../resources/appointments.csv";
-io:WritableCSVChannel csvch = prepareCSV(filePath);
 
 public function main(string... args) {
 
-// CODE-SEGMENT-BEGIN: segment_1
-
+    // CODE-SEGMENT-BEGIN: segment_1
     messageStore:MessageStoreConfiguration myMessageStoreConfig = {
         messageBroker: "ACTIVE_MQ",
         providerUrl: "tcp://localhost:61616",
         queueName: "myStore"
     };
+    // CODE-SEGMENT-END: segment_1
 
-// CODE-SEGMENT-END: segment_1
-// CODE-SEGMENT-BEGIN: segment_2
-
-    //create a DLC store
+    // CODE-SEGMENT-BEGIN: segment_2
+    // Create a DLC store
     messageStore:MessageStoreConfiguration dlcMessageStoreConfig = {
         messageBroker: "ACTIVE_MQ",
         providerUrl: "tcp://localhost:61616",
@@ -46,37 +41,34 @@ public function main(string... args) {
 
     messageStore:Client dlcStoreClient = checkpanic new messageStore:Client(dlcMessageStoreConfig);
 
-    //config for message processor
+    // Config for message processor
     messageStore:ForwardingProcessorConfiguration myProcessorConfig = {
         storeConfig: myMessageStoreConfig,
         HTTPEndpoint: "http://localhost:9090/grandoaks/categories/surgery/reserve",
-        
-        pollTimeConfig: "0/2 * * * * ?" , 
+        pollTimeConfig: "0/2 * * * * ?" ,
 
-        //forwarding retry 
+        // Forwarding retry
         retryInterval: 3000,
-        retryHTTPStatusCodes:[500,400],
+        retryHTTPStatusCodes:[http:INTERNAL_SERVER_ERROR_500, http:BAD_REQUEST_400],
         maxRedeliveryAttempts: 5,
-        
-        //connection retry 
+
+        // Connection retry
         maxStoreConnectionAttemptInterval: 120,
         storeConnectionAttemptInterval: 15,
         storeConnectionBackOffFactor: 1.5,
-
         deactivateOnFail: false,
-        
         DLCStore: dlcStoreClient
-
     };
-// CODE-SEGMENT-END: segment_2
-// CODE-SEGMENT-BEGIN: segment_3
-    //create message processor 
+    // CODE-SEGMENT-END: segment_2
+
+    // CODE-SEGMENT-BEGIN: segment_3
+    // Create message processor
     var myMessageProcessor = new messageStore:MessageForwardingProcessor(myProcessorConfig, handleResponseFromBE);
     if(myMessageProcessor is error) {
         log:printError("Error while initializing Message Processor", err = myMessageProcessor);
         panic myMessageProcessor;
     } else {
-        //start the processor
+        // Start the processor
         var processorStartResult = myMessageProcessor.start();
         if(processorStartResult is error) {
             panic processorStartResult;
@@ -85,57 +77,15 @@ public function main(string... args) {
             myMessageProcessor.keepRunning();
         }
     }
-// CODE-SEGMENT-END: segment_3
+    // CODE-SEGMENT-END: segment_3
 }
 
-//function to handle response
+// Function to handle response
 function handleResponseFromBE(http:Response resp) {
     var payload =  resp.getJsonPayload();
     if(payload is json) {
-        log:printInfo("Response received " + "Response status code= "+ resp.statusCode + ": "+ payload.toString());
-        // Write to file
-        var result = writeCsv(payload);
-        if (result is error) {
-            log:printError("Error occurred while writing csv record :", err = result);
-        } else {
-            log:printInfo("json record successfully transformed to a csv, file could" +
-            " be found in " + filePath);
-        }
+        log:printInfo("Response received " + "Response status code= " + resp.statusCode + ": " + payload.toString());
     } else {
-        log:printError("Error while getting response payload", err=payload);
+        log:printError("Error while getting response payload", err = payload);
     }
-}
-
-
-function prepareCSV(string path) returns io:WritableCSVChannel {
-    io:WritableCSVChannel temp = io:openWritableCsvFile(path);
-    string[] headers = ["AppointmentNumber", "AppointmentDate", "Fee", "Doctor", "Hospital", "Patient", "Phone"];
-    checkpanic temp.write(headers);
-    return temp;
-}
-
-function writeCsv(json payload) returns error? {
-    log:printInfo("Json to write : " + payload.toString());
-    string appointmentNumber = string.convert(<int> payload.appointmentNumber);
-    string appointmentDate = <string> payload.appointmentDate;
-    string fee = string.convert(<float>payload.fee);
-    string doctor = <string> payload.doctor.name;
-    string hospital = <string> payload.doctor.hospital;
-    string patient = <string> payload.patient.name;
-    string phone = <string> payload.patient.phone;
-
-    string[] data = [appointmentNumber, appointmentDate, fee, doctor, hospital, patient, phone];
-    check csvch.write(data);
-}
-
-function getFields(json rec) returns (string[], string[]) {
-    int count = 0;
-    string[] headers = [];
-    string[] fields = [];
-    headers = rec.getKeys();
-    foreach var field in headers {
-        fields[count] = rec[field].toString();
-        count = count + 1;
-    }
-    return (headers, fields);
 }

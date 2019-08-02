@@ -1,8 +1,9 @@
 # Storing and Forwarding Messages
 
-Storing and forwarding messages is used for serving traffic to back-end services that can accept request messages only 
-at a given rate. As each received request is stored in the message store, it ensures guaranteed delivery of a message, 
-making them available for future reference as well. 
+Store and forward pattern is used to achieve several benefits using a messaging system. These benefits include 
+asynchronous communication, reliable communication, throttling and variable timing. We can use this pattern to serve 
+traffic to back-end services that can accept request messages only at a given rate. As each received request is 
+stored in the message store, it ensures guaranteed delivery of a message, making them available for future reference as well. 
 
 This example demonstrates how we can forward a message to an HTTP endpoint in a reliable manner. It uses *messageStore*
 connector module of Ballerina Integrator of EI, to store message and forward it to an HTTP endpoint with required resiliency measures. 
