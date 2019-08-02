@@ -1,21 +1,24 @@
-// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-//
-// WSO2 Inc. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
+/*
+ *  Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package org.wso2.integration.ballerina;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.wso2.integration.ballerina.utils.ServiceException;
 
@@ -33,38 +36,25 @@ import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_BE
 import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_END;
 import static org.wso2.integration.ballerina.constants.Constants.COMMENT_END;
 import static org.wso2.integration.ballerina.constants.Constants.COMMENT_START;
-import static org.wso2.integration.ballerina.constants.Constants.CONTENT_INTRO_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.EMPTY_STRING;
-import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_IMG_VAR;
-import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_SIGN;
-import static org.wso2.integration.ballerina.constants.Constants.GUIDES_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.GUIDE_URL;
-import static org.wso2.integration.ballerina.constants.Constants.IMG_GUIDES;
 import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_SEGMENT_TAG;
 import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_TAG;
-import static org.wso2.integration.ballerina.constants.Constants.INDEX_MD;
-import static org.wso2.integration.ballerina.constants.Constants.INTEGRATION_TUTORIALS_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.INTRO_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.INTRO_FRONT_MATTER_LAYOUT;
-import static org.wso2.integration.ballerina.constants.Constants.INTRO_FRONT_MATTER_TYPE;
-import static org.wso2.integration.ballerina.constants.Constants.INTRO_MD;
-import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_GUIDE_VAR;
-import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
+import static org.wso2.integration.ballerina.constants.Constants.MD_FILE_EXT;
+import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
 import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
 import static org.wso2.integration.ballerina.constants.Constants.REPO_EXAMPLES_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.GUIDE_TEMPLATES_DIR;
+import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR_MD;
 import static org.wso2.integration.ballerina.utils.Utils.copyDirectoryContent;
 import static org.wso2.integration.ballerina.utils.Utils.createDirectory;
 import static org.wso2.integration.ballerina.utils.Utils.deleteDirectory;
-import static org.wso2.integration.ballerina.utils.Utils.deleteNonIndexFiles;
 import static org.wso2.integration.ballerina.utils.Utils.getCodeFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCurrentDirectoryName;
 import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWithCodeType;
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
+import static org.wso2.integration.ballerina.utils.Utils.isDirEmpty;
 import static org.wso2.integration.ballerina.utils.Utils.removeLicenceHeader;
-import static org.wso2.integration.ballerina.utils.Utils.renameAndMoveFile;
 
 /**
  * Main class of the site creator project.
@@ -75,19 +65,21 @@ public class SiteBuilder {
 
     public static void main(String[] args) {
         try {
-            // First delete already created posts.
-            deleteDirectory(GUIDES_DIR);
-            deleteDirectory(INTEGRATION_TUTORIALS_DIR);
-            deleteNonIndexFiles(new File(INTRO_DIR));
+            // First delete already created mkdocs-content directory.
+            deleteDirectory(MKDOCS_CONTENT);
             // Create needed directory structure.
             createDirectory(TEMP_DIR);
-            createDirectory(GUIDE_TEMPLATES_DIR);
-            // get a copy of examples directory.
+            createDirectory(MKDOCS_CONTENT);
+            // Get a copy of examples directory.
             copyDirectoryContent(REPO_EXAMPLES_DIR, TEMP_DIR);
             // Process repository to generate guide templates.
             processDirectory(TEMP_DIR);
-            // Copy tempDirectory content to hugo content directory.
-            copyDirectoryContent(TEMP_DIR, GUIDE_TEMPLATES_DIR);
+            // Delete non markdown files.
+            DeleteOtherFiles(TEMP_DIR);
+            // Delete empty directories.
+            deleteEmptyDirs(TEMP_DIR);
+            // Copy tempDirectory content to mkdocs content directory.
+            copyDirectoryContent(TEMP_DIR, MKDOCS_CONTENT);
         } catch (ServiceException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } finally {
@@ -109,14 +101,8 @@ public class SiteBuilder {
                 if (file.isFile() && (file.getName().equals(README_MD))) {
                     processReadmeFile(file);
                     renameReadmeFile(file);
-                } else if (file.getName().equals(INDEX_MD)) {
-                    processReadmeFile(file);
-                } else if (file.getName().equals(INTRO_MD)) {
-                    processReadmeFile(file);
-                    renameAndMoveFile(file, CONTENT_INTRO_DIR, getCurrentDirectoryName(file.getParent()));
                 } else if (file.isDirectory()) {
                     processDirectory(file.getPath());
-
                 }
             }
         }
@@ -148,26 +134,6 @@ public class SiteBuilder {
                     readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line));
                 }
             }
-
-            // Edit front matter if _intro.md
-            if (file.getName().equals(INTRO_MD)) {
-                String frontMatterContent = readMeFileContent.split(FRONT_MATTER_SIGN)[1].split(FRONT_MATTER_SIGN)[0];
-
-                // image variable
-                String relativeImageUrl = frontMatterContent.split(FRONT_MATTER_IMG_VAR)[1].split("\"")[0];
-                String parentGitImgUrl = IMG_GUIDES + file.getParent().split(TEMP_DIR)[1];
-                // remove img variable already there.
-                String newFrontMatterContent = frontMatterContent
-                        .replace(relativeImageUrl, parentGitImgUrl + "/" + relativeImageUrl);
-
-                // guide variable
-                String guide = FRONT_MATTER_GUIDE_VAR.replace(GUIDE_URL, getGuideUrl(file));
-
-                readMeFileContent = readMeFileContent.replace(frontMatterContent,
-                        newFrontMatterContent + INTRO_FRONT_MATTER_TYPE + NEW_LINE
-                                + INTRO_FRONT_MATTER_LAYOUT + NEW_LINE + guide + NEW_LINE);
-            }
-
             IOUtils.write(readMeFileContent, new FileOutputStream(file), String.valueOf(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new ServiceException("Could not find the README.md file: " + file.getPath(), e);
@@ -183,8 +149,11 @@ public class SiteBuilder {
     private static void renameReadmeFile(File file) {
         if (file.getName().equals(README_MD)) {
             String mdFileName = file.getParent() + "/" + getCurrentDirectoryName(file.getParent()) + ".md";
-            if (!file.renameTo(new File(mdFileName))) {
-                throw new ServiceException("Renaming README.md failed. file:" + file.getPath());
+            // If directory name is "tempDirectory", not renaming the file.
+            if (!mdFileName.contains(TEMP_DIR_MD)) {
+                if (!file.renameTo(new File(mdFileName))) {
+                    throw new ServiceException("Renaming README.md failed. file:" + file.getPath());
+                }
             }
         }
     }
@@ -255,13 +224,42 @@ public class SiteBuilder {
                 .replace(INCLUDE_CODE_TAG, EMPTY_STRING).trim();
     }
 
-    /**
-     * Get guide url to include in the intro templates.
-     *
-     * @param file template markdown file
-     * @return particular guide url of the intro template
-     */
-    private static String getGuideUrl(File file) {
-        return "../../" + file.getParent().replace(TEMP_DIR, EMPTY_STRING);
+    private static void DeleteOtherFiles(String directoryPath) {
+        File folder = new File(directoryPath);
+        File[] listOfFiles = folder.listFiles();
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isFile()) {
+                    // Delete not .md files.
+                    if (!FilenameUtils.getExtension(file.getName()).equals(MD_FILE_EXT)) {
+                        if (!file.delete()) {
+                            throw new ServiceException("Error occurred when deleting file. file:" + file.getPath());
+                        }
+                    }
+                } else if (file.isDirectory()) {
+                    DeleteOtherFiles(file.getPath());
+                }
+            }
+        }
+    }
+
+    private static void deleteEmptyDirs(String directoryPath) {
+        File folder = new File(directoryPath);
+        File[] listOfFiles = folder.listFiles();
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isDirectory()) {
+                    if (isDirEmpty(file)) {
+                        if (!file.delete()) {
+                            throw new ServiceException("Error occurred when deleting directory. file:"
+                                    + file.getPath());
+                        }
+                    }
+                    deleteEmptyDirs(file.getPath());
+                }
+            }
+        }
     }
 }
