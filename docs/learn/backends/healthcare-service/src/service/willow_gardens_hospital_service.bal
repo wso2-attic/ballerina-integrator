@@ -14,45 +14,44 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import daos;
 import ballerina/io;
 import ballerina/log;
+
+Doctor doctorWillowGrdn1 = {
+    name: "jared morris",
+    hospital: "willow gardens general hospital",
+    category: "cardiology",
+    availability: "9.00 a.m - 11.00 a.m",
+    fee: 10000
+};
+
+Doctor doctorWillowGrdn2 = {
+    name: "henry foster",
+    hospital: "willow gardens general hospital",
+    category: "paediatric",
+    availability: "8.00 a.m - 10.00 a.m",
+    fee: 10000
+};
+
+HospitalDAO willowGrdnHospitalDao = {
+    doctorsList: [doctorWillowGrdn1, doctorWillowGrdn2],
+    categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
+    patientMap: {},
+    patientRecordMap: {}
+};
 
 @http:ServiceConfig {
     basePath: "/willowogardens/categories"
 }
 service WillowGardensHospitalService on httpListener {
-
-    daos:Doctor doctor1 = {
-        name: "jared morris",
-        hospital: "willow gardens general hospital",
-        category: "cardiology",
-        availability: "9.00 a.m - 11.00 a.m",
-        fee: 10000
-    };
-
-    daos:Doctor doctor2 = {
-        name: "henry foster",
-        hospital: "willow gardens general hospital",
-        category: "paediatric",
-        availability: "8.00 a.m - 10.00 a.m",
-        fee: 10000
-    };
-
-    daos:HospitalDAO clemencyHospitalDao = {
-        doctorsList: [doctor1, doctor2],
-        categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
-        patientMap: {},
-        patientRecordMap: {}
-    };
-
     // Reserve appointment from appointment request.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/{category}/reserve"
     }
     resource function reserveAppointment(http:Caller caller, http:Request req, string category) {
-        reserveAppointment(caller, req, untaint self.clemencyHospitalDao, category);
+        HospitalDAO hospitalDao = <@untainted> willowGrdnHospitalDao;
+        reserveAppointment(caller, req, hospitalDao, category);
     }
 
     // Get appointment for a given appointment number.
@@ -79,7 +78,7 @@ service WillowGardensHospitalService on httpListener {
         path: "/patient/updaterecord"
     }
     resource function updatePatientRecord(http:Caller caller, http:Request req) {
-        updatePatientRecord(caller, req, self.clemencyHospitalDao);
+        updatePatientRecord(caller, req, willowGrdnHospitalDao);
     }
 
     // Get patient record from the given ssn.
@@ -88,7 +87,7 @@ service WillowGardensHospitalService on httpListener {
         path: "/patient/{ssn}/getrecord"
     }
     resource function getPatientRecord(http:Caller caller, http:Request req, string ssn) {
-        getPatientRecord(caller, req, self.clemencyHospitalDao, ssn);
+        getPatientRecord(caller, req, willowGrdnHospitalDao, ssn);
     }
 
     // Check whether patient in the appoinment eligible for discounts.
@@ -106,6 +105,7 @@ service WillowGardensHospitalService on httpListener {
         path: "/admin/doctor/newdoctor"
     }
     resource function addNewDoctor(http:Caller caller, http:Request req) {
-        addNewDoctor(caller, req, untaint self.clemencyHospitalDao);
+        HospitalDAO hospitalDao = <@untainted> willowGrdnHospitalDao;
+        addNewDoctor(caller, req, hospitalDao);
     }
 }

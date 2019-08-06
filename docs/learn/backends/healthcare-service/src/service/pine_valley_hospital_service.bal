@@ -14,45 +14,44 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import daos;
 import ballerina/io;
 import ballerina/log;
+
+Doctor doctorPineValley1 = {
+    name: "seth mears",
+    hospital: "pine valley community hospital",
+    category: "surgery",
+    availability: "3.00 p.m - 5.00 p.m",
+    fee: 8000
+};
+
+Doctor doctorPineValley2 = {
+    name: "emeline fulton",
+    hospital: "pine valley community hospital",
+    category: "cardiology",
+    availability: "8.00 a.m - 10.00 a.m",
+    fee: 4000
+};
+
+HospitalDAO pineValleyHospitalDao = {
+    doctorsList: [doctorPineValley1, doctorPineValley2],
+    categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
+    patientMap: {},
+    patientRecordMap: {}
+};
 
 @http:ServiceConfig {
     basePath: "/pinevalley/categories"
 }
 service PineValleyHospitalService on httpListener {
-
-    daos:Doctor doctor1 = {
-        name: "seth mears",
-        hospital: "pine valley community hospital",
-        category: "surgery",
-        availability: "3.00 p.m - 5.00 p.m",
-        fee: 8000
-    };
-
-    daos:Doctor doctor2 = {
-        name: "emeline fulton",
-        hospital: "pine valley community hospital",
-        category: "cardiology",
-        availability: "8.00 a.m - 10.00 a.m",
-        fee: 4000
-    };
-
-    daos:HospitalDAO clemencyHospitalDao = {
-        doctorsList: [doctor1, doctor2],
-        categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
-        patientMap: {},
-        patientRecordMap: {}
-    };
-
     // Reserve appointment from appointment request.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/{category}/reserve"
     }
     resource function reserveAppointment(http:Caller caller, http:Request req, string category) {
-        reserveAppointment(caller, req, untaint self.clemencyHospitalDao, category);
+        HospitalDAO hospitalDao = <@untainted> pineValleyHospitalDao;
+        reserveAppointment(caller, req, hospitalDao, category);
     }
 
     // Get appointment for a given appointment number.
@@ -79,7 +78,7 @@ service PineValleyHospitalService on httpListener {
         path: "/patient/updaterecord"
     }
     resource function updatePatientRecord(http:Caller caller, http:Request req) {
-        updatePatientRecord(caller, req, self.clemencyHospitalDao);
+        updatePatientRecord(caller, req, pineValleyHospitalDao);
     }
 
     // Get patient record from the given ssn.
@@ -88,7 +87,7 @@ service PineValleyHospitalService on httpListener {
         path: "/patient/{ssn}/getrecord"
     }
     resource function getPatientRecord(http:Caller caller, http:Request req, string ssn) {
-        getPatientRecord(caller, req, self.clemencyHospitalDao, ssn);
+        getPatientRecord(caller, req, pineValleyHospitalDao, ssn);
     }
 
     // Check whether patient in the appoinment eligible for discounts.
@@ -106,6 +105,7 @@ service PineValleyHospitalService on httpListener {
         path: "/admin/doctor/newdoctor"
     }
     resource function addNewDoctor(http:Caller caller, http:Request req) {
-        addNewDoctor(caller, req, untaint self.clemencyHospitalDao);
+        HospitalDAO hospitalDao = <@untainted> pineValleyHospitalDao;
+        addNewDoctor(caller, req, hospitalDao);
     }
 }

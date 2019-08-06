@@ -5,7 +5,8 @@ The main service through which all the healthcare calls go through.
 
 Base path of the healthcare service : `/healthcare`
 
-Holds a record called `healthcareDAO` which contains all the __doctor lists__ from each hospital, the available __categories__ and __payments__. It also holds a map of all the __appointments__ that are placed 
+Holds a record called `healthcareDAO` which contains all the __doctor lists__ from each hospital, the available 
+__categories__ and __payments__. It also holds a map of all the __appointments__ that are placed 
 
 ### Service Endpoints
 - Get Doctors
@@ -98,4 +99,4 @@ Contains the common utility functions that hostpital_service.bal uses
 - Check Discount Eligibility
 
 - Check Appointment Id 
-
+  
