@@ -16,51 +16,50 @@
 
 import ballerina/io;
 import ballerina/log;
-import daos;
+
+Doctor doctorClemency1 = {
+    name: "anne clement",
+    hospital: "clemency medical center",
+    category: "surgery",
+    availability: "8.00 a.m - 10.00 a.m",
+    fee: 12000
+};
+
+Doctor doctorClemency2 = {
+    name: "thomas kirk",
+    hospital: "clemency medical center",
+    category: "gynaecology",
+    availability: "9.00 a.m - 11.00 a.m",
+    fee: 8000
+};
+
+Doctor doctorClemency3 = {
+    name: "cailen cooper",
+    hospital: "clemency medical center",
+    category: "paediatric",
+    availability: "9.00 a.m - 11.00 a.m",
+    fee: 5500
+};
+
+HospitalDAO clemencyHospitalDao = {
+    doctorsList: [doctorClemency1, doctorClemency2, doctorClemency3],
+    categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
+    patientMap: {},
+    patientRecordMap: {}
+};
 
 @http:ServiceConfig {
     basePath: "/clemency/categories"
 }
 service ClemencyHospitalService on httpListener {
-
-    daos:Doctor doctor1 = {
-        name: "anne clement",
-        hospital: "clemency medical center",
-        category: "surgery",
-        availability: "8.00 a.m - 10.00 a.m",
-        fee: 12000
-    };
-
-    daos:Doctor doctor2 = {
-        name: "thomas kirk",
-        hospital: "clemency medical center",
-        category: "gynaecology",
-        availability: "9.00 a.m - 11.00 a.m",
-        fee: 8000
-    };
-
-    daos:Doctor doctor3 = {
-        name: "cailen cooper",
-        hospital: "clemency medical center",
-        category: "paediatric",
-        availability: "9.00 a.m - 11.00 a.m",
-        fee: 5500
-    };
-
-    daos:HospitalDAO clemencyHospitalDao = {
-        doctorsList: [doctor1, doctor2, doctor3],
-        categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
-        patientMap: {},
-        patientRecordMap: {}
-    };
-
     // Reserve appointment from appointment request.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/{category}/reserve"
     }
     resource function reserveAppointment(http:Caller caller, http:Request req, string category) {
-        reserveAppointment(caller, req, untaint self.clemencyHospitalDao, category);
+        HospitalDAO hospitalDao = <@untainted> clemencyHospitalDao;
+        reserveAppointment(caller, req, hospitalDao, category);
     }
 
     // Get appointment for a given appointment number.
@@ -87,7 +86,7 @@ service ClemencyHospitalService on httpListener {
         path: "/patient/updaterecord"
     }
     resource function updatePatientRecord(http:Caller caller, http:Request req) {
-        updatePatientRecord(caller, req, self.clemencyHospitalDao);
+        updatePatientRecord(caller, req, clemencyHospitalDao);
     }
 
     // Get patient record from the given ssn.
@@ -96,7 +95,7 @@ service ClemencyHospitalService on httpListener {
         path: "/patient/{ssn}/getrecord"
     }
     resource function getPatientRecord(http:Caller caller, http:Request req, string ssn) {
-        getPatientRecord(caller, req, self.clemencyHospitalDao, ssn);
+        getPatientRecord(caller, req, clemencyHospitalDao, ssn);
     }
 
     // Check whether patient in the appoinment eligible for discounts.
@@ -114,6 +113,7 @@ service ClemencyHospitalService on httpListener {
         path: "/admin/doctor/newdoctor"
     }
     resource function addNewDoctor(http:Caller caller, http:Request req) {
-        addNewDoctor(caller, req, untaint self.clemencyHospitalDao);
+        HospitalDAO hospitalDao = <@untainted> clemencyHospitalDao;
+        addNewDoctor(caller, req, hospitalDao);
     }
 }

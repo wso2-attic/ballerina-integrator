@@ -85,7 +85,7 @@ public function findDoctorByCategoryFromHealthcareDao(HealthcareDao healthcareDa
             returns Doctor[] {
     Doctor[] list = [];
     foreach var doctor in healthcareDao.doctorsList {
-        if (category.equalsIgnoreCase(doctor.category)){
+        if (equalsIgnoreCase(category, doctor.category)){
             list[list.length()] = doctor;     
         }
     }
@@ -100,7 +100,7 @@ public function findDoctorByCategoryFromHealthcareDao(HealthcareDao healthcareDa
 public function findDoctorByNameFromHelathcareDao(HealthcareDao healthcareDao, string name) 
         returns Doctor|DoctorNotFoundError {
     foreach var doctor in healthcareDao.doctorsList {
-        if (name.equalsIgnoreCase(doctor.name)) {
+        if (equalsIgnoreCase(name, doctor.name)) {
             return doctor;
         }
     }

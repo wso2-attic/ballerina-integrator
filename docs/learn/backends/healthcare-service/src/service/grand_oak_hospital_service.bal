@@ -16,59 +16,58 @@
 
 import ballerina/io;
 import ballerina/log;
-import daos;
+
+Doctor doctorGrandOak1 = {
+    name: "thomas collins",
+    hospital: "grand oak community hospital",
+    category: "surgery",
+    availability: "9.00 a.m - 11.00 a.m",
+    fee: 7000
+};
+
+Doctor doctorGrandOak2 = {
+    name: "henry parker",
+    hospital: "grand oak community hospital",
+    category: "ent",
+    availability: "9.00 a.m - 11.00 a.m",
+    fee: 4500
+};
+
+Doctor doctorGrandOak3 = {
+    name: "abner jones",
+    hospital: "grand oak community hospital",
+    category: "gynaecology",
+    availability: "8.00 a.m - 10.00 a.m",
+    fee: 11000
+};
+
+Doctor doctorGrandOak4 = {
+    name: "abner jones",
+    hospital: "grand oak community hospital",
+    category: "ent",
+    availability: "8.00 a.m - 10.00 a.m",
+    fee: 6750
+};
+
+HospitalDAO grandOakHospitalDao = {
+    doctorsList: [doctorGrandOak1, doctorGrandOak2, doctorGrandOak3, doctorGrandOak4],
+    categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
+    patientMap: {},
+    patientRecordMap: {}
+};
 
 @http:ServiceConfig {
     basePath: "/grandoaks/categories"
 }
 service GrandOakHospitalService on httpListener {
-
-    daos:Doctor doctor1 = {
-        name: "thomas collins",
-        hospital: "grand oak community hospital",
-        category: "surgery",
-        availability: "9.00 a.m - 11.00 a.m",
-        fee: 7000
-    };
-
-    daos:Doctor doctor2 = {
-        name: "henry parker",
-        hospital: "grand oak community hospital",
-        category: "ent",
-        availability: "9.00 a.m - 11.00 a.m",
-        fee: 4500
-    };
-
-    daos:Doctor doctor3 = {
-        name: "abner jones",
-        hospital: "grand oak community hospital",
-        category: "gynaecology",
-        availability: "8.00 a.m - 10.00 a.m",
-        fee: 11000
-    };
-
-    daos:Doctor doctor4 = {
-        name: "abner jones",
-        hospital: "grand oak community hospital",
-        category: "ent",
-        availability: "8.00 a.m - 10.00 a.m",
-        fee: 6750
-    };
-
-    daos:HospitalDAO clemencyHospitalDao = {
-        doctorsList: [doctor1, doctor2, doctor3, doctor4],
-        categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
-        patientMap: {},
-        patientRecordMap: {}
-    };
-
     // Reserve appointment from appointment request.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/{category}/reserve"
     }
     resource function reserveAppointment(http:Caller caller, http:Request req, string category) {
-        reserveAppointment(caller, req, untaint self.clemencyHospitalDao, category);
+        HospitalDAO hospitalDao = <@untainted> grandOakHospitalDao;
+        reserveAppointment(caller, req, hospitalDao, category);
     }
 
     // Get appointment for a given appointment number.
@@ -95,7 +94,7 @@ service GrandOakHospitalService on httpListener {
         path: "/patient/updaterecord"
     }
     resource function updatePatientRecord(http:Caller caller, http:Request req) {
-        updatePatientRecord(caller, req, self.clemencyHospitalDao);
+        updatePatientRecord(caller, req, grandOakHospitalDao);
     }
 
     // Get patient record from the given ssn.
@@ -104,7 +103,7 @@ service GrandOakHospitalService on httpListener {
         path: "/patient/{ssn}/getrecord"
     }
     resource function getPatientRecord(http:Caller caller, http:Request req, string ssn) {
-        getPatientRecord(caller, req, self.clemencyHospitalDao, ssn);
+        getPatientRecord(caller, req, grandOakHospitalDao, ssn);
     }
 
     // Check whether patient in the appoinment eligible for discounts.
@@ -122,6 +121,7 @@ service GrandOakHospitalService on httpListener {
         path: "/admin/doctor/newdoctor"
     }
     resource function addNewDoctor(http:Caller caller, http:Request req) {
-        addNewDoctor(caller, req, untaint self.clemencyHospitalDao);
+        HospitalDAO hospitalDao = <@untainted> grandOakHospitalDao;
+        addNewDoctor(caller, req, hospitalDao);
     }
 }

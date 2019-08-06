@@ -14,11 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import daos;
 import ballerina/http;
 import ballerina/system;
 import ballerina/time;
 import ballerina/log;
+import ballerinax/java;
+import ballerina/'lang\.int as ints;
 
 // Initialize appoint number as 1.
 int appointmentNo = 1;
@@ -32,7 +33,7 @@ type CannotConvertError error<string>;
 # + statusCode - status code of the response
 public function sendResponse(http:Caller caller, json|string payload, int statusCode = 200) {
     http:Response response = new;
-    response.setPayload(untaint payload);
+    response.setPayload(<@untainted> payload);
     response.statusCode = statusCode;
     var result = caller->respond(response);
     if (result is error) {
@@ -47,7 +48,7 @@ public function sendResponse(http:Caller caller, json|string payload, int status
 # + return - given string is contains in the array
 public function containsStringElement(string[] arr, string element) returns boolean {
     foreach var item in arr {
-        if (item.equalsIgnoreCase(element)) {
+        if (equalsIgnoreCase(item, element)) {
             return true;
         }
     }
@@ -59,12 +60,12 @@ public function containsStringElement(string[] arr, string element) returns bool
 # + patientRecordMap - patientRecord map 
 # + ssn - ssn want to check
 # + return - given ssn is contains in the patientRecord map
-public function containsInPatientRecordMap(map<daos:PatientRecord> patientRecordMap, string ssn) returns boolean {
-    foreach (string, daos:PatientRecord) (k, v) in patientRecordMap {
-        daos:Patient patient = <daos:Patient> v["patient"];
-        if (<boolean>patient["ssn"].equalsIgnoreCase(ssn)) {
+public function containsInPatientRecordMap(map<PatientRecord> patientRecordMap, string ssn) returns boolean {
+    foreach PatientRecord pRecord in patientRecordMap {
+        Patient patient = <Patient> pRecord["patient"];
+        if (equalsIgnoreCase(patient["ssn"], ssn)) {
             return true;
-        }
+        }    
     }
     return false;
 }
@@ -86,16 +87,16 @@ public function convertJsonToStringArray(json[] array) returns string[] {
 # + paymentSettlement - paymentSettlement record
 # + healthcareDao - healthcareDAO record
 # + return - Payment record created | error
-public function createNewPaymentEntry(daos:PaymentSettlement paymentSettlement, daos:HealthcareDao healthcareDao) 
-                                            returns daos:Payment|error {
+public function createNewPaymentEntry(PaymentSettlement paymentSettlement, HealthcareDao healthcareDao) 
+                                            returns Payment|error {
     int|error discount = checkForDiscounts(<string>paymentSettlement["patient"]["dob"]);
     if(discount is int) {
         string doctorName = <string>paymentSettlement["doctor"]["name"];
-        daos:Doctor|error doctor = daos:findDoctorByNameFromHelathcareDao(healthcareDao, doctorName);
-        if(doctor is daos:Doctor){
+        Doctor|error doctor = findDoctorByNameFromHelathcareDao(healthcareDao, doctorName);
+        if(doctor is Doctor){
             float discounted = (<float>doctor["fee"] / 100) * (100 - discount);
 
-            daos:Payment payment = {
+            Payment payment = {
                 appointmentNo: <int>paymentSettlement["appointmentNumber"],
                 doctorName: <string>paymentSettlement["doctor"]["name"],
                 patient: <string>paymentSettlement["patient"]["name"],
@@ -119,13 +120,13 @@ public function createNewPaymentEntry(daos:PaymentSettlement paymentSettlement, 
 # + appointmentRequest - appointmentRequest record
 # + hospitalDao - hospitalDAO record
 # + return - appointment created | doctor not found error
-public function makeNewAppointment(daos:AppointmentRequest appointmentRequest, daos:HospitalDAO hospitalDao) 
-                                            returns daos:Appointment | daos:DoctorNotFoundError {
-    var doc = daos:findDoctorByName(hospitalDao, appointmentRequest.doctor);
-    if (doc is daos:DoctorNotFoundError) {
+public function makeNewAppointment(AppointmentRequest appointmentRequest, HospitalDAO hospitalDao) 
+                                            returns Appointment | DoctorNotFoundError {
+    var doc = findDoctorByName(hospitalDao, appointmentRequest.doctor);
+    if (doc is DoctorNotFoundError) {
         return doc;
     } else {
-        daos:Appointment appointment = {
+        Appointment appointment = {
             appointmentNumber: appointmentNo,
             doctor: doc,
             patient: appointmentRequest.patient,
@@ -143,20 +144,28 @@ public function makeNewAppointment(daos:AppointmentRequest appointmentRequest, d
 # + dob - date of birth as a string in yyyy-MM-dd format 
 # + return - discount value
 public function checkForDiscounts(string dob) returns int|error {
-    int|error yob = int.convert(dob.split("-")[0]);
-    if(yob is int) {
-        int currentYear = time:getYear(time:currentTime());
-        int age = currentYear - yob;
-        if (age < 12) {
-            return 15;
-        } else if (age > 55) {
-            return 20;
+    handle result = split(java:fromString(dob), java:fromString("-"));
+    string? yobStr = java:toString(java:getArrayElement(result, 0));
+
+    if (yobStr is string) {
+        int|error yob = ints:fromString(yobStr);
+        if(yob is int) {
+            int currentYear = time:getYear(time:currentTime());
+            int age = currentYear - yob;
+            if (age < 12) {
+                return 15;
+            } else if (age > 55) {
+                return 20;
+            } else {
+                return 0;
+            }
         } else {
-            return 0;
+            CannotConvertError err = error("Invalid Date of birth:" + dob);
+            return err;
         }
     } else {
-        CannotConvertError err = error("Invalid Date of birth:" + dob);
-        return err;
+        CannotConvertError err = error("Invalid Date of birth: yobStr is ().");
+        return err;  
     }
 }
 
@@ -165,19 +174,27 @@ public function checkForDiscounts(string dob) returns int|error {
 # + dob - date of birth as a string in yyyy-MM-dd format 
 # + return - eligibity for discounts | error
 public function checkDiscountEligibility(string dob) returns boolean | error {
-    var yob = int.convert(dob.split("-")[0]);
-    if (yob is int) {
-        int currentYear = time:getYear(time:currentTime());
-        int age = currentYear - yob;
+    handle result = split(java:fromString(dob), java:fromString("-"));
+    string? dobStr = java:toString(java:getArrayElement(result, 0));
 
-        if (age < 12 || age > 55) {
-            return true;
+    if (dobStr is string) {
+    int|error yob = ints:fromString(dobStr);
+        if (yob is int) {
+            int currentYear = time:getYear(time:currentTime());
+            int age = currentYear - yob;
+
+            if (age < 12 || age > 55) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            log:printError("Error occurred when converting string dob year to int.", err = ());
+            return yob;
         }
     } else {
-        log:printError("Error occurred when converting string dob year to int.", err = ());
-        return yob;
+        CannotConvertError err = error("Invalid Date of birth: dobStr is ().");
+        return err; 
     }
 }
 
@@ -186,11 +203,37 @@ public function checkDiscountEligibility(string dob) returns boolean | error {
 # + appointmentsMap - appointments map of the hospital
 # + id - appointment id 
 # + return - appointment contains in the appointments map
-public function containsAppointmentId(map<daos:Appointment> appointmentsMap, string id) returns boolean {
-    foreach (string, daos:Appointment) (k, v) in appointmentsMap {
-        if (k.equalsIgnoreCase(id)) {
+public function containsAppointmentId(map<Appointment> appointmentsMap, string id) returns boolean {
+    foreach Appointment appointment in appointmentsMap {
+        if (equalsIgnoreCase(appointment["appointmentNumber"].toString(), id)) {
             return true;
         }
     }
     return false;
+}
+
+# Convert string to boolean
+# + value - string value
+# + return - converted boolean
+function getBooleanValue(string value) returns boolean {
+    if (value == "true") {
+        return true;
+    } else if (value == "false") {
+        return false;
+    } else {
+        log:printError("Invalid boolean value, string value='" + value + "' ", err = ());
+        return false;
+    }
+}
+
+# Check whether given two strings are equal without considering the case.
+# + str1 - first string
+# + str2 - second string
+# + return - is two strings equal without considering the case
+function equalsIgnoreCase(string str1, string str2) returns boolean {
+    if (str1.toUpperAscii() == str2.toUpperAscii()) {
+        return true;
+    } else {
+        return false;
+    }
 }

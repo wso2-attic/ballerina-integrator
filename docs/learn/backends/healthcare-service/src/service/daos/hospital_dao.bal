@@ -152,7 +152,7 @@ public function updateSymptomsInPatientRecord(PatientRecord patientRecord, strin
 public function findDoctorByCategory(HospitalDAO hospitalDao, string category) returns Doctor[] {
     Doctor[] list = [];
     foreach Doctor doctor in hospitalDao.doctorsList {
-        if (category.equalsIgnoreCase(doctor.category)) {
+        if (equalsIgnoreCase(category, doctor.category)) {
             list[list.length()] = doctor;
         }
     }
@@ -166,7 +166,7 @@ public function findDoctorByCategory(HospitalDAO hospitalDao, string category) r
 # + return - doctor name matching to the given name | doctor not found error
 public function findDoctorByName(HospitalDAO hospitalDao, string name) returns Doctor | DoctorNotFoundError {
     foreach var doctor in hospitalDao.doctorsList {
-        if (name.equalsIgnoreCase(doctor.name)) {
+        if (equalsIgnoreCase(name, doctor.name)) {
             return doctor;
         }
     }

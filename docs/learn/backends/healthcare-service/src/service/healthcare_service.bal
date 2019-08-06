@@ -18,45 +18,36 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/log;
 import ballerina/time;
-import daos;
-import util;
 
 listener http:Listener httpListener = new(9095);
+
+// Create health care DAO record.
+HealthcareDao healthcareDao = {
+    doctorsList: [
+        doctorClemency1, 
+        doctorClemency2, 
+        doctorClemency3,
+        doctorGrandOak1, 
+        doctorGrandOak2, 
+        doctorGrandOak3,
+        doctorGrandOak4, 
+        doctorPineValley1, 
+        doctorPineValley2,
+        doctorWillowGrdn1, 
+        doctorWillowGrdn2
+    ],
+    categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
+    payments: {}
+};
+
+// Initialize appointments map.
+map<Appointment> appointments = {};
 
 // Healthcare REST service.
 @http:ServiceConfig {
     basePath: "/healthcare"
 }
 service HealthcareService on httpListener {
-
-    // Create hospital services.
-    ClemencyHospitalService clemency = new;
-    GrandOakHospitalService grandoaks = new;
-    PineValleyHospitalService pinevalley = new;
-    WillowGardensHospitalService willowgarden = new;
-
-    // Create health care DAO record.
-    daos:HealthcareDao healthcareDao = {
-        doctorsList: [
-            clemency.doctor1, 
-            clemency.doctor2, 
-            clemency.doctor3,
-            grandoaks.doctor1, 
-            grandoaks.doctor2, 
-            grandoaks.doctor3,
-            grandoaks.doctor4, 
-            pinevalley.doctor1, 
-            pinevalley.doctor2,
-            willowgarden.doctor1, 
-            willowgarden.doctor2
-        ],
-        categories: ["surgery", "cardiology", "gynaecology", "ent", "paediatric"],
-        payments: {}
-    };
-
-    // Initialize appointments map.
-    map<daos:Appointment> appointments = {};
-
     // Get doctors for a given category.
     @http:ResourceConfig {
         methods: ["GET"],
@@ -64,20 +55,19 @@ service HealthcareService on httpListener {
     }
     resource function getDoctors(http:Caller caller, http:Request req, string category) {
         // Get doctors for a given category from healthcare DAO.
-        daos:Doctor[] stock = daos:findDoctorByCategoryFromHealthcareDao(self.healthcareDao, category);
+        Doctor[] stock = findDoctorByCategoryFromHealthcareDao(healthcareDao, category);
 
         if(stock.length() > 0) {
             // Convert doctors record array to json.
-            json|error payload = json.convert(stock);
+            json|error payload = json.constructFrom(stock);
             if (payload is json) {
-                util:sendResponse(caller, payload);
+                sendResponse(caller, payload);
             } else {
                 log:printError("Error occurred when converting appointment record to JSON.", err = payload);
-                util:sendResponse(caller, json.convert("Internal error occurred."), 
-                                                                statusCode = http:INTERNAL_SERVER_ERROR_500);
+                sendResponse(caller, "Internal error occurred.", statusCode = http:STATUS_INTERNAL_SERVER_ERROR);
             }
         } else {
-            util:sendResponse(caller, "Could not find any entry for the requested Category.");
+            sendResponse(caller, "Could not find any entry for the requested Category.");
         }
     }
 
@@ -88,22 +78,21 @@ service HealthcareService on httpListener {
     }
     resource function getAppointment(http:Caller caller, http:Request req, int appointmentId) {
         // Get appointment from appointments map.
-        daos:Appointment? appointment = self.appointments[string.convert(appointmentId)];
+        Appointment? appointment = appointments[appointmentId.toString()];
 
-        if (appointment is daos:Appointment) {
-            json|error payload = json.convert(appointment);
+        if (appointment is Appointment) {
+            json|error payload = json.constructFrom(appointment);
             if (payload is json) {
-                util:sendResponse(caller, payload);
+                sendResponse(caller, payload);
             } else {
                 log:printError("Error occurred when converting appointment record to JSON.", err = payload);
-                util:sendResponse(caller, json.convert("Internal error occurred."), 
-                                                                statusCode = http:INTERNAL_SERVER_ERROR_500);
+                sendResponse(caller, "Internal error occurred.", statusCode = http:STATUS_INTERNAL_SERVER_ERROR);
             }
         } else {
             log:printInfo("User error in getAppointment, There is no appointment with appointment number " 
-                                                                                        + appointmentId);
-            util:sendResponse(caller, "Error. There is no appointment with appointment number " + appointmentId, 
-                                                                                        statusCode = 400);
+                + appointmentId.toString());
+            sendResponse(caller, "Error. There is no appointment with appointment number " + appointmentId.toString(), 
+                statusCode = http:STATUS_BAD_REQUEST);
         }
     }
 
@@ -114,24 +103,24 @@ service HealthcareService on httpListener {
     }
     resource function getAppointmentValidityTime(http:Caller caller, http:Request req, string appointmentId) {
         // Get appointment from appointments map.
-        daos:Appointment? appointment = self.appointments[appointmentId];
+        Appointment? appointment = appointments[appointmentId];
         int diffDays = 0;
 
-        if (appointment is daos:Appointment) {
+        if (appointment is Appointment) {
             var date = time:parse(<string>appointment["appointmentDate"], "yyyy-MM-dd");
             if (date is time:Time) {
                 time:Time today = time:currentTime();
                 // Get no of days remaining for the appointment.
                 diffDays = (date.time - today.time) / (24 * 60 * 60 * 1000);
-                util:sendResponse(caller, diffDays);
+                sendResponse(caller, diffDays);
             } else {
                 log:printError("Invalid date in the appointent with ID: " + appointmentId, err = date);
-                util:sendResponse(caller, "Internal error occurred.", statusCode = http:INTERNAL_SERVER_ERROR_500);
+                sendResponse(caller, "Internal error occurred.", statusCode = http:STATUS_INTERNAL_SERVER_ERROR);
             }
         } else {
             log:printInfo("User error in getAppointment: There is no appointment with appointment number " 
                                                                                             + appointmentId);
-            util:sendResponse(caller, "Error.Could not Find the Requested appointment ID", statusCode = 400);
+            sendResponse(caller, "Error.Could not Find the Requested appointment ID", statusCode = http:STATUS_BAD_REQUEST);
         }
     }
 
@@ -141,12 +130,11 @@ service HealthcareService on httpListener {
         path: "/appointments/{appointmentId}"
     }
     resource function removeAppointment(http:Caller caller, http:Request req, string appointmentId) {
-        if(self.appointments.remove(appointmentId)) {
-            util:sendResponse(caller, "Appointment is successfully removed.");
+        if(appointments.hasKey(appointmentId)) {
+            Appointment app = appointments.remove(appointmentId);
+            sendResponse(caller, "Appointment is successfully removed.");
         } else {
-            log:printInfo("Failed to remove appoitment with appointment number " + appointmentId);
-            util:sendResponse(caller, "Failed to remove appoitment with appointment number " + appointmentId, 
-                                                                                        statusCode = 400);
+            sendResponse(caller, "Invalid appointment number " + appointmentId, statusCode = http:STATUS_BAD_REQUEST);
         }
     }
 
@@ -159,44 +147,43 @@ service HealthcareService on httpListener {
         var paymentSettlementDetails = req.getJsonPayload();
 
         if (paymentSettlementDetails is json) {
-            daos:PaymentSettlement|error paymentSettlement = 
-                                                daos:PaymentSettlement.convert(paymentSettlementDetails);
+            PaymentSettlement|error paymentSettlement = 
+                PaymentSettlement.constructFrom(paymentSettlementDetails);
 
-            if(paymentSettlement is daos:PaymentSettlement) {
-                string appointmentNo = string.convert(paymentSettlement.appointmentNumber);
-                if(util:containsAppointmentId(self.appointments, appointmentNo)) {
+            if(paymentSettlement is PaymentSettlement) {
+                string appointmentNo = paymentSettlement.appointmentNumber.toString();
+                if(containsAppointmentId(appointments, appointmentNo)) {
                     // Create new payment entry for the appointment.
-                    daos:Payment|error payment = 
-                            util:createNewPaymentEntry(paymentSettlement, untaint self.healthcareDao);
+                    Payment|error payment = 
+                            createNewPaymentEntry(paymentSettlement, <@untainted> healthcareDao);
 
-                    if(payment is daos:Payment) {
+                    if(payment is Payment) {
                         // Make payment status `Settled`.
                         payment["status"] = "Settled";
-                        self.healthcareDao["payments"][<string>payment["paymentID"]] = payment;
+                        healthcareDao["payments"][<string>payment["paymentID"]] = payment;
                         json payload = {
                             status: "success",
                             paymentId: <string>payment["paymentID"]
                         };
                         // Make appointment confirmed `true`.
-                        self.appointments[appointmentNo].confirmed = true;
-                        util:sendResponse(caller, payload);
+                        appointments[appointmentNo].confirmed = true;
+                        sendResponse(caller, payload);
                     } else {
                         log:printError("User error Invalid payload recieved, payload: ", err = payment);
-                        util:sendResponse(caller, "Invalid payload recieved, " + payment.reason(), 
-                                                                                        statusCode = 400);
+                        sendResponse(caller, "Invalid payload recieved, " + payment.reason(), 
+                            statusCode = http:STATUS_BAD_REQUEST);
                     }
                 } else {
                     log:printError("Could not Find the Requested appointment ID: " + appointmentNo);
-                    util:sendResponse(caller, "Error. Could not Find the Requested appointment ID.", 
-                                                                                        statusCode = 400);
+                    sendResponse(caller, "Could not Find the Requested appointment ID.", 
+                        statusCode = http:STATUS_BAD_REQUEST);
                 }
             } else {
-                log:printError("Could not convert recieved payload to PaymentSettlement.", 
-                                                                                err = paymentSettlement);
-                util:sendResponse(caller, "Invalid payload received", statusCode = 400);
+                log:printError("Could not convert recieved payload to PaymentSettlement.", err = paymentSettlement);
+                sendResponse(caller, "Invalid payload received", statusCode = http:STATUS_BAD_REQUEST);
             }
         } else {
-            util:sendResponse(caller, "Invalid payload received", statusCode = 400);
+            sendResponse(caller, "Invalid payload received", statusCode = http:STATUS_BAD_REQUEST);
         }
     }
 
@@ -207,19 +194,19 @@ service HealthcareService on httpListener {
     }
     resource function getPaymentDetails(http:Caller caller, http:Request req, string paymentId) {
         // Get the payment record from healthcare DAO payments map. 
-        var payment = self.healthcareDao["payments"][paymentId];
+        var payment = healthcareDao["payments"][paymentId];
 
-        if (payment is daos:Payment) {
-            json|error payload = json.convert(payment);
+        if (payment is Payment) {
+            json|error payload = json.constructFrom(payment);
             if (payload is json) {
-                util:sendResponse(caller, payload);
+                sendResponse(caller, payload);
             } else {
                 log:printError("Error occurred getPaymentDetails when converting Payment to JSON.", err = payload);
-                util:sendResponse(caller, "Intrenal error occurred.", statusCode = http:INTERNAL_SERVER_ERROR_500);
+                sendResponse(caller, "Intrenal error occurred.", statusCode = http:STATUS_INTERNAL_SERVER_ERROR);
             }
         } else {
             log:printInfo("User error in getPaymentDetails, Invalid payment id provided: " + paymentId);
-            util:sendResponse(caller, "Invalid payment id provided", statusCode = 400);
+            sendResponse(caller, "Invalid payment id provided", statusCode = http:STATUS_BAD_REQUEST);
         }
     }
 
@@ -233,34 +220,34 @@ service HealthcareService on httpListener {
 
         if (doctorDetails is json) {
             // Create doctor record from request payload.
-            daos:Doctor|error doc = daos:Doctor.convert(doctorDetails);
+            Doctor|error doc = Doctor.constructFrom(doctorDetails);
 
-            if(doc is daos:Doctor) {
+            if(doc is Doctor) {
                 string category = <string>doc["category"];
                 // If new doctor's category is not exists in hospital categories add it to it.
-                if (!util:containsStringElement(<string[]>self.healthcareDao["categories"], category)) {
-                    string[] a = <string[]>self.healthcareDao["categories"];
+                if (!containsStringElement(<string[]>healthcareDao["categories"], category)) {
+                    string[] a = <string[]>healthcareDao["categories"];
                     a[a.length()] = category;
-                    self.healthcareDao["categories"] = a;
+                    healthcareDao["categories"] = a;
                 }
 
                 // Check whether same doctor already added.
-                var doctor = daos:findDoctorByNameFromHelathcareDao(untaint self.healthcareDao, 
+                var doctor = findDoctorByNameFromHelathcareDao(<@untainted> healthcareDao, 
                                                                                 <string>doc["name"]);
-                if (doctor is daos:Doctor) {
+                if (doctor is Doctor) {
                     log:printInfo("User error in addNewDoctor, Doctor Already Exists in the system.");
-                    util:sendResponse(caller, "Doctor Already Exist in the system", statusCode = 400);
+                    sendResponse(caller, "Doctor Already Exist in the system", statusCode = http:STATUS_BAD_REQUEST);
                 } else {
                     // Add new doctor to the hospital.
-                    self.healthcareDao["doctorsList"][<int>self.healthcareDao["doctorsList"].length()] = doc;
-                    util:sendResponse(caller, "New Doctor Added Successfully.");
+                    healthcareDao["doctorsList"][<int>healthcareDao["doctorsList"].length()] = doc;
+                    sendResponse(caller, "New Doctor Added Successfully.");
                 }
             } else {
                 log:printError("Could not convert recieved payload to Doctor record.", err = doc);
-                util:sendResponse(caller, "Invalid payload received", statusCode = 400);
+                sendResponse(caller, "Invalid payload received", statusCode = http:STATUS_BAD_REQUEST);
             }
         } else {
-            util:sendResponse(caller, "Invalid payload received", statusCode = 400);
+            sendResponse(caller, "Invalid payload received", statusCode = http:STATUS_BAD_REQUEST);
         }
     }
 }
