@@ -294,12 +294,12 @@ function onDeactivate(MessageForwardingProcessor processor) returns function() {
 # + maxRedeliveryAttempts - Max number of times a message should be re-tried in case of forwading failure 
 # + forwardingFailAction - Action to take when a message is failed to forward. `MessageForwardFailAction`
 #                          `DROP` - drop message and continue (default)
-#                          `DLCSTORE`- store message in configured  `DLCStore` 
+#                          `DLC_STORE`- store message in configured  `DLCStore`
 #                          `DEACTIVATE` - stop message processor                           
 # + batchSize - Maximum number of messages to forward upon message process task is executed 
 # + forwardingInterval - Time in milliseconds between two message forwards in a batch
 # + DLCStore - In case of forwarding failure, messages will be stored using this backup `Client`. Make sure `forwardingFailAction` is
-#              `DLCSTORE`
+#              `DLC_STORE`
 public type ForwardingProcessorConfiguration record {|
     MessageStoreConfiguration storeConfig;
     string HttpEndpointUrl;
@@ -333,7 +333,7 @@ public type ForwardingProcessorConfiguration record {|
 # + httpClient - `http:Client` http client used to forward messages 
 # + httpEP - Messages will be forwarded to this HTTP url 
 # + HttpOperation - HTTP Verb to use when forwarding the message
-# + DLCStore - In case of forwarding failure, messages will be stored using this backup `Client`  
+# + DLCStore - In case of forwarding failure, messages will be stored using this backup `Client`
 # + forwardingFailAction - `MessageForwardFailAction` specifing processor behaviour on fowarding failure 
 # + retryHttpCodes - If processor received any response after forwading the message with any of
 #                    these status codes, it will be considered as a failed invocation `int[]` 

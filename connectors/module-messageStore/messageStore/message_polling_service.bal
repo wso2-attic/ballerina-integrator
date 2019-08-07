@@ -145,7 +145,7 @@ function onMessageForwardingFail(PollingServiceConfig config, http:Request reque
         log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
         + ". Message forwading is stopped for " + config.httpEP);
         config.onDeactivate.call();
-    } else if (config.forwardingFailAction == DLCSTORE) {        //if there is a DLC store is defined, store the message into that
+    } else if (config.forwardingFailAction == DLC_STORE) {        //if there is a DLC store defined, store the message into that
         log:printWarn("Maximum retires breached when forwarding message to HTTP endpoint " + config.httpEP
         + ". Forwarding message to DLC Store");
         Client? DLCStore = config["DLCStore"];
