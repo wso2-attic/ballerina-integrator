@@ -75,7 +75,7 @@ public class SiteBuilder {
             // Process repository to generate guide templates.
             processDirectory(TEMP_DIR);
             // Delete non markdown files.
-            DeleteOtherFiles(TEMP_DIR);
+            deleteNonMdFiles(TEMP_DIR);
             // Delete empty directories.
             deleteEmptyDirs(TEMP_DIR);
             // Copy tempDirectory content to mkdocs content directory.
@@ -138,7 +138,6 @@ public class SiteBuilder {
         } catch (Exception e) {
             throw new ServiceException("Could not find the README.md file: " + file.getPath(), e);
         }
-
     }
 
     /**
@@ -148,7 +147,7 @@ public class SiteBuilder {
      */
     private static void renameReadmeFile(File file) {
         if (file.getName().equals(README_MD)) {
-            String mdFileName = file.getParent() + "/" + getCurrentDirectoryName(file.getParent()) + ".md";
+            String mdFileName = file.getParent() + File.separator + getCurrentDirectoryName(file.getParent()) + ".md";
             // If directory name is "tempDirectory", not renaming the file.
             if (!mdFileName.contains(TEMP_DIR_MD)) {
                 if (!file.renameTo(new File(mdFileName))) {
@@ -182,13 +181,13 @@ public class SiteBuilder {
     private static String getIncludeCodeSegment(String readMeParentPath, String line) {
         String includeLineData = line.replace(COMMENT_START, EMPTY_STRING).replace(COMMENT_END, EMPTY_STRING)
                 .replace(INCLUDE_CODE_SEGMENT_TAG, EMPTY_STRING)
-                .trim(); // { file: guide/http_message_receiver.bal, segment: segment_1 }
+                .trim();
 
         String[] tempDataArr = includeLineData.replace(OPEN_CURLY_BRACKET, EMPTY_STRING)
                 .replace(CLOSE_CURLY_BRACKET, EMPTY_STRING).split(",");
 
         String fullPathOfIncludeCodeFile =
-                readMeParentPath + "/" + tempDataArr[0].replace("file:", EMPTY_STRING).trim();
+                readMeParentPath + File.separator + tempDataArr[0].replace("file:", EMPTY_STRING).trim();
         String segment = tempDataArr[1].replace("segment:", EMPTY_STRING).trim();
 
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
@@ -224,7 +223,7 @@ public class SiteBuilder {
                 .replace(INCLUDE_CODE_TAG, EMPTY_STRING).trim();
     }
 
-    private static void DeleteOtherFiles(String directoryPath) {
+    private static void deleteNonMdFiles(String directoryPath) {
         File folder = new File(directoryPath);
         File[] listOfFiles = folder.listFiles();
 
@@ -238,7 +237,7 @@ public class SiteBuilder {
                         }
                     }
                 } else if (file.isDirectory()) {
-                    DeleteOtherFiles(file.getPath());
+                    deleteNonMdFiles(file.getPath());
                 }
             }
         }
@@ -251,14 +250,22 @@ public class SiteBuilder {
         if (listOfFiles != null) {
             for (File file : listOfFiles) {
                 if (file.isDirectory()) {
-                    if (isDirEmpty(file)) {
-                        if (!file.delete()) {
-                            throw new ServiceException("Error occurred when deleting directory. file:"
-                                    + file.getPath());
-                        }
-                    }
+                    deleteEmptyDirsAndParentDirs(file);
                     deleteEmptyDirs(file.getPath());
                 }
+            }
+        }
+    }
+
+    private static void deleteEmptyDirsAndParentDirs(File file) {
+        if (isDirEmpty(file)) {
+            boolean isFileDeleted = file.delete();
+            if (isFileDeleted) {
+                File parent = file.getParentFile();
+                deleteEmptyDirsAndParentDirs(parent);
+            } else {
+                throw new ServiceException("Error occurred when deleting directory. file:"
+                        + file.getPath());
             }
         }
     }
