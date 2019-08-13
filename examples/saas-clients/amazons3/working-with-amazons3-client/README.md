@@ -81,7 +81,7 @@ const string INVALID_PAYLOAD_MSG = "Invalid request payload";
 string accessKeyId = config:getAsString("ACCESS_KEY_ID");
 string secretAccessKey = config:getAsString("SECRET_ACCESS_KEY");
 
-// Create Amazons3 client configration with the above accesskey and secretKey values.
+// Create Amazons3 client configuration with the above accesskey and secretKey values.
 amazons3:ClientConfiguration amazonS3Config = {
     accessKeyId: accessKeyId,
     secretAccessKey: secretAccessKey

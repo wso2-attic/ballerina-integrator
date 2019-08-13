@@ -42,6 +42,9 @@ amazons3:ClientConfiguration amazonS3Config = {
     secretAccessKey: secretAccessKey
 };
 
+// Create AmazonS3 client with the above amazonS3Config.
+amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
+
 @http:ServiceConfig {
     basePath: "/amazons3"
 }
@@ -52,26 +55,26 @@ service amazonS3Service on new http:Listener(9090) {
     }
     // Function to create a new bucket.
     resource function createBucket(http:Caller caller, http:Request request, string bucketName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);     
-        if (amazonS3Client is amazons3:AmazonS3Client) {
-            // Define new response. 
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
             // Invoke createBucket remote function from amazonS3Client.
-            error? response = amazonS3Client->createBucket(untaint bucketName);
+            error? response = s3Client->createBucket(<@untainted> bucketName);
             if (response is error) {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>response.detail().message, 
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                 BUCKET_CREATION_ERROR_MSG);
             } else {
                 // If there is no error, then bucket created successfully. Send the success response.
-                backendResponse.setTextPayload(untaint string `${bucketName} created on Amazon S3.`, 
+                backendResponse.setTextPayload(<@untainted> string `${bucketName} created on Amazon S3.`,
                                 contentType = "text/plain");
                 respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
 
@@ -81,35 +84,35 @@ service amazonS3Service on new http:Listener(9090) {
     }
     // Function to create a new object into an existing bucket.
     resource function createObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
-        if (amazonS3Client is amazons3:AmazonS3Client) {
-            // Define new response. 
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
             // Extract the object content from request payload.
             string|xml|json|byte[]|error objectContent = extractRequestContent(request);
             if objectContent is error {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>objectContent.detail().message, 
+                createAndSendErrorResponse(caller, <@untainted> <string>objectContent.detail()?.message,
                                 PAYLOAD_EXTRACTION_ERROR_MSG);
             } else {
                 // Invoke createObject remote function from amazonS3Client.
-                error? response = amazonS3Client->createObject(untaint bucketName, untaint objectName,
-                                                    untaint objectContent);
+                error? response = s3Client->createObject(<@untainted> bucketName, <@untainted> objectName,
+                                                    <@untainted> objectContent);
                 if (response is error) {
                     // Send the error response.
-                    createAndSendErrorResponse(caller, untaint <string>response.detail().message,
+                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                     OBJECT_CREATION_ERROR_MSG);
                 } else {
                     // If there is no error, then object created successfully. Send the success response.
-                    backendResponse.setTextPayload(untaint string `${objectName} created on Amazon S3 bucket : ${bucketName}.`, 
+                    backendResponse.setTextPayload(<@untainted> string `${objectName} created on Amazon S3 bucket : ${bucketName}.`,
                                                 contentType = "text/plain");
                     respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
                 }
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
 
@@ -119,30 +122,30 @@ service amazonS3Service on new http:Listener(9090) {
     }
     // Function to get object.
     resource function getObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
-        if (amazonS3Client is amazons3:AmazonS3Client) {     
-            // Define new response. 
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
             //Get the response content type from query params.
-            var params = request.getQueryParams();
-            string responseContentType = <string>params.responseContentType;
+            string? params = request.getQueryParamValue("responseContentType");
+            string responseContentType = <string> params;
 
             // Invoke getObject remote function from amazonS3Client.
-            var response = amazonS3Client->getObject(untaint bucketName, untaint objectName);
+            var response = s3Client->getObject(<@untainted> bucketName, <@untainted> objectName);
             if (response is amazons3:S3Object) {
                 // S3Object will be returned on success.
                 // Set the object content to the payload with the expected content type.
-                backendResponse.setBinaryPayload(untaint response.content, contentType = untaint responseContentType);
+                backendResponse.setBinaryPayload(<@untainted> <byte[]>response["content"], contentType = <@untainted> responseContentType);
                 respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
             } else {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>response.detail().message,
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                  "Error while creating object on Amazon S3.");
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
 
@@ -152,25 +155,25 @@ service amazonS3Service on new http:Listener(9090) {
     }
     // Function to delete object.
     resource function deleteObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
-        if (amazonS3Client is amazons3:AmazonS3Client) {
-            // Define new response. 
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
-            error? response = amazonS3Client->deleteObject(untaint bucketName, untaint objectName);
+            error? response = s3Client->deleteObject(<@untainted> bucketName, <@untainted> objectName);
             if (response is error) {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>response.detail().message, 
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                         OBJECT_DELETION_ERROR_MSG);
             } else {
                 // If there is no error, then object deleted successfully. Send the success response.
-                backendResponse.setTextPayload(untaint string `${objectName} deleted from Amazon S3 bucket : ${bucketName}.`, 
+                backendResponse.setTextPayload(<@untainted> string `${objectName} deleted from Amazon S3 bucket : ${bucketName}.`,
                                         contentType = "text/plain");
                 respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
 
@@ -179,47 +182,47 @@ service amazonS3Service on new http:Listener(9090) {
         path: "/{bucketName}"
     }
     // Function to delete bucket.
-    resource function deleteBucket(http:Caller caller, http:Request request, string bucketName, string objectName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
-        if (amazonS3Client is amazons3:AmazonS3Client) {
-            // Define new response. 
+    resource function deleteBucket(http:Caller caller, http:Request request, string bucketName) {
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
             // Invoke deleteBucket remote function from amazonS3Client.
-            error? response = amazonS3Client->deleteBucket(untaint bucketName);
+            error? response = s3Client->deleteBucket(<@untainted> bucketName);
             if (response is error) {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>response.detail().message, 
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                         BUCKET_DELETION_ERROR_MSG);
             } else {
                 // If there is no error, then bucket deleted successfully. Send the success response.
-                backendResponse.setTextPayload(untaint string `${bucketName} deleted from Amazon S3.`, 
+                backendResponse.setTextPayload(<@untainted> string `${bucketName} deleted from Amazon S3.`,
                                         contentType = "text/plain");
                 respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
 }
 
 // Function to extract the object content from request payload
-function extractRequestContent(http:Request request) returns string|xml|json|byte[]|error {
+function extractRequestContent(http:Request request) returns @tainted string|xml|json|byte[]|error {
     string contentTypeStr = request.getContentType();
-    if (contentTypeStr.equalsIgnoreCase("application/json")) {
+    if (equalsIgnoreCase(contentTypeStr, "application/json")) {
         var jsonObjectContent = request.getJsonPayload();
         if (jsonObjectContent is json) {
             return jsonObjectContent;
         }
     }
-    if (contentTypeStr.equalsIgnoreCase("application/xml")) {
+    if (equalsIgnoreCase(contentTypeStr, "application/xml")) {
         var xmlObjectContent = request.getXmlPayload();
         if (xmlObjectContent is xml) {
             return xmlObjectContent;
         }
     }
-    if (contentTypeStr.equalsIgnoreCase("text/plain")) {
+    if (equalsIgnoreCase(contentTypeStr, "text/plain")) {
         var textObjectContent = request.getTextPayload();
         if (textObjectContent is string) {
             return textObjectContent;
@@ -229,7 +232,7 @@ function extractRequestContent(http:Request request) returns string|xml|json|byt
     if (binaryObjectContent is byte[]) {
         return binaryObjectContent;
     } else {
-        error err = error(ERROR_CODE, { message : INVALID_PAYLOAD_MSG });
+        error err = error(ERROR_CODE, message = INVALID_PAYLOAD_MSG);
         return err;
     }
 }
@@ -250,5 +253,13 @@ function respondAndHandleError(http:Caller caller, http:Response response, strin
     var respond = caller->respond(response);
     if (respond is error) {
         log:printError(respondErrorMsg, err = respond);
+    }
+}
+
+function equalsIgnoreCase(string str1, string str2) returns boolean {
+    if (str1.toUpperAscii() == str2.toUpperAscii()) {
+        return true;
+    } else {
+        return false;
     }
 }
