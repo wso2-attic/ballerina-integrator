@@ -42,6 +42,8 @@ import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
 public class Utils {
     private static final Logger logger = Logger.getLogger(Utils.class.getName());
 
+    private Utils() {}
+
     /**
      * Create a directory.
      *
@@ -91,7 +93,7 @@ public class Utils {
      * @return path of the current directory
      */
     public static String getCurrentDirectoryName(String path) {
-        return path.substring(path.lastIndexOf("/") + 1);
+        return path.substring(path.lastIndexOf(File.separator) + 1);
     }
 
     /**

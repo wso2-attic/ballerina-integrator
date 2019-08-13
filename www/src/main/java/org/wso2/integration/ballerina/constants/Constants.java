@@ -26,7 +26,7 @@ import java.io.File;
 public final class Constants {
 
     // Directory paths
-    public static final String REPO_EXAMPLES_DIR = ".." + File.separator + "examples";
+    public static final String REPO_EXAMPLES_DIR = ".." + File.separator + "docs";
     public static final String TEMP_DIR = "tempDirectory/";
     public static final String MKDOCS_CONTENT = "mkdocs-content";
 
