@@ -29,4 +29,20 @@ public class ItemResolverConstants {
     public static final String SNIPPET_TYPE = "Snippet";
     public static final String RECORD_TYPE = "type <RecordName> record";
     // End Symbol Types Constants
+
+    // AmazonS3 Connector Constructs
+    public static final String AMAZONS3_CLIENT_CONFIG = "amazonS3/clientConfiguration";
+    public static final String AMAZONS3_CLIENT = "amazonS3/client";
+    public static final String AMAZONS3_SERVICE = "amazons3/service";
+    public static final String AMAZONS3_RESOURCE_CREATE_BUCKET = "amazonS3/resource/createBucket";
+    public static final String AMAZONS3_RESOURCE_LIST_BUCKETS = "amazonS3/resource/listBuckets";
+    public static final String AMAZONS3_RESOURCE_CREATE_OBJECT = "amazonS3/resource/createObject";
+    public static final String AMAZONS3_RESOURCE_GET_OBJECT = "amazonS3/resource/getObject";
+    public static final String AMAZONS3_RESOURCE_LIST_OBJECTS = "amazonS3/resource/listObjects";
+    public static final String AMAZONS3_RESOURCE_DELETE_OBJECT = "amazonS3/resource/deleteObject";
+    public static final String AMAZONS3_RESOURCE_DELETE_BUCKET = "amazonS3/resource/deleteBucket";
+
+    //Error Handling constructs
+    public static final String RESPOND_AND_HANDLE_ERROR = "handleError";
+
 }
