@@ -17,7 +17,6 @@
 import ballerina/config;
 import ballerina/http;
 import ballerina/log;
-import ballerina/mime;
 
 import wso2/amazons3;
 
@@ -26,20 +25,19 @@ const string ERROR_CODE = "Sample Error";
 const string RESPOND_ERROR_MSG = "Error in responding to client.";
 const string CLIENT_CREATION_ERROR_MSG = "Error while creating the AmazonS3 client.";
 const string BUCKET_CREATION_ERROR_MSG = "Error while creating bucket on Amazon S3.";
+const string BUCKETS_RETRIEVING_ERROR_MSG = "Error while listing buckets on Amazon S3";
 const string PAYLOAD_EXTRACTION_ERROR_MSG = "Error while extracting the payload from request.";
+const string PAYLOAD_CONVERTION_ERROR_MSG = "Error occured while converting bucket list to json";
 const string OBJECT_CREATION_ERROR_MSG = "Error while creating object on Amazon S3.";
+const string OBJECTS_RETIEVING_ERROR_MSG = "Error while listing objects on bucket : ";
 const string OBJECT_DELETION_ERROR_MSG = "Error while deleting object from Amazon S3.";
 const string BUCKET_DELETION_ERROR_MSG = "Error while deleting bucket from Amazon S3.";
 const string INVALID_PAYLOAD_MSG = "Invalid request payload";
 
-// Read accessKey and secretKey from config files.
-string accessKeyId = config:getAsString("ACCESS_KEY_ID");
-string secretAccessKey = config:getAsString("SECRET_ACCESS_KEY");
-
 // Create Amazons3 client configuration with the above accesskey and secretKey values.
 amazons3:ClientConfiguration amazonS3Config = {
-    accessKeyId: accessKeyId,
-    secretAccessKey: secretAccessKey
+    accessKeyId: config:getAsString("ACCESS_KEY_ID"),
+    secretAccessKey: config:getAsString("SECRET_ACCESS_KEY")
 };
 
 // Create AmazonS3 client with the above amazonS3Config.
@@ -77,6 +75,41 @@ service amazonS3Service on new http:Listener(9090) {
             createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
+
+    @http:ResourceConfig {
+        methods: ["GET"],
+        path: "/"
+    }
+    // Function to list buckets.
+    resource function listBuckets(http:Caller caller, http:Request request) {
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
+            http:Response backendResponse = new();
+            // Invoke listBuckets remote function from amazonS3Client.
+            var response = s3Client->listBuckets();
+            if (response is error) {
+                // Send the error response.
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
+                                BUCKETS_RETRIEVING_ERROR_MSG);
+            } else {
+                // If there is no error, then bucket list retrieved successfully. Send the bucket list.
+                var list = json.constructFrom(response);
+                if (list is json) {
+                    backendResponse.setJsonPayload(<@untainted> list, contentType = "application/json");
+                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                } else {
+                    createAndSendErrorResponse(caller, <@untainted> <string>list.detail()?.message,
+                                PAYLOAD_CONVERTION_ERROR_MSG);
+                }
+            }
+        } else {
+            // Send the error response.
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
+        }
+    }
+
 
     @http:ResourceConfig {
         methods: ["POST"],
@@ -142,6 +175,40 @@ service amazonS3Service on new http:Listener(9090) {
                 // Send the error response.
                 createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                  "Error while creating object on Amazon S3.");
+            }
+        } else {
+            // Send the error response.
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
+        }
+    }
+
+    @http:ResourceConfig {
+        methods: ["GET"],
+        path: "/{bucketName}"
+    }
+    // Function to list objects.
+    resource function listObjects(http:Caller caller, http:Request request, string bucketName) {
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
+            http:Response backendResponse = new();
+            // Invoke listObjects remote function from amazonS3Client.
+            var response = s3Client->listObjects(<@untainted> bucketName);
+            if (response is error) {
+                // Send the error response.
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
+                                OBJECTS_RETIEVING_ERROR_MSG + "${bucketName}.");
+            } else {
+                // If there is no error, then object list retrieved successfully. Send the object list.
+                var list = json.constructFrom(response);
+                if (list is json) {
+                    backendResponse.setJsonPayload(<@untainted> list, contentType = "application/json");
+                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                } else {
+                    createAndSendErrorResponse(caller, <@untainted> <string>list.detail()?.message,
+                                PAYLOAD_CONVERTION_ERROR_MSG);
+                }
             }
         } else {
             // Send the error response.

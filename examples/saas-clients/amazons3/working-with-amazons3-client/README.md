@@ -6,7 +6,9 @@ with the Amazon S3 API to create, store, download, and use data with other servi
 
 This example explains how to use the S3 client to connect with the Amazon S3 instance and perform the following operations:
 * Create Bucket
+* List Buckets
 * Create Object
+* List Objects
 * Get Object
 * Delete Object
 * Delete Bucket
@@ -32,16 +34,30 @@ The following diagram illustrates all the required functionality of the Amazon S
 #### Creating the module structure
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although the 
 language allows you to have any module structure, you can use the following simple module structure for this project.
+
 ```
-working-with-amazons3-client
-    └── working_with_amazons3_client.bal
+working_with_amazons3_client_project
+  └── src 
+       └── working_with_amazons3_client_module
+              └── working_with_amazons3_client.bal
+  └── ballerina.conf
 ```
-- Create a directory called `working-with-amazons3-client` in your local machine and also create the empty .bal files.
-- Open a terminal, navigate to `working-with-amazons3-client`, and run the Ballerina project initializing toolkit.
+To create a new project you can use the ballerina new command as follows.
 ```
-$ ballerina init
+$ ballerina new working_with_amazons3_client_project
 ```
-In the working-with-amazons3-client directory where you have your sample, create a `ballerina.conf` file and add the  details you obtained above within the quotes.
+<b>NOTE : </b>Ballerina project cannot reside in another ballerina project. If you run ballerina new inside a ballerina 
+project directory or in a sub-path of a ballerina project it will give an error.
+
+Navigate to  `working_with_amazons3_client_project` directory and create the module `working_with_amazons3_client_module` 
+using following command.
+
+```
+$ ballerina add working_with_amazons3_client_module
+```
+
+In the working_with_amazons3_client-module directory where you have your sample, create a `ballerina.conf` file and add the 
+details you obtained above within the quotes.
 
 ```
 ACCESS_KEY_ID = ""
@@ -59,10 +75,10 @@ The following code is the completed sample which exposes the following services:
 - deleteBucket: Deletes specified bucket from Amazon S3 instance.
 
 ```ballerina
+
 import ballerina/config;
 import ballerina/http;
 import ballerina/log;
-import ballerina/mime;
 
 import wso2/amazons3;
 
@@ -71,21 +87,23 @@ const string ERROR_CODE = "Sample Error";
 const string RESPOND_ERROR_MSG = "Error in responding to client.";
 const string CLIENT_CREATION_ERROR_MSG = "Error while creating the AmazonS3 client.";
 const string BUCKET_CREATION_ERROR_MSG = "Error while creating bucket on Amazon S3.";
+const string BUCKETS_RETRIEVING_ERROR_MSG = "Error while listing buckets on Amazon S3";
 const string PAYLOAD_EXTRACTION_ERROR_MSG = "Error while extracting the payload from request.";
+const string PAYLOAD_CONVERTION_ERROR_MSG = "Error occured while converting bucket list to json";
 const string OBJECT_CREATION_ERROR_MSG = "Error while creating object on Amazon S3.";
+const string OBJECTS_RETIEVING_ERROR_MSG = "Error while listing objects on bucket : ";
 const string OBJECT_DELETION_ERROR_MSG = "Error while deleting object from Amazon S3.";
 const string BUCKET_DELETION_ERROR_MSG = "Error while deleting bucket from Amazon S3.";
 const string INVALID_PAYLOAD_MSG = "Invalid request payload";
 
-// Read accessKey and secretKey from config files.
-string accessKeyId = config:getAsString("ACCESS_KEY_ID");
-string secretAccessKey = config:getAsString("SECRET_ACCESS_KEY");
-
 // Create Amazons3 client configuration with the above accesskey and secretKey values.
 amazons3:ClientConfiguration amazonS3Config = {
-    accessKeyId: accessKeyId,
-    secretAccessKey: secretAccessKey
+    accessKeyId: config:getAsString("ACCESS_KEY_ID"),
+    secretAccessKey: config:getAsString("SECRET_ACCESS_KEY")
 };
+
+// Create AmazonS3 client with the above amazonS3Config.
+amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
 
 @http:ServiceConfig {
     basePath: "/amazons3"
@@ -97,28 +115,63 @@ service amazonS3Service on new http:Listener(9090) {
     }
     // Function to create a new bucket.
     resource function createBucket(http:Caller caller, http:Request request, string bucketName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);     
-        if (amazonS3Client is amazons3:AmazonS3Client) {
-            // Define new response. 
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
             // Invoke createBucket remote function from amazonS3Client.
-            error? response = amazonS3Client->createBucket(untaint bucketName);
+            error? response = s3Client->createBucket(<@untainted> bucketName);
             if (response is error) {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>response.detail().message, 
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                 BUCKET_CREATION_ERROR_MSG);
             } else {
-                // If there is no error, the bucket is created successfully. Send the success response.
-                backendResponse.setTextPayload(untaint string `${bucketName} created on Amazon S3.`, 
+                // If there is no error, then bucket created successfully. Send the success response.
+                backendResponse.setTextPayload(<@untainted> string `${bucketName} created on Amazon S3.`,
                                 contentType = "text/plain");
                 respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
+
+    @http:ResourceConfig {
+        methods: ["GET"],
+        path: "/"
+    }
+    // Function to list buckets.
+    resource function listBuckets(http:Caller caller, http:Request request) {
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
+            http:Response backendResponse = new();
+            // Invoke listBuckets remote function from amazonS3Client.
+            var response = s3Client->listBuckets();
+            if (response is error) {
+                // Send the error response.
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
+                                BUCKETS_RETRIEVING_ERROR_MSG);
+            } else {
+                // If there is no error, then bucket list retrieved successfully. Send the bucket list.
+                var list = json.constructFrom(response);
+                if (list is json) {
+                    backendResponse.setJsonPayload(<@untainted> list, contentType = "application/json");
+                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                } else {
+                    createAndSendErrorResponse(caller, <@untainted> <string>list.detail()?.message,
+                                PAYLOAD_CONVERTION_ERROR_MSG);
+                }
+            }
+        } else {
+            // Send the error response.
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
+        }
+    }
+
 
     @http:ResourceConfig {
         methods: ["POST"],
@@ -126,35 +179,35 @@ service amazonS3Service on new http:Listener(9090) {
     }
     // Function to create a new object into an existing bucket.
     resource function createObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
-        if (amazonS3Client is amazons3:AmazonS3Client) {
-            // Define new response. 
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
             // Extract the object content from request payload.
             string|xml|json|byte[]|error objectContent = extractRequestContent(request);
             if objectContent is error {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>objectContent.detail().message, 
+                createAndSendErrorResponse(caller, <@untainted> <string>objectContent.detail()?.message,
                                 PAYLOAD_EXTRACTION_ERROR_MSG);
             } else {
                 // Invoke createObject remote function from amazonS3Client.
-                error? response = amazonS3Client->createObject(untaint bucketName, untaint objectName,
-                                                    untaint objectContent);
+                error? response = s3Client->createObject(<@untainted> bucketName, <@untainted> objectName,
+                                                    <@untainted> objectContent);
                 if (response is error) {
                     // Send the error response.
-                    createAndSendErrorResponse(caller, untaint <string>response.detail().message,
+                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                     OBJECT_CREATION_ERROR_MSG);
                 } else {
-                    // If there is no error, the object is created successfully. Send the success response.
-                    backendResponse.setTextPayload(untaint string `${objectName} created on Amazon S3 bucket : ${bucketName}.`, 
+                    // If there is no error, then object created successfully. Send the success response.
+                    backendResponse.setTextPayload(<@untainted> string `${objectName} created on Amazon S3 bucket : ${bucketName}.`,
                                                 contentType = "text/plain");
                     respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
                 }
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
 
@@ -164,30 +217,64 @@ service amazonS3Service on new http:Listener(9090) {
     }
     // Function to get object.
     resource function getObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
-        if (amazonS3Client is amazons3:AmazonS3Client) {     
-            // Define new response. 
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
             //Get the response content type from query params.
-            var params = request.getQueryParams();
-            string responseContentType = <string>params.responseContentType;
+            string? params = request.getQueryParamValue("responseContentType");
+            string responseContentType = <string> params;
 
             // Invoke getObject remote function from amazonS3Client.
-            var response = amazonS3Client->getObject(untaint bucketName, untaint objectName);
+            var response = s3Client->getObject(<@untainted> bucketName, <@untainted> objectName);
             if (response is amazons3:S3Object) {
                 // S3Object will be returned on success.
                 // Set the object content to the payload with the expected content type.
-                backendResponse.setBinaryPayload(untaint response.content, contentType = untaint responseContentType);
+                backendResponse.setBinaryPayload(<@untainted> <byte[]>response["content"], contentType = <@untainted> responseContentType);
                 respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
             } else {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>response.detail().message,
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                  "Error while creating object on Amazon S3.");
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
+        }
+    }
+
+    @http:ResourceConfig {
+        methods: ["GET"],
+        path: "/{bucketName}"
+    }
+    // Function to list objects.
+    resource function listObjects(http:Caller caller, http:Request request, string bucketName) {
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
+            http:Response backendResponse = new();
+            // Invoke listObjects remote function from amazonS3Client.
+            var response = s3Client->listObjects(<@untainted> bucketName);
+            if (response is error) {
+                // Send the error response.
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
+                                OBJECTS_RETIEVING_ERROR_MSG + "${bucketName}.");
+            } else {
+                // If there is no error, then object list retrieved successfully. Send the object list.
+                var list = json.constructFrom(response);
+                if (list is json) {
+                    backendResponse.setJsonPayload(<@untainted> list, contentType = "application/json");
+                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                } else {
+                    createAndSendErrorResponse(caller, <@untainted> <string>list.detail()?.message,
+                                PAYLOAD_CONVERTION_ERROR_MSG);
+                }
+            }
+        } else {
+            // Send the error response.
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
 
@@ -197,25 +284,25 @@ service amazonS3Service on new http:Listener(9090) {
     }
     // Function to delete object.
     resource function deleteObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
-        if (amazonS3Client is amazons3:AmazonS3Client) {
-            // Define new response. 
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
-            error? response = amazonS3Client->deleteObject(untaint bucketName, untaint objectName);
+            error? response = s3Client->deleteObject(<@untainted> bucketName, <@untainted> objectName);
             if (response is error) {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>response.detail().message, 
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                         OBJECT_DELETION_ERROR_MSG);
             } else {
-                // If there is no error, the object is deleted successfully. Send the success response.
-                backendResponse.setTextPayload(untaint string `${objectName} deleted from Amazon S3 bucket : ${bucketName}.`, 
+                // If there is no error, then object deleted successfully. Send the success response.
+                backendResponse.setTextPayload(<@untainted> string `${objectName} deleted from Amazon S3 bucket : ${bucketName}.`,
                                         contentType = "text/plain");
                 respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
 
@@ -224,47 +311,47 @@ service amazonS3Service on new http:Listener(9090) {
         path: "/{bucketName}"
     }
     // Function to delete bucket.
-    resource function deleteBucket(http:Caller caller, http:Request request, string bucketName, string objectName) {
-        // Create AmazonS3 client with the above amazonS3Config.
-        amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
-        if (amazonS3Client is amazons3:AmazonS3Client) {
-            // Define new response. 
+    resource function deleteBucket(http:Caller caller, http:Request request, string bucketName) {
+        // Assign amazonS3Client global variable to a local variable
+        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        if (s3Client is amazons3:AmazonS3Client) {
+            // Define new response.
             http:Response backendResponse = new();
             // Invoke deleteBucket remote function from amazonS3Client.
-            error? response = amazonS3Client->deleteBucket(untaint bucketName);
+            error? response = s3Client->deleteBucket(<@untainted> bucketName);
             if (response is error) {
                 // Send the error response.
-                createAndSendErrorResponse(caller, untaint <string>response.detail().message, 
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                         BUCKET_DELETION_ERROR_MSG);
             } else {
-                // If there is no error, the bucket is deleted successfully. Send the success response.
-                backendResponse.setTextPayload(untaint string `${bucketName} deleted from Amazon S3.`, 
+                // If there is no error, then bucket deleted successfully. Send the success response.
+                backendResponse.setTextPayload(<@untainted> string `${bucketName} deleted from Amazon S3.`,
                                         contentType = "text/plain");
                 respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>amazonS3Client.detail().message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
         }
     }
 }
 
 // Function to extract the object content from request payload
-function extractRequestContent(http:Request request) returns string|xml|json|byte[]|error {
+function extractRequestContent(http:Request request) returns @tainted string|xml|json|byte[]|error {
     string contentTypeStr = request.getContentType();
-    if (contentTypeStr.equalsIgnoreCase("application/json")) {
+    if (equalsIgnoreCase(contentTypeStr, "application/json")) {
         var jsonObjectContent = request.getJsonPayload();
         if (jsonObjectContent is json) {
             return jsonObjectContent;
         }
     }
-    if (contentTypeStr.equalsIgnoreCase("application/xml")) {
+    if (equalsIgnoreCase(contentTypeStr, "application/xml")) {
         var xmlObjectContent = request.getXmlPayload();
         if (xmlObjectContent is xml) {
             return xmlObjectContent;
         }
     }
-    if (contentTypeStr.equalsIgnoreCase("text/plain")) {
+    if (equalsIgnoreCase(contentTypeStr, "text/plain")) {
         var textObjectContent = request.getTextPayload();
         if (textObjectContent is string) {
             return textObjectContent;
@@ -274,7 +361,7 @@ function extractRequestContent(http:Request request) returns string|xml|json|byt
     if (binaryObjectContent is byte[]) {
         return binaryObjectContent;
     } else {
-        error err = error(ERROR_CODE, { message : INVALID_PAYLOAD_MSG });
+        error err = error(ERROR_CODE, message = INVALID_PAYLOAD_MSG);
         return err;
     }
 }
@@ -297,6 +384,14 @@ function respondAndHandleError(http:Caller caller, http:Response response, strin
         log:printError(respondErrorMsg, err = respond);
     }
 }
+
+function equalsIgnoreCase(string str1, string str2) returns boolean {
+    if (str1.toUpperAscii() == str2.toUpperAscii()) {
+        return true;
+    } else {
+        return false;
+    }
+}
 ```
 ### Deployment
 
@@ -305,23 +400,17 @@ You can deploy the services that you developed above in your local environment. 
 
 **Building**
 
-Navigate to `working-with-amazons3-client` and execute the following command.
+Navigate to `working_with_amazons3_client_project` and execute the following command.
 ```bash
-$ ballerina build working_with_amazons3_client.bal
-```
-
-After the build is successful, there will be a working_with_amazons3_client.balx file inside the target directory. You can execute it as follows.
-
-```bash
-$ ballerina run working_with_amazons3_client.balx
+$ ballerina build working_with_amazons3_client_module
 ```
 
 ### Testing
 
-- Navigate to `working-with-amazons3-client`, and execute the following command to start the service:
+- Navigate to `working_with_amazons3_client_project`, and execute the following command to start the service:
 
 ```bash
-$ ballerina run working_with_amazons3_client.bal
+$ ballerina run src/working_with_amazons3_client_module/working_with_amazons3_client.bal
 ```
 
 #### Test createBucket service
@@ -332,6 +421,12 @@ curl -v -X POST http://localhost:9090/amazons3/firstbalbucket
 You see the response as follows:
 ```
 firstbalbucket created on Amazon S3.
+```
+
+#### Test list Bucket service
+- Invoke the following curl request to list buckets.
+```
+curl -X GET http://localhost:9090/amazons3
 ```
 
 #### Test createObject service
@@ -369,6 +464,12 @@ curl -v -X POST http://localhost:9090/amazons3/firstbalbucket/image.jpg -H 'Cont
 You see the response as follows:
 ```
 image.jpg created on Amazon S3 bucket : firstbalbucket.
+```
+
+#### Test list Objects Service
+- Invoke the following curl request to list objects in a bucket.
+```
+curl -X GET http://localhost:9090/amazons3/firstbalbucket
 ```
 
 #### Test getObject service
