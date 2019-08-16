@@ -24,6 +24,7 @@ http:Client hospitalEP = new("http://localhost:9095");
 const string GRAND_OAK = "grand oak community hospital";
 const string CLEMENCY = "clemency medical center";
 const string PINE_VALLEY = "pine valley community hospital";
+json finalPayload = "";
 
 @http:ServiceConfig {
     basePath: "/hospitalMgtService"
@@ -40,34 +41,43 @@ service hospitalMgtService on new http:Listener(9092) {
             // tranform the request payload to the format expected by the backend end service
             json reservationPayload = {
                 "patient": {
-                    "name": requestDataset.name,
-                    "dob": requestDataset.dob,
-                    "ssn": requestDataset.ssn,
-                    "address": requestDataset.address,
-                    "phone": requestDataset.phone,
-                    "email": requestDataset.email
+                    "name": <json>requestDataset.name,
+                    "dob": <json>requestDataset.dob,
+                    "ssn": <json>requestDataset.ssn,
+                    "address": <json>requestDataset.address,
+                    "phone": <json>requestDataset.phone,
+                    "email": <json>requestDataset.email
                 },
-                "doctor": requestDataset.doctor,
-                "hospital": requestDataset.hospital,
-                "appointmentDate": requestDataset.appointmentDate
+                "doctor": <json>requestDataset.doctor,
+                "hospital": <json>requestDataset.hospital,
+                "appointmentDate": <json>requestDataset.appointmentDate
             };
             // call appointment creation
             // CODE-SEGMENT-BEGIN: segment_2
-            http:Response reservationResponse = createAppointment(caller, untaint reservationPayload, category);
+            http:Response reservationResponse = createAppointment(caller, <@untainted> reservationPayload, category);
             // CODE-SEGMENT-END: segment_2
 
             json | error responsePayload = reservationResponse.getJsonPayload();
             if (responsePayload is json) {
+                // Convert json to map of json
+                map<json>|error responsePayloadMap = map<json>.constructFrom(responsePayload);
+                if(responsePayloadMap is map<json>)
+                {
+                    // add cardNo to the response payload
+                    responsePayloadMap["cardNumber"] = <json>requestDataset.cardNo;
+                    finalPayload = <json>json.constructFrom(<@untainted> responsePayloadMap);
+                }
+
                 // check if the json payload is actually an appointment confirmation response
-                if (responsePayload.appointmentNumber is ()) {
-                    respondToClient(caller, createErrorResponse(500, untaint responsePayload.toString()));
+                if (finalPayload.appointmentNumber is ()) {
+                    respondToClient(caller, createErrorResponse(500, <@untainted> responsePayload.toString()));
                     return;
                 }
 
-                // add cardNo to the response payload
-                responsePayload.cardNumber = requestDataset.cardNo;
+                // // add cardNo to the response payload
+                // responsePayload["cardNumber"] = requestDataset.cardNo;
 
-                http:Response paymentResponse = doPayment(untaint responsePayload);
+                http:Response paymentResponse = doPayment(<@untainted> <json>finalPayload);
                 // send the response back to the client
                 respondToClient(caller, paymentResponse);
             } else {
@@ -89,15 +99,15 @@ function createAppointment(http:Caller caller, json payload, string category) re
     match hospitalName {
         GRAND_OAK => {
             reservationResponse = hospitalEP->
-            post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
+            post("/grandoaks/categories/" + <@untainted> category + "/reserve", reservationRequest);
         }
         CLEMENCY => {
             reservationResponse = hospitalEP->
-            post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
+            post("/clemency/categories/" + <@untainted> category + "/reserve", reservationRequest);
         }
         PINE_VALLEY => {
             reservationResponse = hospitalEP->
-            post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
+            post("/pinevalley/categories/" + <@untainted> category + "/reserve", reservationRequest);
         }
         _ => {
             respondToClient(caller, createErrorResponse(500, "Unknown hospital name"));
@@ -122,7 +132,7 @@ function handleResponse(http:Response | error response) returns http:Response {
     if (response is http:Response) {
         return response;
     } else {
-        return createErrorResponse(500, <string> response.detail().message);
+        return createErrorResponse(500, <string> response.toString());
     }
 }
 
