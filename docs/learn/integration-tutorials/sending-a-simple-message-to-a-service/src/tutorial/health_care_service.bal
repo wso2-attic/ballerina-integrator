@@ -46,7 +46,7 @@ service hospitalMgtService on httpListener
     // CODE-SEGMENT-END: segment_3
     {
         // CODE-SEGMENT-BEGIN: segment_5
-        var response = healthcareEndpoint->get("/queryDoctor/" +untaint category);
+        var response = healthcareEndpoint->get("/queryDoctor/" +<@untainted> category);
         // CODE-SEGMENT-END: segment_5
         // CODE-SEGMENT-BEGIN: segment_6
         if (response is http:Response && response.getJsonPayload() is json) {

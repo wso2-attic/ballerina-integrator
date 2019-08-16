@@ -85,24 +85,24 @@ service hospitalMgtService on new http:Listener(9092) {
                 "appointment_date": requestPayload.appointment_date
             };
             // Call appointment creation.
-            http:Response reservationResponse = createAppointment(caller, untaint reservationPayload, category);
+            http:Response reservationResponse = createAppointment(caller, <@untainted> reservationPayload, category);
 
             json | error responsePayload = reservationResponse.getJsonPayload();
             if (responsePayload is json) {
                 // Check if the json payload is actually an appointment confirmation response.
                 if (responsePayload.appointmentNumber is ()) {
                     respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, 
-                    untaint responsePayload.toString()));
+                    <@untainted> responsePayload.toString()));
                     return;
                 }
                 // Call payment settlement.
-                http:Response paymentResponse = doPayment(untaint responsePayload);
+                http:Response paymentResponse = doPayment(<@untainted> responsePayload);
                 // Send the response back to the client.
                 //respondToClient(caller, paymentResponse);
 
                 json | error paymentResPayload = paymentResponse.getJsonPayload();
                 if (paymentResPayload is json) {
-                    respondToClient(caller, sendEmail(generateEmail(untaint paymentResPayload)));
+                    respondToClient(caller, sendEmail(generateEmail(<@untainted> paymentResPayload)));
                 } else {
                     respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, "Backend did not respond with json"));
                 }
@@ -150,9 +150,9 @@ function sendEmail(string email) returns http:Response {
     // Send the message.
     var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
 
-    if (sendMessageResponse is (string, string)) {
+    if (sendMessageResponse is [string, string]) {
         // If successful, print the message ID and thread ID.
-        (string, string) (messageId, threadId) = sendMessageResponse;
+        [string, string] [messageId, threadId] = sendMessageResponse;
         io:println("Sent Message ID: " + messageId);
         io:println("Sent Thread ID: " + threadId);
 
@@ -180,15 +180,15 @@ function createAppointment(http:Caller caller, json payload, string category) re
     match hospitalName {
         GRAND_OAK => {
             reservationResponse = hospitalEP->
-            post("/grandoaks/categories/" + untaint category + "/reserve", reservationRequest);
+            post("/grandoaks/categories/" + <@untainted> category + "/reserve", reservationRequest);
         }
         CLEMENCY => {
             reservationResponse = hospitalEP->
-            post("/clemency/categories/" + untaint category + "/reserve", reservationRequest);
+            post("/clemency/categories/" + <@untainted> category + "/reserve", reservationRequest);
         }
         PINE_VALLEY => {
             reservationResponse = hospitalEP->
-            post("/pinevalley/categories/" + untaint category + "/reserve", reservationRequest);
+            post("/pinevalley/categories/" + <@untainted> category + "/reserve", reservationRequest);
         }
         _ => {
             respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, "Unknown hospital name"));

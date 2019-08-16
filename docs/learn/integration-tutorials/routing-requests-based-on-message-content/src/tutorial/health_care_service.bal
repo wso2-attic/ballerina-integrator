@@ -34,7 +34,7 @@ service hospitalMgtService on httpListener {
     }
     resource function getDoctorInCategory(http:Caller caller, http:Request req, string category)
     {
-        var response = healthcareEndpoint->get("/queryDoctor/" + untaint category);
+        var response = healthcareEndpoint->get("/queryDoctor/" + <@untainted> category);
         if (response is http:Response && response.getJsonPayload() is json) {
             var result = caller->respond(response);
             if (result is error) {
@@ -56,8 +56,8 @@ service hospitalMgtService on httpListener {
         // Get data from request message payload
         var jsonMsg = req.getJsonPayload();
         if (jsonMsg is json) {
-            string hospitalDesc = jsonMsg["hospital"].toString();
-            string doctorName = jsonMsg["doctor"].toString();
+            string hospitalDesc = jsonMsg.hospital.toString();
+            string doctorName = jsonMsg.doctor.toString();
             string hospitalName = "";
 
             http:Response | error clientResponse;
@@ -71,7 +71,7 @@ service hospitalMgtService on httpListener {
                 string sendPath = "/" + hospitalName + "/categories/" + category + "/reserve";
 
                 // Call the backend service related to the hospital
-                clientResponse = healthcareEndpoint->post(untaint sendPath, untaint jsonMsg);
+                clientResponse = healthcareEndpoint->post(<@untainted> sendPath, <@untainted> jsonMsg);
             } else {
                 respondWithError(caller, "JSON Path $hospital cannot be empty.", "Hospital cannot be empty.");
                 return;
@@ -84,7 +84,7 @@ service hospitalMgtService on httpListener {
                 "Backend service does not properly respond");
             }
         } else {
-            respondWithError(caller, untaint < string > jsonMsg.detail().message, "Request is not JSON");
+            respondWithError(caller, <@untainted> < string > jsonMsg.detail().message, "Request is not JSON");
         }
     }
 // CODE-SEGMENT-END: segment_2
