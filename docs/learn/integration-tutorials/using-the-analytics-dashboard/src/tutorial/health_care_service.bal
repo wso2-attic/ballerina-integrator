@@ -114,22 +114,22 @@ function scheduleAppointment(json payload, string hospital, string category) {
 
 // Get appointment with appointment number
 function getAppointmentWithId(int id, string hospital) {
-    log:printInfo("Retrieving appointment no: " + id);
-    http:Response | error response = hospitalEP->get("/" + hospital + "/categories/appointments/" + id);
+    log:printInfo("Retrieving appointment no: " + id.toString());
+    http:Response | error response = hospitalEP->get("/" + hospital + "/categories/appointments/" + id.toString());
     handleResponse(response);
 }
 
 // Check appointment validity with appointment number
 function checkAppointmentValidity(int id) {
-    log:printInfo("Checking validity of appointment no: " + id);
-    http:Response | error response = hospitalEP->get("/healthcare/appointments/validity/" + id);
+    log:printInfo("Checking validity of appointment no: " + id.toString());
+    http:Response | error response = hospitalEP->get("/healthcare/appointments/validity/" + id.toString());
     handleResponse(response);
 }
 
 // Check appointment fee with appointment number
 function checkAppointmentFee(int id, string hospital) {
-    log:printInfo("Checking fee for appointment no: " + id);
-    http:Response | error response = hospitalEP->get("/" + hospital + "/categories/appointments/" + id + "/fee");
+    log:printInfo("Checking fee for appointment no: " + id.toString());
+    http:Response | error response = hospitalEP->get("/" + hospital + "/categories/appointments/" + id.toString() + "/fee");
     handleResponse(response);
 }
 
@@ -149,8 +149,8 @@ function updatePatientDetails(json patient, string hospital) {
 
 // Get eligibility for discount
 function getDiscountEligibility(int id, string hospital) {
-    log:printInfo("Checking eligibility for discount for appointment: " + id);
-    http:Response | error response = hospitalEP->get("/" + hospital + "/categories/patient/appointment/" + id + "/discount");
+    log:printInfo("Checking eligibility for discount for appointment: " + id.toString());
+    http:Response | error response = hospitalEP->get("/" + hospital + "/categories/patient/appointment/" + id.toString() + "/discount");
     handleResponse(response);
 }
 
