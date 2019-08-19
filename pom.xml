@@ -33,11 +33,7 @@
          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
       </license>
    </licenses>
-   <properties>
-      <project-home>${project.basedir}</project-home>
-      <carbon.p2.plugin.version>1.5.8</carbon.p2.plugin.version>
-      <maven.surefire.version>2.12.4</maven.surefire.version>
-   </properties>
+
    <build>
       <plugins>
          <plugin>
@@ -72,4 +68,29 @@
          </properties>
       </profile>
    </profiles>
+
+    <properties>
+        <project-home>${project.basedir}</project-home>
+        <carbon.p2.plugin.version>1.5.8</carbon.p2.plugin.version>
+        <maven.surefire.version>2.12.4</maven.surefire.version>
+
+        <maven.checkstyleplugin.excludes>**/SourceGen.java</maven.checkstyleplugin.excludes>
+        <maven.spotbugsplugin.exclude.file>spotbugs-exclude.xml</maven.spotbugsplugin.exclude.file>
+
+        <ballerina.version>0.992.0-m2-SNAPSHOT</ballerina.version>
+        <lsp4j.version>0.6.0</lsp4j.version>
+        <apache.commons.io.version>2.6</apache.commons.io.version>
+        <ballerina.lang.compiler.version>0.992.0-m2-SNAPSHOT</ballerina.lang.compiler.version>
+        <jackson.databind.version>2.9.8</jackson.databind.version>
+        <mvn.processor.plugin.version>2.2.4</mvn.processor.plugin.version>
+        <h2.database.version>1.4.199</h2.database.version>
+        <commons.lang3.version>3.8.1</commons.lang3.version>
+        <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
+        <wso2.maven.compiler.source>1.8</wso2.maven.compiler.source>
+        <wso2.maven.compiler.target>1.8</wso2.maven.compiler.target>
+        <maven.assembly.plugin.version>2.6</maven.assembly.plugin.version>
+
+        <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
+        <apache.source.release.assembly.descriptor.version>1.0.6</apache.source.release.assembly.descriptor.version>
+    </properties>
 </project>
