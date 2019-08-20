@@ -18,7 +18,7 @@ import ballerina/io;
 import ballerina/config;
 import ballerina/http;
 import ballerina/log;
-import gmail;
+import wso2/gmail;
 
 // CODE-SEGMENT-BEGIN: segment_1
 // Gmail client endpoint declaration with oAuth2 client configurations.
