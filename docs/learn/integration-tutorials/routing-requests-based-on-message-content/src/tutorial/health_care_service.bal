@@ -80,11 +80,11 @@ service hospitalMgtService on httpListener {
                 var result = caller->respond(clientResponse);
                 handleErrorResponse(result, "Error at the backend");
             } else {
-                respondWithError(caller, < string > clientResponse.detail().message,
+                respondWithError(caller, < string > clientResponse.detail().toString(),
                 "Backend service does not properly respond");
             }
         } else {
-            respondWithError(caller, <@untainted> < string > jsonMsg.detail().message, "Request is not JSON");
+            respondWithError(caller, <@untainted> < string > jsonMsg.detail().toString(), "Request is not JSON");
         }
     }
 // CODE-SEGMENT-END: segment_2

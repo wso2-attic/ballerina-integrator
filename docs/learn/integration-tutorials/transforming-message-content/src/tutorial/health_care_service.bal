@@ -40,7 +40,7 @@ service hospitalMgtService on new http:Listener(9092) {
     }
     resource function getDoctorInCategory(http:Caller caller, http:Request req, string category)
     {
-        var response = healthcareEndpoint->get("/queryDoctor/" + untaint category);
+        var response = healthcareEndpoint->get("/queryDoctor/" + <@untainted> category);
         if (response is http:Response && response.getJsonPayload() is json) {
             var result = caller->respond(response);
             if (result is error) {
@@ -70,57 +70,54 @@ service hospitalMgtService on new http:Listener(9092) {
             // Transform the payload into the format which is required by the backend service
             json modifiedPayload = {
                 "patient": {
-                    "name": requestPayload.name,
-                    "dob": requestPayload.dob,
-                    "ssn": requestPayload.ssn,
-                    "address": requestPayload.address,
-                    "phone": requestPayload.phone,
-                    "email": requestPayload.email,
-                    "cardNo": requestPayload.cardNo
+                    "name": <json>requestPayload.name,
+                    "dob": <json>requestPayload.dob,
+                    "ssn": <json>requestPayload.ssn,
+                    "address": <json>requestPayload.address,
+                    "phone": <json>requestPayload.phone,
+                    "email": <json>requestPayload.email,
+                    "cardNo": <json>requestPayload.cardNo
                 },
-                "doctor": requestPayload.doctor,
+                "doctor": <json>requestPayload.doctor,
                 "hospital": hospitalName,
-                "appointmentDate": requestPayload.appointment_date
+                "appointmentDate": <json>requestPayload.appointment_date
             };
             // CODE-SEGMENT-END: segment_1
 
             // Create new request to call the back-end service with the modified payload
             http:Request backendRequest = new();
-            backendRequest.setPayload(untaint modifiedPayload);
+            backendRequest.setPayload(<@untainted> modifiedPayload);
 
             match hospitalName {
                 "grand oak community hospital" => {
-                    backendResponse = healthcareEndpoint->post(GRAND_OAK_EP_PATH + untaint category + "/reserve",
-                    backendRequest);
+                    backendResponse = healthcareEndpoint->post(GRAND_OAK_EP_PATH + <@untainted> category 
+                                                                                + "/reserve",backendRequest);
                 }
                 "clemency medical center" => {
-                    backendResponse = healthcareEndpoint->post(CLEMENCY_EP_PATH + untaint category + "/reserve",
-                    backendRequest);
+                    backendResponse = healthcareEndpoint->post(CLEMENCY_EP_PATH + <@untainted> category 
+                                                                                + "/reserve",backendRequest);
                 }
                 "pine valley community hospital" => {
-                    backendResponse = healthcareEndpoint->post(PINE_VALLEY_EP_PATH + untaint category + "/reserve",
-                    backendRequest);
+                    backendResponse = healthcareEndpoint->post(PINE_VALLEY_EP_PATH + <@untainted> category 
+                                                                                + "/reserve",backendRequest);
                 }
-                _ => {
-                    error err = error(ERROR_CODE, {
-                        message: "Unknown hospital name."
-                    });
-                    backendResponse = err;
-                }
+                 _=> {
+                     error err = error(ERROR_CODE, message = "Unknown hospital name.");
+                     backendResponse = err;
+                 }
             }
-        } else {
-            error err = error(ERROR_CODE, {
-                message: "Invalid json request payload."
-            });
-            backendResponse = err;
-        }
-
+    }
+            else{
+                error err = error(ERROR_CODE, message = "Invalid json request payload.");
+                 backendResponse = err;
+            }
+        
         if (backendResponse is http:Response) {
             // Send response to the client
-            respondAndHandleError(caller, untaint backendResponse, "Error in responding to client!");
+            respondAndHandleError(caller, <@untainted> backendResponse, "Error in responding to client!");
         } else {
             // Send error response to the client
-            createAndSendErrorResponse(caller, untaint backendResponse, "Error in sending request to backend service.");
+            createAndSendErrorResponse(caller, <@untainted> backendResponse, "Error in sending request to backend service.");
         }
     }
 }
@@ -131,7 +128,7 @@ function createAndSendErrorResponse(http:Caller caller, error sourceError, strin
     //Set 500 status code
     response.statusCode = 500;
     //Set the error message to the error response payload
-    response.setPayload(<string> sourceError.detail().message);
+    response.setPayload(<string> sourceError.detail().toString());
     respondAndHandleError(caller, response, respondErrorMsg);
 }
 

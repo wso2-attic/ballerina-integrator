@@ -14,21 +14,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/mysql;
-import ballerina/sql;
 import ballerina/http;
 import ballerina/log;
 import ballerina/config;
+import ballerinax/java.jdbc;
 
-// Defines the MySQL endpoint
-mysql:Client testDB = new({
-        host: config:getAsString("MYSQL_DB_HOST"),
-        port: config:getAsInt("MYSQL_DB_PORT"),
-        name: config:getAsString("MYSQL_DB_NAME"),
-        username: config:getAsString("MYSQL_DB_USERNAME"),
-        password: config:getAsString("MYSQL_DB_PASSWORD"),
-        dbOptions: { useSSL: false }
-    });
+jdbc:Client testDB = new({
+    url: "jdbc:mysql://MYSQL_DB_HOST:MYSQL_DB_PORT/MYSQL_DB_NAME",
+    username: "MYSQL_DB_USERNAME",
+    password: "MYSQL_DB_PASSWORD",
+    poolOptions: { maximumPoolSize: 5 },
+    dbOptions: { useSSL: false }
+});
 
 listener http:Listener httpListener = new(9092);
 
@@ -65,13 +62,14 @@ service dbTransactionService on httpListener {
         }
     }
 
+
     // Resource that handles the HTTP POST requests that are directed to the path '/doctor' to add a new 
     // doctor's information.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/doctor"
     }
-    resource function addDoctorData(http:Caller caller, http:Request request, string fname) {
+    resource function addDoctorData(http:Caller caller, http:Request request) {
 
         http:Response response = new;
 
@@ -89,7 +87,7 @@ service dbTransactionService on httpListener {
 
             var retValue = addDoctorDetails(docName, hospital, speciality, availability, charge);
             
-            if (retValue is sql:UpdateResult) {
+            if (retValue is jdbc:UpdateResult) {
                 if (retValue.updatedRowCount > 0) {
                     json msg = "Insert successful";
                     int statusCode = 200;
@@ -139,7 +137,7 @@ service dbTransactionService on httpListener {
 
             var retValue = updateDoctorDetails(docName, hospital, speciality, availability, charge);
 
-            if (retValue is sql:UpdateResult) {
+            if (retValue is jdbc:UpdateResult) {
                 if (retValue.updatedRowCount > 0) {
                     json msg = "Update successful";
                     int statusCode = 200;
@@ -180,7 +178,7 @@ service dbTransactionService on httpListener {
         var retValue = deleteDoctorDetails(docName);
         string payload = "json";
 
-        if (retValue is sql:UpdateResult) {
+        if (retValue is jdbc:UpdateResult) {
             if (retValue.updatedRowCount > 0) {
                 json msg = "Delete successful";
                 int statusCode = 200;
