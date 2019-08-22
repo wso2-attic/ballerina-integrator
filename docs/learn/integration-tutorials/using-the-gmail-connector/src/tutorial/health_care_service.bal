@@ -15,31 +15,25 @@
 // under the License.
 
 import ballerina/io;
+import ballerina/config;
 import ballerina/http;
 import ballerina/log;
-// CODE-SEGMENT-BEGIN: segment_1
 import wso2/gmail;
 
+// CODE-SEGMENT-BEGIN: segment_1
 // Gmail client endpoint declaration with oAuth2 client configurations.
 gmail:GmailConfiguration gmailConfig = {
-    clientConfig: {
-        auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: "accessToken",
-                    refreshConfig: {
-                        refreshUrl: gmail:REFRESH_URL,
-                        refreshToken: "refreshToken",
-                        clientId: "clientId",
-                        clientSecret: "clientSecret"
-                    }
-                }
-            }
+    clientConfig:{
+        accessToken: config:getAsString("ACCESS_TOKEN"),
+         refreshConfig: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: config:getAsString("REFRESH_TOKEN"),
+            clientId: config:getAsString("CLIENT_ID"),
+            clientSecret: config:getAsString("CLIENT_SECRET")
         }
     }
-};
+}; 
+
 // CODE-SEGMENT-END: segment_1
 
 const RECIPIENT_EMAIL = "someone@gmail.com";
@@ -73,16 +67,16 @@ service hospitalMgtService on new http:Listener(9092) {
             // Tranform the request payload to the format expected by the backend end service.
             json reservationPayload = {
                 "patient": {
-                    "name": requestPayload.name,
-                    "dob": requestPayload.dob,
-                    "ssn": requestPayload.ssn,
-                    "address": requestPayload.address,
-                    "phone": requestPayload.phone,
-                    "email": requestPayload.email
+                    "name": <json>requestPayload.name,
+                    "dob": <json>requestPayload.dob,
+                    "ssn": <json>requestPayload.ssn,
+                    "address": <json>requestPayload.address,
+                    "phone": <json>requestPayload.phone,
+                    "email": <json>requestPayload.email
                 },
-                "doctor": requestPayload.doctor,
-                "hospital": requestPayload.hospital,
-                "appointment_date": requestPayload.appointment_date
+                "doctor": <json>requestPayload.doctor,
+                "hospital": <json>requestPayload.hospital,
+                "appointment_date": <json>requestPayload.appointment_date
             };
             // Call appointment creation.
             http:Response reservationResponse = createAppointment(caller, <@untainted> reservationPayload, category);
@@ -91,7 +85,7 @@ service hospitalMgtService on new http:Listener(9092) {
             if (responsePayload is json) {
                 // Check if the json payload is actually an appointment confirmation response.
                 if (responsePayload.appointmentNumber is ()) {
-                    respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, 
+                    respondToClient(caller, createErrorResponse(http:STATUS_INTERNAL_SERVER_ERROR, 
                     <@untainted> responsePayload.toString()));
                     return;
                 }
@@ -104,13 +98,13 @@ service hospitalMgtService on new http:Listener(9092) {
                 if (paymentResPayload is json) {
                     respondToClient(caller, sendEmail(generateEmail(<@untainted> paymentResPayload)));
                 } else {
-                    respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, "Backend did not respond with json"));
+                    respondToClient(caller, createErrorResponse(http:STATUS_INTERNAL_SERVER_ERROR, "Backend did not respond with json"));
                 }
             } else {
-                respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, "Backend did not respond with json"));
+                respondToClient(caller, createErrorResponse(http:STATUS_INTERNAL_SERVER_ERROR, "Backend did not respond with json"));
             }
         } else {
-            respondToClient(caller, createErrorResponse(http:BAD_REQUEST_400, "Not a valid Json payload"));
+            respondToClient(caller, createErrorResponse(http:STATUS_BAD_REQUEST, "Not a valid Json payload"));
         }
     }
 }
@@ -191,7 +185,8 @@ function createAppointment(http:Caller caller, json payload, string category) re
             post("/pinevalley/categories/" + <@untainted> category + "/reserve", reservationRequest);
         }
         _ => {
-            respondToClient(caller, createErrorResponse(http:INTERNAL_SERVER_ERROR_500, "Unknown hospital name"));
+            respondToClient(caller, createErrorResponse(http:STATUS_INTERNAL_SERVER_ERROR, 
+                                                                            "Unknown hospital name"));
         }
     }
     return handleResponse(reservationResponse);
@@ -210,7 +205,7 @@ function handleResponse(http:Response | error response) returns http:Response {
     if (response is http:Response) {
         return response;
     } else {
-        return createErrorResponse(http:INTERNAL_SERVER_ERROR_500, <string> response.detail().message);
+        return createErrorResponse(http:STATUS_INTERNAL_SERVER_ERROR, <string> response.detail().toString());
     }
 }
 

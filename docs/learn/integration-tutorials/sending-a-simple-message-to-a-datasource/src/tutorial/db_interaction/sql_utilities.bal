@@ -16,6 +16,7 @@
 
 import ballerina/log;
 import ballerina/io;
+import ballerinax/java.jdbc;
 
 // This function returns the output from the SELECT Query when a doctor's speciality is given as the input
 public function getDoctorDetails(string speciality) returns json|error {
@@ -25,7 +26,7 @@ public function getDoctorDetails(string speciality) returns json|error {
     var ret = testDB->select(QUERY_SELECT_DOCTOR_INFORMATION, (), speciality);
 
     if (ret is table< record {}>) {
-        var jsonConvertRet = json.convert(ret);
+        var jsonConvertRet = json.constructFrom(ret);
         if (jsonConvertRet is json) {
             jsonReturnValue = jsonConvertRet;
         } else {
@@ -42,9 +43,9 @@ public function getDoctorDetails(string speciality) returns json|error {
 // This function returns the output from the INSERT Query when the fields of the request payload is given 
 // as the input
 public function addDoctorDetails(string name, string hospital, string speciality, string availability, int charge)
-                                                                                returns sql:UpdateResult|error {
+                                                                                returns jdbc:UpdateResult|error {
 
-    sql:UpdateResult|error result = testDB->update(QUERY_INSERT_DOCTOR_INFORMATION, name, hospital, speciality,
+    jdbc:UpdateResult|error result = testDB->update(QUERY_INSERT_DOCTOR_INFORMATION, name, hospital, speciality,
                                                                                         availability, charge);
     var response = handleTransaction(result);
     return response;
@@ -53,9 +54,9 @@ public function addDoctorDetails(string name, string hospital, string speciality
 // This function returns the output from the UPDATE Query when the fields of the request payload is given
 // as the input
 public function updateDoctorDetails(string name, string hospital, string speciality, string availability, int charge)
-                                                                                returns sql:UpdateResult|error {
+                                                                                returns jdbc:UpdateResult|error {
 
-    sql:UpdateResult|error result = testDB->update(QUERY_UPDATE_DOCTOR_INFORMATION, hospital, speciality,
+    jdbc:UpdateResult|error result = testDB->update(QUERY_UPDATE_DOCTOR_INFORMATION, hospital, speciality,
                                                                                     availability, charge, name);
     var response = handleTransaction(result);
     return response;
@@ -63,16 +64,16 @@ public function updateDoctorDetails(string name, string hospital, string special
 
 // This function returns the output from the DELETE Query when the name of the doctor whose records
 // to be removed is given as the input
-public function deleteDoctorDetails(string name) returns sql:UpdateResult|error {
+public function deleteDoctorDetails(string name) returns jdbc:UpdateResult|error {
 
-    sql:UpdateResult|error result = testDB->update(QUERY_DELETE_DOCTOR_INFORMATION, name);
+    jdbc:UpdateResult|error result = testDB->update(QUERY_DELETE_DOCTOR_INFORMATION, name);
     var response = handleTransaction(result);
     return response;
 }
 
 // This function returns and logs whether the query status when the result from the query is given as input
-function handleTransaction(sql:UpdateResult|error result) returns sql:UpdateResult|error{
-    if (result is sql:UpdateResult) {
+function handleTransaction(jdbc:UpdateResult|error result) returns jdbc:UpdateResult|error{
+    if (result is jdbc:UpdateResult) {
             if (result.updatedRowCount > 0) {
                 log:printInfo("Query execution successful");
             } else {
