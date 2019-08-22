@@ -4,7 +4,7 @@ In this tutorial, let’s try a simple scenario where a user can execute operati
 
 #### What you will build
 
-The RESTful service we are going to create will contain resources to carry out the following actions.
+The RESTful service we are going to create contains resources to carry out the following actions.
 
 - Insert details about doctors
 - Update doctor information
@@ -13,12 +13,11 @@ The RESTful service we are going to create will contain resources to carry out t
 
 #### Prerequisites
 
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
-  We will call the installed directory as BALLERINA_HOME.
+- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS. From this point on, we refer to this installed directory as <BALLERINA_HOME>.
 - A Text Editor or an IDE
   > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 - Download and install MySQL <!--version-->
-- Download the JDBC Driver jar file and copy it into the BALLERINA_HOME>/bre/lib folder.
+- Download the JDBC Driver .jar file and copy it into the <BALLERINA_HOME>/bre/lib folder.
 - Download and run the **Doctors.sql** script file from [here](https://github.com/wso2/ballerina-integrator/raw/master/examples/integration-tutorials/sending-a-simple-message-to-a-datasource/sql-data-service/resources/Doctors.sql) to create the backend database.
 
 ### Let's Get Started!
@@ -56,19 +55,19 @@ Ballerina is a complete programming language that supports custom project struct
 
 Create the above directories in your local machine and create the empty .bal files as mentioned.
 
-Then open the terminal and navigate to _sending-a-simple-message-to-a-datasource/guide_ directory. Run the following command to initialize a Ballerina project.
+Then open the terminal and navigate to `sending-a-simple-message-to-a-datasource/guide` directory. Run the following command to initialize a Ballerina project.
 
 ```
-$ ballerina init
+$ ballerina new MyNewProject
 ```
 
-#### Creating the Client to access the Backend Database
+#### Creating the Client to Access the Backend Database
 
-First we have to define the MySql client in the *data_service.bal* file.
+First we have to define the MySQL client in the `data_service.bal` file.
 
-The properties of the database connection should be added to a configuration file, and accessed from the file at runtime. In Ballerina, name of this config file has to be **ballerina.conf**.
+The properties of the database connection should be added to a configuration file, and accessed from the file at runtime. In Ballerina, name of this config file has to be `ballerina.conf`.
 
-Navigate to *sending-a-simple-message-to-a-datasource/guide* directory, create the config file *ballerina.conf* and add the following database connection properties in the file.
+Navigate to `sending-a-simple-message-to-a-datasource/guide` directory, create the config file `ballerina.conf`, and add the following database connection properties to the file.
 
 ```
 MYSQL_DB_HOST = "localhost"
@@ -78,7 +77,7 @@ MYSQL_DB_USERNAME = "sqlUsername"
 MYSQL_DB_PASSWORD = "sqlPassword"
 ```
 
-In the **data_service.bal** file, create the MySql client as below.
+In the `data_service.bal` file, create the MySQL client as below.
 
 ```ballerina
 mysql:Client testDB = new({
@@ -95,7 +94,7 @@ mysql:Client testDB = new({
 
 Let's get started with implementing the services which perform database transactions.
 
-In the **data_service.bal** file, create a listener to listen to API requests on port 9092 as below.
+In the `data_service.bal` file, create a listener to listen to API requests on port 9092 as below.
 
 ```ballerina
 listener http:Listener httpListener = new(9092);
@@ -114,7 +113,7 @@ service dbTransactionService on httpListener {
 
 #### Creating the resources for accessing the database
 
-Now, let's define the resources required to access the database in the service we created above, in the **data_service.bal** file.
+Now, let's define the resources required to access the database in the service we created above, in the `data_service.bal` file.
 
 ```ballerina
     @http:ResourceConfig {
@@ -150,13 +149,13 @@ Now, let's define the resources required to access the database in the service w
     }
 ```
 
-Then let's implement the logic related to querying the database for a defined query inside **sql_utilities.bal** file.
+Then let's implement the logic related to querying the database for a defined query inside `sql_utilities.bal` file.
 
 ```ballerina
 public function getDoctorDetails(string speciality) returns json|error {
 
         // implementation
-        //returns a json or error
+        // returns a JSON or error
 }
 
 public function addDoctorDetails(string name, string hospital, string speciality, string availability, int charge) returns sql:UpdateResult|error {
@@ -178,7 +177,7 @@ public function deleteDoctorDetails(string name) returns sql:UpdateResult|error 
 }
 ```
 
-Finally we will define the the mysql queries inside **sql_queries.bal** file which is used to query the Doctors table.
+Finally we will define the the MySQL queries inside `sql_queries.bal` file that is used to query the Doctors table.
 
 ```ballerina
 final string QUERY_SELECT_DOCTOR_INFORMATION =
@@ -201,7 +200,7 @@ Once you are done with the development, you can deploy the services using any of
 
 #### Deploying Locally
 
-To deploy locally, navigate to *routing-requests-based-on-message-content/guide*, and execute the following command.
+To deploy locally, navigate to `routing-requests-based-on-message-content/guide`, and execute the following command.
 
 ```
 $ ballerina build
@@ -216,7 +215,7 @@ $ ballerina run <Executable_File_Name>
 
 #### Deploying on Docker
 
-If necessary you can run the service that you developed above as a Docker container. Ballerina language includes a Ballerina_Docker_Extension, which offers native support to run Ballerina programs on containers.
+If necessary you can run the service that you developed above as a Docker container. Ballerina language includes a `Ballerina_Docker_Extension`, which offers native support to run Ballerina programs on containers.
 
 To run a service as a Docker container, add the corresponding Docker annotations to your service code.
 
@@ -230,7 +229,7 @@ After adding the implementation, we can start the RESTful service as below.
 $ ballerina run data_service.bal
 ```
 
-The service will be started and you will see the below output.
+The service starts and you will see the following output.
 
 ```
 $ Initiating service(s) in 'data_service'
@@ -239,8 +238,7 @@ $ Initiating service(s) in 'data_service'
 
 #### Invoking the Database Service
 
-Now we can test the functionality of the database service by sending HTTP requests for each order management operation.<br/>
-Following are sample json requests that you can use to test each operation of the database service.
+Now we can test the functionality of the database service by sending HTTP requests for each order management operation. The following are sample JSON requests that you can use to test each operation of the database service.
 
 **Retrieve Doctor Information**
 
