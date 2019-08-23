@@ -6,7 +6,7 @@ Guides showcase how to build different types of integrations using a complete de
 
 <table border="0">
 <tr>
-    <td><b>Asynchronous Messaging</b>
+    <td><b>Asynchronous Messaging</b></br>
     Send a message asynchronously to an HTTP service</td>
     <td>Value 1</td>
     <td>Column 1</td>
