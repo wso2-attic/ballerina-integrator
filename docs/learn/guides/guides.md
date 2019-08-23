@@ -11,4 +11,8 @@ Guides showcase how to build different types of integrations using a complete de
     <td>Key 2</td>
     <td>Value 2</td>
 </tr>
+<tr>
+    <td>Key 3</td>
+    <td>Value 3</td>
+</tr>    
 </table>
