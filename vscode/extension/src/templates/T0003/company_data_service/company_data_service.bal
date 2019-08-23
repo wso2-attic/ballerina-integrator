@@ -47,7 +47,7 @@ import ballerina/log;
 //    image: "ballerina.guides.io/company_data_service:v1.0",
 //    name: "ballerina-guides-company_data_service"
 //}
-listener http:Listener httpListener = new http:Listener(9090);
+listener http:Listener httpListener = new http:Listener(${clientPort});
 
 // Company data management is done using an in memory map.
 map<json> companyDataMap = {

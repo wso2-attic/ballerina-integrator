@@ -107,6 +107,15 @@
                 "value": [
                     "http://localhost:9090/companies"
                 ]
+            },
+            {
+                "id": "P003",
+                "label": "Client Port",
+                "name": "clientPort",
+                "type": "text",
+                "value": [
+                    "9090"
+                ]
             }
         ]
     }
