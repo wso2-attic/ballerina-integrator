@@ -109,5 +109,21 @@
                 ]
             }
         ]
+    },
+    {
+        "id": "T0004",
+        "name": "XML to JSON Transformation",
+        "description": "Contains a project template for XML to JSON Transformation.",
+        "placeholders": [
+            {
+                "id": "P001",
+                "label": "Listener Port",
+                "name": "listenerPort",
+                "type": "text",
+                "value": [
+                    "9092"
+                ]
+            }
+        ]
     }
 ]
