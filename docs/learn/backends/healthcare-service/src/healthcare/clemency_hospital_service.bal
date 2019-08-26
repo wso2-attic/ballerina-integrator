@@ -14,8 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
-import ballerina/log;
+import ballerina/http;
 
 Doctor doctorClemency1 = {
     name: "anne clement",
