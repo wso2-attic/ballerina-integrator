@@ -215,5 +215,102 @@
                 ]
             }
         ]
+    },
+    {
+        "id": "T0008",
+        "name": "File Integration with SMB Listener",
+        "description": "Contains a project template for implementing SMB listener.",
+        "placeholders": [
+            {
+                "id": "P001",
+                "label": "Moved Folder",
+                "name": "destFolder",
+                "type": "text",
+                "value": [
+                    "/sambaOutFolde"
+                ]
+            },
+            {
+                "id": "P002",
+                "label": "Error Folder",
+                "name": "errorFolder",
+                "type": "text",
+                "value": [
+                    "/sambaFaultFolder"
+                ]
+            },
+            {
+                "id": "P003",
+                "label": "Operation",
+                "name": "operation",
+                "type": "text",
+                "value": [
+                    "MOVE"
+                ]
+            },
+            {
+                "id": "P004",
+                "label": "SMB Host",
+                "name": "smbHost",
+                "type": "text",
+                "value": [
+                    "localhost"
+                ]
+            },
+            {
+                "id": "P005",
+                "label": "SMB Listener Port",
+                "name": "smbListenerPort",
+                "type": "number",
+                "value": [
+                    445
+                ]
+            },
+            {
+                "id": "P006",
+                "label": "Polling Interval",
+                "name": "smbPollingInterval",
+                "type": "number",
+                "value": [
+                    60000
+                ]
+            },
+            {
+                "id": "P007",
+                "label": "FIle Name Pattern",
+                "name": "fileNamePattern",
+                "type": "text",
+                "value": [
+                    "xml"
+                ]
+            },
+            {
+                "id": "P008",
+                "label": "User Name",
+                "name": "smbUserName",
+                "type": "text",
+                "value": [
+                    "user1"
+                ]
+            },
+            {
+                "id": "P009",
+                "label": "Password",
+                "name": "smbPassword",
+                "type": "text",
+                "value": [
+                    "password"
+                ]
+            },
+            {
+                "id": "P010",
+                "label": "Listener Folder",
+                "name": "folder",
+                "type": "text",
+                "value": [
+                    "/sambaInFolder"
+                ]
+            }
+        ]
     }
 ]
