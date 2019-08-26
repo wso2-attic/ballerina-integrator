@@ -19,6 +19,7 @@ package org.wso2.integration.util;
 import org.wso2.integration.ballerinalangserver.SnippetsBlock;
 import org.wso2.integration.ballerinalangserver.SnippetsGenerator;
 
+
 public enum Snippets {
 
     /**
@@ -26,12 +27,20 @@ public enum Snippets {
      */
 
     DEF_RECORD(SnippetsGenerator.getRecordDefinitionSnippet()),
-
     DEF_RESOURCE_HTTP(SnippetsGenerator.getHttpResourceDefinitionSnippet()),
-
     DEF_SERVICE_WEBSOCKET(SnippetsGenerator.getWebSocketServiceDefSnippet()),
-
-    DEF_SERVICE_GRPC(SnippetsGenerator.getGRPCServiceDefSnippet());
+    DEF_SERVICE_GRPC(SnippetsGenerator.getGRPCServiceDefSnippet()),
+    DEF_SERVICE_AMAZONS3(SnippetsGenerator.getAmazonS3ServiceSnippet()),
+    DEF_RESOURCE_S3_CREATE_BUCKET(SnippetsGenerator.getS3CreateBucketResourceSnippet()),
+    DEF_RESOURCE_S3_LIST_BUCKETS(SnippetsGenerator.getS3listBucketsResourceSnippet()),
+    DEF_RESOURCE_S3_CREATE_OBJECT(SnippetsGenerator.getS3CreateObjectResourceSnippet()),
+    DEF_RESOURCE_S3_GET_OBJECT(SnippetsGenerator.getS3GetObjectResourceSnippet()),
+    DEF_RESOURCE_S3_LIST_OBJECTS(SnippetsGenerator.getS3ListObjectsResourceSnippet()),
+    DEF_RESOURCE_S3_DELETE_OBJECT(SnippetsGenerator.getS3DeleteObjectResourceSnippet()),
+    DEF_RESOURCE_S3_DELETE_BUCKET(SnippetsGenerator.getS3DeleteBucketResourceSnippet()),
+    DEF_CLIENT_CONFIG_AMAZONS3(SnippetsGenerator.getAmazonS3ConfigSnippet()),
+    DEF_CLIENT_AMAZONS3(SnippetsGenerator.getAmazonS3ClientSnippet()),
+    DEF_ERROR_HANDLING(SnippetsGenerator.getRespondAndHandleError());
 
 
     private String snippetName;

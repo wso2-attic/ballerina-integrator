@@ -26,13 +26,14 @@ import java.io.File;
 public final class Constants {
 
     // Directory paths
-    public static final String REPO_EXAMPLES_DIR = ".." + File.separator + "examples";
+    public static final String REPO_EXAMPLES_DIR = ".." + File.separator + "docs";
     public static final String TEMP_DIR = "tempDirectory/";
     public static final String MKDOCS_CONTENT = "mkdocs-content";
 
     // Files
     public static final String README_MD = "README.md";
     public static final String TEMP_DIR_MD = "tempDirectory.md";
+    public static final String GIT_PROPERTIES_FILE = "git.properties";
 
     // Special syntax
     public static final String INCLUDE_CODE_TAG = "INCLUDE_CODE:";
@@ -43,17 +44,31 @@ public final class Constants {
     public static final String CODE = "{CODE}";
     public static final String NEW_LINE = "\n";
     private static final String THREE_BACK_TICKS = "```";
+    public static final String FRONT_MATTER_SIGN = "---";
     public static final String LICENCE_LAST_LINE = "// under the License.";
     public static final String OPEN_CURLY_BRACKET = "{";
     public static final String CLOSE_CURLY_BRACKET = "}";
     public static final String CODE_SEGMENT_BEGIN = "// CODE-SEGMENT-BEGIN: ";
     public static final String CODE_SEGMENT_END = "// CODE-SEGMENT-END: ";
     public static final String CODE_MD_SYNTAX = THREE_BACK_TICKS + NEW_LINE + CODE + NEW_LINE + THREE_BACK_TICKS;
+    public static final String FORWARD_SLASH = "/";
+    public static final String FILE = "file";
+    public static final String SEGMENT = "segment";
+    public static final String COLAN = ":";
+    public static final String COMMA = ",";
+    public static final String DOT = ".";
+    public static final String HASH = "#";
+    public static final String EQUAL = "=";
+    public static final String MARKDOWN_FILE_EXT = "md";
+    public static final String GIT_COMMIT_ID = "git.commit.id";
+    public static final String COMMIT_HASH = "commitHash: ";
+    public static final String TITLE = "title: ";
+    public static final String NOTE = "note: This is an auto-generated file do not edit this, You can edit content in "
+            + "\"ballerina-integrator\" repo";
     public static final String BALLERINA_CODE_MD_SYNTAX =
             THREE_BACK_TICKS + "ballerina" + NEW_LINE + CODE + NEW_LINE + THREE_BACK_TICKS;
     public static final String JAVA_CODE_MD_SYNTAX =
             THREE_BACK_TICKS + "java" + NEW_LINE + CODE + NEW_LINE + THREE_BACK_TICKS;
-    public static final String MD_FILE_EXT = "md";
 
     private Constants() {}
 }

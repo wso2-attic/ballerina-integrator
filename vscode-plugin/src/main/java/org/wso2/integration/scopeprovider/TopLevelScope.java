@@ -71,6 +71,17 @@ public class TopLevelScope extends TopLevelScopeProvider {
         completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_HTTP));
         completionItemsArr.add(getStaticItem(context, Snippets.DEF_RECORD));
         completionItemsArr.add(getStaticItem(context, Snippets.DEF_SERVICE_WEBSOCKET));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_SERVICE_AMAZONS3));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_CREATE_BUCKET));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_CLIENT_CONFIG_AMAZONS3));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_CLIENT_AMAZONS3));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_ERROR_HANDLING));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_LIST_BUCKETS));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_CREATE_OBJECT));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_GET_OBJECT));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_LIST_OBJECTS));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_DELETE_OBJECT));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_DELETE_BUCKET));
 
         return completionItemsArr;
     }
