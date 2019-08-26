@@ -21,9 +21,12 @@ package org.wso2.integration.ballerina.utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -31,16 +34,25 @@ import java.util.logging.Logger;
 import static org.wso2.integration.ballerina.constants.Constants.BALLERINA_CODE_MD_SYNTAX;
 import static org.wso2.integration.ballerina.constants.Constants.CODE;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_MD_SYNTAX;
+import static org.wso2.integration.ballerina.constants.Constants.COMMIT_HASH;
 import static org.wso2.integration.ballerina.constants.Constants.EMPTY_STRING;
+import static org.wso2.integration.ballerina.constants.Constants.EQUAL;
+import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_SIGN;
+import static org.wso2.integration.ballerina.constants.Constants.GIT_COMMIT_ID;
+import static org.wso2.integration.ballerina.constants.Constants.HASH;
 import static org.wso2.integration.ballerina.constants.Constants.JAVA_CODE_MD_SYNTAX;
 import static org.wso2.integration.ballerina.constants.Constants.LICENCE_LAST_LINE;
 import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
+import static org.wso2.integration.ballerina.constants.Constants.NOTE;
+import static org.wso2.integration.ballerina.constants.Constants.TITLE;
 
 /**
  * Util functions used for site builder.
  */
 public class Utils {
     private static final Logger logger = Logger.getLogger(Utils.class.getName());
+
+    private Utils() {}
 
     /**
      * Create a directory.
@@ -91,7 +103,7 @@ public class Utils {
      * @return path of the current directory
      */
     public static String getCurrentDirectoryName(String path) {
-        return path.substring(path.lastIndexOf("/") + 1);
+        return path.substring(path.lastIndexOf(File.separator) + 1);
     }
 
     /**
@@ -150,12 +162,43 @@ public class Utils {
      * @param line heading line of the md file.
      * @return default front matter for posts
      */
-    public static String getPostFrontMatter(String line) {
-        line = line.replace("#", EMPTY_STRING).trim();
-        return "---" + NEW_LINE + "title: " + line + NEW_LINE + "---";
+    public static String getPostFrontMatter(String line, String versionID) {
+        line = line.replace(HASH, EMPTY_STRING).trim();
+        return FRONT_MATTER_SIGN + NEW_LINE
+                + TITLE + line + NEW_LINE
+                + COMMIT_HASH + versionID + NEW_LINE
+                + NOTE + NEW_LINE
+                + FRONT_MATTER_SIGN;
     }
 
+    /**
+     * Checks given directory is empty or not.
+     *
+     * @param directory directory want to check
+     * @return is empty
+     */
     public static boolean isDirEmpty(File directory) {
         return directory.isDirectory() && Objects.requireNonNull(directory.list()).length == 0;
+    }
+
+    /**
+     * Get commit hash from `git.properties` file input stream.
+     *
+     * @param inputStream `git.properties` file input stream
+     * @return commit hash
+     */
+    public static String getCommitHash(InputStream inputStream) {
+        String commitHash = null;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.contains(GIT_COMMIT_ID + EQUAL)) {
+                    commitHash = line.replace(GIT_COMMIT_ID + EQUAL, EMPTY_STRING);
+                }
+            }
+            return commitHash;
+        } catch (IOException e) {
+            throw new ServiceException("Error occurred when reading input stream.", e);
+        }
     }
 }
