@@ -234,8 +234,10 @@ service stockQuote on httpListener {
 
 
 ## Testing 
-### Running the axis2 server
-First run the axis2 server by following the [documentation]().
+### Running the axis2 server and deploying the back-end service
+First run the axis2 server by following the [documentation](https://docs.wso2.com/display/EI650/Setting+Up+the+ESB+Samples#SettingUptheESBSamples-StartingtheAxis2server).
+
+To deploy the back-end service SimpleStockQuoteService, run the ant command from the  <EI_HOME>/samples/axis2Server/src/SimpleStockQuoteService directory.
 
 ### Invoking the RESTful service 
 

@@ -109,5 +109,30 @@
                 ]
             }
         ]
+    },
+    {
+        "id": "T0005",
+        "name": "RESTful Service",
+        "description": "Contains a project template for implementing RESTful service for a SOAP backend. Note: Please ESC when it asks the values for symbol, price, quantity & payload.",
+        "placeholders": [
+            {
+                "id": "P001",
+                "label": "Listener Port",
+                "name": "listenerPort",
+                "type": "text",
+                "value": [
+                    "9090"
+                ]
+            },
+            {
+                "id": "P002",
+                "label": "Stock-Quote Service Base URL",
+                "name": "stockQuoteServiceURL",
+                "type": "text",
+                "value": [
+                    "http://localhost:9000"
+                ]
+            }
+        ]
     }
 ]
