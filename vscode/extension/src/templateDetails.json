@@ -109,5 +109,111 @@
                 ]
             }
         ]
+    },
+      {
+        "id": "T0005",
+        "name": "File Integration with FTP Listener",
+        "description": "Contains a project template for implementing ftp listener.",
+        "placeholders": [
+            {
+                "id": "P001",
+                "label": "Moved Folder",
+                "name": "movedFolder",
+                "type": "text",
+                "value": [
+                    "/movedFolder"
+                ]
+            },
+            {
+                "id": "P002",
+                "label": "Error Folder",
+                "name": "errorFolder",
+                "type": "text",
+                "value": [
+                    "/errFoldr"
+                ]
+            },
+            {
+                "id": "P003",
+                "label": "Operation",
+                "name": "operation",
+                "type": "text",
+                "value": [
+                    "MOVE"
+                ]
+            },
+            {
+                "id": "P004",
+                "label": "Protocol",
+                "name": "protocol",
+                "type": "text",
+                "value": [
+                    "FTP"
+                ]
+            },
+            {
+                "id": "P005",
+                "label": "FTP Host",
+                "name": "ftpHost",
+                "type": "text",
+                "value": [
+                    "localhost"
+                ]
+            },
+            {
+                "id": "P006",
+                "label": "FTP Port",
+                "name": "ftpListenerPort",
+                "type": "number",
+                "value": [
+                    21
+                ]
+            },
+            {
+                "id": "P007",
+                "label": "Polling Interval",
+                "name": "ftpPollingInterval",
+                "type": "number",
+                "value": [
+                    60000
+                ]
+            },
+            {
+                "id": "P008",
+                "label": "FIle Name Pattern",
+                "name": "fileNamePattern",
+                "type": "text",
+                "value": [
+                    "xml"
+                ]
+            },
+            {
+                "id": "P009",
+                "label": "User Name",
+                "name": "ftpUserName",
+                "type": "text",
+                "value": [
+                    "FTPGuest"
+                ]
+            },
+            {
+                "id": "P010",
+                "label": "Password",
+                "name": "ftpPassword",
+                "type": "text",
+                "value": [
+                    "password"
+                ]
+            },
+            {
+                "id": "P011",
+                "label": "Folder",
+                "name": "folder",
+                "type": "text",
+                "value": [
+                    "/folder"
+                ]
+            }
+        ]
     }
 ]
