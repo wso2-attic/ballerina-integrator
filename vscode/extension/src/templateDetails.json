@@ -109,5 +109,57 @@
                 ]
             }
         ]
+    },
+    {
+        "id": "T0004",
+        "name": "Scatter-Gather Integration Pattern",
+        "description": "Contains a project template for implementing Scatter-Gather Integration Pattern.",
+        "placeholders": [
+            {
+                "id": "P001",
+                "label": "Listener Port",
+                "name": "listenerPort",
+                "type": "text",
+                "value": [
+                    "9090"
+                ]
+            },
+            {
+                "id": "P002",
+                "label": "Client Endpoint 1",
+                "name": "clientEP1",
+                "type": "text",
+                "value": [
+                    "http://www.mocky.io/v2/5d63747c330000796055a838"
+                ]
+            },
+            {
+                "id": "P003",
+                "label": "Client Endpoint 2",
+                "name": "clientEP2",
+                "type": "text",
+                "value": [
+                    "http://www.mocky.io/v2/5d637486330000278255a839"
+                ]
+            },
+            {
+                "id": "P004",
+                "label": "Request Json Payload",
+                "name": "requestPayload",
+                "type": "text",
+                "value": [
+                    "{&quot;test&quot;:&quot;payload&quot;}"
+                ]
+            },
+            {
+                "id": "P005",
+                "label": "Expected Json Payload",
+                "name": "expectedJsonResponse",
+                "type": "text",
+                "value": [
+                    "{&quot;name&quot;:&quot;vjs&quot;, &quot;age&quot;:&quot;40&quot;}"
+                ]
+            }
+        ]
     }
 ]
