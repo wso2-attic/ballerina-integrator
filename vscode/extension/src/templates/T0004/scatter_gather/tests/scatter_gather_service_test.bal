@@ -21,21 +21,21 @@ json expectedResponse = ${expectedJsonResponse};
 
 http:Client clientEP = new("http://localhost:9090");
 
-boolean serviceStarted = false;
-function startService() {
-    serviceStarted = test:startServices("scatter_gather_service");
-}
+// boolean serviceStarted = false;
+// function startService() {
+//     serviceStarted = test:startServices("scatter_gather_service");
+// }
 
-function stopService() {
-    test:stopServices("scatter_gather_service");
-}
+// function stopService() {
+//     test:stopServices("scatter_gather_service");
+// }
 
 @test:Config {
-    before: "startService",
-    after: "stopService"
+    // before: "startService",
+    // after: "stopService"
 }
 function testScatterGather() {
-    test:assertTrue(serviceStarted, msg = "Unable to start the service");
+    // test:assertTrue(serviceStarted, msg = "Unable to start the service");
     var response = clientEP->get("/endpoints/call");
     if (response is http:Response) {
         test:assertEquals(response.statusCode, 200, msg = "Scatter-Gather service did not respond with 200 OK signal!");
