@@ -16,7 +16,6 @@
 
 import ballerina/test;
 import ballerina/http;
-import ballerina/io;
 
 http:Client clientEP = new("http://localhost:9090/stockQuote");
 

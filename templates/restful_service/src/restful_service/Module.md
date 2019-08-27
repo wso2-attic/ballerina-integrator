@@ -16,10 +16,11 @@ First run the axis2 server by following the [documentation](https://docs.wso2.co
 To deploy the back-end service SimpleStockQuoteService, run the ant command from the  <EI_HOME>/samples/axis2Server/src/SimpleStockQuoteService directory.
 
 ### Invoking the RESTful service 
+First, alter the config file `src/hello_world_service/resources/ballerina.conf` as per the requirement.
 
 To run the service, execute the following command.
 ```bash
-    $ ballerina run restful_service
+    $ ballerina run restful_service --config src/restful_service/resources/ballerina.conf
 ```
 Successful startup of the service results in the following output.
 ```

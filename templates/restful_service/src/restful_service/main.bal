@@ -14,6 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/config;
 import ballerina/http;
 import ballerina/io;
 import ballerina/log;
@@ -21,10 +22,10 @@ import ballerina/mime;
 
 // The stock quote management is done using the SimpleStockQuoteService.
 // Define a listener endpoint:
-listener http:Listener httpListener = new(${listenerPort});
+listener http:Listener httpListener = new(config:getAsInt("LISTENER_PORT"));
 
 // Constants.
-const string STOCK_QUOTE_SERVICE_BASE_URL = "${stockQuoteServiceURL}";
+string STOCK_QUOTE_SERVICE_BASE_URL = config:getAsString("STOCK_QUOTE_SERVICE_URL", "http://localhost:9000");
 const string ERROR_MESSAGE_WHEN_RESPOND = "Error while sending response to the client";
 const string ERROR_MESSAGE_INVALID_PAYLOAD = "Invalid payload received";
 
@@ -49,7 +50,7 @@ service stockQuote on httpListener {
         xml soapEnv = self.constructSOAPPayload(<@untainted> payload, "http://schemas.xmlsoap.org/soap/envelope/");
 
         request.addHeader("SOAPAction", "urn:getQuote");
-        request.setXmlPayload(soapEnv);
+        request.setXmlPayload(<@untainted> soapEnv);
         request.setHeader(mime:CONTENT_TYPE, mime:TEXT_XML);
 
         var httpResponse = stockQuoteClient->post("/services/SimpleStockQuoteService", <@untainted> request);
@@ -83,7 +84,7 @@ service stockQuote on httpListener {
             xml soapEnv = self.constructSOAPPayload(<@untainted> payload, "http://schemas.xmlsoap.org/soap/envelope/");
 
             request.addHeader("SOAPAction", "urn:placeOrder");
-            request.setXmlPayload(soapEnv);
+            request.setXmlPayload(<@untainted> soapEnv);
             request.setHeader(mime:CONTENT_TYPE, mime:TEXT_XML);
 
             var httpResponse = stockQuoteClient->post("/services/SimpleStockQuoteService", <@untainted> request);
@@ -91,11 +92,14 @@ service stockQuote on httpListener {
                 if (httpResponse.statusCode == 202) {
                     httpResponse.statusCode = 201;
                     httpResponse.reasonPhrase = "Created";
-                    httpResponse.setHeader("Location", "http://localhost:" + io:sprintf("%s", ${listenerPort}) + "/stockQuote/quote/" + symbol);
+                    httpResponse.setHeader("Location", "http://localhost:"
+                    + io:sprintf("%s", config:getAsInt("LISTENER_PORT")) + "/stockQuote/quote/" + symbol);
 
                     // Create response message.
                     xml responsePayload = xml `<ns:placeOrderResponse xmlns:ns="http://services.samples">
-                                                   <ns:response xmlns:ax21="http://services.samples/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ax21:placeOrderResponse">
+                                                   <ns:response xmlns:ax21="http://services.samples/xsd"
+                                                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                                   xsi:type="ax21:placeOrderResponse">
                                                        <ax21:status>Order has been created</ax21:status>
                                                    </ns:response>
                                                </ns:placeOrderResponse>`;
