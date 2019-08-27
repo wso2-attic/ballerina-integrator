@@ -91,3 +91,25 @@ Guides showcase how to build different types of integrations using a complete de
     Integrate with MongoDB</td>
   </tr>
 </table>
+
+## Tutorials
+
+<table>
+  <tr>
+    <td><b>Sending a Simple Message to a Service</b></td>
+    <td><b>Sending a Simple Message to a Datasource</b></td>
+    <td><b>Routing Requests Based on Message Content</b></td>
+  </tr>
+  
+  <tr>
+    <td><b>Transforming Message Content</b></td>
+    <td><b>Exposing Several Services as a Single Service</b></td>
+    <td><b>Storing and Forwarding Messages</b></td>
+  </tr>
+  
+  <tr>
+    <td><b>Using the Gmail Connector</b></td>
+    <td><b>Using the Analytics Dashboard</b></td>
+    <td></td>
+  </tr>
+</table>
