@@ -16,8 +16,7 @@
 
 import ballerina/test;
 import ballerina/http;
-import ballerina/log;
-//import wso2/healthcare;
+import wso2/healthcare as _;
 
 http:Client clientEP = new("http://localhost:9092/hospitalMgtService");
 
