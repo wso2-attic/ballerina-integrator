@@ -1,7 +1,6 @@
 # SMB Listener
 
-
-This template we'll implement SMB listener which will listen to a remote directory and periodically notify the file addition of a file that complies with the specified file pattern.
+This template we'll implement SMB listener which will listen to a remote directory and periodically notify the addition of a file that complies with the specified file pattern.
 
 ## How to run the template
 
