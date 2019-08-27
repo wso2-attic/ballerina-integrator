@@ -47,118 +47,119 @@ function testReserveAppointmentGrandoaks(json dataset, json resultset) {
 
 function testReserveAppointmentGrandoaksDataProvider() returns json[][]
 {
-    return [
+    return 
+    [
     // TC001 - Verify if appoinement reservation can be done by providing all the valid inputs.
-    [
-    {
-        "patient": {
-            "name": "Leonardo Duke",
-            "dob": "1988-03-19",
-            "ssn": "111-23-505",
-            "address": "NY",
-            "phone": "8070586755",
-            "email": "jduke@gmail.com"
-        },
-        "doctor": "thomas collins",
-        "hospital": "grand oak community hospital",
-        "appointmentDate": "2019-07-02"
-    },
-    {
-    "appointmentNumber": 4,
-    "doctor": {
-        "name": "thomas collins",
-        "hospital": "grand oak community hospital",
-        "category": "surgery",
-        "availability": "9.00 a.m - 11.00 a.m",
-        "fee": 7000.0
-    },
-    "patient": {
-        "name": "Leonardo Duke",
-        "dob": "1988-03-19",
-        "ssn": "111-23-505",
-        "address": "NY",
-        "phone": "8070586755",
-        "email": "jduke@gmail.com"
-    },
-    "fee": 7000.0,
-    "confirmed": false,
-    "appointmentDate": "2019-07-02"
-    }
-    ],
-    // TC002 - Verify if appoinment reservation can be done by not providing non-mandatory feilds.
-    [
-    {
-        "patient": {
-            "name": "J Serasinghe",
-            "dob": "1951-03-19",
-            "ssn": "112-29-585",
-            "address": "California",
-            "phone": "8070521755",
-            "email": ""
-        },
-        "doctor": "henry parker",
-        "hospital": "grand oak community hospital",
-        "appointmentDate": "2019-08-30"
-    },
-    {
-    "appointmentNumber": 5,
-    "doctor": {
-        "name": "henry parker",
-        "hospital": "grand oak community hospital",
-        "category": "ent",
-        "availability": "9.00 a.m - 11.00 a.m",
-        "fee": 4500.0
-    },
-    "patient": {
-        "name": "J Serasinghe",
-        "dob": "1951-03-19",
-        "ssn": "112-29-585",
-        "address": "California",
-        "phone": "8070521755",
-        "email": ""
-    },
-    "fee": 4500.0,
-    "confirmed": false,
-    "appointmentDate": "2019-08-30"
-    }
-    ],
-    // TC003 - Verify if appointment reservation can be made for a child.
-    [
-    {
-        "patient": {
-            "name": "Little John",
-            "dob": "2018-04-29",
-            "ssn": "",
-            "address": "California",
-            "phone": "",
-            "email": ""
-        },
-        "doctor": "abner jones",
-        "hospital": "grand oak community hospital",
-        "appointmentDate": "2019-12-02"
-    },
-    {
-    "appointmentNumber": 6,
-    "doctor": {
-        "name": "abner jones",
-        "hospital": "grand oak community hospital",
-        "category": "gynaecology",
-        "availability": "8.00 a.m - 10.00 a.m",
-        "fee": 11000.0
-    },
-    "patient": {
-        "name": "Little John",
-        "dob": "2018-04-29",
-        "ssn": "",
-        "address": "California",
-        "phone": "",
-        "email": ""
-    },
-    "fee": 11000.0,
-    "confirmed": false,
-    "appointmentDate": "2019-12-02"
-    }
-    ]
+        [
+            {
+                "patient": {
+                    "name": "Leonardo Duke",
+                    "dob": "1988-03-19",
+                    "ssn": "111-23-505",
+                    "address": "NY",
+                    "phone": "8070586755",
+                    "email": "jduke@gmail.com"
+                },
+                "doctor": "thomas collins",
+                "hospital": "grand oak community hospital",
+                "appointmentDate": "2019-07-02"
+            },
+            {
+                "appointmentNumber": 4,
+                "doctor": {
+                    "name": "thomas collins",
+                    "hospital": "grand oak community hospital",
+                    "category": "surgery",
+                    "availability": "9.00 a.m - 11.00 a.m",
+                    "fee": 7000.0
+            },
+                "patient": {
+                    "name": "Leonardo Duke",
+                    "dob": "1988-03-19",
+                    "ssn": "111-23-505",
+                    "address": "NY",
+                    "phone": "8070586755",
+                    "email": "jduke@gmail.com"
+            },
+                "fee": 7000.0,
+                "confirmed": false,
+                "appointmentDate": "2019-07-02"
+            }
+        ],
+        // TC002 - Verify if appoinment reservation can be done by not providing non-mandatory feilds.
+        [
+            {
+                "patient": {
+                    "name": "J Serasinghe",
+                    "dob": "1951-03-19",
+                    "ssn": "112-29-585",
+                    "address": "California",
+                    "phone": "8070521755",
+                    "email": ""
+                },
+                "doctor": "henry parker",
+                "hospital": "grand oak community hospital",
+                "appointmentDate": "2019-08-30"
+            },
+            {
+                "appointmentNumber": 5,
+                "doctor": {
+                    "name": "henry parker",
+                    "hospital": "grand oak community hospital",
+                    "category": "ent",
+                    "availability": "9.00 a.m - 11.00 a.m",
+                    "fee": 4500.0
+            },
+                "patient": {
+                    "name": "J Serasinghe",
+                    "dob": "1951-03-19",
+                    "ssn": "112-29-585",
+                    "address": "California",
+                    "phone": "8070521755",
+                    "email": ""
+            },
+                "fee": 4500.0,
+                "confirmed": false,
+                "appointmentDate": "2019-08-30"
+            }
+        ],
+        // TC003 - Verify if appointment reservation can be made for a child.
+        [
+            {
+                "patient": {
+                    "name": "Little John",
+                    "dob": "2018-04-29",
+                    "ssn": "",
+                    "address": "California",
+                    "phone": "",
+                    "email": ""
+                },
+                "doctor": "abner jones",
+                "hospital": "grand oak community hospital",
+                "appointmentDate": "2019-12-02"
+            },
+            {
+                "appointmentNumber": 6,
+                "doctor": {
+                    "name": "abner jones",
+                    "hospital": "grand oak community hospital",
+                    "category": "gynaecology",
+                    "availability": "8.00 a.m - 10.00 a.m",
+                    "fee": 11000.0
+            },
+                "patient": {
+                    "name": "Little John",
+                    "dob": "2018-04-29",
+                    "ssn": "",
+                    "address": "California",
+                    "phone": "",
+                    "email": ""
+                },
+                "fee": 11000.0,
+                "confirmed": false,
+                "appointmentDate": "2019-12-02"
+            }
+        ]
     ];
 }
 
@@ -191,28 +192,29 @@ function testReserveAppointmentGrandOakNegative(json dataset, json expectedStrin
 }
 
 function testReserveAppointmentGrandOakNegativeDataProvider() returns json[][] {
-    return [
+    return 
+    [
     // TC004 - Verify if an error message is thrown when appointment reservation can be done for an
     // unavailable doctor in the hospital.
-    [
-    {
-        "patient": {
-            "name": "D Serasinghe",
-            "dob": "1983-12-03",
-            "ssn": "777-29-585",
-            "address": "Colombo SL",
-            "phone": "5578521755",
-            "email": "dserasinghe@hotmail.com"
-        },
-        "doctor": "Ranil Perera",
-        "hospital": "grand oak community hospital",
-        "appointmentDate": "2019-12-31"
-    },
-    {
-        "statusCode": 400,
-        "responseMessage": "Doctor Ranil Perera is not available in grand oak community hospital"
-    }
-    ]
+        [
+            {
+                "patient": {
+                    "name": "D Serasinghe",
+                    "dob": "1983-12-03",
+                    "ssn": "777-29-585",
+                    "address": "Colombo SL",
+                    "phone": "5578521755",
+                    "email": "dserasinghe@hotmail.com"
+                },
+                "doctor": "Ranil Perera",
+                "hospital": "grand oak community hospital",
+                "appointmentDate": "2019-12-31"
+            },
+            {
+                "statusCode": 400,
+                "responseMessage": "Doctor Ranil Perera is not available in grand oak community hospital"
+            }
+        ]
     ];
 }
 
@@ -242,34 +244,35 @@ function testGetAppointmentGrandoaks(json dataset, json resultset) {
 }
 
 function testGetAppointmentGrandoaksDataProvider() returns json[][] {
-    return [
-    // TC005 - Verify if appoinment details can be retrieved successfully by providing a valid appointment number.
+    return 
     [
-    {
-        "appointmentNumber": 4
-    },
-    {
-    "appointmentNumber": 4,
-    "doctor": {
-        "name": "thomas collins",
-        "hospital": "grand oak community hospital",
-        "category": "surgery",
-        "availability": "9.00 a.m - 11.00 a.m",
-        "fee": 7000.0
-    },
-    "patient": {
-        "name": "Leonardo Duke",
-        "dob": "1988-03-19",
-        "ssn": "111-23-505",
-        "address": "NY",
-        "phone": "8070586755",
-        "email": "jduke@gmail.com"
-    },
-    "fee": 7000.0,
-    "confirmed": false,
-    "appointmentDate": "2019-07-02"
-    }
-    ]
+    // TC005 - Verify if appoinment details can be retrieved successfully by providing a valid appointment number.
+        [
+            {
+                "appointmentNumber": 4
+            },
+            {
+                "appointmentNumber": 4,
+                "doctor": {
+                    "name": "thomas collins",
+                    "hospital": "grand oak community hospital",
+                    "category": "surgery",
+                    "availability": "9.00 a.m - 11.00 a.m",
+                    "fee": 7000.0
+            },
+                "patient": {
+                    "name": "Leonardo Duke",
+                    "dob": "1988-03-19",
+                    "ssn": "111-23-505",
+                    "address": "NY",
+                    "phone": "8070586755",
+                    "email": "jduke@gmail.com"
+            },
+                "fee": 7000.0,
+                "confirmed": false,
+                "appointmentDate": "2019-07-02"
+            }
+        ]
     ];
 }
 
@@ -295,14 +298,15 @@ function testGetAppointmentGrandOakNegative(json dataset) {
 }
 
 function testGetAppointmentGrandOakNegativeDataProvider() returns json[][] {
-    return [
-    // TC006 - Verify if an error occurs by providing an invalid appointment number.
+    return 
     [
-    {
-        "appointmentNumber": 200,
-        "expectedErrorMessage": "Invalid appointment number."
-    }
-    ]
+    // TC006 - Verify if an error occurs by providing an invalid appointment number.
+        [
+            {
+                "appointmentNumber": 200,
+                "expectedErrorMessage": "Invalid appointment number."
+            }
+        ]
     ];
 }
 
@@ -338,16 +342,17 @@ function testCheckChannellingFeeGrandoaks(json dataset) {
 }
 
 function testCheckChannellingFeeGrandoaksDataProvider() returns json[][] {
-    return [
-    // TC007 - Verify if the channel fee can be retrieved by providing a valid appoitment number.
+    return 
     [
-    {
-        "appointmentNumber": 1,
-        "patientName": "Leonardo Duke",
-        "doctorName": "anne clement",
-        "actualFee": "12000.0"
-    }
-    ]
+    // TC007 - Verify if the channel fee can be retrieved by providing a valid appoitment number.
+        [
+            {
+                "appointmentNumber": 1,
+                "patientName": "Leonardo Duke",
+                "doctorName": "anne clement",
+                "actualFee": "12000.0"
+            }
+        ]
     ];
 }
 
@@ -372,15 +377,16 @@ function testCheckChannellingFeeGrandOakNegative(json dataset) {
 }
 
 function testCheckChannellingFeeGrandOakNegativeDataProvider() returns json[][] {
-    return [
+    return 
+    [
     // TC008 - Verify if the error message returns when an invalid appointment number is provided when it
     // is going to check the channelling fee.
-    [
-    {
-        "appointmentNumber": 200,
-        "errorMessage": "Error. Could not Find the Requested appointment ID."
-    }
-    ]
+        [
+            {
+                "appointmentNumber": 200,
+                "errorMessage": "Error. Could not Find the Requested appointment ID."
+            }
+        ]
     ];
 }
 
@@ -407,15 +413,16 @@ function testUpdatePatientRecordGrandoaks(json dataset) {
 }
 
 function testUpdatePatientRecordGrandoaksDataProvider() returns json[][] {
-    return [
-    // TC009 - Verify patient's records can be updated.
+    return 
     [
-    {
-        "ssn": "111-23-505",
-        "symptoms": ["fever", "cough", "red scars", "nausea"],
-        "treatments": ["paracetomol", "rest", "Cetirizine"]
-    }
-    ]
+    // TC009 - Verify patient's records can be updated.
+        [
+            {
+                "ssn": "111-23-505",
+                "symptoms": ["fever", "cough", "red scars", "nausea"],
+                "treatments": ["paracetomol", "rest", "Cetirizine"]
+            }
+        ]
     ];
 }
 
@@ -442,13 +449,14 @@ function testGetPatientRecordGrandoaks(json dataset) {
 }
 
 function testGetPatientRecordGrandoaksDataProvider() returns json[][] {
-    return [
-    // TC010 - Verify if Patient record can be retrived
+    return 
     [
-    {
-        "ssn": "111-23-505"
-    }
-    ]
+    // TC010 - Verify if Patient record can be retrived
+        [
+            {
+                "ssn": "111-23-505"
+            }
+        ]
     ];
 }
 
@@ -478,27 +486,28 @@ function testIsEligibleForDiscountGrandoaks(json dataset) {
 }
 
 function testIsEligibleForDiscountGrandoaksDataProvider() returns json[][] {
-    return [
-    // TC011 - Verify if patient who are below 55 and above 12 is not eligible for a discount.
+    return 
     [
-    {
-        "eligibility": false,
-        "appointmentNumber": 4
-    }
-    ],
-    // TC012 - Verify if patient above 55 is eligible for a discount.
-    [
-    {
-        "eligibility": true,
-        "appointmentNumber": 5
-    }
-    ],
-    // TC013 - Verify if patient below 12 is eligible for a discount.
-    [
-    {
-        "eligibility": true,
-        "appointmentNumber": 6
-    }
-    ]
+        // TC011 - Verify if patient who are below 55 and above 12 is not eligible for a discount.
+        [
+            {
+                "eligibility": false,
+                "appointmentNumber": 4
+            }
+        ],
+            // TC012 - Verify if patient above 55 is eligible for a discount.
+        [
+            {
+                "eligibility": true,
+                "appointmentNumber": 5
+            }
+        ],
+            // TC013 - Verify if patient below 12 is eligible for a discount.
+        [
+            {
+                "eligibility": true,
+                "appointmentNumber": 6
+            }
+        ]
     ];
 }

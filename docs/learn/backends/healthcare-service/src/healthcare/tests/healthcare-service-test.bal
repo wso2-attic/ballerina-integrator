@@ -47,49 +47,50 @@ function testAddDoctor(json dataset, json resultset) {
 
 // This function passes data to testResourceAddAppoinment function for test cases.
 function testAddDoctorResponseDataProvider() returns json[][] {
-    return [
+    return 
+    [
     // TC001 - Verify if a doctor can be added to Grand oak community hospital under the category surgery.
-    [
-    {
-        "name": "T D Uyanage",
-        "hospital": "grand oak community hospital",
-        "category": "surgery",
-        "availability": "Weekends",
-        "fee": 2500.0
-    },
-    {
-        "expectedResponse": "New Doctor Added Successfully.",
-        "expectedStatusCode": 200
-    }
-    ],
-    // TC002 - Verify if an existing doctor cannot be added.
-    [
-    {
-        "name": "T D Uyanage",
-        "hospital": "clemency medical center",
-        "category": "surgery",
-        "availability": "Weekends",
-        "fee": 2500.0
-    },
-    {
-        "expectedResponse": "Doctor Already Exist in the system",
-        "expectedStatusCode": 400
-    }
-    ],
-    // TC003 - Verify if a doctor can be added under a new category.
-    [
-    {
-        "name": "H Dias",
-        "hospital": "clemency medical center",
-        "category": "emergency",
-        "availability": "Sunday only",
-        "fee": 2500.0
-    },
-    {
-        "expectedResponse": "New Doctor Added Successfully.",
-        "expectedStatusCode": 200
-    }
-    ]
+        [
+            {
+                "name": "T D Uyanage",
+                "hospital": "grand oak community hospital",
+                "category": "surgery",
+                "availability": "Weekends",
+                "fee": 2500.0
+            },
+            {
+                "expectedResponse": "New Doctor Added Successfully.",
+                "expectedStatusCode": 200
+            }
+        ],
+        // TC002 - Verify if an existing doctor cannot be added.
+        [
+            {
+                "name": "T D Uyanage",
+                "hospital": "clemency medical center",
+                "category": "surgery",
+                "availability": "Weekends",
+                "fee": 2500.0
+            },
+            {
+                "expectedResponse": "Doctor Already Exist in the system",
+                "expectedStatusCode": 400
+            }
+        ],
+        // TC003 - Verify if a doctor can be added under a new category.
+        [
+            {
+                "name": "H Dias",
+                "hospital": "clemency medical center",
+                "category": "emergency",
+                "availability": "Sunday only",
+                "fee": 2500.0
+            },
+            {
+                "expectedResponse": "New Doctor Added Successfully.",
+                "expectedStatusCode": 200
+            }
+        ]
     ];
 }
 
@@ -117,44 +118,45 @@ function testGetDoctors(json dataset, json resultset) {
 
 function testGetDoctorsDataProvider() returns json[][]
 {
-    return [
+    return 
+    [
     // TC004 - Verify if added doctor record under TC001 can be retrived under category surgery.
-    [
-    {
-        "category": "surgery",
-        "doctor": "T D Uyanage"
-    }, 
-    [
-    {
-        "name": "anne clement",
-        "hospital": "clemency medical center",
-        "category": "surgery",
-        "availability": "8.00 a.m - 10.00 a.m",
-        "fee": 12000.0
-    },
-    {
-        "name": "thomas collins",
-        "hospital": "grand oak community hospital",
-        "category": "surgery",
-        "availability": "9.00 a.m - 11.00 a.m",
-        "fee": 7000.0
-    },
-    {
-        "name": "seth mears",
-        "hospital": "pine valley community hospital",
-        "category": "surgery",
-        "availability": "3.00 p.m - 5.00 p.m",
-        "fee": 8000.0
-    },
-    {
-        "name": "T D Uyanage",
-        "hospital": "grand oak community hospital",
-        "category": "surgery",
-        "availability": "Weekends",
-        "fee": 2500.0
-    }
-    ]
-    ]
+        [
+            {
+                "category": "surgery",
+                "doctor": "T D Uyanage"
+            }, 
+            [
+                {
+                    "name": "anne clement",
+                    "hospital": "clemency medical center",
+                    "category": "surgery",
+                    "availability": "8.00 a.m - 10.00 a.m",
+                    "fee": 12000.0
+                },
+                {
+                    "name": "thomas collins",
+                    "hospital": "grand oak community hospital",
+                    "category": "surgery",
+                    "availability": "9.00 a.m - 11.00 a.m",
+                    "fee": 7000.0
+                },
+                {
+                    "name": "seth mears",
+                    "hospital": "pine valley community hospital",
+                    "category": "surgery",
+                    "availability": "3.00 p.m - 5.00 p.m",
+                    "fee": 8000.0
+                },
+                {
+                    "name": "T D Uyanage",
+                    "hospital": "grand oak community hospital",
+                    "category": "surgery",
+                    "availability": "Weekends",
+                    "fee": 2500.0
+                }
+            ]
+        ]
     ];
 }
 
@@ -184,36 +186,35 @@ function testGetAppointment(json dataset, json resultset) {
 
 function testGetAppointmentDataProvider() returns json[][]
 {
-    return [
-    // TC005 - verify if appointment details can be retreived.
+    return 
     [
-    {
-        "appointmentNumber": 1
-    },
-    {
-        "appointmentNumber": 1,
-        "doctor":
-        {
-            "name": "anne clement",
-            "hospital": "clemency medical center",
-            "category": "surgery",
-            "availability": "8.00 a.m - 10.00 a.m",
-            "fee": 12000.0
-        },
-        "patient":
-        {
-            "name": "Leonardo Duke",
-            "dob": "1988-03-19",
-            "ssn": "111-23-505",
-            "address": "NY",
-            "phone": "8070586755",
-            "email": "jduke@gmail.com"
-        },
-        "fee": 12000.0,
-        "confirmed": true,
-        "appointmentDate": "2019-07-02"
-    }
-    ]
+    // TC005 - verify if appointment details can be retreived.
+        [
+            {
+                "appointmentNumber": 1
+            },
+            {
+                "appointmentNumber": 1,
+                "doctor":{
+                    "name": "anne clement",
+                    "hospital": "clemency medical center",
+                    "category": "surgery",
+                    "availability": "8.00 a.m - 10.00 a.m",
+                    "fee": 12000.0
+                },
+                "patient":{
+                    "name": "Leonardo Duke",
+                    "dob": "1988-03-19",
+                    "ssn": "111-23-505",
+                    "address": "NY",
+                    "phone": "8070586755",
+                    "email": "jduke@gmail.com"
+                },
+                "fee": 12000.0,
+                "confirmed": true,
+                "appointmentDate": "2019-07-02"
+            }
+        ]
     ];
 }
 
@@ -265,13 +266,14 @@ function testGetAppointmentValidityTime(json dataset) {
 
 function testGetAppointmentValidityTimeDataProvider() returns json[][]
 {
-    return [
-    // TC006 - verify if the provided appointment date is valid.
+    return 
     [
-    {
-        "appointmentNumber": 1
-    }
-    ]
+    // TC006 - verify if the provided appointment date is valid.
+        [
+            {
+                "appointmentNumber": 1
+            }
+        ]
     ];
 }
 
@@ -296,14 +298,15 @@ function testRemoveAppointment(json dataset) {
 
 function testRemoveAppointmentDataProvider() returns json[][]
 {
-    return [
-    // TC007 - verify if appointments can be deleted.
+    return 
     [
-    {
-        "appointmentNumber": 6,
-        "response": "Appointment is successfully removed."
-    }
-    ]
+    // TC007 - verify if appointments can be deleted.
+        [
+            {
+                "appointmentNumber": 6,
+                "response": "Appointment is successfully removed."
+            }
+        ]
     ];
 }
 
@@ -347,32 +350,31 @@ function testSettlePayment(json dataset) {
 
 function testSettlePaymentDataProvider() returns json[][]
 {
-    return [
-    // TC008 - verify if payment can be setteled for a given appointment.
+    return 
     [
-    {
-        "appointmentNumber": 1,
-        "doctor":
-        {
-            "category": "surgery",
-            "name": "anne clement",
-            "hospital": "clemency medical center",
-            "availability": "10am - 6pm",
-            "fee": 10000.00
-        },
-        "patient":
-        {
-            "name": "Kate Winslet",
-            "dob": "1970-03-19",
-            "ssn": "234-987-175",
-            "address": "Canada",
-            "phone": "32456789765",
-            "email": "kwinslet@gmail.com"
-        },
-        "fee": 1800.0,
-        "confirmed": true,
-        "cardNumber": "3456812345"
-    }
-    ]
+    // TC008 - verify if payment can be setteled for a given appointment.
+        [
+            {
+                "appointmentNumber": 1,
+                "doctor":{
+                    "category": "surgery",
+                    "name": "anne clement",
+                    "hospital": "clemency medical center",
+                    "availability": "10am - 6pm",
+                    "fee": 10000.00
+                },
+                "patient":{
+                    "name": "Kate Winslet",
+                    "dob": "1970-03-19",
+                    "ssn": "234-987-175",
+                    "address": "Canada",
+                    "phone": "32456789765",
+                    "email": "kwinslet@gmail.com"
+                },
+                "fee": 1800.0,
+                "confirmed": true,
+                "cardNumber": "3456812345"
+            }
+        ]
     ];
 }

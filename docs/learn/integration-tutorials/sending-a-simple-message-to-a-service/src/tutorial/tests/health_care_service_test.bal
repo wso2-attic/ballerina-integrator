@@ -44,35 +44,36 @@ function testGetDetails(json dataset, json resultset) {
 }
 
 function testGetDetailsDataProvider() returns json[][] {
-    return [
+    return 
     [
-    {
-        "category": "surgery"
-    },
-    [
-    {
-        "name": "anne clement",
-        "hospital": "clemency medical center",
-        "category": "surgery",
-        "availability": "8.00 a.m - 10.00 a.m",
-        "fee": 12000.0
-    },
-    {
-        "name": "thomas collins",
-        "hospital": "grand oak community hospital",
-        "category": "surgery",
-        "availability": "9.00 a.m - 11.00 a.m",
-        "fee": 7000.0
-    },
-    {
-        "name": "seth mears",
-        "hospital": "pine valley community hospital",
-        "category": "surgery",
-        "availability": "3.00 p.m - 5.00 p.m",
-        "fee": 8000.0
-    }
-    ]
-    ]
+        [
+            {
+                "category": "surgery"
+            },
+            [
+                {
+                    "name": "anne clement",
+                    "hospital": "clemency medical center",
+                    "category": "surgery",
+                    "availability": "8.00 a.m - 10.00 a.m",
+                    "fee": 12000.0
+                },
+                {
+                    "name": "thomas collins",
+                    "hospital": "grand oak community hospital",
+                    "category": "surgery",
+                    "availability": "9.00 a.m - 11.00 a.m",
+                    "fee": 7000.0
+                },
+                {
+                    "name": "seth mears",
+                    "hospital": "pine valley community hospital",
+                    "category": "surgery",
+                    "availability": "3.00 p.m - 5.00 p.m",
+                    "fee": 8000.0
+                }
+            ]
+        ]
     ];
 }
 

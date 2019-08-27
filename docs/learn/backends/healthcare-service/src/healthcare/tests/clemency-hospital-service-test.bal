@@ -50,118 +50,119 @@ function testReserveAppointment(json dataset, json resultSet) {
 
 function testReserveAppointmentDataProvider() returns json[][]
 {
-    return [
+    return 
+    [
     // TC001 - Verify if appointment reservation can be done by providing all the valid inputs.
-    [
-    {
-        "patient": {
-            "name": "Leonardo Duke",
-            "dob": "1988-03-19",
-            "ssn": "111-23-505",
-            "address": "NY",
-            "phone": "8070586755",
-            "email": "jduke@gmail.com"
-        },
-        "doctor": "anne clement",
-        "hospital": "clemency medical center",
-        "appointmentDate": "2019-07-02"
-    },
-    {
-    "appointmentNumber": 1,
-    "doctor": {
-        "name": "anne clement",
-        "hospital": "clemency medical center",
-        "category": "surgery",
-        "availability": "8.00 a.m - 10.00 a.m",
-        "fee": 12000.0
-    },
-    "patient": {
-        "name": "Leonardo Duke",
-        "dob": "1988-03-19",
-        "ssn": "111-23-505",
-        "address": "NY",
-        "phone": "8070586755",
-        "email": "jduke@gmail.com"
-    },
-    "fee": 12000.0,
-    "confirmed": false,
-    "appointmentDate": "2019-07-02"
-}
-    ],
+        [
+            {
+                "patient": {
+                    "name": "Leonardo Duke",
+                    "dob": "1988-03-19",
+                    "ssn": "111-23-505",
+                    "address": "NY",
+                    "phone": "8070586755",
+                    "email": "jduke@gmail.com"
+                },
+                "doctor": "anne clement",
+                "hospital": "clemency medical center",
+                "appointmentDate": "2019-07-02"
+            },
+            {
+            "appointmentNumber": 1,
+            "doctor": {
+                "name": "anne clement",
+                "hospital": "clemency medical center",
+                "category": "surgery",
+                "availability": "8.00 a.m - 10.00 a.m",
+                "fee": 12000.0
+            },
+            "patient": {
+                "name": "Leonardo Duke",
+                "dob": "1988-03-19",
+                "ssn": "111-23-505",
+                "address": "NY",
+                "phone": "8070586755",
+                "email": "jduke@gmail.com"
+            },
+            "fee": 12000.0,
+            "confirmed": false,
+            "appointmentDate": "2019-07-02"
+            }
+        ],
     // TC002 - Verify if appointment reservation can be done by not providing non-mandatory feilds.
-    [
-    {
-        "patient": {
-            "name": "J Serasinghe",
-            "dob": "1951-03-19",
-            "ssn": "112-29-585",
-            "address": "California",
-            "phone": "8070521755",
-            "email": ""
-        },
-        "doctor": "thomas kirk",
-        "hospital": "clemency medical center",
-        "appointmentDate": "2019-08-30"
-    },
-    {
-    "appointmentNumber": 2,
-    "doctor": {
-        "name": "thomas kirk",
-        "hospital": "clemency medical center",
-        "category": "gynaecology",
-        "availability": "9.00 a.m - 11.00 a.m",
-        "fee": 8000.0
-    },
-    "patient": {
-        "name": "J Serasinghe",
-        "dob": "1951-03-19",
-        "ssn": "112-29-585",
-        "address": "California",
-        "phone": "8070521755",
-        "email": ""
-    },
-    "fee": 8000.0,
-    "confirmed": false,
-    "appointmentDate": "2019-08-30"
-}
-    ],
+        [
+            {
+                "patient": {
+                    "name": "J Serasinghe",
+                    "dob": "1951-03-19",
+                    "ssn": "112-29-585",
+                    "address": "California",
+                    "phone": "8070521755",
+                    "email": ""
+                },
+                "doctor": "thomas kirk",
+                "hospital": "clemency medical center",
+                "appointmentDate": "2019-08-30"
+            },
+            {
+            "appointmentNumber": 2,
+            "doctor": {
+                "name": "thomas kirk",
+                "hospital": "clemency medical center",
+                "category": "gynaecology",
+                "availability": "9.00 a.m - 11.00 a.m",
+                "fee": 8000.0
+            },
+            "patient": {
+                "name": "J Serasinghe",
+                "dob": "1951-03-19",
+                "ssn": "112-29-585",
+                "address": "California",
+                "phone": "8070521755",
+                "email": ""
+            },
+            "fee": 8000.0,
+            "confirmed": false,
+            "appointmentDate": "2019-08-30"
+            }
+        ],
     // TC003 - Verify if appointment reservation can be made for a child.
-    [
-    {
-        "patient": {
-            "name": "Little John",
-            "dob": "2018-04-29",
-            "ssn": "",
-            "address": "California",
-            "phone": "",
-            "email": ""
-        },
-        "doctor": "cailen cooper",
-        "hospital": "clemency medical center",
-        "appointmentDate": "2019-12-02"
-    },
-    {
-    "appointmentNumber": 3,
-    "doctor": {
-        "name": "cailen cooper",
-        "hospital": "clemency medical center",
-        "category": "paediatric",
-        "availability": "9.00 a.m - 11.00 a.m",
-        "fee": 5500.0
-    },
-    "patient": {
-        "name": "Little John",
-        "dob": "2018-04-29",
-        "ssn": "",
-        "address": "California",
-        "phone": "",
-        "email": ""
-    },
-    "fee": 5500.0,
-    "confirmed": false,
-    "appointmentDate": "2019-12-02"
-}
-    ]
+        [
+            {
+                "patient": {
+                    "name": "Little John",
+                    "dob": "2018-04-29",
+                    "ssn": "",
+                    "address": "California",
+                    "phone": "",
+                    "email": ""
+                },
+                "doctor": "cailen cooper",
+                "hospital": "clemency medical center",
+                "appointmentDate": "2019-12-02"
+            },
+            {
+            "appointmentNumber": 3,
+            "doctor": {
+                "name": "cailen cooper",
+                "hospital": "clemency medical center",
+                "category": "paediatric",
+                "availability": "9.00 a.m - 11.00 a.m",
+                "fee": 5500.0
+            },
+            "patient": {
+                "name": "Little John",
+                "dob": "2018-04-29",
+                "ssn": "",
+                "address": "California",
+                "phone": "",
+                "email": ""
+            },
+            "fee": 5500.0,
+            "confirmed": false,
+            "appointmentDate": "2019-12-02"
+            }
+        ]
     ];
 }
 
@@ -197,28 +198,29 @@ function testReserveAppointmentNegative(json dataset, json expectedStrings) {
 }
 
 function testReserveAppointmentNegativeDataProvider() returns json[][] {
-    return [
+    return 
+    [
     // TC004 - Verify if an error message is thrown when appointment reservation can be done for an
     // unavailable doctor in the hospital.
-    [
-    {
-        "patient": {
-            "name": "D Serasinghe",
-            "dob": "1983-12-03",
-            "ssn": "777-29-585",
-            "address": "Colombo SL",
-            "phone": "5578521755",
-            "email": "dserasinghe@hotmail.com"
-        },
-        "doctor": "T Uyanage",
-        "hospital": "clemency medical center",
-        "appointmentDate": "2019-12-31"
-    },
-    {
-        "statusCode": 400,
-        "responseMessage": "Doctor T Uyanage is not available in clemency medical center"
-    }
-    ]
+        [
+            {
+                "patient": {
+                    "name": "D Serasinghe",
+                    "dob": "1983-12-03",
+                    "ssn": "777-29-585",
+                    "address": "Colombo SL",
+                    "phone": "5578521755",
+                    "email": "dserasinghe@hotmail.com"
+                },
+                "doctor": "T Uyanage",
+                "hospital": "clemency medical center",
+                "appointmentDate": "2019-12-31"
+            },
+            {
+                "statusCode": 400,
+                "responseMessage": "Doctor T Uyanage is not available in clemency medical center"
+            }
+        ]
     ];
 }
 
@@ -257,15 +259,16 @@ function testGetAppointmentClemency(json dataset) {
 }
 
 function testGetAppointmentClemencyDataProvider() returns json[][] {
-    return [
-    // TC005 - Verify if appoinment details can be retrieved successfully by providing a valid appointment number.
+    return 
     [
-    {
-        "appointmentNumber": 1,
-        "doctorName": "anne clement",
-        "appointmentDate": "2019-07-02"
-    }
-    ]
+    // TC005 - Verify if appoinment details can be retrieved successfully by providing a valid appointment number.
+        [
+            {
+                "appointmentNumber": 1,
+                "doctorName": "anne clement",
+                "appointmentDate": "2019-07-02"
+            }
+        ]
     ];
 }
 
@@ -291,14 +294,15 @@ function testGetAppointmentClemencyNegative(json dataset) {
 }
 
 function testGetAppointmentClemencyNegativeDataProvider() returns json[][] {
-    return [
-    // TC006 - Verify if an error occurs by providing an invalid appointment number.
+    return 
     [
-    {
-        "appointmentNumber": 200,
-        "expectedErrorMessage": "Invalid appointment number."
-    }
-    ]
+    // TC006 - Verify if an error occurs by providing an invalid appointment number.
+        [
+            {
+                "appointmentNumber": 200,
+                "expectedErrorMessage": "Invalid appointment number."
+            }
+        ]
     ];
 }
 
@@ -333,16 +337,17 @@ function testCheckChannellingFee(json dataset) {
 }
 
 function testCheckChannellingFeeDataProvider() returns json[][] {
-    return [
-    // TC007 - Verify if the channel fee can be retrieved by providing a valid appoitment number.
+    return 
     [
-    {
-        "appointmentNumber": 1,
-        "patientName": "Leonardo Duke",
-        "doctorName": "anne clement",
-        "actualFee": "12000.0"
-    }
-    ]
+    // TC007 - Verify if the channel fee can be retrieved by providing a valid appoitment number.
+        [
+            {
+                "appointmentNumber": 1,
+                "patientName": "Leonardo Duke",
+                "doctorName": "anne clement",
+                "actualFee": "12000.0"
+            }
+        ]
     ];
 }
 
@@ -367,15 +372,16 @@ function testCheckChannellingFeeNegative(json dataset) {
 }
 
 function testCheckChannellingFeeNegativeDataProvider() returns json[][] {
-    return [
+    return 
+    [
     // TC008 - Verify if the error message returns when an invalid appointment number is provided when it
     // is going to check the channelling fee.
-    [
-    {
-        "appointmentNumber": 200,
-        "errorMessage": "Error. Could not Find the Requested appointment ID."
-    }
-    ]
+        [
+            {
+                "appointmentNumber": 200,
+                "errorMessage": "Error. Could not Find the Requested appointment ID."
+            }
+        ]
     ];
 }
 
@@ -406,19 +412,20 @@ function testUpdatePatientRecord(json dataset, json resultset) {
 }
 
 function testUpdatePatientRecordDataProvider() returns json[][] {
-    return [
-    // TC009 - Verify patient's records can be updated.
+    return 
     [
-    {
-        "ssn": "111-23-505",
-        "symptoms": ["fever", "cough", "red scars", "nausea"],
-        "treatments": ["paracetomol", "rest", "Cetirizine"]
-    },
-    {
-        "statusCode": 200,
-        "expectedText": "Record Update Success."
-    }
-    ]
+    // TC009 - Verify patient's records can be updated.
+        [
+            {
+                "ssn": "111-23-505",
+                "symptoms": ["fever", "cough", "red scars", "nausea"],
+                "treatments": ["paracetomol", "rest", "Cetirizine"]
+            },
+            {
+                "statusCode": 200,
+                "expectedText": "Record Update Success."
+            }
+        ]
     ];
 }
 
@@ -446,16 +453,16 @@ function testGetPatientRecord(json dataset) {
 }
 
 function testGetPatientRecordDataProvider() returns json[][] {
-    return [
-    // TC010 - Verify if Patient record can be retrived
+    return 
     [
-    {
-        "ssn": "111-23-505"
-    }
-    ]
+    // TC010 - Verify if Patient record can be retrived
+        [
+            {
+                "ssn": "111-23-505"
+            }
+        ]
     ];
 }
-
 
 # Description: This test scenario verifies if patient is eligible to get a discount. 
 # + dataset - dataset Parameter Description
@@ -482,27 +489,28 @@ function testIsEligibleForDiscount(json dataset) {
 }
 
 function testIsEligibleForDiscountDataProvider() returns json[][] {
-    return [
+    return 
+    [
     // TC011 - Verify if patient who are below 55 and above 12 is not eligible for a discount.
-    [
-    {
-        "eligibility": false,
-        "appointmentNumber": 1
-    }
-    ],
-    // TC012 - Verify if patient above 55 is eligible for a discount.
-    [
-    {
-        "eligibility": true,
-        "appointmentNumber": 2
-    }
-    ],
-    // TC013 - Verify if patient below 12 is eligible for a discount.
-    [
-    {
-        "eligibility": true,
-        "appointmentNumber": 3
-    }
-    ]
+        [
+            {
+                "eligibility": false,
+                "appointmentNumber": 1
+            }
+        ],
+        // TC012 - Verify if patient above 55 is eligible for a discount.
+        [
+            {
+                "eligibility": true,
+                "appointmentNumber": 2
+            }
+        ],
+        // TC013 - Verify if patient below 12 is eligible for a discount.
+        [
+            {
+                "eligibility": true,
+                "appointmentNumber": 3
+            }
+        ]
     ];
 }
