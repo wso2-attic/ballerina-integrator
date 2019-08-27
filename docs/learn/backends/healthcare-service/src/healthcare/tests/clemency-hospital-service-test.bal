@@ -429,21 +429,14 @@ function testUpdatePatientRecordDataProvider() returns json[][] {
     dataProvider: "testGetPatientRecordDataProvider",
     dependsOn: ["testUpdatePatientRecord"]
 }
-function testGetPatientRecord(json dataset, json resultset) {
-    string expectedPatientName = dataset.patientName.toString();
-    string expectedDob = dataset.dob.toString();
+function testGetPatientRecord(json dataset) {
     string patientSsn = dataset.ssn.toString();
-    boolean responseContainsSymptoms = false;
-    boolean responseContainsTreatments = false;
-
     http:Response | error response = clientEPclemency->get("/patient/" + patientSsn + "/getrecord");
 
     if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
-        if (responsePayload is json) {
-            
-            test:assertEquals(responsePayload, resultset, 
-                                                msg = "Actual response is different than expected");
+        if (responsePayload is json) {     
+            test:assertEquals(response.statusCode, 200, msg = "The status code is not as expected");
         } else {
             test:assertFail(msg = "Test Failed! Invalid Payload");
         }
@@ -458,32 +451,7 @@ function testGetPatientRecordDataProvider() returns json[][] {
     [
     {
         "ssn": "111-23-505"
-    },
-    {
-        "symptoms": {
-            "26-08-2019": [
-                "fever",
-                "cough",
-                "red scars",
-                "nausea"
-            ]
-        },
-        "treatments": {
-            "26-08-2019": [
-                "paracetomol",
-                "rest",
-                "Cetirizine"
-            ]
-        },
-        "patient": {
-            "name": "Leonardo Duke",
-            "dob": "1988-03-19",
-            "ssn": "111-23-505",
-            "address": "NY",
-            "phone": "8070586755",
-            "email": "jduke@gmail.com"
     }
-}
     ]
     ];
 }

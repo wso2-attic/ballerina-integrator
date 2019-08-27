@@ -35,7 +35,6 @@ function testReserveAppointmentGrandoaks(json dataset, json resultset) {
 
     if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
-        var expectedStatusCode = 200;
         if (responsePayload is json) {
             test:assertEquals(responsePayload, resultset, msg = "Response payload is not as expected"); 
         } else {
@@ -426,16 +425,15 @@ function testUpdatePatientRecordGrandoaksDataProvider() returns json[][] {
     dataProvider: "testGetPatientRecordGrandoaksDataProvider",
     dependsOn: ["testUpdatePatientRecordGrandoaks"]
 }
-function testGetPatientRecordGrandoaks(json dataset, json resultset) {
+function testGetPatientRecordGrandoaks(json dataset) {
     string expectedSsn = dataset.ssn.toString();
     http:Response | error response = clientEPGrandoaks->get("/patient/" + expectedSsn + "/getrecord");
 
     if (response is http:Response) {
         json | error responsePayload = response.getJsonPayload();
         if (responsePayload is json) {
-
-            test:assertEquals(responsePayload, resultset, msg = "Response payload is not as expected.");
-            } else {
+           test:assertEquals(response.statusCode, 200, msg = "The status code is not as expected");
+        } else {
             test:assertFail(msg = "Invalid Payload!");
         }
     } else {
@@ -448,35 +446,8 @@ function testGetPatientRecordGrandoaksDataProvider() returns json[][] {
     // TC010 - Verify if Patient record can be retrived
     [
     {
-        "patientName": "Leonardo Duke",
-        "dob": "1988-03-19",
         "ssn": "111-23-505"
-    },
-    {
-    "symptoms": {
-        "26-08-2019": [
-            "fever",
-            "cough",
-            "red scars",
-            "nausea"
-        ]
-    },
-    "treatments": {
-        "26-08-2019": [
-            "paracetomol",
-            "rest",
-            "Cetirizine"
-        ]
-    },
-    "patient": {
-        "name": "Leonardo Duke",
-        "dob": "1988-03-19",
-        "ssn": "111-23-505",
-        "address": "NY",
-        "phone": "8070586755",
-        "email": "jduke@gmail.com"
     }
-}
     ]
     ];
 }
