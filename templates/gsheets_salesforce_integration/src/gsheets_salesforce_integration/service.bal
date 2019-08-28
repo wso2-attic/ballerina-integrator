@@ -73,7 +73,11 @@ service salesforceService on new http:Listener(config:getAsInt("LISTENER_PORT"))
             string|sfdc46:SalesforceConnectorError accountId = salesforceClient->createAccount(<@untainted>jsonPayload);
 
             if (accountId is string) {
-                respondAndHandleError(caller, http:STATUS_OK, <@untainted> accountId);
+                json account = {
+                    id: accountId,
+                    'type: "Account"
+                };
+                respondAndHandleError(caller, http:STATUS_OK, <@untainted> account);
             } else {
                 logAndRespondError(caller, "Error occurred while creating account", accountId, 
                     http:STATUS_INTERNAL_SERVER_ERROR);
@@ -104,8 +108,10 @@ service salesforceService on new http:Listener(config:getAsInt("LISTENER_PORT"))
                 logAndRespondError(caller, contactsCsv, (), http:STATUS_INTERNAL_SERVER_ERROR);
             } else {
                 if (insertContactsToSalesforce(<@untainted> contactsCsv)) {
-                    respondAndHandleError(caller, http:STATUS_OK, 
-                        <@untainted> "Successfully inserted contacts to salesforce using gsheet");
+                    json payload = {
+                        status: "success"
+                    };
+                    respondAndHandleError(caller, http:STATUS_OK, <@untainted> payload);
                 } else {
                     logAndRespondError(caller, "inserting contacts to Salesforce failed", (), 
                         http:STATUS_INTERNAL_SERVER_ERROR);
@@ -133,9 +139,12 @@ service salesforceService on new http:Listener(config:getAsInt("LISTENER_PORT"))
             if (results is sfdc46:Result[]) {
 
                 if (checkBatchResults(results)) {
-                    respondAndHandleError(caller, http:STATUS_OK, <@untainted> "Successfully deleted contacts");
+                    json payload = {
+                        status: "success"
+                    };
+                    respondAndHandleError(caller, http:STATUS_OK, <@untainted> payload);
                 } else {
-                    logAndRespondError(caller, "Deleting contacts to failed", (), 
+                    logAndRespondError(caller, "Error occurred while deleting contacts", (), 
                         http:STATUS_INTERNAL_SERVER_ERROR);
                 }
 
