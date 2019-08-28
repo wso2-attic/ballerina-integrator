@@ -16,8 +16,7 @@
 
 import ballerina/test;
 import ballerina/http;
-import ballerina/log;
-//import wso2/healthcare;
+import wso2/healthcare as _;
 
 http:Client clientEP = new("http://localhost:9092/hospitalMgtService");
 
@@ -49,42 +48,43 @@ function testReservation(json dataset, json resultset) {
 }
 
 function testReservationDataProvider() returns json[][] {
-    return [
+    return 
     [
-    {
-        "patient": {
-            "name": "John Doe",
-            "dob": "1940-03-19",
-            "ssn": "234-23-525",
-            "address": "California",
-            "phone": "8770586755",
-            "email": "johndoe@gmail.com"
-        },
-        "doctor": "thomas collins",
-        "hospital": "grand oak community hospital",
-        "appointmentDate": "2025-04-02"
-    },
-    {
-        "appointmentNumber": 1,
-        "appointmentDate": "2025-04-02",
-        "doctor": {
-            "name": "thomas collins",
-            "hospital": "grand oak community hospital",
-            "category": "surgery",
-            "availability": "9.00 a.m - 11.00 a.m",
-            "fee": 7000.0
-        },
-        "patient": {
-            "name": "John Doe",
-            "dob": "1940-03-19",
-            "ssn": "234-23-525",
-            "address": "California",
-            "phone": "8770586755",
-            "email": "johndoe@gmail.com"
-        },
-        "fee": 7000.0,
-        "confirmed": false
-    }
-    ]
+        [
+            {
+                "patient": {
+                    "name": "John Doe",
+                    "dob": "1940-03-19",
+                    "ssn": "234-23-525",
+                    "address": "California",
+                    "phone": "8770586755",
+                    "email": "johndoe@gmail.com"
+                },
+                "doctor": "thomas collins",
+                "hospital": "grand oak community hospital",
+                "appointmentDate": "2025-04-02"
+            },
+            {
+                "appointmentNumber": 1,
+                "appointmentDate": "2025-04-02",
+                "doctor": {
+                    "name": "thomas collins",
+                    "hospital": "grand oak community hospital",
+                    "category": "surgery",
+                    "availability": "9.00 a.m - 11.00 a.m",
+                    "fee": 7000.0
+                },
+                "patient": {
+                    "name": "John Doe",
+                    "dob": "1940-03-19",
+                    "ssn": "234-23-525",
+                    "address": "California",
+                    "phone": "8770586755",
+                    "email": "johndoe@gmail.com"
+                },
+                "fee": 7000.0,
+                "confirmed": false
+            }
+        ]
     ];
 }

@@ -16,6 +16,7 @@
 
 import ballerina/io;
 import ballerina/log;
+import ballerina/http;
 
 # Reserve appointment from appointment request.
 #
