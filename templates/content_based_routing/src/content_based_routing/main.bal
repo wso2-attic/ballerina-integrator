@@ -18,8 +18,8 @@ import ballerina/http;
 import ballerina/log;
 import ballerina/config;
 
-string ADD_OPERATION = "add";
-string SUBTRACT_OPERATION = "subtract";
+const string ADD_OPERATION = "add";
+const string SUBTRACT_OPERATION = "subtract";
 
 listener http:Listener clientListener = new http:Listener(config:getAsInt("LISTENER_PORT"));
 http:Client arithmeticServiceEP = new(config:getAsString("CLIENT_ENDPOINT"));
@@ -43,12 +43,12 @@ service calculatorService on clientListener {
             string operation = <string>requestPayload.operation;
 
             match operation {
-                "add" => {
+                ADD_OPERATION => {
                     response = arithmeticServiceEP->post("/add", <@untainted> request);
                     handleResponse(caller, response);
                     return;
                 }
-                "subtract" => {
+                SUBTRACT_OPERATION => {
                     response = arithmeticServiceEP->post("/subtract", <@untainted> request);
                     handleResponse(caller, response);
                     return;

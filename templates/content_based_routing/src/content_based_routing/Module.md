@@ -12,12 +12,12 @@ will receive the requests and perform the mathematical operations as required.
 
 1. Alter the config file `src/content_based_routing/resources/ballerina.conf` as per the requirement.
 
-3.  Execute following command to run the service.
+2.  Execute following command to run the service.
     ```bash
     ballerina run --config src/content_based_routing/resources/ballerina.conf content_based_routing
     ```
 
-2.  Create a file named request.xml with the following content:
+3.  Create a file named request.xml with the following content:
     ```json
     { "operation":"add",
       "valueOne": 40,
@@ -25,7 +25,7 @@ will receive the requests and perform the mathematical operations as required.
     }
     ```
 
-3.  Invoke the service with the following request using an HTTP client like cURL.
+4.  Invoke the service with the following request using an HTTP client like cURL.
     ```curl
     curl -X POST -d @request.xml  http://localhost:9090/calculatorService/calculate  -H "Content-Type: application/json"
     ```
