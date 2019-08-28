@@ -16,25 +16,20 @@
 # under the License.
 #
 # ----------------------------------------------------------------------------
-# Run Ballerina Integrator Tests
+# Build Ballerina Integrator Tests
 # ----------------------------------------------------------------------------
+
 HOME=`pwd`
-> $HOME/completeTestResults
 source $HOME/resources/config.properties
+if [ -e $HOME/completeTestResults.log ]
+then
+    rm -rf $HOME/completeTestResults.log
+fi
 
-cd $path1
-ballerina init
-sed -i -r 's/org-name\s=\s"(.*)("$)/org-name\=\"wso2"/g' Ballerina.toml
-
-
-ballerina build --skiptests util
-ballerina install --no-build util
-
-ballerina build --skiptests daos
-ballerina install --no-build daos
-
-ballerina build --skiptests healthcare
-ballerina install --no-build healthcare
+executionNameList=("healthcare-service" "exposing-several-services-as-a-single-service" 
+"sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content" "transforming-message-content") 
+executionPathList=($path1 $path2 $path3 $path4 $path5)
+moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "tutorial")
 
 echo ' _____         _       
 |_   _|__  ___| |_ ___ 
@@ -43,30 +38,21 @@ echo ' _____         _
   |_|\___||___/\__|___/
                        
 '
-executionNameList=("healthcare-service" "Integration Tutorials" "backend for front-end")
-executionPathList=($path1 $path2 $path3)
 
 count=0
 for i in "${executionPathList[@]}"; 
 do 
 	echo "Executing ${executionNameList[$count]}"
 	cd $HOME/${executionPathList[$count]}
-	ballerina init
-	ballerina test > testResults
+	ballerina build ${moduleList[$count]} > testResults
 	if ((grep -q "[1-9][0-9]* failing" testResults) || ! (grep -q "Running tests" testResults))
 	then
-		echo "failure in ${executionNameList[$count]}"
+		echo -e "failure in ${executionNameList[$count]} \n"
 		exit 1
 	else 
 		echo "No failures in ${executionNameList[$count]} tests"
 	fi
-	echo "------End of executing ${executionNameList[$count]} tests-----"
+	echo -e "------End of executing ${executionNameList[$count]} tests----- \n"
 	((count++))
-	cat testResults >> $HOME/completeTestResults
+	cat testResults >> $HOME/completeTestResults.log
 done;
-
-echo `date "+%Y-%m-%d-%H:%M:%S"`" : Ballerina tests built successfully!"
-
-ballerina uninstall wso2/daos:0.0.1
-ballerina uninstall wso2/util:0.0.1
-ballerina uninstall wso2/healthcare:0.0.1
