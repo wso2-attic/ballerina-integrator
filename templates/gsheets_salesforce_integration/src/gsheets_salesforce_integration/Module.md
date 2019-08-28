@@ -15,7 +15,7 @@ to Salesforce. `deleteContacts` resource deletes Salesforce contacts for a given
 
 2.  Execute following command to run the service.
     ```bash
-    ballerina run xml_to_json_transformation --config src/xml_to_json_transformation/resources/ballerina.conf
+    ballerina run gsheets_salesforce_integration --config src/gsheets_salesforce_integration/resources/ballerina.conf
     ```
     Following log confirms service started successfully.
     ```
