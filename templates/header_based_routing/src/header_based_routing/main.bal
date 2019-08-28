@@ -18,6 +18,7 @@ import ballerina/http;
 import ballerina/log;
 import ballerina/config;
 
+const string HEADER_NAME = "operation";
 const string ADD_OPERATION = "add";
 const string SUBTRACT_OPERATION = "subtract";
 
@@ -37,10 +38,19 @@ service calculatorService on clientListener {
         http:Response|error response;
         http:Response errorResponse = new;
 
-        var requestPayload = request.getJsonPayload();
+        if(!request.hasHeader(HEADER_NAME)) {
+            errorResponse.statusCode = http:STATUS_BAD_REQUEST;
+            string errorMessage = HEADER_NAME + " header not found";
+            map<json> errorPayload = {"error":errorMessage};
+            errorResponse.setJsonPayload(errorPayload);
+            error? res = caller->respond(errorResponse);
+            handleError(res);
+            return;
+        }
 
+        var requestPayload = request.getJsonPayload();
         if(requestPayload is json) {
-            string operation = <string>requestPayload.operation;
+            string operation = request.getHeader(HEADER_NAME);
 
             match operation {
                 ADD_OPERATION => {
