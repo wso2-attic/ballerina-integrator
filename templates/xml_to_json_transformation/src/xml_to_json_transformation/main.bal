@@ -71,7 +71,7 @@ service scienceLabService on new http:Listener(config:getAsInt("LISTENER_PORT"))
                         </response>`;
 
                         if (resXml is xml) {
-                            respondAndHandleError(caller, http:STATUS_OK, resXml);
+                            respondAndHandleError(caller, http:STATUS_OK, <@untainted> resXml);
                         } else {
                             logAndRespondError(caller, "Converting backend json response to xml failed.", resXml,
                                 http:STATUS_INTERNAL_SERVER_ERROR);
