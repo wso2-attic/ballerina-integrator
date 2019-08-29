@@ -1,16 +1,23 @@
 # Using Modules
 
-A *module* is a directory that contains Ballerina source code files and is part of a namespace. Modules facilitate collaboration, sharing, and reuse. Modules can include functions, connectors, constants, annotations, services, and objects. To share a module among programs, projects, and users you need to push the module into a repository.
+A module is a directory that contains Ballerina source code files and is part of a namespace. Modules facilitate collaboration, sharing, and reuse. Modules can include functions, connectors, constants, annotations, services, and objects. To share a module among programs, projects, and users you need to push the module into a repository.
 
-Modules:
+> **Tip**: Module names can contain alphanumeric characters including dots `.`. Dots in a module name have no meaning other than the last segment after the final dot being used as a default alias within your source code.
 
-<ol>
-<li>May or may not have a version</li>
-<li>However, modules cannot be pushed into a registry for sharing without a version</li>
-<li>Are referenced by `<org-name>/<module-name>` where `<org-name>` is a namespace from within a repository.</li>
-</ol>
+## Storing modules in a public directory
 
-Module names can contain alphanumeric characters including dots `.`. Dots in a module name have no meaning other than the last segment after the final dot being used as a default alias within your source code.
+You can store your modules in a public directory called [Ballerina Central](#https://central.ballerina.io/). The following are the steps you follow when working with modules.
+
+![alt text](../../assets/img/module-to-central.png)
+
+1. Pull an existing module from Ballerina Central to your local directory using the `ballerina pull` command.
+
+2. Make your changes to customize the module for your integration scenario and build the module using `ballerina build` command.
+
+3. By building the module you automatically create a `.toml` file. From this file, point to any dependancy `.jar` files that you have for your integration scenario.
+
+4. Push the module you built back to Ballerina Central using the `ballerina push` command.
+
 
 ## Setting up
 
