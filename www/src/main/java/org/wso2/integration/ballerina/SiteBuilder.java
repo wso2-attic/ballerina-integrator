@@ -36,14 +36,10 @@ import java.util.logging.Logger;
 import static org.wso2.integration.ballerina.constants.Constants.CLOSE_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_BEGIN;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_END;
-import static org.wso2.integration.ballerina.constants.Constants.COLAN;
 import static org.wso2.integration.ballerina.constants.Constants.COMMA;
 import static org.wso2.integration.ballerina.constants.Constants.COMMENT_END;
 import static org.wso2.integration.ballerina.constants.Constants.COMMENT_START;
-import static org.wso2.integration.ballerina.constants.Constants.DOT;
 import static org.wso2.integration.ballerina.constants.Constants.EMPTY_STRING;
-import static org.wso2.integration.ballerina.constants.Constants.FILE;
-import static org.wso2.integration.ballerina.constants.Constants.FORWARD_SLASH;
 import static org.wso2.integration.ballerina.constants.Constants.GIT_PROPERTIES_FILE;
 import static org.wso2.integration.ballerina.constants.Constants.HASH;
 import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_SEGMENT_TAG;
@@ -53,18 +49,17 @@ import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
 import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
 import static org.wso2.integration.ballerina.constants.Constants.REPO_EXAMPLES_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.SEGMENT;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR_MD;
 import static org.wso2.integration.ballerina.utils.Utils.copyDirectoryContent;
 import static org.wso2.integration.ballerina.utils.Utils.createDirectory;
 import static org.wso2.integration.ballerina.utils.Utils.deleteDirectory;
 import static org.wso2.integration.ballerina.utils.Utils.getCodeFile;
+import static org.wso2.integration.ballerina.utils.Utils.getCommitHash;
 import static org.wso2.integration.ballerina.utils.Utils.getCurrentDirectoryName;
 import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWithCodeType;
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
 import static org.wso2.integration.ballerina.utils.Utils.isDirEmpty;
-import static org.wso2.integration.ballerina.utils.Utils.getCommitHash;
 import static org.wso2.integration.ballerina.utils.Utils.removeLicenceHeader;
 
 /**
@@ -130,10 +125,10 @@ public class SiteBuilder {
      * @param file README.md file
      */
     private static void processReadmeFile(File file) {
-        try {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String readMeFileContent = IOUtils
                     .toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+
             String line;
             int lineNumber = 0;
 
@@ -181,7 +176,7 @@ public class SiteBuilder {
     private static String getIncludeCodeFile(String readMeParentPath, String line) {
         String fullPathOfIncludeCodeFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line);
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String code = removeLicenceHeader(getCodeFile(includeCodeFile)).trim();
+        String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath)).trim();
         return getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code);
     }
 
@@ -205,7 +200,7 @@ public class SiteBuilder {
         String segment = tempDataArr[1].replace("segment:", EMPTY_STRING).trim();
 
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile));
+        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath));
 
         String code = getCodeSegment(codeFileContent, segment).trim();
         return getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code);
@@ -308,11 +303,11 @@ public class SiteBuilder {
         InputStream inputStream = classLoader.getResourceAsStream(GIT_PROPERTIES_FILE);
         if (inputStream != null) {
             try {
-                String commitHash = getCommitHash(inputStream);
-                if (commitHash == null) {
+                String gitCommitHash = getCommitHash(inputStream);
+                if (gitCommitHash == null) {
                     throw new ServiceException("git commit id is null.");
                 }
-                return commitHash;
+                return gitCommitHash;
             } catch (ServiceException e) {
                 throw new ServiceException("Version information could not be retrieved", e);
             }

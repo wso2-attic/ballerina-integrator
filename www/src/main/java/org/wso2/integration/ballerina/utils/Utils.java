@@ -37,6 +37,7 @@ import static org.wso2.integration.ballerina.constants.Constants.CODE_MD_SYNTAX;
 import static org.wso2.integration.ballerina.constants.Constants.COMMIT_HASH;
 import static org.wso2.integration.ballerina.constants.Constants.EMPTY_STRING;
 import static org.wso2.integration.ballerina.constants.Constants.EQUAL;
+import static org.wso2.integration.ballerina.constants.Constants.FORWARD_SLASH;
 import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_SIGN;
 import static org.wso2.integration.ballerina.constants.Constants.GIT_COMMIT_ID;
 import static org.wso2.integration.ballerina.constants.Constants.HASH;
@@ -44,6 +45,8 @@ import static org.wso2.integration.ballerina.constants.Constants.JAVA_CODE_MD_SY
 import static org.wso2.integration.ballerina.constants.Constants.LICENCE_LAST_LINE;
 import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
 import static org.wso2.integration.ballerina.constants.Constants.NOTE;
+import static org.wso2.integration.ballerina.constants.Constants.README_MD;
+import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TITLE;
 
 /**
@@ -112,9 +115,16 @@ public class Utils {
      * @param file file which want to content as string
      * @return file content as a string
      */
-    public static String getCodeFile(File file) {
+    public static String getCodeFile(File file, String readMeParentPath) {
         try {
-            return IOUtils.toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
+            if (file.exists()) {
+                return IOUtils.toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
+            } else {
+                throw new ServiceException("Invalid file path in INCLUDE_CODE tag. Mentioned file does not exists in "
+                        + "the project. Please mention the correct file path and try again.\n\tInclude file path\t:"
+                        + file.getPath().replace(TEMP_DIR, "docs/") + "\n\tREADME file path\t:"
+                        + readMeParentPath.replace(TEMP_DIR, "docs/") + FORWARD_SLASH + README_MD);
+            }
         } catch (IOException e) {
             throw new ServiceException("Error occurred when converting file content to string. file: " + file.getPath(),
                     e);
