@@ -126,13 +126,11 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <executable>${project-home}/resources/run${script.extension}</executable>
-                    <skip>true</skip>
+                    <executable>${project-home}/init.sh</executable>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
     <dependencies>
          <dependency>
             <groupId>org.zeroturnaround</groupId>
