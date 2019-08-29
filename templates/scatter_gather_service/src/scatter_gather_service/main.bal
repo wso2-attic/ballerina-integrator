@@ -41,7 +41,7 @@ service scatter_gather on new http:Listener(config:getAsInt("LISTENER_PORT")) {
         if (requestPayload is json) {
 
             http:Request epRequest = new;
-            epRequest.setJsonPayload(requestPayload);
+            epRequest.setJsonPayload(<@untainted> requestPayload);
 
             foreach http:Client EP in epArray {
                 http:Response | error epResponse = EP->post("", epRequest);
@@ -68,7 +68,7 @@ service scatter_gather on new http:Listener(config:getAsInt("LISTENER_PORT")) {
                 }        
 
             http:Response responseToClient = new;
-            responseToClient.setJsonPayload(aggregatedResult);
+            responseToClient.setJsonPayload(<@untainted> aggregatedResult);
             respondToClient(caller, responseToClient);
         } else {
             respondToClient(caller, createErrorResponse(400, "Not a valid Json request payload"));
