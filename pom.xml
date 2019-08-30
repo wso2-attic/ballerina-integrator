@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+  ~
+  ~ WSO2 Inc. licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except
+  ~ in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.wso2.ballerina-integrator</groupId>
+   <artifactId>ballerina-integrator</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   <packaging>pom</packaging>
+   <name>Ballerina Integrator</name>
+   <organization>
+      <name>WSO2</name>
+      <url>http://wso2.org/</url>
+   </organization>
+   <licenses>
+      <license>
+         <name>The Apache Software License, Version 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      </license>
+   </licenses>
+   <repositories>
+      <repository>
+         <id>wso2.releases</id>
+         <name>WSO2 Releases Repository</name>
+         <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
+         <releases>
+            <enabled>true</enabled>
+            <updatePolicy>daily</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy>
+         </releases>
+      </repository>
+      <repository>
+         <id>wso2.snapshots</id>
+         <name>WSO2 Snapshot Repository</name>
+         <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>daily</updatePolicy>
+         </snapshots>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+      </repository>
+      <repository>
+         <id>wso2-nexus</id>
+         <name>WSO2 internal Repository</name>
+         <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+         <releases>
+            <enabled>true</enabled>
+            <updatePolicy>daily</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy>
+         </releases>
+      </repository>
+   </repositories>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+               <execution>
+                  <id>my-exec</id>
+                  <phase>pre-integration-test</phase>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <executable>${project-home}/resources/run${script.extension}</executable>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+   <profiles>
+      <profile>
+         <id>unix</id>
+         <activation>
+            <os>
+               <family>unix</family>
+            </os>
+         </activation>
+         <properties>
+            <script.extension>.sh</script.extension>
+         </properties>
+      </profile>
+   </profiles>
+   <modules>
+      <module>www</module>
+   </modules>
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.eclipse.lsp4j</groupId>
+            <artifactId>org.eclipse.lsp4j</artifactId>
+            <version>${lsp4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.lsp4j</groupId>
+            <artifactId>org.eclipse.lsp4j.jsonrpc</artifactId>
+            <version>${lsp4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ballerinalang</groupId>
+            <artifactId>ballerina-core</artifactId>
+            <version>${ballerina.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ballerinalang</groupId>
+            <artifactId>ballerina-lang</artifactId>
+            <version>${ballerina.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${apache.commons.io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ballerinalang</groupId>
+            <artifactId>language-server-compiler</artifactId>
+            <version>${ballerina.lang.compiler.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ballerinalang</groupId>
+            <artifactId>language-server-core</artifactId>
+            <version>${ballerina.lang.compiler.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>5.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-zip</artifactId>
+            <version>1.13</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+    </dependencies>
+   </dependencyManagement>
+
+    <properties>
+        <project-home>${project.basedir}</project-home>
+        <carbon.p2.plugin.version>1.5.8</carbon.p2.plugin.version>
+        <maven.surefire.version>2.12.4</maven.surefire.version>
+
+        <maven.checkstyleplugin.excludes>**/SourceGen.java</maven.checkstyleplugin.excludes>
+        <maven.spotbugsplugin.exclude.file>spotbugs-exclude.xml</maven.spotbugsplugin.exclude.file>
+
+        <ballerina.version>1.0.0-alpha</ballerina.version>
+        <lsp4j.version>0.6.0</lsp4j.version>
+        <apache.commons.io.version>2.6</apache.commons.io.version>
+        <ballerina.lang.compiler.version>1.0.0-alpha</ballerina.lang.compiler.version>
+        <jackson.databind.version>2.9.8</jackson.databind.version>
+        <mvn.processor.plugin.version>2.2.4</mvn.processor.plugin.version>
+        <h2.database.version>1.4.199</h2.database.version>
+        <commons.lang3.version>3.8.1</commons.lang3.version>
+        <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
+        <wso2.maven.compiler.source>1.8</wso2.maven.compiler.source>
+        <wso2.maven.compiler.target>1.8</wso2.maven.compiler.target>
+        <maven.assembly.plugin.version>2.6</maven.assembly.plugin.version>
+        <exec.maven.plugin.version>1.6.0</exec.maven.plugin.version>
+        <git.commit.id.plugin.version>2.2.5</git.commit.id.plugin.version>
+        <antlr4.maven.plugin.version>4.5.1</antlr4.maven.plugin.version>
+
+        <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
+        <apache.source.release.assembly.descriptor.version>1.0.6</apache.source.release.assembly.descriptor.version>
+    </properties>
+</project>
