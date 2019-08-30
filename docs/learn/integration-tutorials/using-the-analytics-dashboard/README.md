@@ -40,7 +40,7 @@ This tutorial includes the following sections.
 
 We will write a set of simple functions as below, each of which will invoke an endpoint in the Health Care backend. The following function will query for a list of doctors registered for a given specialization.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_1 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_1 } -->
 
 We will then invoke these functions using a Ballerina service.
 

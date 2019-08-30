@@ -44,7 +44,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 ```
   └──sending-a-simple-message-to-a-datasource
-    └── guide
+    └── src/tutorial
         ├── ballerina.conf
         └── db_interaction
              ├── data_service.bal
@@ -55,7 +55,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 Create the above directories in your local machine and create the empty .bal files as mentioned.
 
-Then open the terminal and navigate to `sending-a-simple-message-to-a-datasource/guide` directory. Run the following command to initialize a Ballerina project.
+Then open the terminal and navigate to `sending-a-simple-message-to-a-datasource/src/tutorial` directory. Run the following command to initialize a Ballerina project.
 
 ```
 $ ballerina new MyNewProject
@@ -67,7 +67,7 @@ First we have to define the MySQL client in the `data_service.bal` file.
 
 The properties of the database connection should be added to a configuration file, and accessed from the file at runtime. In Ballerina, name of this config file has to be `ballerina.conf`.
 
-Navigate to `sending-a-simple-message-to-a-datasource/guide` directory, create the config file `ballerina.conf`, and add the following database connection properties to the file.
+Navigate to `sending-a-simple-message-to-a-datasource/src/tutorial` directory, create the config file `ballerina.conf`, and add the following database connection properties to the file.
 
 ```
 MYSQL_DB_HOST = "localhost"
@@ -200,7 +200,7 @@ Once you are done with the development, you can deploy the services using any of
 
 #### Deploying Locally
 
-To deploy locally, navigate to `routing-requests-based-on-message-content/guide`, and execute the following command.
+To deploy locally, navigate to `routing-requests-based-on-message-content/src/tutorial`, and execute the following command.
 
 ```
 $ ballerina build

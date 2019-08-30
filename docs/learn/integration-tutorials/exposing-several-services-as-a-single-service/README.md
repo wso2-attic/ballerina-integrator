@@ -34,17 +34,17 @@ This tutorial includes the following sections.
 
 In the previous tutorial, we called the backend service from the add appointment resource itself. Since we are chaining two services in this example, we will add a util function to handle scheduling appointments at the backend.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_1 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_1 } -->
 
 When the client request is received, we check if the request payload is json. If so, we transform it to the format expected by the backend. Then we invoke the util function to add an appointment within the resource function.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_2 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_2 } -->
 
 #### Adding payment for the appointment
 
 After invoking the appointment scheduling endpoint, we get the first response and check if it is an actual appointment confirmation response. If not, we simply throw an error. If it is a valid response, we call the function that invokes the payment settlement request.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_3 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_3 } -->
 
 #### Sending response back to client
 
@@ -56,7 +56,7 @@ Once you are done with the development, you can deploy the services using any of
 
 #### Deploying Locally
 
-To deploy locally, navigate to *routing-requests-based-on-message-content/guide*, and execute the following command.
+To deploy locally, navigate to *routing-requests-based-on-message-content/src/tutorial*, and execute the following command.
 
 ```
 $ ballerina build
@@ -77,7 +77,7 @@ To run a service as a Docker container, add the corresponding Docker annotations
 
 ### Testing the Implementation
 
-Let's start the service by navigating to the folder *guide/health_care_service.bal* file is and executing the following command.
+Let's start the service by navigating to the folder *src/tutorial/health_care_service.bal* file is and executing the following command.
 
 ```
 $ ballerina run health_care_service.bal

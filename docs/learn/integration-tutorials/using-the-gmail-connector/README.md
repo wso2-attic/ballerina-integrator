@@ -8,7 +8,7 @@ In the previous tutorial [Exposing Several Services as a Single Service](../../e
 
 The Gmail module allows you to send, read and delete emails through the Gmail REST API. It handles OAuth 2.0 authentication. It also provides the ability to read, trash, untrash, delete threads, get the Gmail profile and access the mailbox history as well. More details on this module can be found in the [Gmail Module](https://github.com/wso2-ballerina/module-gmail/blob/master/Readme.md) repository.
 
-This example requires the Hospital Service to be running in the background, as the Gmail Connector service makes an appointment request call to the backend, which generates the appointment confirmation response. Using this reponse, we generate an email to be sent to the intended recipient.
+This example requires the Hospital Service to be running in the background, as the Gmail Connector service makes an appointment request call to the backend, which generates the appointment confirmation response. Using this response, we generate an email to be sent to the intended recipient.
 
 #### Prerequisites
 
@@ -50,27 +50,27 @@ First, we need to obtain AuthTokens to access Google APIs. Follow the steps belo
 
 In the Health Care Service we created in previous tutorials, we can add an HTTP client config for Gmail as below.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_1 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_1 } -->
 
 Then we can create the Gmail client using the above config.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_2 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_2 } -->
 
 #### Generating mail body
 
 We can use a util function to generate the mail body, based on the response received from the payment endpoint.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_3 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_3 } -->
 
 #### Sending email to user
 
 Once the mail body is generated, we can send the email to the user's email address.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_4 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_4 } -->
 
 ### Testing the Implementation
 
-Let's start the service by navigating to the folder *guide/health_care_service.bal* file is and executing the following command.
+Let's start the service by navigating to the folder *src/tutorial/health_care_service.bal* file is and executing the following command.
 
 ```
 $ ballerina run health_care_service.bal
@@ -96,7 +96,7 @@ Let's create a file called _request.json_ and add the following content.
 }
 ```
 
-Navigate to _using-the-gmail-connector/guide_ and send the request message to the service using cURL.
+Navigate to _using-the-gmail-connector/src/tutorial_ and send the request message to the service using cURL.
 
 ```
 $ curl -v -X POST --data @request.json http://localhost:9092/hospitalMgtService/surgery/reserve --header "Content-Type:application/json"
@@ -128,7 +128,7 @@ A request is made to the _healthCareService_ which returns a JSON payload with t
 }
 ```
 
-This payload is used to extract necessary details for the email message using the _generateEmail_ function. With the necessary _MessageRequest_ details specified, the email can be sent to its intended recipient and a reponse is sent back to the caller confirming the receipt of the email.
+This payload is used to extract necessary details for the email message using the _generateEmail_ function. With the necessary _MessageRequest_ details specified, the email can be sent to its intended recipient and a response is sent back to the caller confirming the receipt of the email.
 
 ```json
 {

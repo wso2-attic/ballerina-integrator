@@ -1,8 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 HOME=`pwd`
+java -jar $HOME/target/www-builder-1.0-jar-with-dependencies.jar > execution.log 2>&1 
 
-# Comment this line if do not want to build the project again.
-mvn clean install -f $HOME/pom.xml
-
-java -jar $HOME/target/www-builder-1.0-jar-with-dependencies.jar
+if (grep -q "Invalid file path" execution.log)
+  then
+    echo "Invalid file path in INCLUDE_CODE tag. Mentioned file does not exists in the project. See more at execution.log"
+    exit 1
+  fi
+  
