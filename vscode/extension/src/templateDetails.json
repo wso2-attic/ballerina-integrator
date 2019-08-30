@@ -1,0 +1,88 @@
+[
+    {
+        "id": "T0001",
+        "name": "HelloWorld Service",
+        "description": "Contains a project template with a basic HelloWorld service.",
+        "placeholders": [
+            {
+                "id": "P001",
+                "label": "Message",
+                "name": "message",
+                "type": "text",
+                "value": [
+                    "Hello World!"
+                ]
+            },
+            {
+                "id": "P002",
+                "label": "Listener Port",
+                "name": "listenerPort",
+                "type": "text",
+                "value": [
+                    "9090"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "T0002",
+        "name": "Data Backend Service",
+        "description": "Contains a project template for creating a database-backed RESTful web service.",
+        "placeholders": [
+            {
+                "id": "P001",
+                "label": "Listner Port",
+                "name": "listenerPort",
+                "type": "text",
+                "value": [
+                    "9090"
+                ]
+            },
+            {
+                "id": "P002",
+                "label": "Database Host",
+                "name": "databaseHost",
+                "type": "text",
+                "value": [
+                    "localhost"
+                ]
+            },
+            {
+                "id": "P003",
+                "label": "Database Port",
+                "name": "databasePort",
+                "type": "text",
+                "value": [
+                    "3306"
+                ]
+            },
+            {
+                "id": "P004",
+                "label": "Database Name",
+                "name": "databaseName",
+                "type": "text",
+                "value": [
+                    "sampledb"
+                ]
+            },
+            {
+                "id": "P005",
+                "label": "Database Username",
+                "name": "databaseUsername",
+                "type": "text",
+                "value": [
+                    "root"
+                ]
+            },
+            {
+                "id": "P006",
+                "label": "Database Password",
+                "name": "databasePassword",
+                "type": "password",
+                "value": [
+                    "root"
+                ]
+            }
+        ]
+    }
+]
