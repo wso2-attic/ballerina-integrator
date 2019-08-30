@@ -39,6 +39,7 @@ public enum Snippets {
     DEF_RESOURCE_S3_DELETE_BUCKET(SnippetsGenerator.getS3DeleteBucketResourceSnippet()),
     DEF_CLIENT_CONFIG_AMAZONS3(SnippetsGenerator.getAmazonS3ConfigSnippet()),
     DEF_CLIENT_AMAZONS3(SnippetsGenerator.getAmazonS3ClientSnippet()),
+    DEF_SQS_CLIENT(SnippetsGenerator.getSQSClientDefSnippet()),
     DEF_ERROR_HANDLING(SnippetsGenerator.getRespondAndHandleError());
 
     private String snippetName;

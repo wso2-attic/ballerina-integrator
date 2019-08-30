@@ -82,6 +82,7 @@ public class TopLevelScope extends TopLevelScopeProvider {
         completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_LIST_OBJECTS));
         completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_DELETE_OBJECT));
         completionItemsArr.add(getStaticItem(context, Snippets.DEF_RESOURCE_S3_DELETE_BUCKET));
+        completionItemsArr.add(getStaticItem(context, Snippets.DEF_SQS_CLIENT));
 
         return completionItemsArr;
     }

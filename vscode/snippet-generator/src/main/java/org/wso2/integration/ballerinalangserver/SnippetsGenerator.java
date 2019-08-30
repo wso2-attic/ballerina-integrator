@@ -288,6 +288,29 @@ public class SnippetsGenerator {
     }
 
     /**
+    * Get Amazon SQS Client Definition Snippet Block.
+    *
+    * @return {@link SnippetsBlock}     Generated Snippet Block
+    */
+    public static SnippetsBlock getSQSClientDefSnippet() {
+        ImmutablePair<String, String> configImport = new ImmutablePair<>("ballerina", "config");
+        ImmutablePair<String, String> amazonsqsImport = new ImmutablePair<>("wso2", "amazonsqs");
+
+        String snippet = "// Amazon SQS client configuration\n" +
+                "amazonsqs:Configuration ${1:configuration} = {\n" +
+                "\taccessKey: config:getAsString(\"${2:ACCESS_KEY_ID}\"),\n" +
+                "\tsecretKey: config:getAsString(\"${3:SECRET_ACCESS_KEY}\"),\n" +
+                "\tregion: config:getAsString(\"${4:REGION}\"),\n" +
+                "\taccountNumber: config:getAsString(\"${5:ACCOUNT_NUMBER}\")\n" +
+                "};\n" +
+                "\n // Amazon SQS client\n" +
+                "amazonsqs:Client ${6:sqsClient} = new(${7:configuration});\n";
+
+        return new SnippetsBlock(ItemResolverConstants.SQS_CLIENT, snippet, ItemResolverConstants.SNIPPET_TYPE,
+                SnippetsBlock.SnippetType.SNIPPET, configImport, amazonsqsImport);
+    }
+
+    /**
      * Get respond and handle Error snippet
      *
      * @return {@link SnippetsBlock} Generated Snippet Block
