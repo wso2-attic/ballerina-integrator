@@ -68,13 +68,13 @@ This tutorial includes the following sections.
 
 In the RESTful service we developed earlier, we already have a resource to schedule appointments in the Health Care System. Let's modify this resource so that it can transform messages before sending requests to the backend.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_1 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_1 } -->
 
 ### Deploying the Service
 
 You can deploy the above services in your local environment. First you can create the Ballerina executable archives (.balx) as follows.
 
-Navigate to _transforming-message-content/guide_ and execute the following command to build the service.
+Navigate to _transforming-message-content/src/tutorial_ and execute the following command to build the service.
 
 ```bash
 $ ballerina build
@@ -88,13 +88,13 @@ $ ballerina run health_care_service.balx
 
 ### Testing the Implementation
 
-- Navigate to _transforming-message-content/guide_, and execute the following command to start the service:
+- Navigate to _transforming-message-content/src/tutorial_, and execute the following command to start the service:
 
 ```bash
    $ ballerina run health_care_service.bal
 ```
 
-- Create a file called input.json within _guide_ directory and add the following json request:
+- Create a file called input.json within _src/tutorial_ directory and add the following json request:
 
 ```json
 {

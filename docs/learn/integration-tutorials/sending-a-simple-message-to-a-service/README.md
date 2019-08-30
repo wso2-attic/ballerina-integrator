@@ -42,7 +42,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 ```
   └──sending-a-simple-message-to-a-service
-    └──guide
+    └──src/tutorial
         └──health_care_service.bal
 ```
 
@@ -58,33 +58,33 @@ $ ballerina init
 
 We first create a listener to listen to requests to the RESTful service.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_1 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_1 } -->
 
 Then we add the service which listens for requests using the above listener on port 9092.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_2 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_2 } -->
 
 #### Creating the resource to handle GET requests
 
 Now we can add resources to handle each request type to the service. In this sample, we will add a single resource to handle GET requests to the service.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_3 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_3 } -->
 
 #### Creating the client to connect to the backend of Health Care System
 
 Now we create an HTTP client to connect to the backend of the Health Care System.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_4 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_4 } -->
 
 We can use this client to invoke the querydoctor endpoint of the backend and retrieve the list of doctors.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_5 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_5 } -->
 
 #### Handling the response from the backend
 
 Once a response is received, it has to be set to the outgoing response of the service.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_6 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_6 } -->
 
 ### Deployment
 
@@ -92,7 +92,7 @@ Once you are done with the development, you can deploy the services using any of
 
 #### Deploying Locally
 
-To deploy locally, navigate to _routing-requests-based-on-message-content/guide_, and execute the following command.
+To deploy locally, navigate to _routing-requests-based-on-message-content/src/tutorial_, and execute the following command.
 
 ```
 $ ballerina build

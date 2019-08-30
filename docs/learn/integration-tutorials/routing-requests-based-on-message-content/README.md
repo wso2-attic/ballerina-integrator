@@ -36,13 +36,13 @@ This tutorial includes the following sections.
 
 In the previous tutorial [Sending a Simple Message to a Service](../../sending-a-simple-message-to-a-service/sending-a-simple-message-to-a-service/), we implemented a Ballerina service **hospitalMgtService** with a resource to handle requests from clients to the Health Care backend. For this tutorial, we add another resource to route requests to different hospitals.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_1 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_1 } -->
 
 #### Routing requests to different hospitals
 
 Then, we can include the implementation for the endpoint exposed by the resource in the previous step. When a client reqeust reaches the endpoint, we will retrieve the hospital name from the payload, and send the request to the corresponding endpoint in the backend.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: guide/health_care_service.bal, segment: segment_2 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_2 } -->
 
 ### Deploying the Service
 
@@ -50,7 +50,7 @@ Once you are done with the development, you can deploy the services using any of
 
 #### Deploying locally
 
-To deploy locally, navigate to *routing-requests-based-on-message-content/guide*, and execute the following command.
+To deploy locally, navigate to *routing-requests-based-on-message-content/src/tutorial*, and execute the following command.
 
 ```
 $ ballerina build
@@ -81,7 +81,7 @@ $ ballerina run backend.balx
 
 #### Starting the RESTful service
 
-Navigate to *routing-requests-based-on-message-content/guide* and start the RESTful service as below.
+Navigate to *routing-requests-based-on-message-content/src/tutorial* and start the RESTful service as below.
 
 ```
 $ ballerina run health_care_service.bal
