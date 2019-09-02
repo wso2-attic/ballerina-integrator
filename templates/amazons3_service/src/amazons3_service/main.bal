@@ -18,7 +18,7 @@ import ballerina/config;
 import ballerina/http;
 import ballerina/log;
 
-import dilmi/amazons3;
+import wso2/amazons3;
 
 // Constants for error codes and messages.
 const string BUCKET_CREATION_ERROR_MSG = "Error while creating bucket on Amazon S3.";
