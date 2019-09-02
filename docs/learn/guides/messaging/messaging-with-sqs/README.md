@@ -43,7 +43,7 @@ The following code creates a new queue in Amazon SQS with the configuration prov
 **create_notification_queue.bal**
 <!-- INCLUDE_CODE: guide/create_notification_queue.bal -->
 
-Following code generates fire alert notifications periodically and are sent to the above created SQS queue.
+The following code generates fire alert notifications periodically and these are sent to the above created SQS queue.
 
 **notify_fire.bal**
 <!-- INCLUDE_CODE: guide/notify_fire.bal -->
