@@ -38,7 +38,7 @@ The following diagram illustrates the scenario:
 
 Take a look at the code samples below to understand how to implement the scenario. 
 
-Following code creates a new queue in Amazon SQS with the configuration provided in a file.
+The following code creates a new queue in Amazon SQS with the configuration provided in a file.
 
 **create_notification_queue.bal**
 <!-- INCLUDE_CODE: guide/create_notification_queue.bal -->
