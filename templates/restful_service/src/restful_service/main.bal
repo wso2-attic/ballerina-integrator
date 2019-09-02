@@ -24,9 +24,11 @@ import ballerina/mime;
 // Define a listener endpoint:
 listener http:Listener httpListener = new(config:getAsInt("LISTENER_PORT"));
 
-// Constants.
+// The SOAP service (stock quote service) URL.
 string STOCK_QUOTE_SERVICE_BASE_URL = config:getAsString("STOCK_QUOTE_SERVICE_URL", "http://localhost:9000");
+// The message which is used to return when error occurs while responding to the client.
 const string ERROR_MESSAGE_WHEN_RESPOND = "Error while sending response to the client";
+// The message which is used to return when the payload is in invalid format.
 const string ERROR_MESSAGE_INVALID_PAYLOAD = "Invalid payload received";
 
 http:Client stockQuoteClient = new(STOCK_QUOTE_SERVICE_BASE_URL);
@@ -49,8 +51,11 @@ service stockQuote on httpListener {
                            </m0:getQuote>`;
         xml soapEnv = self.constructSOAPPayload(<@untainted> payload, "http://schemas.xmlsoap.org/soap/envelope/");
 
+        //Set SOAPAction header to the request
         request.addHeader("SOAPAction", "urn:getQuote");
+        //Set `xml` as the request payload
         request.setXmlPayload(<@untainted> soapEnv);
+        //Set the value for the CONTENT_TYPE request header
         request.setHeader(mime:CONTENT_TYPE, mime:TEXT_XML);
 
         var httpResponse = stockQuoteClient->post("/services/SimpleStockQuoteService", <@untainted> request);
