@@ -15,16 +15,15 @@ The high level sections of this guide are as follows:
 
 ## What you'll build
 
+The following diagram illustrates the scenario:
+
+![Message flow diagram image](resources/sqs-alert.png)
+
 Let's consider a scenario where a fire alarm sends fire alerts to an Amazon SQS queue. As message duplication is not an issue, an Amazon SQS Standard Queue is used as the queue. A fire alarm listener is polling the messages in the SQS queue. When fire alerts are available, it will consume the messages from the queue and remove the messages from the queue. Consumed messages are showed in the console to the User. 
 
 Here, the fire alarm is sending fire alerts periodically from a Ballerina worker where listener polls in another worker. Both sent messages and received messages are printed in the console. 
 
 As there can be multiple alert messages available in the queue, the listener is configured to consume more than one message at a time.
-
-The following diagram illustrates the scenario:
-
-![Message flow diagram image](resources/sqs-alert.png)
-
 
 ## Prerequisites
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
@@ -48,12 +47,12 @@ The following code generates fire alert notifications periodically and these are
 **notify_fire.bal**
 <!-- INCLUDE_CODE: guide/notify_fire.bal -->
 
-Following code listens to the SQS queue and if there are any notifications, it would receive from the queue and delete the existing messages in the queue.
+The following code listens to the SQS queue and if there are any notifications, it would receive from the queue and delete the existing messages in the queue.
 
 **listen_to_fire_alarm.bal**
 <!-- INCLUDE_CODE: guide/listen_to_fire_alarm.bal -->
 
-In the following code, the main method would implement the workers related to creating a queue, sending a message to the queue consuming and receiving / deleting messages form the queue.
+In the following code, the `main` method would implement the workers related to creating a queue, sending a message to the queue, and consuming and receiving/deleting messages from the queue.
 
 **main.bal**
 <!-- INCLUDE_CODE: guide/main.bal -->
@@ -82,10 +81,13 @@ Now that you have created the project structure, the next step is to develop the
 
 ### Developing the scenario
 
-1. First you need to configure parameters in `create_notification_queue.bal` which will create a new queue. 
-2. Then you need to configure/develop `notify_fire.bal` which will send periodic fire alerts to the created SQS queue.  
-3. Then you need to configure/develop `listen_to_fire_alarm.bal` which will listen to the above created queue with polling.  
-4. Finally you need to configure/develop `listen_to_fire_alarm.bal` which will implement the different workers for each of the above cases and run the system.
+1. Configure parameters in `create_notification_queue.bal`, which will create a new queue. In order to create a queue initialize the `amazonsqs:Client` with configuration parameters and invoke the `createQueue` method of it. `ACCESS_KEY_ID` and `SECRET_ACCESS_KEY` can be obtained from the Amazon account you have created. When a queue is created you can find the `ACCOUNT_NUMBER` of the SQS account. 
+
+2. Configure/develop `notify_fire.bal`, which will send periodic fire alerts to the created SQS queue. Instead of the `while` loop added, add the custom logic to trigger fire alarm. Create a client as described in step 1 and invoke `sendMessage` method to send alert message to the SQS queue.
+
+3. Configure/develop `listen_to_fire_alarm.bal`, which will listen to the above created queue with polling. `sleep` method in the `while` loop can be called according to the polling interval. Then create the client as described in step 1 and invoke `receiveMessage` method. Depending on the `MaxNumberOfMessages` number set in the `attributes` array, maximum number of messages received per invoke will be restricted. Each message can be accessed with `receiptHandle` value in the response. Once the message is read it can be deleted by invoking the `deleteMessage` method.
+
+4. Configure/develop `main.bal`, which will implement the different workers for each of the above cases and run the system. There the workers can be replaced with the relevant code. `queueCreator` code should be called once to setup the queue. Code in the `fireNotifier` can be called from the fire alarm triggering side while `fireListener` should reside in the alarm polling/listening code.
 
 ## Deployment
 
@@ -93,7 +95,7 @@ Once you are done with the development, you can deploy the scenario using any of
 
 ### Deploying locally
 
-To deploy locally, navigate to messaging-with-sqs/guide, and execute the following command.
+To deploy locally, navigate to `messaging-with-sqs/guide`, and execute the following command.
 
 ```bash
   $ ballerina build
@@ -104,7 +106,7 @@ This builds a Ballerina executable archive (.balx) of the services in the target
   $ ballerina run <Exec_Archive_File_Name>
 ```
 
-Then you will see the SQS queue creation, sending fire alerts to the queue and consuming process of queues and subsequent deletion process on console.
+You see the SQS queue creation, sending fire alerts to the queue, consuming process of queues and subsequent deletion process on console.
 
 ### Deploying on Docker
 
