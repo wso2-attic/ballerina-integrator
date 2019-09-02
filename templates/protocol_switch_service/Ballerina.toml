@@ -1,0 +1,26 @@
+[project]
+org-name= "wso2"
+version= "1.0.0"
+license= ["Apache-2.0"]
+authors= ["WSO2"]
+keywords= ["ballerina", "integrator"]
+repository= "https://github.com/wso2/ballerina-integrator"
+templates= ["protocol_switch_service"]
+
+[dependencies]
+"wso2/jms"= {path = "/home/thishani/ballerina-modules/module-jms/target/balo/jms-2019r3-java8-0.6.0.balo"}
+
+[platform]
+target = "java8"
+
+  [[platform.libraries]]
+  module = "protocol_switch_service"
+  path = "./lib/activemq-client-5.15.5.jar"
+
+  [[platform.libraries]]
+  module = "protocol_switch_service"
+  path = "./lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar"
+
+  [[platform.libraries]]
+  module = "protocol_switch_service"
+  path = "./lib/hawtbuf-1.11.jar"
