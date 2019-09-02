@@ -1,6 +1,4 @@
----
-title: Messaging with SQS
----
+# Messaging with SQS
 
 This guide demonstrates how to use Amazon SQS Connector to notify alerts.
 
@@ -43,30 +41,22 @@ Take a look at the code samples below to understand how to implement the scenari
 Following code creates a new queue in Amazon SQS with the configuration provided in a file.
 
 **create_notification_queue.bal**
-```ballerina
 <!-- INCLUDE_CODE: guide/create_notification_queue.bal -->
-```
 
 Following code generates fire alert notifications periodically and are sent to the above created SQS queue.
 
 **notify_fire.bal**
-```ballerina
 <!-- INCLUDE_CODE: guide/notify_fire.bal -->
-```
 
 Following code listens to the SQS queue and if there are any notifications, it would receive from the queue and delete the existing messages in the queue.
 
 **listen_to_fire_alarm.bal**
-```ballerina
 <!-- INCLUDE_CODE: guide/listen_to_fire_alarm.bal -->
-```
 
 In the following code, the main method would implement the workers related to creating a queue, sending a message to the queue consuming and receiving / deleting messages form the queue.
 
 **main.bal**
-```ballerina
 <!-- INCLUDE_CODE: guide/main.bal -->
-```
 
 ### Creating the project structure
 
