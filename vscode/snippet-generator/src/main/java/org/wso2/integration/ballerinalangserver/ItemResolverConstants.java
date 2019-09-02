@@ -42,6 +42,9 @@ public class ItemResolverConstants {
     public static final String AMAZONS3_RESOURCE_DELETE_OBJECT = "amazonS3/resource/deleteObject";
     public static final String AMAZONS3_RESOURCE_DELETE_BUCKET = "amazonS3/resource/deleteBucket";
 
+    // AmazonSQS Connector Constructs
+    public static final String SQS_CLIENT = "amazonsqs/client";
+
     //Error Handling constructs
     public static final String RESPOND_AND_HANDLE_ERROR = "handleError";
 
