@@ -63,10 +63,10 @@ service hospitalMgtService on httpListener {
             http:Response | error clientResponse;
             if (hospitalDesc != "") {
                 match hospitalDesc {
-                    "grand oak community hospital" =>hospitalName = "grandoaks";
-                    "clemency medical center" =>hospitalName = "clemency";
-                    "pine valley community hospital" =>hospitalName = "pinevalley";
-                    _ => respondWithError(caller, "Hospital name is invalid.", "Hospital name is invalid.");
+                    "grand oak community hospital" => {hospitalName = "grandoaks";}
+                    "clemency medical center" =>{hospitalName = "clemency";}
+                    "pine valley community hospital" => {hospitalName = "pinevalley";}
+                    _ => {respondWithError(caller, "Hospital name is invalid.", "Hospital name is invalid.");}
                 }
                 string sendPath = "/" + hospitalName + "/categories/" + category + "/reserve";
 
