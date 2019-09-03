@@ -22,8 +22,10 @@ export function getHomeView(): string {
 
     let htmlCode = begin + homeStyles;
     let rowHandleStart = `
-            <div class="row">`;
+            <div class="row">
+            <div class="templates">`;
     let rowHandleEnd = `
+            </div>        
             </div>
             <br/>`;
     let numberOfColumns = 0;
@@ -32,9 +34,9 @@ export function getHomeView(): string {
         let templateName = element.name;
         let templateDescription = element.description;
         let card: string = `
-                <div class="column">
+                <div class="three columns">
                     <a href="#" style="none" onclick="pickTemplate('${templateId}')">
-                        <div class="card">
+                        <div class="box">
                             <h2>` + templateName + `</h2><br/>
                             <p>` + templateDescription + `</p>
                         </div>

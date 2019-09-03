@@ -14,12 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import vscode, { workspace, window } from 'vscode';
-import data from './templateDetails.json';
-import ProjectTemplates from './projectTemplates';
+import vscode, { OpenDialogOptions, Uri, window } from 'vscode';
 import { getHomeView } from './homeView';
-import { getFormView } from './formView';
-import { mapToObj } from './utils';
 
 /**
  * Displays the set of templates available and once a template is selected, 
@@ -32,60 +28,90 @@ import { mapToObj } from './utils';
  */
 export async function createTemplateProject(currentPanel: vscode.WebviewPanel, context: vscode.ExtensionContext) {
     let templateSelected = undefined;
-    let projectTemplates = new ProjectTemplates(context, workspace.getConfiguration('projectTemplates'));
-    // get workspace folder
-    let workspaceSelected = await ProjectTemplates.selectWorkspace();
     // generate the home page to display templates
     currentPanel.webview.html = getHomeView();
+    let moduleName = undefined;
+    let projectName = undefined;
+    let folderPath = undefined;
+    let projectPath = undefined;
     currentPanel.webview.onDidReceiveMessage(
-        homePageMessage => {
-            if (!workspaceSelected) {
-                window.showErrorMessage("No Workspace Selected!");
-                return;
-            }
+        async homePageMessage => {
             templateSelected = homePageMessage.command;
-            // generate the placeholder form for a specific template
-            currentPanel.webview.html = getFormView(templateSelected);
-            currentPanel.webview.onDidReceiveMessage(
-                async formPageMessage => {
-                    if (formPageMessage.command === "back") {
-                        currentPanel.dispose();
-                        vscode.commands.executeCommand("ballerinaIntegrator.projectTemplates");
-                        return;
-                    } else {
-                        projectTemplates.updateConfiguration(workspace.getConfiguration('projectTemplates'));
-                        let templateObject = data.find(x => x.id === homePageMessage.command);
-                        let templatePlaceholders = templateObject.placeholders;
-                        let placeholderMap = new Map();
-                        templatePlaceholders.forEach(element => {
-                            placeholderMap.set(element.name, formPageMessage[element.id]);
+            if (templateSelected === "new_project") {
+                projectName = await window.showInputBox({
+                    value: "new_project",
+                    prompt: "Enter value for project name",
+                    placeHolder: "new_project"
+                }).then(text => text);
+                if (projectName != undefined) {
+                    projectPath = await openDialogForFolder();
+                    let projectUri = vscode.Uri.parse(projectPath);
+                    if (projectPath != undefined) {
+                        const cp = require('child_process')
+                        await cp.exec('cd ' + projectUri.path + ' && ballerina new ' + projectName, (err, stdout, stderr) => {
+                            var message = "Created new ballerina project";
+                            if (stderr.search(message) !== -1 || stdout.search(message)) {
+                                vscode.commands.executeCommand('vscode.openFolder', projectUri);
+                                window.showInformationMessage("Successfully created a new Ballerina project at " + projectUri.path);
+                            } else {
+                                window.showErrorMessage(stderr);
+                            }
                         });
-                        let placeholders = mapToObj(placeholderMap);
-                        currentPanel.dispose();
-                        projectTemplates.createFromTemplate(workspaceSelected, homePageMessage.command, placeholders).then(
-                            (template: string | undefined) => {
-                                if (template) {
-                                    window.showInformationMessage("New template project created for '" +
-                                        templateObject.name + "'!");
-
+                    }
+                }
+                currentPanel.dispose();
+                vscode.commands.executeCommand("ballerinaIntegrator.projectTemplates");
+            } else {
+                moduleName = await window.showInputBox({
+                    value: templateSelected,
+                    prompt: "Enter value for module name",
+                    placeHolder: templateSelected
+                }).then(text => text);
+                if (moduleName != undefined) {
+                    folderPath = await openDialogForFolder();
+                    let uri = vscode.Uri.parse(folderPath);
+                    if (folderPath != undefined) {
+                        const cp = require('child_process')
+                        var addCommand = 'cd ' + uri.path + ' && ballerina add ' + moduleName + ' -t wso2/' + templateSelected;
+                        await cp.exec(addCommand, (err, stdout, stderr) => {
+                            if (err) {
+                                window.showErrorMessage("Error: " + err);
+                            } else if (stderr) {
+                                var message = "not a ballerina project";
+                                var successMessage = "Added new ballerina module";
+                                if (stderr.search(successMessage) !== -1) {
+                                    window.showInformationMessage(stderr);
+                                    vscode.commands.executeCommand('vscode.openFolder', uri);
                                 }
-                            },
-                            (reason: any) => {
-                                if (reason === "false") {
-                                    window.showInformationMessage("Project creation aborted!");
+                                else if (stderr.search(message) !== -1) {
+                                    window.showErrorMessage("Please select a Ballerina project!");
                                 } else {
-                                    window.showErrorMessage("Failed to create project from template: " + reason);
+                                    window.showErrorMessage(stderr);
                                 }
                             }
-                        );
+                        });
                     }
-                },
-                undefined,
-                context.subscriptions
-            );
+                }
+                currentPanel.dispose();
+                vscode.commands.executeCommand("ballerinaIntegrator.projectTemplates");
+            }
         },
         undefined,
         context.subscriptions
     );
-    return templateSelected;
+    return;
+}
+
+async function openDialogForFolder(): Promise<Uri | null> {
+    const options: OpenDialogOptions = {
+        canSelectFiles: false,
+        canSelectFolders: true,
+        canSelectMany: false
+    };
+    const result: Uri[] | undefined = await window.showOpenDialog(Object.assign(options));
+    if (result && result.length > 0) {
+        return Promise.resolve(result[0]);
+    } else {
+        return Promise.resolve(null);
+    }
 }
