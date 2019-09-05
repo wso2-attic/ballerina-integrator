@@ -32,41 +32,8 @@
 		"commands": [
 			{
 				"command": "ballerinaIntegrator.projectTemplates",
-				"title": "Generate Project from Ballerina Integrator Template",
-				"category": "Ballerina"
-			}
-		],
-		"configuration": {
-			"title": "Ballerina-Integrator Configuration",
-			"properties": {
-				"projectTemplates.templatesDirectory": {
-					"type": [
-						"string",
-						"null"
-					],
-					"default": "src/templates",
-					"description": "Location of the templates folder."
-				},
-				"projectTemplates.usePlaceholders": {
-					"type": [
-						"boolean"
-					],
-					"default": true,
-					"description": "Look for and replace placeholders in template (e.g. ${author})."
-				},
-				"projectTemplates.placeholderRegExp": {
-					"type": [
-						"string"
-					],
-					"default": "\\${(\\w+)?}",
-					"description": "Regular expression for detecting placeholders (e.g. \"\\${(\\w+?)}\")."
-				}
-			}
-		},
-		"snippets": [
-			{
-				"language": "ballerina",
-				"path": "./src/snippets/ballerina.json"
+				"title": "Generate Module from Template",
+				"category": "Ballerina Integrator"
 			}
 		]
 	},
