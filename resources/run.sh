@@ -27,9 +27,9 @@ then
 fi
 
 executionNameList=("healthcare-service" "exposing-several-services-as-a-single-service" 
-"sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content" "transforming-message-content") 
-executionPathList=($path1 $path2 $path3 $path4 $path5)
-moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "tutorial")
+"sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content") 
+executionPathList=($path1 $path2 $path3 $path4)
+moduleList=("healthcare" "tutorial" "tutorial" "tutorial")
 
 echo ' _____         _       
 |_   _|__  ___| |_ ___ 
