@@ -47,9 +47,9 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                     projectPath = await openDialogForFolder();
                     let projectUri = vscode.Uri.parse(projectPath);
                     if (projectPath != undefined) {
-                        const cp = require('child_process')
+                        const cp = require('child_process');
                         await cp.exec('cd ' + projectUri.path + ' && ballerina new ' + projectName, (err, stdout, stderr) => {
-                            var message = "Created new ballerina project";
+                            const message = "Created new ballerina project";
                             if (stderr.search(message) !== -1 || stdout.search(message)) {
                                 vscode.commands.executeCommand('vscode.openFolder', projectUri);
                                 window.showInformationMessage("Successfully created a new Ballerina project at " + projectUri.path);
@@ -71,14 +71,14 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                     folderPath = await openDialogForFolder();
                     let uri = vscode.Uri.parse(folderPath);
                     if (folderPath != undefined) {
-                        const cp = require('child_process')
-                        var addCommand = 'cd ' + uri.path + ' && ballerina add ' + moduleName + ' -t wso2/' + templateSelected;
+                        const cp = require('child_process');
+                        const addCommand = 'cd ' + uri.path + ' && ballerina add ' + moduleName + ' -t wso2/' + templateSelected;
                         await cp.exec(addCommand, (err, stdout, stderr) => {
                             if (err) {
                                 window.showErrorMessage("Error: " + err);
                             } else if (stderr) {
-                                var message = "not a ballerina project";
-                                var successMessage = "Added new ballerina module";
+                                const message = "not a ballerina project";
+                                const successMessage = "Added new ballerina module";
                                 if (stderr.search(successMessage) !== -1) {
                                     window.showInformationMessage(stderr);
                                     vscode.commands.executeCommand('vscode.openFolder', uri);
