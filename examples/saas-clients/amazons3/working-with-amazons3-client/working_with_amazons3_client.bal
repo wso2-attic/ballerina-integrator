@@ -29,7 +29,7 @@ const string BUCKETS_RETRIEVING_ERROR_MSG = "Error while listing buckets on Amaz
 const string PAYLOAD_EXTRACTION_ERROR_MSG = "Error while extracting the payload from request.";
 const string PAYLOAD_CONVERTION_ERROR_MSG = "Error occured while converting bucket list to json";
 const string OBJECT_CREATION_ERROR_MSG = "Error while creating object on Amazon S3.";
-const string OBJECTS_RETIEVING_ERROR_MSG = "Error while listing objects on bucket : ";
+const string OBJECTS_RETRIEVING_ERROR_MSG = "Error while listing objects on bucket : ";
 const string OBJECT_DELETION_ERROR_MSG = "Error while deleting object from Amazon S3.";
 const string BUCKET_DELETION_ERROR_MSG = "Error while deleting bucket from Amazon S3.";
 const string INVALID_PAYLOAD_MSG = "Invalid request payload";
@@ -37,11 +37,21 @@ const string INVALID_PAYLOAD_MSG = "Invalid request payload";
 // Create Amazons3 client configuration with the above accesskey and secretKey values.
 amazons3:ClientConfiguration amazonS3Config = {
     accessKeyId: config:getAsString("ACCESS_KEY_ID"),
-    secretAccessKey: config:getAsString("SECRET_ACCESS_KEY")
+    secretAccessKey: config:getAsString("SECRET_ACCESS_KEY"),
+    region: config:getAsString("REGION"),
+    clientConfig: {
+        http1Settings: {chunking: http:CHUNKING_NEVER},
+        secureSocket:{
+            trustStore:{
+                path: "${ballerina.home}/bre/security/ballerinaTruststore.p12",
+                password: "ballerina"
+            }
+        }
+    }
 };
 
 // Create AmazonS3 client with the above amazonS3Config.
-amazons3:AmazonS3Client|error amazonS3Client = new(amazonS3Config);
+amazons3:AmazonS3Client|amazons3:ConnectorError amazonS3Client = new(amazonS3Config);
 
 @http:ServiceConfig {
     basePath: "/amazons3"
@@ -54,20 +64,20 @@ service amazonS3Service on new http:Listener(9090) {
     // Function to create a new bucket.
     resource function createBucket(http:Caller caller, http:Request request, string bucketName) {
         // Assign amazonS3Client global variable to a local variable
-        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        amazons3:AmazonS3Client|amazons3:ConnectorError s3Client = amazonS3Client;
         if (s3Client is amazons3:AmazonS3Client) {
             // Define new response.
             http:Response backendResponse = new();
             // Invoke createBucket remote function from amazonS3Client.
-            error? response = s3Client->createBucket(<@untainted> bucketName);
-            if (response is error) {
+            amazons3:ConnectorError? response = s3Client->createBucket(<@untainted> bucketName);
+            if (response is amazons3:ConnectorError) {
                 // Send the error response.
                 createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                 BUCKET_CREATION_ERROR_MSG);
             } else {
                 // If there is no error, then bucket created successfully. Send the success response.
-                backendResponse.setTextPayload(<@untainted> string `${bucketName} created on Amazon S3.`,
-                                contentType = "text/plain");
+                string textPayload = bucketName + " created on Amazon S3.";
+                backendResponse.setTextPayload(textPayload, contentType = "text/plain");
                 respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
             }
         } else {
@@ -83,13 +93,13 @@ service amazonS3Service on new http:Listener(9090) {
     // Function to list buckets.
     resource function listBuckets(http:Caller caller, http:Request request) {
         // Assign amazonS3Client global variable to a local variable
-        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        amazons3:AmazonS3Client|amazons3:ConnectorError s3Client = amazonS3Client;
         if (s3Client is amazons3:AmazonS3Client) {
             // Define new response.
             http:Response backendResponse = new();
             // Invoke listBuckets remote function from amazonS3Client.
             var response = s3Client->listBuckets();
-            if (response is error) {
+            if (response is amazons3:ConnectorError) {
                 // Send the error response.
                 createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                 BUCKETS_RETRIEVING_ERROR_MSG);
@@ -110,7 +120,6 @@ service amazonS3Service on new http:Listener(9090) {
         }
     }
 
-
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/{bucketName}/{objectName}"
@@ -118,7 +127,7 @@ service amazonS3Service on new http:Listener(9090) {
     // Function to create a new object into an existing bucket.
     resource function createObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
         // Assign amazonS3Client global variable to a local variable
-        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        amazons3:AmazonS3Client|amazons3:ConnectorError s3Client = amazonS3Client;
         if (s3Client is amazons3:AmazonS3Client) {
             // Define new response.
             http:Response backendResponse = new();
@@ -132,7 +141,7 @@ service amazonS3Service on new http:Listener(9090) {
                 // Invoke createObject remote function from amazonS3Client.
                 error? response = s3Client->createObject(<@untainted> bucketName, <@untainted> objectName,
                                                     <@untainted> objectContent);
-                if (response is error) {
+                if (response is amazons3:ConnectorError) {
                     // Send the error response.
                     createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                     OBJECT_CREATION_ERROR_MSG);
@@ -156,7 +165,7 @@ service amazonS3Service on new http:Listener(9090) {
     // Function to get object.
     resource function getObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
         // Assign amazonS3Client global variable to a local variable
-        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        amazons3:AmazonS3Client|amazons3:ConnectorError s3Client = amazonS3Client;
         if (s3Client is amazons3:AmazonS3Client) {
             // Define new response.
             http:Response backendResponse = new();
@@ -189,16 +198,16 @@ service amazonS3Service on new http:Listener(9090) {
     // Function to list objects.
     resource function listObjects(http:Caller caller, http:Request request, string bucketName) {
         // Assign amazonS3Client global variable to a local variable
-        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        amazons3:AmazonS3Client|amazons3:ConnectorError s3Client = amazonS3Client;
         if (s3Client is amazons3:AmazonS3Client) {
             // Define new response.
             http:Response backendResponse = new();
             // Invoke listObjects remote function from amazonS3Client.
             var response = s3Client->listObjects(<@untainted> bucketName);
-            if (response is error) {
+            if (response is amazons3:ConnectorError) {
                 // Send the error response.
                 createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                                OBJECTS_RETIEVING_ERROR_MSG + "${bucketName}.");
+                                OBJECTS_RETRIEVING_ERROR_MSG + "${bucketName}.");
             } else {
                 // If there is no error, then object list retrieved successfully. Send the object list.
                 var list = json.constructFrom(response);
@@ -223,12 +232,12 @@ service amazonS3Service on new http:Listener(9090) {
     // Function to delete object.
     resource function deleteObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
         // Assign amazonS3Client global variable to a local variable
-        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        amazons3:AmazonS3Client|amazons3:ConnectorError s3Client = amazonS3Client;
         if (s3Client is amazons3:AmazonS3Client) {
             // Define new response.
             http:Response backendResponse = new();
-            error? response = s3Client->deleteObject(<@untainted> bucketName, <@untainted> objectName);
-            if (response is error) {
+            amazons3:ConnectorError? response = s3Client->deleteObject(<@untainted> bucketName, <@untainted> objectName);
+            if (response is amazons3:ConnectorError) {
                 // Send the error response.
                 createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                         OBJECT_DELETION_ERROR_MSG);
@@ -251,13 +260,13 @@ service amazonS3Service on new http:Listener(9090) {
     // Function to delete bucket.
     resource function deleteBucket(http:Caller caller, http:Request request, string bucketName) {
         // Assign amazonS3Client global variable to a local variable
-        amazons3:AmazonS3Client|error s3Client = amazonS3Client;
+        amazons3:AmazonS3Client|amazons3:ConnectorError s3Client = amazonS3Client;
         if (s3Client is amazons3:AmazonS3Client) {
             // Define new response.
             http:Response backendResponse = new();
             // Invoke deleteBucket remote function from amazonS3Client.
-            error? response = s3Client->deleteBucket(<@untainted> bucketName);
-            if (response is error) {
+            amazons3:ConnectorError? response = s3Client->deleteBucket(<@untainted> bucketName);
+            if (response is amazons3:ConnectorError) {
                 // Send the error response.
                 createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
                                         BUCKET_DELETION_ERROR_MSG);
