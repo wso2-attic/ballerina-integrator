@@ -1,0 +1,47 @@
+[
+    {
+        "id": "hello_world_service",
+        "name": "Hello World Service",
+        "description": "This template demonstrates a simple Hello World Service."
+    },
+    {
+        "id": "content_based_routing",
+        "name": "Content Based Routing",
+        "description": "This template demonstrates an instance where a Content based router is used to route requests to different endpoints based on their content."
+    },
+    {
+        "id": "header_based_routing",
+        "name": "Header Based Routing",
+        "description": "This template demonstrates an instance where a Header based router is used to route requests to different endpoints based on the header of each request."
+    },
+    {
+        "id": "xml_to_json_transformation",
+        "name": "XML to JSON Transformation",
+        "description": "This template demonstrates message transformation capabilities between XML and JSON."
+    },
+    {
+        "id": "gsheets_salesforce_integration",
+        "name": "Google Spreadsheet and Salesforce API Integration",
+        "description": "This template demonstrates some of the capabilities of Google spreadsheet and Salesforce modules."
+    },
+    {
+        "id": "amazons3_service",
+        "name": "Amazon S3 Connector",
+        "description": "This template demonstrates on how to use Amazon S3 connector."
+    },
+    {
+        "id": "scatter_gather_service",
+        "name": "Scatter-Gather Service",
+        "description": "This template demonstrates the scatter-gather enterprise integration pattern where we call multiple backends, aggregated the responses from all the backends and repond then to the client as a single response."
+    },
+    {
+        "id": "kafka_service",
+        "name": "Kafka Service",
+        "description": "TThis template demonstrates how to use Ballerina Kafka connector."
+    },
+    {
+        "id": "message_filter_service",
+        "name": "Message Filtering Transformation",
+        "description": "This template demonstrates an instance where message filtering is used to filter incoming requests based on their content."
+    }
+]

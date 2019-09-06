@@ -1,0 +1,7 @@
+[project]
+org-name = "wso2"
+version = "0.0.1"
+license = "Apache-2.0"
+authors = ["WSO2"]
+keywords = ["ballerina", "JMS", "reliable-delivery", "connector"]
+

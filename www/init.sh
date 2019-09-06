@@ -1,20 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 HOME=`pwd`
-HUGO_VERSION=$(hugo version)
+java -jar $HOME/target/www-builder-1.0-jar-with-dependencies.jar > execution.log 2>&1 
 
-function build_www {
-    mvn clean install -f $HOME/pom.xml # Comment this line if do not want to build the project again.
-    java -jar $HOME/target/www-builder-1.0-jar-with-dependencies.jar
-    cd $HOME/hugo-www
-    hugo server -D
-}
-
-if [[ ${HUGO_VERSION} == *"Hugo Static Site Generator"* ]];
-    then
-        build_www
-    else
-        echo "You have not installed hugo. Please refer https://gohugo.io/getting-started/installing to install hugo."
-
-fi
-
+if (grep -q "Invalid file path" execution.log)
+  then
+    echo "Invalid file path in INCLUDE_CODE tag. Mentioned file does not exists in the project. See more at execution.log"
+    exit 1
+  fi
+  

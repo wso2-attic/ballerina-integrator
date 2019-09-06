@@ -1,44 +1,61 @@
-// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-//
-// WSO2 Inc. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
+/*
+ *  Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package org.wso2.integration.ballerina.utils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import static org.wso2.integration.ballerina.constants.Constants.BALLERINA_CODE_MD_SYNTAX;
 import static org.wso2.integration.ballerina.constants.Constants.CODE;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_MD_SYNTAX;
+import static org.wso2.integration.ballerina.constants.Constants.COMMIT_HASH;
 import static org.wso2.integration.ballerina.constants.Constants.EMPTY_STRING;
-import static org.wso2.integration.ballerina.constants.Constants.INDEX_MD;
+import static org.wso2.integration.ballerina.constants.Constants.EQUAL;
+import static org.wso2.integration.ballerina.constants.Constants.FORWARD_SLASH;
+import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_SIGN;
+import static org.wso2.integration.ballerina.constants.Constants.GIT_COMMIT_ID;
+import static org.wso2.integration.ballerina.constants.Constants.HASH;
 import static org.wso2.integration.ballerina.constants.Constants.JAVA_CODE_MD_SYNTAX;
 import static org.wso2.integration.ballerina.constants.Constants.LICENCE_LAST_LINE;
 import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
+import static org.wso2.integration.ballerina.constants.Constants.NOTE;
+import static org.wso2.integration.ballerina.constants.Constants.README_MD;
+import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
+import static org.wso2.integration.ballerina.constants.Constants.TITLE;
 
 /**
  * Util functions used for site builder.
  */
 public class Utils {
     private static final Logger logger = Logger.getLogger(Utils.class.getName());
+
+    private Utils() {}
 
     /**
      * Create a directory.
@@ -89,43 +106,7 @@ public class Utils {
      * @return path of the current directory
      */
     public static String getCurrentDirectoryName(String path) {
-        return path.substring(path.lastIndexOf("/") + 1);
-    }
-
-    /**
-     * Rename a file with a given name and move it to a directory.
-     *
-     * @param file        file want to rename and move
-     * @param destination path of the destination directory
-     * @param newFileName new file name
-     */
-    public static void renameAndMoveFile(File file, String destination, String newFileName) {
-        if (!file.renameTo(new File(destination + newFileName + ".md"))) {
-            throw new ServiceException(
-                    "Error occurred while moving file to destination. file: " + file.getPath() + ", dest:" + destination
-                            + file.getName());
-        }
-    }
-
-    /**
-     * Delete all files other than index.md files in the directory.
-     *
-     * @param directory directory
-     */
-    public static void deleteNonIndexFiles(File directory) {
-        File[] listOfFiles = directory.listFiles();
-
-        if (listOfFiles != null) {
-            for (File file : listOfFiles) {
-                if (!(file.getName().equals(INDEX_MD))) {
-                    try {
-                        FileUtils.forceDelete(file);
-                    } catch (IOException e) {
-                        throw new ServiceException("Error occurred when deleting file: " + file.getPath(), e);
-                    }
-                }
-            }
-        }
+        return path.substring(path.lastIndexOf(File.separator) + 1);
     }
 
     /**
@@ -134,9 +115,16 @@ public class Utils {
      * @param file file which want to content as string
      * @return file content as a string
      */
-    public static String getCodeFile(File file) {
+    public static String getCodeFile(File file, String readMeParentPath) {
         try {
-            return IOUtils.toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
+            if (file.exists()) {
+                return IOUtils.toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
+            } else {
+                throw new ServiceException("Invalid file path in INCLUDE_CODE tag. Mentioned file does not exists in "
+                        + "the project. Please mention the correct file path and try again.\n\tInclude file path\t:"
+                        + file.getPath().replace(TEMP_DIR, "docs/") + "\n\tREADME file path\t:"
+                        + readMeParentPath.replace(TEMP_DIR, "docs/") + FORWARD_SLASH + README_MD);
+            }
         } catch (IOException e) {
             throw new ServiceException("Error occurred when converting file content to string. file: " + file.getPath(),
                     e);
@@ -184,8 +172,43 @@ public class Utils {
      * @param line heading line of the md file.
      * @return default front matter for posts
      */
-    public static String getPostFrontMatter(String line) {
-        line = line.replace("#", EMPTY_STRING).trim();
-        return "---" + NEW_LINE + "title: " + line + NEW_LINE + "---";
+    public static String getPostFrontMatter(String line, String versionID) {
+        line = line.replace(HASH, EMPTY_STRING).trim();
+        return FRONT_MATTER_SIGN + NEW_LINE
+                + TITLE + line + NEW_LINE
+                + COMMIT_HASH + versionID + NEW_LINE
+                + NOTE + NEW_LINE
+                + FRONT_MATTER_SIGN;
+    }
+
+    /**
+     * Checks given directory is empty or not.
+     *
+     * @param directory directory want to check
+     * @return is empty
+     */
+    public static boolean isDirEmpty(File directory) {
+        return directory.isDirectory() && Objects.requireNonNull(directory.list()).length == 0;
+    }
+
+    /**
+     * Get commit hash from `git.properties` file input stream.
+     *
+     * @param inputStream `git.properties` file input stream
+     * @return commit hash
+     */
+    public static String getCommitHash(InputStream inputStream) {
+        String commitHash = null;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.contains(GIT_COMMIT_ID + EQUAL)) {
+                    commitHash = line.replace(GIT_COMMIT_ID + EQUAL, EMPTY_STRING);
+                }
+            }
+            return commitHash;
+        } catch (IOException e) {
+            throw new ServiceException("Error occurred when reading input stream.", e);
+        }
     }
 }

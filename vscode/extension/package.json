@@ -1,0 +1,54 @@
+{
+	"name": "ballerina-integrator",
+	"displayName": "Ballerina-Integrator",
+	"description": "Ballerina Integrator for WSO2 EI",
+	"version": "0.0.1",
+	"publisher": "wso2",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wso2/ballerina-integrator"
+	},
+	"engines": {
+		"vscode": "^1.35.0"
+	},
+	"categories": [
+		"Other",
+		"Snippets"
+	],
+	"keywords": [
+		"ballerina",
+		"templates",
+		"snippets",
+		"wso2"
+	],
+	"extensionDependencies": [
+		"ballerina.ballerina"
+	],
+	"activationEvents": [
+		"onCommand:ballerinaIntegrator.projectTemplates"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "ballerinaIntegrator.projectTemplates",
+				"title": "Generate Module from Template",
+				"category": "Ballerina Integrator"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "npm run compile && node ./node_modules/vscode/bin/test"
+	},
+	"devDependencies": {
+		"typescript": "^3.3.1",
+		"vscode": "^1.1.28",
+		"tslint": "^5.12.1",
+		"@types/node": "^10.12.21",
+		"@types/mocha": "^2.2.42"
+	}
+}

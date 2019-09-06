@@ -1,21 +1,24 @@
-// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-//
-// WSO2 Inc. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
+/*
+ *  Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package org.wso2.integration.ballerina;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.wso2.integration.ballerina.utils.ServiceException;
 
@@ -24,6 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,40 +36,31 @@ import java.util.logging.Logger;
 import static org.wso2.integration.ballerina.constants.Constants.CLOSE_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_BEGIN;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_END;
+import static org.wso2.integration.ballerina.constants.Constants.COMMA;
 import static org.wso2.integration.ballerina.constants.Constants.COMMENT_END;
 import static org.wso2.integration.ballerina.constants.Constants.COMMENT_START;
-import static org.wso2.integration.ballerina.constants.Constants.CONTENT_INTRO_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.EMPTY_STRING;
-import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_IMG_VAR;
-import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_SIGN;
-import static org.wso2.integration.ballerina.constants.Constants.GUIDES_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.GUIDE_URL;
-import static org.wso2.integration.ballerina.constants.Constants.IMG_GUIDES;
+import static org.wso2.integration.ballerina.constants.Constants.GIT_PROPERTIES_FILE;
+import static org.wso2.integration.ballerina.constants.Constants.HASH;
 import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_SEGMENT_TAG;
 import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_TAG;
-import static org.wso2.integration.ballerina.constants.Constants.INDEX_MD;
-import static org.wso2.integration.ballerina.constants.Constants.INTEGRATION_TUTORIALS_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.INTRO_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.INTRO_FRONT_MATTER_LAYOUT;
-import static org.wso2.integration.ballerina.constants.Constants.INTRO_FRONT_MATTER_TYPE;
-import static org.wso2.integration.ballerina.constants.Constants.INTRO_MD;
-import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_GUIDE_VAR;
-import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
+import static org.wso2.integration.ballerina.constants.Constants.MARKDOWN_FILE_EXT;
+import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
 import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
 import static org.wso2.integration.ballerina.constants.Constants.REPO_EXAMPLES_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.GUIDE_TEMPLATES_DIR;
+import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR_MD;
 import static org.wso2.integration.ballerina.utils.Utils.copyDirectoryContent;
 import static org.wso2.integration.ballerina.utils.Utils.createDirectory;
 import static org.wso2.integration.ballerina.utils.Utils.deleteDirectory;
-import static org.wso2.integration.ballerina.utils.Utils.deleteNonIndexFiles;
 import static org.wso2.integration.ballerina.utils.Utils.getCodeFile;
+import static org.wso2.integration.ballerina.utils.Utils.getCommitHash;
 import static org.wso2.integration.ballerina.utils.Utils.getCurrentDirectoryName;
 import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWithCodeType;
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
+import static org.wso2.integration.ballerina.utils.Utils.isDirEmpty;
 import static org.wso2.integration.ballerina.utils.Utils.removeLicenceHeader;
-import static org.wso2.integration.ballerina.utils.Utils.renameAndMoveFile;
 
 /**
  * Main class of the site creator project.
@@ -72,22 +68,29 @@ import static org.wso2.integration.ballerina.utils.Utils.renameAndMoveFile;
 public class SiteBuilder {
     // Setup logger.
     private static final Logger logger = Logger.getLogger(SiteBuilder.class.getName());
+    // Current commit hash.
+    private static String commitHash = null;
 
     public static void main(String[] args) {
         try {
-            // First delete already created posts.
-            deleteDirectory(GUIDES_DIR);
-            deleteDirectory(INTEGRATION_TUTORIALS_DIR);
-            deleteNonIndexFiles(new File(INTRO_DIR));
+            SiteBuilder siteBuilder = new SiteBuilder();
+            // Get current commit hash.
+            commitHash = siteBuilder.getCommitHashByReadingGitProperties();
+            // First delete already created mkdocs-content directory.
+            deleteDirectory(MKDOCS_CONTENT);
             // Create needed directory structure.
             createDirectory(TEMP_DIR);
-            createDirectory(GUIDE_TEMPLATES_DIR);
-            // get a copy of examples directory.
+            createDirectory(MKDOCS_CONTENT);
+            // Get a copy of examples directory.
             copyDirectoryContent(REPO_EXAMPLES_DIR, TEMP_DIR);
             // Process repository to generate guide templates.
             processDirectory(TEMP_DIR);
-            // Copy tempDirectory content to hugo content directory.
-            copyDirectoryContent(TEMP_DIR, GUIDE_TEMPLATES_DIR);
+            // Delete non markdown files.
+            deleteNonMdFiles(TEMP_DIR);
+            // Delete empty directories.
+            deleteEmptyDirs(TEMP_DIR);
+            // Copy tempDirectory content to mkdocs content directory.
+            copyDirectoryContent(TEMP_DIR, MKDOCS_CONTENT);
         } catch (ServiceException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } finally {
@@ -109,14 +112,8 @@ public class SiteBuilder {
                 if (file.isFile() && (file.getName().equals(README_MD))) {
                     processReadmeFile(file);
                     renameReadmeFile(file);
-                } else if (file.getName().equals(INDEX_MD)) {
-                    processReadmeFile(file);
-                } else if (file.getName().equals(INTRO_MD)) {
-                    processReadmeFile(file);
-                    renameAndMoveFile(file, CONTENT_INTRO_DIR, getCurrentDirectoryName(file.getParent()));
                 } else if (file.isDirectory()) {
                     processDirectory(file.getPath());
-
                 }
             }
         }
@@ -128,10 +125,10 @@ public class SiteBuilder {
      * @param file README.md file
      */
     private static void processReadmeFile(File file) {
-        try {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String readMeFileContent = IOUtils
                     .toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+
             String line;
             int lineNumber = 0;
 
@@ -143,36 +140,15 @@ public class SiteBuilder {
                 } else if (line.contains(INCLUDE_CODE_SEGMENT_TAG)) {
                     // Replace INCLUDE_CODE_SEGMENT line with include code segment.
                     readMeFileContent = readMeFileContent.replace(line, getIncludeCodeSegment(file.getParent(), line));
-                } else if (lineNumber == 1 && line.contains("#")) {
+                } else if (lineNumber == 1 && line.contains(HASH)) {
                     // Adding front matter to posts.
-                    readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line));
+                    readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line, commitHash));
                 }
             }
-
-            // Edit front matter if _intro.md
-            if (file.getName().equals(INTRO_MD)) {
-                String frontMatterContent = readMeFileContent.split(FRONT_MATTER_SIGN)[1].split(FRONT_MATTER_SIGN)[0];
-
-                // image variable
-                String relativeImageUrl = frontMatterContent.split(FRONT_MATTER_IMG_VAR)[1].split("\"")[0];
-                String parentGitImgUrl = IMG_GUIDES + file.getParent().split(TEMP_DIR)[1];
-                // remove img variable already there.
-                String newFrontMatterContent = frontMatterContent
-                        .replace(relativeImageUrl, parentGitImgUrl + "/" + relativeImageUrl);
-
-                // guide variable
-                String guide = FRONT_MATTER_GUIDE_VAR.replace(GUIDE_URL, getGuideUrl(file));
-
-                readMeFileContent = readMeFileContent.replace(frontMatterContent,
-                        newFrontMatterContent + INTRO_FRONT_MATTER_TYPE + NEW_LINE
-                                + INTRO_FRONT_MATTER_LAYOUT + NEW_LINE + guide + NEW_LINE);
-            }
-
             IOUtils.write(readMeFileContent, new FileOutputStream(file), String.valueOf(StandardCharsets.UTF_8));
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new ServiceException("Could not find the README.md file: " + file.getPath(), e);
         }
-
     }
 
     /**
@@ -182,8 +158,9 @@ public class SiteBuilder {
      */
     private static void renameReadmeFile(File file) {
         if (file.getName().equals(README_MD)) {
-            String mdFileName = file.getParent() + "/" + getCurrentDirectoryName(file.getParent()) + ".md";
-            if (!file.renameTo(new File(mdFileName))) {
+            String mdFileName = file.getParent() + File.separator + getCurrentDirectoryName(file.getParent()) + ".md";
+            // If directory name is "tempDirectory", not renaming the file.
+            if (!mdFileName.contains(TEMP_DIR_MD) && !file.renameTo(new File(mdFileName))) {
                 throw new ServiceException("Renaming README.md failed. file:" + file.getPath());
             }
         }
@@ -199,7 +176,7 @@ public class SiteBuilder {
     private static String getIncludeCodeFile(String readMeParentPath, String line) {
         String fullPathOfIncludeCodeFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line);
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String code = removeLicenceHeader(getCodeFile(includeCodeFile)).trim();
+        String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath)).trim();
         return getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code);
     }
 
@@ -213,17 +190,17 @@ public class SiteBuilder {
     private static String getIncludeCodeSegment(String readMeParentPath, String line) {
         String includeLineData = line.replace(COMMENT_START, EMPTY_STRING).replace(COMMENT_END, EMPTY_STRING)
                 .replace(INCLUDE_CODE_SEGMENT_TAG, EMPTY_STRING)
-                .trim(); // { file: guide/http_message_receiver.bal, segment: segment_1 }
+                .trim();
 
         String[] tempDataArr = includeLineData.replace(OPEN_CURLY_BRACKET, EMPTY_STRING)
-                .replace(CLOSE_CURLY_BRACKET, EMPTY_STRING).split(",");
+                .replace(CLOSE_CURLY_BRACKET, EMPTY_STRING).split(COMMA);
 
         String fullPathOfIncludeCodeFile =
-                readMeParentPath + "/" + tempDataArr[0].replace("file:", EMPTY_STRING).trim();
+                readMeParentPath + File.separator + tempDataArr[0].replace("file:", EMPTY_STRING).trim();
         String segment = tempDataArr[1].replace("segment:", EMPTY_STRING).trim();
 
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile));
+        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath));
 
         String code = getCodeSegment(codeFileContent, segment).trim();
         return getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code);
@@ -256,12 +233,86 @@ public class SiteBuilder {
     }
 
     /**
-     * Get guide url to include in the intro templates.
+     * Delete file other than .md files.
      *
-     * @param file template markdown file
-     * @return particular guide url of the intro template
+     * @param directoryPath directory want to delete files
      */
-    private static String getGuideUrl(File file) {
-        return "../../" + file.getParent().replace(TEMP_DIR, EMPTY_STRING);
+    private static void deleteNonMdFiles(String directoryPath) {
+        File folder = new File(directoryPath);
+        File[] listOfFiles = folder.listFiles();
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isFile()) {
+                    // Delete not .md files.
+                    if (!FilenameUtils.getExtension(file.getName()).equals(MARKDOWN_FILE_EXT) && !file.delete()) {
+                        throw new ServiceException("Error occurred when deleting file. file:" + file.getPath());
+                    }
+                } else if (file.isDirectory()) {
+                    deleteNonMdFiles(file.getPath());
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete empty directories.
+     *
+     * @param directoryPath directory want to delete empty directories
+     */
+    private static void deleteEmptyDirs(String directoryPath) {
+        File folder = new File(directoryPath);
+        File[] listOfFiles = folder.listFiles();
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isDirectory()) {
+                    deleteEmptyDirsAndParentDirs(file);
+                    deleteEmptyDirs(file.getPath());
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete empty directories and check whether parent directory is empty. If it is empty delete parent directory and
+     * continue recursively.
+     *
+     * @param file file should be deleted
+     */
+    private static void deleteEmptyDirsAndParentDirs(File file) {
+        if (isDirEmpty(file)) {
+            boolean isFileDeleted = file.delete();
+            if (isFileDeleted) {
+                File parent = file.getParentFile();
+                deleteEmptyDirsAndParentDirs(parent);
+            } else {
+                throw new ServiceException("Error occurred when deleting directory. file:" + file.getPath());
+            }
+        }
+    }
+
+    /**
+     * Get current commit hash by reading `git.properties` file.
+     * `git.properties` file generated by `git-commit-id-plugin` maven plugin.
+     *
+     * @return current git commit hash
+     */
+    private String getCommitHashByReadingGitProperties() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(GIT_PROPERTIES_FILE);
+        if (inputStream != null) {
+            try {
+                String gitCommitHash = getCommitHash(inputStream);
+                if (gitCommitHash == null) {
+                    throw new ServiceException("git commit id is null.");
+                }
+                return gitCommitHash;
+            } catch (ServiceException e) {
+                throw new ServiceException("Version information could not be retrieved", e);
+            }
+        } else {
+            throw new ServiceException("Error when reading " + GIT_PROPERTIES_FILE);
+        }
     }
 }
