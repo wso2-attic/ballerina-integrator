@@ -21,38 +21,41 @@ import data from './templateDetails.json';
 export function getHomeView(): string {
 
     let htmlCode = begin + homeStyles;
-    let rowHandleStart = `
+    for (var templateCategory in data) {
+        let startTags: string = `
             <div class="row">
-            <div class="templates">`;
-    let rowHandleEnd = `
-            </div>        
-            </div>
-            <br/>`;
-    let numberOfColumns = 0;
-    data.forEach(element => {
-        let templateId = element.id;
-        let templateName = element.name;
-        let templateDescription = element.description;
-        let card: string = `
-                <div class="three columns">
-                    <a href="#" style="none" onclick="pickTemplate('${templateId}')">
+                <div class="templates">
+                    <h3>` + templateCategory + `</h3>`;
+
+        htmlCode = htmlCode + startTags;
+        data[templateCategory].forEach(element => {
+            let templateId = element.id;
+            let templateName = element.name;
+            let templateDescription = element.description;
+            let card: string = `
+                    <div class="col-md-3 col-xs-4 col-lg-3">
                         <div class="box">
-                            <h2>` + templateName + `</h2><br/>
-                            <p>` + templateDescription + `</p>
+                            <h4>` + templateName + `</h4>
+                            <p class="description" align="center">` + templateDescription + `</p>
+                            <a href="" style="none" onclick="pickTemplate('${templateId}')">
+                                <p class="create-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                        <path d="M26,0A26,26,0,1,0,52,26,26,26,0,0,0,26,0ZM38.5,28H28V39a2,2,0,0,1-4,0V28H13.5a2,
+                                        2,0,0,1,0-4H24V14a2,2,0,0,1,4,0V24H38.5a2,2,0,0,1,0,4Z" />
+                                    </svg>
+                                    Create
+                                </p>
+                            </a>
                         </div>
-                    </a>  
-                </div>`;
-        if (numberOfColumns % 3 === 0) {
-            htmlCode = htmlCode + rowHandleStart + card;
-        }
-        else if (numberOfColumns % 3 === 2) {
-            htmlCode = htmlCode + card + rowHandleEnd;
-        }
-        else {
+                    </div>`;
             htmlCode = htmlCode + card;
-        }
-        numberOfColumns++;
-    });
+        });
+        let endTags: string = `
+                </div>
+            </div>
+            <hr class="line" />`;
+        htmlCode = htmlCode + endTags;
+    }
 
     let scriptHandling = `
             <script>
@@ -62,8 +65,27 @@ export function getHomeView(): string {
                         command: template
                     })
                 }
+                function searchFunction() {
+                    var input, filter, txtValue;
+                    input = document.getElementById("searchTemplate");
+                    filter = input.value.toUpperCase();
+                    var templateCategories = document.getElementsByClassName("templates");
+                    for (var i = 0; i < templateCategories.length; i++) {
+                        var boxes = templateCategories[i].getElementsByClassName("col-md-3 col-xs-4 col-lg-3");
+                        for (var j = 0; j < boxes.length; j++) {
+                            var heading = boxes[j].getElementsByTagName("h4");
+                            txtValue = heading[0].textContent || heading[0].innerText;
+                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                boxes[j].style.display = "";
+                            } else {
+                                boxes[j].style.display = "none";
+                            }
+                        }
+                    }
+                }
             </script>`;
 
     htmlCode = htmlCode + scriptHandling + end;
+    console.log(htmlCode);
     return htmlCode;
 }
