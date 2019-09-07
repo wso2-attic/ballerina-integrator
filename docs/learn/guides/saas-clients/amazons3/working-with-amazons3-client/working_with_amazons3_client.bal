@@ -17,6 +17,7 @@
 import ballerina/config;
 import ballerina/http;
 import ballerina/log;
+import ballerina/stringutils;
 
 import wso2/amazons3;
 
@@ -43,8 +44,8 @@ amazons3:ClientConfiguration amazonS3Config = {
         http1Settings: {chunking: http:CHUNKING_NEVER},
         secureSocket:{
             trustStore:{
-                path: "${ballerina.home}/bre/security/ballerinaTruststore.p12",
-                password: "ballerina"
+                path: config:getAsString("TRUST_STORE_PATH"),
+                password: config:getAsString("TRUST_STORE_PASSWORD")
             }
         }
     }
@@ -286,19 +287,19 @@ service amazonS3Service on new http:Listener(9090) {
 // Function to extract the object content from request payload
 function extractRequestContent(http:Request request) returns @tainted string|xml|json|byte[]|error {
     string contentTypeStr = request.getContentType();
-    if (equalsIgnoreCase(contentTypeStr, "application/json")) {
+    if (stringutils:equalsIgnoreCase(contentTypeStr, "application/json")) {
         var jsonObjectContent = request.getJsonPayload();
         if (jsonObjectContent is json) {
             return jsonObjectContent;
         }
     }
-    if (equalsIgnoreCase(contentTypeStr, "application/xml")) {
+    if (stringutils:equalsIgnoreCase(contentTypeStr, "application/xml")) {
         var xmlObjectContent = request.getXmlPayload();
         if (xmlObjectContent is xml) {
             return xmlObjectContent;
         }
     }
-    if (equalsIgnoreCase(contentTypeStr, "text/plain")) {
+    if (stringutils:equalsIgnoreCase(contentTypeStr, "text/plain")) {
         var textObjectContent = request.getTextPayload();
         if (textObjectContent is string) {
             return textObjectContent;
@@ -329,13 +330,5 @@ function respondAndHandleError(http:Caller caller, http:Response response, strin
     var respond = caller->respond(response);
     if (respond is error) {
         log:printError(respondErrorMsg, err = respond);
-    }
-}
-
-function equalsIgnoreCase(string str1, string str2) returns boolean {
-    if (str1.toUpperAscii() == str2.toUpperAscii()) {
-        return true;
-    } else {
-        return false;
     }
 }

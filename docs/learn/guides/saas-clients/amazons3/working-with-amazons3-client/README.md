@@ -62,6 +62,9 @@ details you obtained above within the quotes.
 ```
 ACCESS_KEY_ID = ""
 SECRET_ACCESS_KEY = ""
+REGION = ""
+TRUST_STORE_PATH=""
+TRUST_STORE_PASSWORD=""
 ```
 Now that you have created the project structure, the next step is to develop the service.
 
