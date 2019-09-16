@@ -26,14 +26,15 @@ import java.io.File;
 public final class Constants {
 
     // Directory paths
-    public static final String REPO_EXAMPLES_DIR = ".." + File.separator + "docs";
-    public static final String TEMP_DIR = "tempDirectory/";
-    public static final String MKDOCS_CONTENT = "mkdocs-content";
+    public static final String DOCS_DIR = ".." + File.separator + "docs";
+    public static final String TEMP_DIR = "tempDirectory";
+    public static final String MKDOCS_CONTENT = "target" + File.separator + "mkdocs-content";
 
     // Files
     public static final String README_MD = "README.md";
     public static final String TEMP_DIR_MD = "tempDirectory.md";
     public static final String GIT_PROPERTIES_FILE = "git.properties";
+    public static final String BALLERINA_TOML = "Ballerina.toml";
 
     // Special syntax
     public static final String INCLUDE_CODE_TAG = "INCLUDE_CODE:";
@@ -52,11 +53,7 @@ public final class Constants {
     public static final String CODE_SEGMENT_END = "// CODE-SEGMENT-END: ";
     public static final String CODE_MD_SYNTAX = THREE_BACK_TICKS + NEW_LINE + CODE + NEW_LINE + THREE_BACK_TICKS;
     public static final String FORWARD_SLASH = "/";
-    public static final String FILE = "file";
-    public static final String SEGMENT = "segment";
-    public static final String COLAN = ":";
     public static final String COMMA = ",";
-    public static final String DOT = ".";
     public static final String HASH = "#";
     public static final String EQUAL = "=";
     public static final String MARKDOWN_FILE_EXT = "md";
