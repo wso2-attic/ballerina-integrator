@@ -20,6 +20,7 @@ import ballerina/time;
 import ballerina/log;
 import ballerinax/java;
 import ballerina/'lang\.int as ints;
+import ballerinax/java.arrays as jarrays;
 
 // Initialize appoint number as 1.
 int appointmentNo = 1;
@@ -145,7 +146,7 @@ public function makeNewAppointment(AppointmentRequest appointmentRequest, Hospit
 # + return - discount value
 public function checkForDiscounts(string dob) returns int|error {
     handle result = split(java:fromString(dob), java:fromString("-"));
-    string? yobStr = java:toString(java:getArrayElement(result, 0));
+    string? yobStr = java:toString(jarrays:get(result, 0));
 
     if (yobStr is string) {
         int|error yob = ints:fromString(yobStr);
@@ -175,7 +176,7 @@ public function checkForDiscounts(string dob) returns int|error {
 # + return - eligibity for discounts | error
 public function checkDiscountEligibility(string dob) returns boolean | error {
     handle result = split(java:fromString(dob), java:fromString("-"));
-    string? dobStr = java:toString(java:getArrayElement(result, 0));
+    string? dobStr = java:toString(jarrays:get(result, 0));
 
     if (dobStr is string) {
     int|error yob = ints:fromString(dobStr);

@@ -1,34 +1,20 @@
 import ballerina/http;
-import ballerina/io;
+// import ballerina/io;
 import ballerina/test;
-import ballerina/log;
-import ballerina/mime;
+// import ballerina/log;
+// import ballerina/mime;
 
-boolean serviceStarted = false;
+// boolean serviceStarted = false;
 
-
-
-function startService() {
-    serviceStarted = test:startServices("company_recruitment_agency_service");
-
-    serviceStarted = test:startServices("company_data_service");
-
-}
-
+http:Client httpEndpoint = new("http://localhost:9091");
 
 @test:Config {
-    before: "startService",
-    after: "stopService"
 }
-
 
 function Company_Recruitments_Agency() {
 
-// Invoking the main function
-http:Client httpEndpoint = new("http://localhost:9091");
-
 // Chck whether the server is started
-test:assertTrue(serviceStarted, msg = "Unable to start the service");
+// test:assertTrue(serviceStarted, msg = "Unable to start the service");
 
 json payload =  { "Name": "John and Brothers (pvt) Ltd" };
 json payload2 = { "Name": "ABC Company" };
@@ -102,9 +88,3 @@ json payload3 = { "Name": "Smart Automobile" };
         test:assertFail(msg = "Failed to call the endpoint:");
     }
 }
-
-function stopService() {
-    test:stopServices("company_recruitment_agency_service");
-    test:stopServices("company_data_service");
-}
-

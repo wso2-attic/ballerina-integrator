@@ -59,7 +59,7 @@ service comapnyRecruitmentsAgency on comEP {
             //Get the string value relevant to the key `name`.
             string nameString;
 
-            nameString = <string>jsonMsg["Name"];
+            nameString = <string>jsonMsg.Name;
 
             //The HTTP response can be either error|empty|clientResponse
             (http:Response|error|()) clientResponse;
@@ -90,7 +90,7 @@ service comapnyRecruitmentsAgency on comEP {
            } else if (clientResponse is error) {
                 http:Response res = new;
                 res.statusCode = 500;
-                res.setPayload(<string>clientResponse.detail().message);
+                res.setPayload(<string>clientResponse.detail()?.message);
                 var result = CompanyEP->respond(res);
                 handleErrorWhenResponding(result);
            }
@@ -98,15 +98,9 @@ service comapnyRecruitmentsAgency on comEP {
             //500 error response is constructed and sent back to the client.
             http:Response res = new;
             res.statusCode = 500;
-            res.setPayload(untaint <string>jsonMsg.detail().message);
+            res.setPayload(<@untainted> <string>jsonMsg.detail()?.message);
             var result = CompanyEP->respond(res);
             handleErrorWhenResponding(result);
         }
-    }
-}
-
-function handleErrorWhenResponding(error? result) {
-    if (result is error) {
-        log:printError("Error when responding", err = result);
     }
 }
