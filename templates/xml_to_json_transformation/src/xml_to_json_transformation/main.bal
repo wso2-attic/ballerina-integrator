@@ -42,7 +42,7 @@ service scienceLabService on new http:Listener(config:getAsInt("LISTENER_PORT"))
             user = check jsonutils:fromXML(req);
         } else {
             http:Response res = new();
-            res.statusCode = 400;
+            res.statusCode = http:STATUS_BAD_REQUEST;
             var result = caller->respond(res);
             if (result is error) {
                 log:printError("Error occurred while responding", err = result);
