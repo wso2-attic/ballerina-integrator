@@ -1,4 +1,3 @@
-import ballerina/io;
 import ballerina/http;
 import ballerina/log;
 //import ballerinax/docker;
@@ -56,10 +55,10 @@ service bidService on biddersEP {
         }
 
         string Condition = inReqPayload.Condition.toString();
-        json Item = inReqPayload.Item;
+        json|error Item = inReqPayload.Item;
 
         // If payload parsing fails, send a "Bad Request" message as the response.
-        if (Item == null || Condition == "") {
+        if (Item is json && (Item == null || Condition == "")) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
             var result = caller->respond(outResponse);
@@ -111,10 +110,10 @@ service bidService on biddersEP {
         }
 
         string Condition = inReqPayload.Condition.toString();
-        json Item = inReqPayload.Item;
+        json|error Item = inReqPayload.Item;
 
         // If payload parsing fails, send a "Bad Request" message as the response.
-        if (Item == null || Condition == "") {
+        if (Item is json && (Item == null || Condition == "")) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
             var result = caller->respond(outResponse);
@@ -165,10 +164,10 @@ service bidService on biddersEP {
         }
 
         string Condition = inReqPayload.Condition.toString();
-        json Item = inReqPayload.Item;
+        json|error Item = inReqPayload.Item;
 
         // If payload parsing fails, send a "Bad Request" message as the response.
-        if (Item == null || Condition == "") {
+        if (Item is json && (Item == null || Condition == "")) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
             var result = caller->respond(outResponse);

@@ -18,7 +18,7 @@ function beforeSuiteFunc() {
 http:Client clientEP1 = new("http://localhost:9090/auction");
 
 // Test function
-@test:Config
+@test:Config{}
 function testAuctionService() returns error? {
     // Initialize the empty http requests and responses
     http:Request req = new;
@@ -41,7 +41,7 @@ function testAuctionService() returns error? {
     // Flight details
     string expectedResult = "{\"Bidder Name\":\"Bidder 2\", \"Bid\":470000}";
     json resPayload = check response.getJsonPayload();
-    test:assertEquals(resPayload.toString(), expectedResult, msg = "Response mismatch!");
+    test:assertEquals(resPayload.toJsonString(), expectedResult, msg = "Response mismatch!");
     return ();
 }
 

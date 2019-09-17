@@ -1,6 +1,4 @@
 import ballerina/http;
-import ballerina/io;
-import ballerina/log;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 //
@@ -50,7 +48,7 @@ service auctionService on auctionEP {
         var payload = inRequest.getJsonPayload();
         if (payload is json) {
             // Valid JSON payload.
-            inReqPayload = untaint payload;
+            inReqPayload = <@untainted> payload;
         } else {
             // NOT a valid JSON payload.
             outResponse.statusCode = 400;
@@ -60,11 +58,11 @@ service auctionService on auctionEP {
             return;
         }
 
-        json Item = inReqPayload.Item;
-        json Condition = inReqPayload.Condition;
+        json|error Item = inReqPayload.Item;
+        json|error Condition = inReqPayload.Condition;
 
         // If payload parsing fails, send a "Bad Request" message as the response.
-        if (Item == null || Condition == null) {
+        if ((Item is json && Condition is json) && (Item == null || Condition == null)) {
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({ "Message": "Bad Request - Invalid Payload" });
             var result = caller->respond(outResponse);
@@ -175,14 +173,14 @@ service auctionService on auctionEP {
         // Select the bidder with the highest bid.
         if (bidder1Bid > bidder2Bid) {
             if (bidder1Bid > bidder3Bid) {
-                jsonHighestBid = untaint jsonResponseBidder1;
+                jsonHighestBid = <@untainted> jsonResponseBidder1;
             }
         } else {
             if (bidder2Bid > bidder3Bid) {
-                jsonHighestBid = untaint jsonResponseBidder2;
+                jsonHighestBid = <@untainted> jsonResponseBidder2;
             }
             else {
-                jsonHighestBid = untaint jsonResponseBidder3;
+                jsonHighestBid = <@untainted> jsonResponseBidder3;
             }
         }
         // Send the final response to client.
