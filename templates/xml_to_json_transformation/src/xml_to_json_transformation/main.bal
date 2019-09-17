@@ -20,23 +20,25 @@ import ballerina/log;
 import ballerina/jsonutils;
 import ballerina/xmlutils;
 
-// Endpoint for the backend service.
+// This is the endpoint of the backend service that is being called.
 http:Client healthcareEndpoint = new("https://reqres.in");
-// Constants for request paths.
+// "/api/users" is a constant for the request path of the backend service.
 const BACKEND_EP_PATH = "/api/users";
 
+// This is the base path of the service you are creating.
 @http:ServiceConfig {
     basePath: "/laboratory"
 }
 service scienceLabService on new http:Listener(config:getAsInt("LISTENER_PORT")) {
-    // Schedule an appointment.
+    // Schedule an appointment. "/user" is the resource path of your service.
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/user"
     }
     resource function addUser(http:Caller caller, http:Request request) returns error? {
         json user = {};
-        // Extract user from reuqest. If malformed, respond back with HTTP 400
+        // Extract user from the request and convert it from XML to JSON. 
+        // If malformed, respond back with HTTP 400 error.
         xml|error req = request.getXmlPayload();
         if (req is xml) {
             user = check jsonutils:fromXML(req);
@@ -52,7 +54,7 @@ service scienceLabService on new http:Listener(config:getAsInt("LISTENER_PORT"))
         http:Request backendReq = new();
         backendReq.setPayload(user);
         http:Response backendRes = check healthcareEndpoint->post(BACKEND_EP_PATH, backendReq);
-        // Respond back to the client
+        // Get the JSON payload, convert it back to XML, and respond back to the client
         var result = caller->respond(check xmlutils:fromJSON(check backendRes.getJsonPayload()));
         if (result is error) {
             log:printError("Error occurred while responding", err = result);
