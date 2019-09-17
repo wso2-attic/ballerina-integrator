@@ -5,6 +5,6 @@ license= ["Apache-2.0"]
 authors= ["WSO2"]
 keywords= ["ballerina", "integrator"]
 repository= "https://github.com/wso2/ballerina-integrator"
-templates= ["asynchronous_invocation"]
+templates= ["parallel_service_orchestration"]
 
 [dependencies]
