@@ -5,7 +5,7 @@ import ballerina/http;
 http:Client clientEP = new("http://localhost:9090/filterService");
 
 // Function to test POST resource 'filterMarks' 
-@test:Config
+@test:Config{}
 function testResourceFilterMarks () {
 
     // Initialize the empty http request
@@ -13,7 +13,7 @@ function testResourceFilterMarks () {
     // Construct the request payload
     json payload = {"name":"Saman","subjects":[{"subject":"Maths","marks": 80},{"subject":"Science","marks":40}]};
     // Set JSON payload to request
-    req.setJsonPayload(untaint payload);
+    req.setJsonPayload(<@untainted> payload);
     // Send 'POST' request and obtain the response
     var res = clientEP->post("/filterMarks", req);
 

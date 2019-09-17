@@ -67,7 +67,7 @@ service filterService on filterServiceEP {
                     isQualified = false;
                 }
             }
-            req.setJsonPayload(untaint reqPayload);
+            req.setJsonPayload(<@untainted> reqPayload);
         } else {
             http:Response errResp = new;
             errResp.statusCode = 400;
@@ -77,7 +77,7 @@ service filterService on filterServiceEP {
             return;
         }
         // Define a variables for response payload and status code
-        json resp = {status:""};
+        map<json> resp = {status:""};
         int statusCode;
         // Check whether student is qualified or not
         if (isQualified) {
@@ -86,19 +86,19 @@ service filterService on filterServiceEP {
             if (response is http:Response) {
                 statusCode = response.statusCode;
                 // Set response status to Qualified
-                resp.status = "Qualified";
+                resp["status"] = "Qualified";
             } else {
                 log:printError("Invalid response", err = response);
             }
         } else {
             // Set response status to Not Qualified
-            resp.status = "Not Qualified";
+            resp["status"] = "Not Qualified";
         }
 
         // Set JSON response
         http:Response res = new;
         res.statusCode = 200;
-        res.setJsonPayload(untaint resp);
+        res.setJsonPayload(<@untainted> resp);
         var err = caller->respond(res);
         handleResponseError(err);
     }
