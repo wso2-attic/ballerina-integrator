@@ -119,8 +119,8 @@ export let homeStyles: string = `
                 font-size: 1.5em;
                 text-align: left;
                 color: #707070;
-                margin-top: 1em;
-                margin-bottom: 0.5em;
+                margin-top: 1.6em;
+                margin-bottom: 0.2em;
                 margin-left: 0.6em;
             }
 
@@ -183,6 +183,16 @@ export let homeStyles: string = `
             ::-webkit-scrollbar-thumb {
                 background: #777779;
                 border-radius: 4px;
+            }
+
+            select {
+                -webkit-appearance: menulist-button;
+                -moz-appearance : menulist-button;
+                border:1px solid #ccc;
+                border-radius:3px;
+                padding:10px 30px;
+                color: #707070;
+                height: 42px;
             }
         </style>`;
 

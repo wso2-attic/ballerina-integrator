@@ -32,7 +32,7 @@
 		"commands": [
 			{
 				"command": "ballerinaIntegrator.projectTemplates",
-				"title": "Generate Module from Template",
+				"title": "Home",
 				"category": "Ballerina Integrator"
 			}
 		]

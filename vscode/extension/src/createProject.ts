@@ -36,6 +36,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
     let projectPath = undefined;
     currentPanel.webview.onDidReceiveMessage(
         async homePageMessage => {
+            const cp = require('child_process');
             templateSelected = homePageMessage.command;
             if (templateSelected === "new_project") {
                 projectName = await window.showInputBox({
@@ -47,15 +48,15 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                     projectPath = await openDialogForFolder();
                     let projectUri = vscode.Uri.parse(projectPath);
                     if (projectPath != undefined) {
-                        const cp = require('child_process');
                         const newCommand = 'cd ' + projectUri.path + ' && ballerina new ' + projectName;
                         await cp.exec(newCommand, (err, stdout, stderr) => {
                             const message = "Created new ballerina project";
                             if (err) {
                                 window.showErrorMessage(err);
-                            } else if (stderr.search(message) !== -1 || stdout.search(message)) {
+                            } else if (stderr.search(message) !== -1 || stdout.search(message) !== -1) {
                                 vscode.commands.executeCommand('vscode.openFolder', projectUri);
-                                window.showInformationMessage("Successfully created a new Ballerina project at " + projectUri.path);
+                                window.showInformationMessage("Successfully created a new Ballerina project at "
+                                    + projectUri.path);
                             } else {
                                 window.showErrorMessage(stderr);
                             }
@@ -65,6 +66,17 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                 currentPanel.dispose();
                 vscode.commands.executeCommand("ballerinaIntegrator.projectTemplates");
             } else {
+                const addListCommand = "ballerina add --list";
+                const pullCommand = 'ballerina pull wso2/' + templateSelected;
+                let pull = false;
+                await new Promise((resolve, reject) => {
+                    cp.exec(addListCommand, async (err, stderr, stdout) => {
+                        if (stdout.search(templateSelected) == -1) {
+                            pull = true;
+                        }
+                        resolve();
+                    });
+                });
                 moduleName = await window.showInputBox({
                     value: templateSelected,
                     prompt: "Enter value for module name",
@@ -74,24 +86,38 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                     folderPath = await openDialogForFolder();
                     let uri = vscode.Uri.parse(folderPath);
                     if (folderPath != undefined) {
-                        const cp = require('child_process');
-                        const addCommand = 'cd ' + uri.path + ' && ballerina add ' + moduleName + ' -t wso2/' + templateSelected;
-                        await cp.exec(addCommand, (err, stdout, stderr) => {
-                            if (err) {
-                                window.showErrorMessage(err);
-                            } else if (stderr) {
-                                const message = "not a ballerina project";
-                                const successMessage = "Added new ballerina module";
-                                if (stderr.search(successMessage) !== -1) {
-                                    window.showInformationMessage(stderr);
-                                    vscode.commands.executeCommand('vscode.openFolder', uri);
-                                }
-                                else if (stderr.search(message) !== -1) {
-                                    window.showErrorMessage("Please select a Ballerina project!");
+                        const addCommand = 'cd ' + uri.path + ' && ballerina add ' + moduleName + ' -t wso2/'
+                            + templateSelected;
+                        if (pull) {
+                            await new Promise((resolve, reject) => {
+                                window.showInformationMessage("Pulling the module template from Ballerina Central!");
+                                cp.exec(pullCommand, (err, stderr, stdout) => {
+                                    if (err !== null) {
+                                        window.showWarningMessage("Error occured while pulling the module template!");
+                                    }
+                                    resolve();
+                                });
+                            });
+                        }
+                        await new Promise((resolve, reject) => {
+                            cp.exec(addCommand, (err, stdout, stderr) => {
+                                if (err) {
+                                    window.showErrorMessage(err);
                                 } else {
-                                    window.showErrorMessage(stderr);
+                                    const message = "not a ballerina project";
+                                    const successMessage = "Added new ballerina module";
+                                    if (stderr.search(successMessage) !== -1 || stdout.search(successMessage) !== -1) {
+                                        window.showInformationMessage(stderr);
+                                        vscode.commands.executeCommand('vscode.openFolder', uri);
+                                    }
+                                    else if (stderr.search(message) !== -1 || stdout.search(message) !== -1) {
+                                        window.showErrorMessage("Please select a Ballerina project!");
+                                    } else {
+                                        window.showErrorMessage(stderr + err + stdout);
+                                    }
                                 }
-                            }
+                                resolve();
+                            });
                         });
                     }
                 }

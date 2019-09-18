@@ -1,5 +1,5 @@
 {
-    "Working with Connectors":
+    "Connectors":
     [
         {
             "id": "gsheets_salesforce_integration",
@@ -22,7 +22,7 @@
             "description": "This template will implement the FTP listener which can poll a remote directory and periodically notify the addition of a file that complies with the specified file pattern."
         },
         {
-            "id": "salesforce-client",
+            "id": "salesforce_client",
             "name": "Working with Salesforce Client",
             "description": "This template demonstrates how the Salesforce client performs CRUD operations for SObjects, query using SOQL, search using SOSL and describe SObjects and organizational data through the Salesforce REST API."
         },
@@ -42,7 +42,7 @@
             "description": "This template demonstrates how the Salesforce Bulk Connector could be used for performing Bulk operations."
         }
     ],
-    "Database Integrations":
+    "Database":
     [
         {
             "id": "data_backend_service",
@@ -55,7 +55,7 @@
             "description": "This template demonstrates on how to manage database transactions using Ballerina."
         }
     ],
-    "Enterprise Integration Patterns":
+    "EI Patterns":
     [
         {
             "id": "backend_for_frontend",
@@ -63,7 +63,7 @@
             "description": "This template demonstrates on how to apply the Backend for Frontend design pattern when working with Ballerina."
         },
         {
-            "id": "content-based-routing",
+            "id": "content_based_routing",
             "name": "Content Based Routing",
             "description": "This template demonstrates how to route a message to a specific recipient based on its content."
         },
@@ -93,7 +93,7 @@
             "description": "This template demonstrates a simple pass-through messaging scenario."
         }
     ],
-    "Messaging Scenarios":
+    "Messaging":
     [
         {
             "id": "asynchronous_messaging",

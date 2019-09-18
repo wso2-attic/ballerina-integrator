@@ -55,7 +55,7 @@ export let begin: string = `<!DOCTYPE html>
                 </a>
             </div>
             <div class="col-md-4 button-section">
-                <a href="">
+                <a href="https://ei.docs.wso2.com/en/next/ballerina-integrator/getting-started/quick-start-guide/">
                     <div class="create">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                             <path d="M268.66,243.35a10,10,0,1,0,0,14.14A10,10,0,0,0,268.66,243.35ZM395.93,116.07a50,50,0,
@@ -92,7 +92,7 @@ export let begin: string = `<!DOCTYPE html>
                 </a>
             </div>
             <div class="col-md-4 button-section">
-                <a href="">
+                <a href="https://ei.docs.wso2.com/en/next/ballerina-integrator/learn/about-learn/">
                     <div class="create">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612">
                             <path class="cls-1" d="M230.72,181.21l-5.12,5.51ZM337,200.88q11.94,14.69,11.91,34.63A51.92,
@@ -123,6 +123,16 @@ export let begin: string = `<!DOCTYPE html>
                     27,192.25,27s165.3,74.2,165.3,165.3-74.1,165.4-165.3,165.4S27,283.5,27,192.3Z"
                         transform="translate(-0.05)" />
                 </svg>
+            </div>
+            <div class="col-md-4 custom-select"">
+                <select id="templateCategory" onchange="searchFunction()">
+                    <option value="0">Search Category</option>
+                    <option value="1">Connectors</option>
+                    <option value="2">Database</option>
+                    <option value="3">EI Patterns</option>
+                    <option value="4">Messaging</option>
+                    <option value="5">Services</option>
+                </select>
             </div>
         </div>
         <br />`;
