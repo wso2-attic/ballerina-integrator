@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/log;
 
 // By default Ballerina assumes that the service is to be exposed via HTTP/1.1.
 @http:ServiceConfig {
@@ -28,14 +27,8 @@ service serviceB on new http:Listener(9092) {
         path: "/resource-a",
         methods: ["GET"]
     }
-    resource function resourceA(http:Caller caller, http:Request request) {
-        http:Response response = new;
-        string reponseText = "Success response from Service B - Resource A";
-        response.setTextPayload(reponseText);
-        var result = caller->respond(response);
-        if (result is error) {
-            log:printError("Error sending response from Service B - Resource A", result);
-        }
+    resource function resourceA(http:Caller caller, http:Request request) returns error? {
+        var result = check caller->respond(getResponse("Service B - Resource A"));
     }
 
     // Resource to handle GET requests for Resource B.
@@ -43,13 +36,7 @@ service serviceB on new http:Listener(9092) {
         path: "/resource-b",
         methods: ["GET"]
     }
-    resource function secondEndpoint(http:Caller caller, http:Request request) {
-        http:Response response = new;
-        string reponseText = "Success response from Service B - Resource B";
-        response.setTextPayload(reponseText);
-        var result = caller->respond(response);
-        if (result is error) {
-            log:printError("Error sending response from Service B - Resource B", result);
-        }
+    resource function secondEndpoint(http:Caller caller, http:Request request) returns error? {
+        var result = check caller->respond(getResponse("Service B - Resource B"));
     }
 }

@@ -30,34 +30,31 @@ service AsyncInvoker on asyncService {
     #
     # + caller - Represents the remote client's endpoint.
     # + req - Represents the client request.
+    # + return - If an error occurs it is returned to the user.
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/"
     }
-    resource function asyncInvocations(http:Caller caller, http:Request req) {
+    resource function asyncInvocations(http:Caller caller, http:Request req) returns error? {
         // Endpoint for the mock backend service.
         http:Client mockServiceEP = new ("http://localhost:9080");
         http:Response finalResponse = new;
         string responseStr = "";
 
         log:printInfo(" >> Invoking services asynchronously...");
-
-        // 'start' allows you to invoke functions asynchronously. 
+        // 'start' allows you to invoke functions asynchronously.
         // Following three remote invocations returns without waiting for response.
 
         // Calling the backend to get the response from Endpoint A asynchronously.
         future<http:Response | error> f1 = start mockServiceEP->get("/endpoint-a");
-
         log:printInfo(" >> Invocation completed for Endpoint A, proceeding without blocking for a response.");
 
         // Calling the backend to get the response from Endpoint B asynchronously.
         future<http:Response | error> f2 = start mockServiceEP->get("/endpoint-b");
-
         log:printInfo(" >> Invocation completed for Endpoint B, proceeding without blocking for a response.");
 
         // Calling the backend to get the response from Endpoint C asynchronously.
         future<http:Response | error> f3 = start mockServiceEP->get("/endpoint-c");
-
         log:printInfo(" >> Invocation completed Endpoint C, proceeding without blocking for a response.");
 
         // Initialize an empty map<json> to add results from the backend call.
@@ -66,59 +63,47 @@ service AsyncInvoker on asyncService {
         // `wait` blocks until the previously started async functions return.
         // Appends the responses of all 3 mock backend calls.
         var response1 = wait f1;
+        // Add the response from Endpoint A to responseJson variable.
         if (response1 is http:Response) {
-            var payload = response1.getTextPayload();
-            if (payload is string) {
-                responseStr = payload;
-            } else {
-                log:printError("Failed to retrieve the payload");
-            }
-            // Add the response from Endpoint A to responseJson variable.
-            responseJson["A"] = responseStr;
+            responseJson["A"] = getPayload(response1);
         } else {
-            string errorMsg = <string>response1.detail()?.message;
-            log:printError(errorMsg);
-            responseJson["A"] = errorMsg;
+            responseJson["A"] = handleError(response1);
         }
 
         var response2 = wait f2;
+        // Add the response from Endpoint B to responseJson variable.
         if (response2 is http:Response) {
-            var payload = response2.getTextPayload();
-            if (payload is string) {
-                responseStr = payload;
-            } else {
-                log:printError("Failed to retrieve the payload");
-            }
-            // Add the response from Endpoint B to responseJson variable.
-            responseJson["B"] = responseStr;
+            responseJson["B"] = getPayload(response2);
         } else {
-            string errorMsg = <string>response2.detail()?.message;
-            log:printError(errorMsg);
-            responseJson["B"] = errorMsg;
+            responseJson["B"] = handleError(response2);
         }
 
         var response3 = wait f3;
+        // Add the response from Endpoint C to responseJson variable.
         if (response3 is http:Response) {
-            var payload = response3.getTextPayload();
-            if (payload is string) {
-                responseStr = payload;
-            } else {
-                log:printError("Failed to retrieve the payload");
-            }
-            // Add the response from Endpoint C to responseJson variable.
-            responseJson["C"] = responseStr;
+            responseJson["C"] = getPayload(response3);
         } else {
-            string errorMsg = <string>response3.detail()?.message;
-            log:printError(errorMsg);
-            responseJson["C"] = errorMsg;
+            responseJson["C"] = handleError(response3);
         }
 
         // Send the response back to the client
         finalResponse.setJsonPayload(<@untainted>responseJson);
         log:printInfo(" >> Response : " + responseJson.toString());
-        var result = caller->respond(finalResponse);
-        if (result is error) {
-            log:printError("Error sending response", result);
-        }
+        var result = check caller->respond(finalResponse);
     }
+}
+
+function getPayload(http:Response response) returns string? {
+    var payload = response.getTextPayload();
+    if (payload is string) {
+        return <@untained>payload;
+    } else {
+        log:printError("Failed to retrieve the payload");
+    }
+}
+
+function handleError(error response) returns string {
+    string errorMsg = <string>response.detail()?.message;
+    log:printError(errorMsg);
+    return errorMsg;
 }

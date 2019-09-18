@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/log;
 
 listener http:Listener httpListener = new(9080);
 
@@ -30,14 +29,8 @@ service MockService on httpListener {
         path: "/endpoint-a",
         methods: ["GET"]
     }
-    resource function endpointA(http:Caller caller, http:Request request) {
-        http:Response response = new;
-        string reponseText = "Success response from Endpoint A";
-        response.setTextPayload(reponseText);
-        var result = caller->respond(response);
-        if (result is error) {
-            log:printError("Error sending response from Endpoint A", result);
-        }
+    resource function endpointA(http:Caller caller, http:Request request) returns error? {
+        var result = check caller->respond(getResponse("A"));
     }
 
     // Resource to handle GET requests for Endpoint B.
@@ -45,14 +38,8 @@ service MockService on httpListener {
         path: "/endpoint-b",
         methods: ["GET"]
     }
-    resource function endpointB(http:Caller caller, http:Request request) {
-        http:Response response = new;
-        string reponseText = "Success response from Endpoint B";
-        response.setTextPayload(reponseText);
-        var result = caller->respond(response);
-        if (result is error) {
-            log:printError("Error sending response from Endpoint B", result);
-        }
+    resource function endpointB(http:Caller caller, http:Request request) returns error? {
+        var result = check caller->respond(getResponse("B"));
     }
 
     // Resource to handle GET requests for Endpoint C.
@@ -60,13 +47,14 @@ service MockService on httpListener {
         path: "/endpoint-c",
         methods: ["GET"]
     }
-    resource function endpointC(http:Caller caller, http:Request request) {
-        http:Response response = new;
-        string reponseText = "Success response from Endpoint C";
-        response.setTextPayload(reponseText);
-        var result = caller->respond(response);
-        if (result is error) {
-            log:printError("Error sending response from Endpoint C", result);
-        }
+    resource function endpointC(http:Caller caller, http:Request request) returns error? {
+        var result = check caller->respond(getResponse("C"));
     }
+}
+
+function getResponse(string endpoint) returns http:Response {
+    http:Response response = new;
+    string reponseText = "Success response from Endpoint " + endpoint;
+    response.setTextPayload(reponseText);
+    return response;
 }

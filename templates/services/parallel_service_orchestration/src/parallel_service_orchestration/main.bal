@@ -27,11 +27,12 @@ service ParallelService on new http:Listener(9090) {
     #
     # + caller - Represents the remote client's endpoint.
     # + req - Represents the client request.
+    # + return - If an error occurs it is returned to the user.
     @http:ResourceConfig {
         methods: ["GET"],
         path: "/"
     }
-    resource function parallelService(http:Caller caller, http:Request req) {
+    resource function parallelService(http:Caller caller, http:Request req) returns error? {
         // HTTP Client for the Mock Backend Service A.
         http:Client mockServiceA = new ("http://localhost:9091/service-a");
         // HTTP Client for the Mock Backend Service B.
@@ -99,9 +100,6 @@ service ParallelService on new http:Listener(9090) {
         // Send the response back to the client
         finalResponse.setJsonPayload(<@untainted>responseJson);
         log:printInfo(" >> Response : " + responseJson.toString());
-        var result = caller->respond(finalResponse);
-        if (result is error) {
-            log:printError("Error sending response", result);
-        }
+        var result = check caller->respond(finalResponse);
     }
 }
