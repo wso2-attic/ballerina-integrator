@@ -103,6 +103,8 @@
    </profiles>
    <modules>
       <module>www</module>
+      <module>vscode/extension</module>
+      <module>vscode/snippet-generator</module>
    </modules>
    <dependencyManagement>
       <dependencies>

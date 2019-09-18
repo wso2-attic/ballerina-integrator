@@ -29,7 +29,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.ballerina-integrator</groupId>
-    <artifactId>ballerina-integrator-vscode-plugin</artifactId>
+    <artifactId>ballerina-integrator-snippet-generator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
