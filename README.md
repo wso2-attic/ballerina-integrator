@@ -1,10 +1,9 @@
 # Ballerina Integrator
 
+A powerful, simple-to-learn, code-driven approach to programming integrations - based on the [Ballerina programming language](ballerina.io). It includes first-class cloud-native functions as well as a graphical sequence diagram tool. 
 
-A powerful, simple-to-learn, code-driven approach to programming integrations - based on the Ballerina programming 
-language (ballerina.io). It includes first-class cloud-native functions as well as a graphical sequence diagram tool. 
-The Ballerina Integrator appeals to those using decentralized integration architectures, Microservices, 
-and cloud-native apps.
+The Ballerina Integrator appeals to those using decentralized integration architectures, Microservices, and cloud-native apps.
+
 Developers can now efficiently code integrations directly into their work, merging the worlds of development 
 and integration.
 
@@ -12,7 +11,7 @@ and integration.
 
 Ballerina is a new general-purpose programming language that makes it easy to write cloud-native applications.
 
-Please visit ballerina.io to find more about Ballerina. 
+Please visit [ballerina.io](ballerina.io) to read more about Ballerina. 
 
 ## Key Highlights
 
@@ -23,6 +22,7 @@ concurrent environment to implement microservices with distributed transactions,
 
 Based on the interactions of sequence diagrams, Ballerina has built-in support for common integration patterns and 
 connectors, including distributed transactions, compensation, and circuit breakers. 
+
 With first-class support for JSON and XML, Ballerina makes it simple and effective to build robust integration 
 across network endpoints.
 
@@ -57,3 +57,20 @@ Mainly consists of below-stated components.
 (EIPs, Samples, scenarios..) 
 - Sequence diagram visualization of your integration scenario. 
 - Connected design, development, test and deployment experience.
+
+## Getting started
+
+You can use the following options to try out Ballerina Integrator and get started.
+
+* [Quick Start Guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/getting-started/quick-start-guide/)
+* [Ballerina Guides and Tutorials](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/about-learn/)
+
+## Contributing to Ballerina
+
+As an open source project, the Ballerina Integrator team welcomes contributions from the community. To start contributing, read these [contribution guidelines](https://github.com/wso2/ballerina-integrator/blob/master/CONTRIBUTING.md) for information on how you should go about contributing to our project.
+
+Check the issue tracker for open issues that interest you. We look forward to receiving your contributions.
+
+## License
+
+Ballerina Integrator code is distributed under [Apache license 2.0](https://github.com/wso2/ballerina-integrator/blob/master/LICENSE).
