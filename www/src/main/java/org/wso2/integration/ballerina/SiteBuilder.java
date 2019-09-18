@@ -18,27 +18,36 @@
 
 package org.wso2.integration.ballerina;
 
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wso2.integration.ballerina.utils.ServiceException;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import static org.wso2.integration.ballerina.constants.Constants.BALLERINA_TOML;
 import static org.wso2.integration.ballerina.constants.Constants.CLOSE_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_BEGIN;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_END;
 import static org.wso2.integration.ballerina.constants.Constants.COMMA;
 import static org.wso2.integration.ballerina.constants.Constants.COMMENT_END;
 import static org.wso2.integration.ballerina.constants.Constants.COMMENT_START;
+import static org.wso2.integration.ballerina.constants.Constants.DOCS_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.EMPTY_STRING;
 import static org.wso2.integration.ballerina.constants.Constants.GIT_PROPERTIES_FILE;
 import static org.wso2.integration.ballerina.constants.Constants.HASH;
@@ -48,17 +57,19 @@ import static org.wso2.integration.ballerina.constants.Constants.MARKDOWN_FILE_E
 import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
 import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
-import static org.wso2.integration.ballerina.constants.Constants.REPO_EXAMPLES_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR_MD;
 import static org.wso2.integration.ballerina.utils.Utils.copyDirectoryContent;
 import static org.wso2.integration.ballerina.utils.Utils.createDirectory;
+import static org.wso2.integration.ballerina.utils.Utils.createFile;
 import static org.wso2.integration.ballerina.utils.Utils.deleteDirectory;
+import static org.wso2.integration.ballerina.utils.Utils.deleteFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCodeFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCommitHash;
 import static org.wso2.integration.ballerina.utils.Utils.getCurrentDirectoryName;
 import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWithCodeType;
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
+import static org.wso2.integration.ballerina.utils.Utils.getZipFileName;
 import static org.wso2.integration.ballerina.utils.Utils.isDirEmpty;
 import static org.wso2.integration.ballerina.utils.Utils.removeLicenceHeader;
 
@@ -67,7 +78,8 @@ import static org.wso2.integration.ballerina.utils.Utils.removeLicenceHeader;
  */
 public class SiteBuilder {
     // Setup logger.
-    private static final Logger logger = Logger.getLogger(SiteBuilder.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(SiteBuilder.class);
+
     // Current commit hash.
     private static String commitHash = null;
 
@@ -80,19 +92,22 @@ public class SiteBuilder {
             deleteDirectory(MKDOCS_CONTENT);
             // Create needed directory structure.
             createDirectory(TEMP_DIR);
+            createFile(TEMP_DIR + File.separator + "temp.txt");
             createDirectory(MKDOCS_CONTENT);
             // Get a copy of examples directory.
-            copyDirectoryContent(REPO_EXAMPLES_DIR, TEMP_DIR);
+            copyDirectoryContent(DOCS_DIR, TEMP_DIR);
             // Process repository to generate guide templates.
             processDirectory(TEMP_DIR);
+            // Zip Ballerina projects.
+            zipBallerinaProjects(TEMP_DIR);
             // Delete non markdown files.
-            deleteNonMdFiles(TEMP_DIR);
+            deleteUnwantedFiles(TEMP_DIR);
             // Delete empty directories.
             deleteEmptyDirs(TEMP_DIR);
             // Copy tempDirectory content to mkdocs content directory.
             copyDirectoryContent(TEMP_DIR, MKDOCS_CONTENT);
         } catch (ServiceException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } finally {
             deleteDirectory(TEMP_DIR);
         }
@@ -109,9 +124,15 @@ public class SiteBuilder {
 
         if (listOfFiles != null) {
             for (File file : listOfFiles) {
-                if (file.isFile() && (file.getName().equals(README_MD))) {
-                    processReadmeFile(file);
-                    renameReadmeFile(file);
+                String fileExtension = FilenameUtils.getExtension(file.getName());
+                if (file.isFile()) {
+                    if ((file.getName().equals(README_MD))) {
+                        processReadmeFile(file);
+                        renameReadmeFile(file);
+                    } else if ((fileExtension.equals("bal") || fileExtension.equals("java"))
+                            && !processCodeFile(file)) {
+                        throw new ServiceException("Processing code file failed, file:" + file.getPath());
+                    }
                 } else if (file.isDirectory()) {
                     processDirectory(file.getPath());
                 }
@@ -233,26 +254,40 @@ public class SiteBuilder {
     }
 
     /**
-     * Delete file other than .md files.
+     * Delete unwanted files other than `md` files & `zip` files. Also delete `Module.md` files.
      *
      * @param directoryPath directory want to delete files
      */
-    private static void deleteNonMdFiles(String directoryPath) {
+    private static void deleteUnwantedFiles(String directoryPath) {
         File folder = new File(directoryPath);
         File[] listOfFiles = folder.listFiles();
 
         if (listOfFiles != null) {
             for (File file : listOfFiles) {
                 if (file.isFile()) {
-                    // Delete not .md files.
-                    if (!FilenameUtils.getExtension(file.getName()).equals(MARKDOWN_FILE_EXT) && !file.delete()) {
-                        throw new ServiceException("Error occurred when deleting file. file:" + file.getPath());
+                    if (isUnwanted(file)) {
+                        deleteFile(file);
                     }
                 } else if (file.isDirectory()) {
-                    deleteNonMdFiles(file.getPath());
+                    deleteUnwantedFiles(file.getPath());
                 }
             }
         }
+    }
+
+    /**
+     * Check whether should be included in `mkdocs-content` folder.
+     * All md files other than Module.md files & all zip files are needed.
+     *
+     * @param file file
+     * @return is a unwanted file
+     */
+    private static boolean isUnwanted(File file) {
+        boolean mdFile = FilenameUtils.getExtension(file.getName()).equals(MARKDOWN_FILE_EXT);
+        boolean moduleMdFile = file.getName().equals("Module.md");
+        boolean zipFile = FilenameUtils.getExtension(file.getName()).equals("zip");
+
+        return !((mdFile && !moduleMdFile) || zipFile);
     }
 
     /**
@@ -281,12 +316,11 @@ public class SiteBuilder {
      * @param file file should be deleted
      */
     private static void deleteEmptyDirsAndParentDirs(File file) {
-        if (isDirEmpty(file)) {
-            boolean isFileDeleted = file.delete();
-            if (isFileDeleted) {
-                File parent = file.getParentFile();
-                deleteEmptyDirsAndParentDirs(parent);
-            } else {
+        if (file != null && isDirEmpty(file)) {
+            try {
+                Files.delete(Paths.get(file.getPath()));
+                deleteEmptyDirsAndParentDirs(file.getParentFile());
+            } catch (IOException e) {
                 throw new ServiceException("Error occurred when deleting directory. file:" + file.getPath());
             }
         }
@@ -313,6 +347,71 @@ public class SiteBuilder {
             }
         } else {
             throw new ServiceException("Error when reading " + GIT_PROPERTIES_FILE);
+        }
+    }
+
+    /**
+     * Process files inside given directory.
+     *
+     * @param directoryPath path of the directory
+     */
+    private static void zipBallerinaProjects(String directoryPath) {
+        File folder = new File(directoryPath);
+        File[] listOfFiles = folder.listFiles();
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isFile() && (file.getName().equals(BALLERINA_TOML))) {
+                    // Zip parent folder since this is a Ballerina project.
+                    try {
+                        new ZipFile(getZipFileName(file)).addFolder(new File(file.getParentFile().getPath()));
+                    } catch (ZipException e) {
+                        throw new ServiceException("Error when zipping the directory: "
+                                + file.getParentFile().getPath(), e);
+                    }
+                } else if (file.isDirectory()) {
+                    zipBallerinaProjects(file.getPath());
+                }
+            }
+        }
+    }
+
+    /**
+     * Process a given code file by removing `CODE-SEGMENT` tags.
+     *
+     * @param file code file
+     * @return processing result
+     */
+    private static boolean processCodeFile(File file) {
+        File tempFile = new File(TEMP_DIR + File.separator + "temp.txt");
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+            ignoreCodeSegmentLine(file, writer);
+        } catch (IOException e) {
+            throw new ServiceException("Could not find the writer temp file: " + tempFile.getPath(), e);
+        }
+        return tempFile.renameTo(file);
+    }
+
+    /**
+     * Ignore code segment comment lines.
+     *
+     * @param file   code file
+     * @param writer temp file to keep code content without CODE_SEGMENT comment line.
+     */
+    private static void ignoreCodeSegmentLine(File file, BufferedWriter writer) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(CODE_SEGMENT_BEGIN) || line.contains(CODE_SEGMENT_END)) {
+                    // Ignore CODE_SEGMENT line.
+                    continue;
+                }
+                writer.write(line + System.getProperty("line.separator"));
+            }
+        } catch (IOException e) {
+            throw new ServiceException("Could not find the README.md file: " + file.getPath(), e);
         }
     }
 }

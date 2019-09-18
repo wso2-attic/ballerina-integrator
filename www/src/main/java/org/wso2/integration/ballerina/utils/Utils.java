@@ -20,6 +20,8 @@ package org.wso2.integration.ballerina.utils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,8 +30,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import static org.wso2.integration.ballerina.constants.Constants.BALLERINA_CODE_MD_SYNTAX;
 import static org.wso2.integration.ballerina.constants.Constants.CODE;
@@ -53,8 +56,7 @@ import static org.wso2.integration.ballerina.constants.Constants.TITLE;
  * Util functions used for site builder.
  */
 public class Utils {
-    private static final Logger logger = Logger.getLogger(Utils.class.getName());
-
+    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
     private Utils() {}
 
     /**
@@ -68,7 +70,31 @@ public class Utils {
                 throw new ServiceException("Error occurred when creating directory: " + directoryPath);
             }
         } else {
-            logger.info("Directory already exists: " + directoryPath);
+            if(logger.isInfoEnabled()) {
+                logger.info("Directory already exists: {}", directoryPath);
+            }
+        }
+    }
+
+    /**
+     * Create a file.
+     *
+     * @param filePath path of the file
+     */
+    public static void createFile(String filePath) {
+        if (!new File(filePath).exists()) {
+            File file = new File(filePath);
+            try {
+                if (!file.createNewFile()) {
+                    throw new ServiceException("Could not create the file: " + filePath);
+                }
+            } catch (IOException e) {
+                throw new ServiceException("Error when creating the file: " + filePath, e);
+            }
+        } else {
+            if(logger.isInfoEnabled()) {
+                logger.info("File already exists: {}", filePath);
+            }
         }
     }
 
@@ -82,6 +108,19 @@ public class Utils {
             FileUtils.deleteDirectory(new File(directory));
         } catch (IOException e) {
             throw new ServiceException("Error occurred while deleting temporary directory " + directory, e);
+        }
+    }
+
+    /**
+     * Delete a file.
+     *
+     * @param file file should be deleted
+     */
+    public static void deleteFile(File file) {
+        try {
+            Files.delete(Paths.get(file.getPath()));
+        } catch (IOException e) {
+            throw new ServiceException("Error occurred when deleting file. file:" + file.getPath(), e);
         }
     }
 
@@ -210,5 +249,10 @@ public class Utils {
         } catch (IOException e) {
             throw new ServiceException("Error occurred when reading input stream.", e);
         }
+    }
+
+    public static String getZipFileName(File tomlFile) {
+        File parent = tomlFile.getParentFile();
+        return parent.getPath() + File.separator + parent.getName() + ".zip";
     }
 }

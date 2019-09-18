@@ -48,9 +48,12 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                     let projectUri = vscode.Uri.parse(projectPath);
                     if (projectPath != undefined) {
                         const cp = require('child_process');
-                        await cp.exec('cd ' + projectUri.path + ' && ballerina new ' + projectName, (err, stdout, stderr) => {
+                        const newCommand = 'cd ' + projectUri.path + ' && ballerina new ' + projectName;
+                        await cp.exec(newCommand, (err, stdout, stderr) => {
                             const message = "Created new ballerina project";
-                            if (stderr.search(message) !== -1 || stdout.search(message)) {
+                            if (err) {
+                                window.showErrorMessage(err);
+                            } else if (stderr.search(message) !== -1 || stdout.search(message)) {
                                 vscode.commands.executeCommand('vscode.openFolder', projectUri);
                                 window.showInformationMessage("Successfully created a new Ballerina project at " + projectUri.path);
                             } else {
@@ -75,7 +78,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                         const addCommand = 'cd ' + uri.path + ' && ballerina add ' + moduleName + ' -t wso2/' + templateSelected;
                         await cp.exec(addCommand, (err, stdout, stderr) => {
                             if (err) {
-                                window.showErrorMessage("Error: " + err);
+                                window.showErrorMessage(err);
                             } else if (stderr) {
                                 const message = "not a ballerina project";
                                 const successMessage = "Added new ballerina module";
