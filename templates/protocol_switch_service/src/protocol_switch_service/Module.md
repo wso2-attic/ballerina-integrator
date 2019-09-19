@@ -4,11 +4,11 @@ This template demonstrates a protocol-switch service which converts an http mess
 
 ## How to run the template
 
-1. Alter the config file `src/protocol_switch_service/resources/ballerina.conf` and `<TEMPLATE_HOME>/Ballerina.toml` as per the requirement. 
+1. Alter the config file `src/protocol_switch_service/resources/ballerina.conf` and `<PROJECT_HOME>/Ballerina.toml` as per the requirement. 
 
 2. Start an ActiveMQ broker instance.
 
-3. Add the following jars from ACTIVE_MQ_HOME/lib to <TEMPLATE_HOME>/lib folder.
+3. Add the following jars from ACTIVE_MQ_HOME/lib to <PROJECT_HOME>/lib folder.
 
 * activemq-client-{activemq-version}.jar
 * geronimo-j2ee-management_1.1_spec-1.0.1.jar
