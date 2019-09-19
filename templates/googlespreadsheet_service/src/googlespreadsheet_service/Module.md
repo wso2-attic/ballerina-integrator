@@ -8,7 +8,7 @@ This template demonstrates on how to use Google Spreadsheet connector
 
 2. Execute the following command to run the service.
     ```bash
-    ballerina run --config src/googlespreadsheet_service/resources/ballerina.conf googlespreadsheet_service
+    ballerina run --b7a.config.file=src/googlespreadsheet_service/resources/ballerina.conf googlespreadsheet_service
     ```
 3. Invoke the service with the following curl requests.
     1. Create a new spreadsheet
