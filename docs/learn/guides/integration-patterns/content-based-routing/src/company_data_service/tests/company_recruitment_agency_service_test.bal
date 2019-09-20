@@ -1,17 +1,12 @@
 import ballerina/http;
 import ballerina/test;
 
-// boolean serviceStarted = false;
-
 http:Client httpEndpoint = new("http://localhost:9091");
 
 @test:Config {
 }
 
 function Company_Recruitments_Agency() {
-
-// Chck whether the server is started
-// test:assertTrue(serviceStarted, msg = "Unable to start the service");
 
 json payload =  { "Name": "John and Brothers (pvt) Ltd" };
 json payload2 = { "Name": "ABC Company" };
