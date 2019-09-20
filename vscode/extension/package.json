@@ -1,9 +1,9 @@
 {
 	"name": "ballerina-integrator",
-	"displayName": "Ballerina-Integrator",
-	"description": "Ballerina Integrator for WSO2 EI",
-	"version": "0.0.1",
-	"publisher": "wso2",
+	"displayName": "WSO2 Ballerina Integrator",
+	"description": "VS Code extension for WSO2 Ballerina Integrator",
+	"version": "0.9.0",
+	"publisher": "WSO2",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/wso2/ballerina-integrator"
@@ -17,6 +17,7 @@
 	],
 	"keywords": [
 		"ballerina",
+		"integrator",
 		"templates",
 		"snippets",
 		"wso2"
@@ -25,14 +26,14 @@
 		"ballerina.ballerina"
 	],
 	"activationEvents": [
-		"onCommand:ballerinaIntegrator.projectTemplates"
+		"onCommand:ballerina.integrator.activate"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "ballerinaIntegrator.projectTemplates",
-				"title": "Generate Module from Template",
+				"command": "ballerina.integrator.activate",
+				"title": "Dashboard",
 				"category": "Ballerina Integrator"
 			}
 		]

@@ -9,14 +9,14 @@ WSO2 Ballerina Integrator VS Code extension is a tool that is used alongside the
 
 ## Quick Start
 - **Step 1:** Install the WSO2 Ballerina Integrator extension for Visual Studio Code.
-- **Step 2:** Use the command `Ballerina Integrator: Home` through the command palette to start creating projects and modules using multiple different templates provided.
+- **Step 2:** Use the command `Ballerina Integrator: Dashboard` through the command palette to start creating projects and modules using multiple different templates provided.
 
 ## Useful Commands
 Open the Command Palette ([Command] + [Shift] + [P] on macOS and [Ctrl] + [Shift] + [P] on Windows/Linux) and type in one of the following commands.
 
 | Command  | Description |
 | ------------- | ------------- |
-| Ballerina Integrator: Home |  Activate WSO2 Ballerina Integrator extension.|
+| Ballerina Integrator: Dashboard |  Activate WSO2 Ballerina Integrator extension.|
 | Ballerina: Build Project  | Build a Ballerina project.  |
 | Ballerina: Show Examples  | Display examples provided by the Ballerina language. |
 | Ballerina: Show Network Logs  | Open the Ballerina HTTP trace logs view. |

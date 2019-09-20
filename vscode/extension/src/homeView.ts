@@ -52,8 +52,7 @@ export function getHomeView(): string {
         });
         let endTags: string = `
                 </div>
-            </div>
-            <hr class="line" />`;
+            </div>`;
         htmlCode = htmlCode + endTags;
     }
 
@@ -66,26 +65,52 @@ export function getHomeView(): string {
                     })
                 }
                 function searchFunction() {
-                    var input, filter, txtValue;
+                    var categoryPicker = document.getElementById("templateCategory");
+                    var category = categoryPicker.options[categoryPicker.selectedIndex].text;
+                    var input, filter;
                     input = document.getElementById("searchTemplate");
                     filter = input.value.toUpperCase();
                     var templateCategories = document.getElementsByClassName("templates");
                     for (var i = 0; i < templateCategories.length; i++) {
-                        var boxes = templateCategories[i].getElementsByClassName("col-md-3 col-xs-4 col-lg-3");
-                        for (var j = 0; j < boxes.length; j++) {
-                            var heading = boxes[j].getElementsByTagName("h4");
-                            txtValue = heading[0].textContent || heading[0].innerText;
-                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                                boxes[j].style.display = "";
-                            } else {
-                                boxes[j].style.display = "none";
+                        var name = templateCategories[i].getElementsByTagName("h3");
+                        if (category == "Search Category") {
+                            var count = 0;
+                            templateCategories[i].style.display = "";
+                            var boxes = templateCategories[i].getElementsByClassName("col-md-3 col-xs-4 col-lg-3");
+                            for (var j = 0; j < boxes.length; j++) {
+                                var heading = boxes[j].getElementsByTagName("h4");
+                                var txtValue = heading[0].textContent || heading[0].innerText;
+                                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                    boxes[j].style.display = "";
+                                    count = count + 1;
+                                } else {
+                                    boxes[j].style.display = "none";
+                                }
                             }
+                            if (count == 0) {
+                                name[0].style.display = "none";
+                            } else {
+                                name[0].style.display = "";
+                            }
+                        } else if (name[0].textContent.localeCompare(category) == 0) {
+                            templateCategories[i].style.display = "";
+                            var boxes = templateCategories[i].getElementsByClassName("col-md-3 col-xs-4 col-lg-3");
+                            for (var j = 0; j < boxes.length; j++) {
+                                var heading = boxes[j].getElementsByTagName("h4");
+                                var txtValue = heading[0].textContent || heading[0].innerText;
+                                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                    boxes[j].style.display = "";
+                                } else {
+                                    boxes[j].style.display = "none";
+                                }
+                            }
+                        } else {
+                            templateCategories[i].style.display = "none";
                         }
                     }
                 }
             </script>`;
 
     htmlCode = htmlCode + scriptHandling + end;
-    console.log(htmlCode);
     return htmlCode;
 }
