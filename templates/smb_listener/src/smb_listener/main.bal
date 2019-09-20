@@ -14,131 +14,84 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import wso2/ftp;
-import ballerina/log;
-import ballerina/io;
-import ballerina/internal;
 import ballerina/config;
-import ballerina/http;
-import wso2ftputils;
+import ballerina/log;
+import wso2/smb;
 
-public const MOVE = "MOVE";
-public const DELETE = "DELETE";
-public const ERROR = "ERROR";
 
-public type Operation MOVE|DELETE|ERROR;
-
+// Record to store file path in server to read from, and file name pattern
 type Config record {
     string fileNamePattern;
-    string destFolder;
-    string errFolder;
-    Operation opr;
+    string listenerPath;
 };
 
 Config conf = {
     fileNamePattern: config:getAsString("SMB_FILE_NAME_PATTERN"),
-    destFolder: config:getAsString("SMB_DESTINATION_FOLDER "),
-    errFolder: config:getAsString("SMB_ERROR_FOLDER"),
-    opr: MOVE
+    listenerPath: config:getAsString("SMB_LISTENER_PATH")
 };
 
+// Map to store details of files found on the server
+map<int> fileMap = {};
 
-// Creating a ftp listener instance by defining the configuration.
-listener ftp:Listener remoteServer = new({
-    protocol:ftp:SMB,
-    host:config:getAsString("SMB_HOST"),
-    port:config:getAsInt("SMB_LISTENER_PORT"),
-    pollingInterval:config:getAsInt("SMB_POLLING_INTERVAL"),
-    fileNamePattern:conf.fileNamePattern,
+// Create listener for Samba server
+listener smb:Listener dataFileListener = new({
+    protocol: smb:SMB,
+    host: config:getAsString("SMB_HOST"),
+    port: config:getAsInt("SMB_LISTENER_PORT"),
     secureSocket: {
         basicAuth: {
-            username:config:getAsString("SMB_USER_NAME"),
-            password:config:getAsString("SMB_PASSWORD")
+            username: config:getAsString("SMB_USERNAME"),
+            password: config:getAsString("SMB_PASSWORD")
         }
     },
-    path:config:getAsString("SMB_LISTENER_FOLDER")
+    path: conf.listenerPath,
+    fileNamePattern: conf.fileNamePattern,
+    pollingInterval: config:getAsInt("SMB_POLLING_INTERVAL")
 });
 
-// Defining the configuration of the ftp client endpoint.
-ftp:ClientEndpointConfig ftpConfig = {
-    protocol: ftp:SMB,
+// Create client to connect to Samba server
+smb:ClientEndpointConfig smbConfig = {
+    protocol: smb:SMB,
     host: config:getAsString("SMB_HOST"),
-    port: getAsInt("SMB_LISTENER_PORT"),
+    port: config:getAsInt("SMB_LISTENER_PORT"),
     secureSocket: {
-        basicAuth: {
-            username:config:getAsString("SMB_USER_NAME"),
-            password:config:getAsString("SMB_PASSWORD")
-        }
+     basicAuth: {
+         username: config:getAsString("SMB_USERNAME"),
+         password: config:getAsString("SMB_PASSWORD")
+     }
     }
 };
 
-ftp:Client ftpClient = new(ftpConfig);
+smb:Client smbClient = new(smbConfig);
 
-service monitor on remoteServer {
-    resource function fileResource(ftp:WatchEvent m) {
-        foreach ftp:FileInfo v1 in m.addedFiles {
+// Create service to listen on Samba server
+service dataFileService on dataFileListener {
+    resource function processDataFile(smb:WatchEvent fileEvent) {
 
-            log:printInfo("Added file path: " + v1.path);
-
-            var proRes = processFile(untaint v1.path);
-
-            string srcPath = createFolderPath(v1, conf.srcFolder);
-            // Moving the file to another location on the same ftp server after processing.
-            if (proRes == MOVE) {
-                string destFilePath = createFolderPath(v1, conf.destFolder);
-                error? renameErr = ftpClient->rename(srcPath, destFilePath);
-                log:printInfo("Moved File after processing");
-            } else if (proRes == DELETE) {
-                error? fileDelCreErr = ftpClient->delete(srcPath);
-                log:printInfo("Deleted File after processing");
-            } else {
-                string errFoldPath = createFolderPath(v1, conf.errFolder);
-                error? processErr = ftpClient->rename(srcPath, errFoldPath);
-            }
+        foreach smb:FileInfo file in fileEvent.addedFiles {
+            log:printInfo("Added file path: " + file.path);
+            processNewFile(file.path);
+        }
+        foreach string file in fileEvent.deletedFiles {
+            log:printInfo("Deleted file path: " + file);
+            processDeletedFile(file);
         }
     }
 }
 
-// Processing logic that needs to be done on the file content based on the file type.
-public function processFile(string sourcePath) returns Operation {
-
-    string getFileName = conf.srcFolder + sourcePath;
-
-    var getResult = ftpClient->get(getFileName);
-
-    Operation res = MOVE;
-
-    if (getResult is io:ReadableByteChannel) {
-        xml | error? jsonFileRes = wso2ftputils:readXmlFile(getResult);
-        if (jsonFileRes is xml) {
-            log:printInfo("File read successfully");
-            if (conf.opr == MOVE) {
-                res = MOVE;
-            } else if (conf.opr == DELETE) {
-                res = DELETE;
-            }
-        } else {
-            log:printError("Error in reading file", err = jsonFileRes);
-            res = ERROR;
-        }
+function processNewFile(string filePath) {
+    int|error fileSize = smbClient -> size(filePath);
+    if(fileSize is int){
+        fileMap[filePath] = fileSize;
+        log:printInfo("Added file: " + filePath + " - " + fileSize.toString());
     } else {
-        log:printError("Error in reading file.");
-        res = ERROR;
+        log:printError("Error in getting file size", fileSize);
     }
-    return res;
 }
 
-// // Generating file paths to move the processed file.
-public function createFolderPath(ftp:FileInfo v2, string folderPath) returns string {
-    string p2 = createPath(v2);
-    string path = folderPath + "/" + p2;
-    return path;
+function processDeletedFile(string filePath) {
+    if(fileMap.hasKey(filePath)){
+        int removedElement = fileMap.remove(filePath);
+        log:printInfo("Deleted file: " + filePath);
+    }
 }
-
-public function createPath(ftp:FileInfo v3) returns string {
-    int subString = v3.path.lastIndexOf("/");
-    int length = v3.path.length();
-    string subPath = v3.path.substring((subString + 1), length);
-    return subPath;
-}
-

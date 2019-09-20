@@ -1,14 +1,18 @@
 # FTP Listener
 
-This template we'll implement FTP listener which will listen to a remote directory and periodically notify the addition of a file that complies with the specified file pattern.
+In this template we will implement an FTP listener which will listen to a remote directory and periodically notify the 
+addition and deletion of files that comply with the specified file pattern.
 
 ## How to run the template
 
-1. Alter the config file `src/ftp_listener/resources/ballerina.conf` according to your requirement. 
+1. Alter the config file `src/<module_name>/resources/ballerina.conf` according to your requirement. 
 
-2. Execute the following command in the project directory ftp_listener to run the service.
+2. Execute the following command in the project directory `<project_name>` to run the service.
 ```bash
-ballerina run --config src/ftp_listener/resources/ballerina.conf ftp_listener
+ballerina run <module_name> --b7a.config.file=src/<module_name>/resources/ballerina.conf 
 ```
-3. Invoke the service by uploading a file with the same file name pattern defined in the configs to the folder defined in the ftp listener instance. Then the file is processed and the operation defined in the configs (i.e either Move to the defined folder or Delete the processed) will be carried out if the processing is successful.
+
+3. Invoke the service by uploading a file which has the file name pattern defined in the config, to the folder defined 
+   in the FTP Listener instance. Then the file is processed and added to the list along with its details. Invoke the 
+   delete operation by removing a file on the server, which will in turn delete the file entry from the list.
 
