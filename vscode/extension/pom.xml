@@ -38,6 +38,7 @@
                         <phase>initialize</phase>
                         <configuration>
                             <executable>npm</executable>
+                            <skip>false</skip>
                             <arguments>
                                 <argument>install</argument>
                                 <argument>--unsafe-perm</argument>
@@ -52,6 +53,7 @@
                         <phase>package</phase>
                         <configuration>
                             <executable>npm</executable>
+                            <skip>false</skip>
                             <arguments>
                                 <argument>run</argument>
                                 <argument>package</argument>
