@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.wso2.ballerina-integrator</groupId>
         <artifactId>ballerina-integrator</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0-alpha</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     
