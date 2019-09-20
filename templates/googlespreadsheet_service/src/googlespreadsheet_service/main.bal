@@ -37,7 +37,7 @@ const string CELL_DATA_RETRIEVAL_ERROR_MSG = "Error while retrieving the value o
 const string WORKSHEET_DELETION_ERROR_MSG = "Error while deleting the worksheet.";
 
 gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
-    clientConfig: {
+    oAuthClientConfig: {
         accessToken: config:getAsString("ACCESS_TOKEN"),
         refreshConfig: {
             clientId: config:getAsString("CLIENT_ID"),
@@ -47,6 +47,8 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
         }
     }
 };
+
+
 
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 
