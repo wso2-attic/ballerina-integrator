@@ -34,95 +34,159 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
     let projectName = undefined;
     let folderPath = undefined;
     let projectPath = undefined;
+    let uri = undefined;
+    let projectUri = undefined;
     currentPanel.webview.onDidReceiveMessage(
         async homePageMessage => {
-            const cp = require('child_process');
+            const childProcess = require('child_process');
             templateSelected = homePageMessage.command;
+            // Creating a new Ballerina project.
             if (templateSelected === "new_project") {
+                // Project name.
                 projectName = await window.showInputBox({
                     value: "new_project",
-                    prompt: "Enter value for project name",
+                    prompt: "Enter project name",
                     placeHolder: "new_project"
                 }).then(text => text);
                 if (projectName != undefined) {
-                    projectPath = await openDialogForFolder();
+                    // Module name.
+                    moduleName = await window.showInputBox({
+                        value: "new_module",
+                        prompt: "Enter module name",
+                        placeHolder: "new_module"
+                    }).then(text => text);
+                }
+                if (projectName != undefined && moduleName != undefined) {
+                    // Get path to create the Ballerina project in.
+                    projectPath = await openDialogForFolder("Create");
                     let projectUri = vscode.Uri.parse(projectPath);
                     if (projectPath != undefined) {
                         const newCommand = 'cd ' + projectUri.path + ' && ballerina new ' + projectName;
-                        await cp.exec(newCommand, (err, stdout, stderr) => {
-                            const message = "Created new ballerina project";
-                            if (err) {
-                                window.showErrorMessage(err);
-                            } else if (stderr.search(message) !== -1 || stdout.search(message) !== -1) {
-                                vscode.commands.executeCommand('vscode.openFolder', projectUri);
-                                window.showInformationMessage("Successfully created a new Ballerina project at "
-                                    + projectUri.path);
-                            } else {
-                                window.showErrorMessage(stderr);
-                            }
+                        // Execute the Ballerina new command to create a project.
+                        await new Promise((resolve, reject) => {
+                            childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve));
+                        });
+                        const addCommandWithoutTemplate = 'cd ' + projectUri.path + '/' + projectName + ' && ballerina add ' + moduleName;
+                        uri = projectUri.path + "/" + projectName;
+                        let projectFolder = vscode.Uri.parse(uri);
+                        // Execute the Ballerina add command to create a module inside the project created.
+                        await new Promise((resolve, reject) => {
+                            childProcess.exec(addCommandWithoutTemplate, (err, stderr, stdout) => {
+                                if (err) {
+                                    window.showErrorMessage(err);
+                                    reject();
+                                } else {
+                                    const successMessage = "Added new ballerina module";
+                                    if (stdout.search(successMessage) !== -1) {
+                                        window.showInformationMessage(stdout);
+                                        vscode.commands.executeCommand('vscode.openFolder', projectFolder);
+                                    } else {
+                                        window.showErrorMessage(stderr);
+                                        reject();
+                                    }
+                                }
+                            });
+                            resolve();
                         });
                     }
                 }
                 currentPanel.dispose();
-                vscode.commands.executeCommand("ballerinaIntegrator.projectTemplates");
+                vscode.commands.executeCommand("ballerina.integrator.activate");
             } else {
-                const addListCommand = "ballerina add --list";
+                const addListCommand = 'ballerina add --list';
                 const pullCommand = 'ballerina pull wso2/' + templateSelected;
                 let pull = false;
+                // Performs a Ballerina add list command to check if the required module template is available,
+                // else pull variable is set to true.
                 await new Promise((resolve, reject) => {
-                    cp.exec(addListCommand, async (err, stderr, stdout) => {
+                    childProcess.exec(addListCommand, async (err, stderr, stdout) => {
+                        if (err) {
+                            reject();
+                        } 
                         if (stdout.search(templateSelected) == -1) {
                             pull = true;
                         }
                         resolve();
                     });
                 });
+                // Get the module name for the template.
                 moduleName = await window.showInputBox({
                     value: templateSelected,
-                    prompt: "Enter value for module name",
+                    prompt: "Enter module name",
                     placeHolder: templateSelected
                 }).then(text => text);
                 if (moduleName != undefined) {
-                    folderPath = await openDialogForFolder();
-                    let uri = vscode.Uri.parse(folderPath);
-                    if (folderPath != undefined) {
-                        const addCommand = 'cd ' + uri.path + ' && ballerina add ' + moduleName + ' -t wso2/'
-                            + templateSelected;
-                        if (pull) {
+                    // Get input on where the new module should be created.
+                    const projectOption = await vscode.window.showQuickPick(['New Project', 'Existing Project'],
+                        { placeHolder: 'Creating a new project or adding the module to an existing project?' });
+                    // If the module is to be created inside a new project.
+                    if (projectOption != undefined) {
+                        if (projectOption == "New Project") {
+                            // Get project name from the user.
+                            projectName = await window.showInputBox({
+                                prompt: "Enter project name"
+                            }).then(text => text);
+                            if (projectName != undefined) {
+                                // Open path to create the new project.
+                                folderPath = await openDialogForFolder("Create");
+                                let projectUri = vscode.Uri.parse(folderPath);
+                                if (folderPath != undefined) {
+                                    const newCommand = 'cd ' + projectUri.path + ' && ballerina new ' + projectName;
+                                    await new Promise((resolve, reject) => {
+                                        childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve));
+                                    });
+                                    uri = projectUri.path + "/" + projectName;
+                                }
+                            }
+                        // If the module is to be created inside an existing project.
+                        } else if (projectOption == "Existing Project") {
+                            // Select the existing Ballerina project.
+                            folderPath = await openDialogForFolder("Select Ballerina Project");
+                            projectUri = vscode.Uri.parse(folderPath);
+                            uri = projectUri.path;
+                        }
+                        if (folderPath != undefined) {
+                            const addCommand = 'cd ' + uri + ' && ballerina add ' + moduleName + ' -t wso2/'
+                                + templateSelected;
+                            // Pulls the template module from Ballerina Central if pull value is true.
+                            if (pull) {
+                                await new Promise((resolve, reject) => {
+                                    window.showInformationMessage("Pulling the module template from Ballerina Central!");
+                                    childProcess.exec(pullCommand, (err, stderr, stdout) => {
+                                        if (err) {
+                                            window.showErrorMessage("Error occured while pulling the module template!");
+                                        }
+                                        resolve();
+                                    });
+                                });
+                            }
+                            // Adds the new module to the project selected or created.
                             await new Promise((resolve, reject) => {
-                                window.showInformationMessage("Pulling the module template from Ballerina Central!");
-                                cp.exec(pullCommand, (err, stderr, stdout) => {
-                                    if (err !== null) {
-                                        window.showWarningMessage("Error occured while pulling the module template!");
+                                childProcess.exec(addCommand, (err, stderr, stdout) => {
+                                    if (err) {
+                                        window.showErrorMessage(err);
+                                        reject();
+                                    } else {
+                                        const message = "not a ballerina project";
+                                        const successMessage = "Added new ballerina module";
+                                        if (stdout.search(successMessage) !== -1) {
+                                            window.showInformationMessage(stdout);
+                                            vscode.commands.executeCommand('vscode.openFolder',
+                                                vscode.Uri.parse("file://" + uri));
+                                        } else if (stdout.search(message) !== -1) {
+                                            window.showErrorMessage("Please select a Ballerina project!");
+                                        } else {
+                                            window.showErrorMessage(stdout);
+                                        }
+                                        resolve();
                                     }
-                                    resolve();
                                 });
                             });
                         }
-                        await new Promise((resolve, reject) => {
-                            cp.exec(addCommand, (err, stdout, stderr) => {
-                                if (err) {
-                                    window.showErrorMessage(err);
-                                } else {
-                                    const message = "not a ballerina project";
-                                    const successMessage = "Added new ballerina module";
-                                    if (stderr.search(successMessage) !== -1 || stdout.search(successMessage) !== -1) {
-                                        window.showInformationMessage(stderr);
-                                        vscode.commands.executeCommand('vscode.openFolder', uri);
-                                    }
-                                    else if (stderr.search(message) !== -1 || stdout.search(message) !== -1) {
-                                        window.showErrorMessage("Please select a Ballerina project!");
-                                    } else {
-                                        window.showErrorMessage(stderr + err + stdout);
-                                    }
-                                }
-                                resolve();
-                            });
-                        });
                     }
                 }
                 currentPanel.dispose();
-                vscode.commands.executeCommand("ballerinaIntegrator.projectTemplates");
+                vscode.commands.executeCommand("ballerina.integrator.activate");
             }
         },
         undefined,
@@ -131,8 +195,30 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
     return;
 }
 
-async function openDialogForFolder(): Promise<Uri | null> {
+// Handles the new project creation command result.
+function newProjectCommand(reject: (reason?: any) => void, projectUri: vscode.Uri, resolve: (value?: unknown) => void): any {
+    return (err, stderr, stdout) => {
+        const message = "Created new Ballerina project";
+        if (err) {
+            window.showErrorMessage(err);
+            reject();
+        }
+        else if (stdout.search(message) !== -1) {
+            window.showInformationMessage("Successfully created a new Ballerina project at "
+                + projectUri.path);
+            resolve();
+        }
+        else {
+            window.showErrorMessage(stdout);
+            reject();
+        }
+    };
+}
+
+// Handles the folder pick input.
+async function openDialogForFolder(buttonText: string): Promise<Uri | null> {
     const options: OpenDialogOptions = {
+        openLabel: buttonText,
         canSelectFiles: false,
         canSelectFolders: true,
         canSelectMany: false

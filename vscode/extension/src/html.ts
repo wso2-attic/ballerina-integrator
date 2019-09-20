@@ -128,10 +128,9 @@ export let begin: string = `<!DOCTYPE html>
                 <select id="templateCategory" onchange="searchFunction()">
                     <option value="0">Search Category</option>
                     <option value="1">Connectors</option>
-                    <option value="2">Database</option>
-                    <option value="3">EI Patterns</option>
-                    <option value="4">Messaging</option>
-                    <option value="5">Services</option>
+                    <option value="2">EI Patterns</option>
+                    <option value="3">Messaging</option>
+                    <option value="4">Services</option>
                 </select>
             </div>
         </div>
