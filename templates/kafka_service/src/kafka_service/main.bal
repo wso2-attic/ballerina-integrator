@@ -15,9 +15,9 @@
 // under the License.
 
 import ballerina/config;
-import ballerina/encoding;
 import ballerina/io;
 import ballerina/kafka;
+import ballerina/lang.'string as strings;
 
 string topic = config:getAsString("CONSUMER_TOPIC", "consumer-topic");
 
@@ -48,8 +48,8 @@ service kafkaService on kafkaConsumer {
 
 function processKafkaRecord(kafka:ConsumerRecord kafkaRecord) {
     byte[] serializedMsg = kafkaRecord.value;
-    string msg = encoding:byteArrayToString(serializedMsg);
+    string|error msg = strings:fromBytes(serializedMsg);
     // Print the retrieved Kafka record.
     io:println("Topic: " + kafkaRecord.topic + " Partition: " + io:sprintf("%s", kafkaRecord.partition)
-    + " Received Message: " + msg);
+    + " Received Message: " + msg.toString());
 }
