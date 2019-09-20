@@ -1,0 +1,4 @@
+#ignore files inside generated folder
+*.java
+*.class
+

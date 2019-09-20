@@ -198,6 +198,7 @@
         <exec.maven.plugin.version>1.6.0</exec.maven.plugin.version>
         <git.commit.id.plugin.version>2.2.5</git.commit.id.plugin.version>
         <antlr4.maven.plugin.version>4.5.1</antlr4.maven.plugin.version>
+        <exec.maven.plugin.version>1.6.0</exec.maven.plugin.version>
 
         <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
         <apache.source.release.assembly.descriptor.version>1.0.6</apache.source.release.assembly.descriptor.version>
