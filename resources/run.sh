@@ -65,13 +65,9 @@ echo -e "------End of executing ${executionNameList[0]} tests----- \n"
 cat testResults >> $HOME/completeTestResults.log
 
 # move cache to ballerina home
-# for travis build
-if (-d /home/travis/)
-then
-	mkdir -p /home/travis/.ballerina/bir_cache/wso2/healthcare/0.1.0
+mkdir -p /home/travis/.ballerina/bir_cache/wso2/healthcare/0.1.0
 
-	cp /home/travis/build/wso2/ballerina-integrator/docs/learn/backends/healthcare-service/target/caches/bir_cache/wso2/healthcare/0.1.0/healthcare.bir /home/travis/.ballerina/bir_cache/wso2/healthcare/0.1.0 
-fi
+cp /home/travis/build/wso2/ballerina-integrator/docs/learn/backends/healthcare-service/target/caches/bir_cache/wso2/healthcare/0.1.0/healthcare.bir /home/travis/.ballerina/bir_cache/wso2/healthcare/0.1.0 
 
 # TODO: Count should be changed to 1 when issue (https://github.com/wso2/ballerina-integrator/issues/316) is fixed.
 count=0
