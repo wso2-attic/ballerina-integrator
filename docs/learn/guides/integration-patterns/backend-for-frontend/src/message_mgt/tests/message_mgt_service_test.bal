@@ -4,7 +4,8 @@ import ballerina/http;
 // Client endpoint to communicate with message management service
 http:Client clientEP = new("http://localhost:9095/message-mgt");
 
-@test:Config
+@test:Config {}
+
 // Function to test POST resource 'addMessage'.
 function testResourceAddMessage() {
     // Initialize the empty http request.
@@ -22,7 +23,7 @@ function testResourceAddMessage() {
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
-            test:assertEquals(resPayload.toString(),
+            test:assertEquals(resPayload.toJsonString(),
                 "{\"status\":\"Message Sent.\", \"messageId\":\"MSG01\"}", msg = "Response mismatch!");     
         } else {
             test:assertFail(msg = "Response Payload is not JSON");
@@ -47,9 +48,7 @@ function testResourceGetMessages() {
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
             test:assertEquals(resPayload.toString(),
-                "{\"Messages\":[{\"ID\":\"MSG01\", \"From\":\"Dr. Carl\", \"Subject\":\"Test Msg\", " +
-                "\"Content\":\"Test\", \"Status\":\"Read\"}]}"
-                ,
+                "Messages=ID=MSG01 From=Dr. Carl Subject=Test Msg Content=Test Status=Read",
                 msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Response Payload is not JSON");

@@ -60,7 +60,7 @@ service medical_record_mgt_service on httpListener {
         // Create response message.
         json payload = { status: "Medical Record Created.", medicalRecordId: medicalRecordId };
         http:Response response = new();
-        response.setJsonPayload(untaint payload);
+        response.setJsonPayload(<@untainted> payload);
 
         // Set 201 Created status code in the response message.
         response.statusCode = 201;
@@ -77,18 +77,16 @@ service medical_record_mgt_service on httpListener {
         log:printInfo("getMedicalRecords...");
 
         http:Response response = new;
-        json medicalRecordsResponse = { MedicalRecords: [] };
+        map<json> medicalRecordsResponse = { MedicalRecords: [] };
 
         // Get all Medical Records from map and add them to response
-        int i = 0;
-        foreach var(k, v) in medicalRecordMap {
-            json medicalRecordValue = v.MedicalRecord;
-            medicalRecordsResponse.MedicalRecords[i] = medicalRecordValue;
-            i += 1;
+        foreach var v in medicalRecordMap {
+            json medicalRecordValue = <json>v.MedicalRecord;
+            medicalRecordsResponse["MedicalRecords"] = medicalRecordValue;
         }
 
         // Set the JSON payload in the outgoing response message.
-        response.setJsonPayload(untaint medicalRecordsResponse);
+        response.setJsonPayload(<@untainted> medicalRecordsResponse);
 
         // Send response to the client.
         checkpanic caller->respond(response);

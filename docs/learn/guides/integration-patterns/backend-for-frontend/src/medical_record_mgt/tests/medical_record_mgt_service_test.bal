@@ -4,7 +4,7 @@ import ballerina/http;
 // Client endpoint to communicate with medical record management service
 http:Client clientEP = new("http://localhost:9093/medical-records");
 
-@test:Config
+@test:Config{}
 // Function to test POST resource 'addAppointment'.
 function testResourceAddMedicalRecord() {
     // Initialize the empty http request.
@@ -22,7 +22,7 @@ function testResourceAddMedicalRecord() {
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
-            test:assertEquals(resPayload.toString(),
+            test:assertEquals(resPayload.toJsonString(),
             "{\"status\":\"Medical Record Created.\", \"medicalRecordId\":\"MED01\"}", msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Response payload expected to be JSON");
@@ -50,7 +50,7 @@ function testResourceGetMedicalRecords() {
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
             test:assertEquals(resPayload.toString(),
-            "{\"MedicalRecords\":[{\"ID\":\"MED01\", \"Name\":\"Test Record\", \"Description\":\"Test\"}]}",
+            "MedicalRecords=ID=MED01 Name=Test Record Description=Test",
                 msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "Response payload expected to be JSON");
