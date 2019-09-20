@@ -74,7 +74,6 @@ count=0
 for i in "${executionPathList[@]}"; 
 do 
 	echo "Executing ${executionNameList[$count]}"
-	echo "Path==> ${executionPathList[$count]}"
 	cd $HOME/${executionPathList[$count]}
 	ballerina build ${moduleList[$count]} > testResults
 	if ((grep -q "[1-9][0-9]* failing" testResults) || ! (grep -q "Running tests" testResults))
