@@ -38,6 +38,7 @@
                         <phase>initialize</phase>
                         <configuration>
                             <executable>npm</executable>
+                            <skip>false</skip>
                             <arguments>
                                 <argument>install</argument>
                                 <argument>--unsafe-perm</argument>
@@ -52,6 +53,7 @@
                         <phase>package</phase>
                         <configuration>
                             <executable>npm</executable>
+                            <skip>false</skip>
                             <arguments>
                                 <argument>run</argument>
                                 <argument>package</argument>
@@ -59,6 +61,24 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.8</version>
+            <executions>
+                <execution>
+                    <phase>test</phase>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                    <configuration>
+                        <tasks>
+                            <copy file="ballerina-integrator-0.9.0.vsix" tofile="${basedir}/target/ballerina-integrator-0.9.0.vsix"/>
+                        </tasks>
+                    </configuration>
+                </execution>
+            </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
