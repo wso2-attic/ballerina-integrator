@@ -76,8 +76,7 @@
                     <dateFormatTimeZone>${user.timezone}</dateFormatTimeZone>
                     <verbose>false</verbose>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
-                    </generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
                     <format>properties</format>
                     <skipPoms>true</skipPoms>
                     <injectAllReactorProjects>false</injectAllReactorProjects>
@@ -137,7 +136,7 @@
             <artifactId>zt-zip</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
+            <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
@@ -147,17 +146,14 @@
         <dependency>
             <groupId>net.lingala.zip4j</groupId>
             <artifactId>zip4j</artifactId>
-            <version>2.1.4</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.5</version>
         </dependency>
     </dependencies>
 
