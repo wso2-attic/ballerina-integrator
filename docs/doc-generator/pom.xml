@@ -123,6 +123,10 @@
                 </executions>
                 <configuration>
                     <executable>${project-home}/init.${script.extension}</executable>
+                    <arguments>
+                        <argument>${project.artifactId}</argument>
+                        <argument>${project.version}</argument>
+                    </arguments>
                 </configuration>
             </plugin>
         </plugins>

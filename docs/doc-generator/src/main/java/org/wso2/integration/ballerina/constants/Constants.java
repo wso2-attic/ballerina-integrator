@@ -27,7 +27,7 @@ public final class Constants {
 
     // Directory paths
     public static final String DOCS_DIR = ".." + File.separator + "docs";
-    public static final String TEMP_DIR = "tempDirectory";
+    public static final String TEMP_DIR = "target" + File.separator + "tempDirectory";
     public static final String MKDOCS_CONTENT = "target" + File.separator + "mkdocs-content";
 
     // Files

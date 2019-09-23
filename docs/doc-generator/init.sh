@@ -1,9 +1,12 @@
 #!/bin/bash
 
-HOME=`pwd`
-java -jar $HOME/target/www-builder-1.0-jar-with-dependencies.jar > execution.log 2>&1 
+JAR_NAME=$1
+VERSION=$2
+JAR_FULL_NAME=$JAR_NAME-$VERSION-jar-with-dependencies.jar
+echo "Running jar file " $JAR_FULL_NAME
+java -jar target/$JAR_FULL_NAME > target/execution.log 2>&1
 
-if (grep -q "Invalid file path" execution.log)
+if (grep -q "Invalid file path" target/execution.log)
   then
     echo "Invalid file path in INCLUDE_CODE tag. Mentioned file does not exists in the project. See more at execution.log"
     exit 1

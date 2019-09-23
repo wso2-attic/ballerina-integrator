@@ -27,7 +27,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.3.2</version>
                 <executions>
                     <execution>
                         <id>npm install</id>
@@ -88,16 +87,6 @@
                                 <argument>run</argument>
                                 <argument>package</argument>
                             </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>my-exec</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <skip>true</skip>
                         </configuration>
                     </execution>
                 </executions>
