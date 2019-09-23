@@ -34,6 +34,13 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+
+    <modules>
+        <module>docs</module>
+        <module>vscode/extension</module>
+        <module>vscode/snippet-generator</module>
+    </modules>
+
     <repositories>
         <repository>
             <id>wso2.releases</id>
@@ -69,26 +76,15 @@
         </repository>
     </repositories>
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>my-exec</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <executable>${project-home}/resources/run${script.extension}</executable>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec.maven.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <profiles>
         <profile>
@@ -99,15 +95,11 @@
                 </os>
             </activation>
             <properties>
-                <script.extension>.sh</script.extension>
+                <script.extension>sh</script.extension>
             </properties>
         </profile>
     </profiles>
-    <modules>
-        <module>www</module>
-        <module>vscode/extension</module>
-        <module>vscode/snippet-generator</module>
-    </modules>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
