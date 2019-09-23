@@ -84,7 +84,6 @@
             </executions>
             <configuration>
                <executable>${project-home}/resources/run${script.extension}</executable>
-               <skip>true</skip>
             </configuration>
          </plugin>
       </plugins>

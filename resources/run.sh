@@ -19,11 +19,11 @@
 # Build Ballerina Integrator Tests
 # ----------------------------------------------------------------------------
 
-HOME=`pwd`
-source $HOME/resources/config.properties
-if [ -e $HOME/completeTestResults.log ]
+BI_HOME=`pwd`
+source $BI_HOME/resources/config.properties
+if [ -e $BI_HOME/completeTestResults.log ]
 then
-    rm -rf $HOME/completeTestResults.log
+    rm -rf $BI_HOME/completeTestResults.log
 fi
 
 executionNameList=("healthcare-service" "exposing-several-services-as-a-single-service" 
@@ -51,7 +51,7 @@ echo ' _____         _
 
 #build healthcare service
 echo "Executing healthcare-service"
-cd $HOME/${executionPathList[0]}
+cd $BI_HOME/${executionPathList[0]}
 ballerina build healthcare > testResults
 if ((grep -q "[1-9][0-9]* failing" testResults) || ! (grep -q "Running tests" testResults))
 then
@@ -62,19 +62,19 @@ else
 fi
 echo -e "------End of executing ${executionNameList[0]} tests----- \n"
 ((count++))
-cat testResults >> $HOME/completeTestResults.log
+cat testResults >> $BI_HOME/completeTestResults.log
 
 # move cache to ballerina home
-mkdir -p /home/travis/.ballerina/bir_cache/wso2/healthcare/0.1.0
+mkdir -p $HOME/.ballerina/bir_cache/wso2/healthcare/0.1.0
 
-cp /home/travis/build/wso2/ballerina-integrator/docs/learn/backends/healthcare-service/target/caches/bir_cache/wso2/healthcare/0.1.0/healthcare.bir /home/travis/.ballerina/bir_cache/wso2/healthcare/0.1.0 
+cp $BI_HOME/docs/learn/backends/healthcare-service/target/caches/bir_cache/wso2/healthcare/0.1.0/healthcare.bir /$HOME/.ballerina/bir_cache/wso2/healthcare/0.1.0 
 
 # TODO: Count should be changed to 1 when issue (https://github.com/wso2/ballerina-integrator/issues/316) is fixed.
 count=0
 for i in "${executionPathList[@]}"; 
 do 
 	echo "Executing ${executionNameList[$count]}"
-	cd $HOME/${executionPathList[$count]}
+	cd $BI_HOME/${executionPathList[$count]}
 	ballerina build ${moduleList[$count]} > testResults
 	if ((grep -q "[1-9][0-9]* failing" testResults) || ! (grep -q "Running tests" testResults))
 	then
@@ -85,5 +85,5 @@ do
 	fi
 	echo -e "------End of executing ${executionNameList[$count]} tests----- \n"
 	((count++))
-	cat testResults >> $HOME/completeTestResults.log
+	cat testResults >> $BI_HOME/completeTestResults.log
 done;
