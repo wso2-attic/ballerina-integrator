@@ -80,7 +80,7 @@ For more information refer [Grafana in Docker Hub](https://hub.docker.com/r/graf
 
 ![alt text](../../assets/img/grafana-prometheus-datasource.png)
 
-**Step 5:** Import the Grafana dashboard designed to visualize Ballerina metrics from [https://grafana.com/dashboards/5841](https://grafana.com/dashboards/5841).
+**Step 5:** Import the Grafana dashboard designed to visualize Ballerina metrics from [https://grafana.com/dashboards/5841](https://grafana.com/dashboards/5841). See [Grafana documentation regarding exporting and importing dashboards](https://grafana.com/docs/reference/export_import/) for more information on how to do this.
 This dashboard consists of service and client invocation level metrics in near real-time view. 
 
 ## Visualizing metrics on Grafana
