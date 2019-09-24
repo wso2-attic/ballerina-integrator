@@ -10,7 +10,7 @@ You can use your [favorite editor to work on Ballerina code](https://ballerina.i
 
 Download and install [VS Code from the Visual Studio website](https://code.visualstudio.com/Download) if you do not have it already.
 
-Find the extension for Ballerina in the VS Code marketplace. For instructions on installing and using it, see [The Visual Studio Code Extension](https://ballerina.io/learn/tools-ides/vscode-plugin/).
+Find the extension for Ballerina in the VS Code marketplace. This extension is called `Ballerina`. For instructions on installing and using it, see [The Visual Studio Code Extension](https://ballerina.io/learn/tools-ides/vscode-plugin/).
 
 ![alt text](../../assets/img/vs-code-ballerina-plugin.png)
 
