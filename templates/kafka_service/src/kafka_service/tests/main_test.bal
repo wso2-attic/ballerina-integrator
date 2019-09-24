@@ -15,8 +15,8 @@
 // under the License.
 
 import ballerina/config;
-import ballerina/encoding;
 import ballerina/kafka;
+import ballerina/lang.'string as strings;
 import ballerina/runtime;
 import ballerina/test;
 
@@ -63,7 +63,7 @@ function testFunction () {
     } else {
         foreach var kafkaRecord in results {
             byte[] serializedMsg = kafkaRecord.value;
-            string msg = encoding:byteArrayToString(serializedMsg);
+            string|error msg = strings:fromBytes(serializedMsg);
             if (msg == producerMsg) {
                 isReceived = true;
                 break;

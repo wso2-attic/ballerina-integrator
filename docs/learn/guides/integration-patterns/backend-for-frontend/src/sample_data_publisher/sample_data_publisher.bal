@@ -1,5 +1,3 @@
-import ballerina/io;
-import ballerina/config;
 import ballerina/http;
 import ballerina/log;
 
@@ -64,7 +62,7 @@ public function main(string... args) {
 
 // Function which takes http client endpoint, context and data as a input
 //This will perform a HTTP POST against given endpoint and return a json response
-function sendPostRequest(http:Client clientEP, string context, json data) returns (json) {
+function sendPostRequest(http:Client clientEP, string context, json data) returns @untainted (json) {
 
     http:Client client1 = clientEP;
 
@@ -89,7 +87,7 @@ function sendPostRequest(http:Client clientEP, string context, json data) return
 
 // Function which takes http client endpoint and context as a input
 // This will call given endpoint and return a json response
-function sendGetRequest(http:Client httpClient1, string context) returns (json) {
+function sendGetRequest(http:Client httpClient1, string context) returns @untainted (json) {
     http:Client client1 = httpClient1;
     var response = client1->get(context);
     json value = {};

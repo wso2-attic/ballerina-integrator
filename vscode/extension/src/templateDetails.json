@@ -1,15 +1,10 @@
 {
-    "Working with Connectors":
+    "Connectors":
     [
         {
             "id": "gsheets_salesforce_integration",
             "name": "GSheet & Salesforce API Integration",
-            "description": "This template demonstrates some of the capabilities of Google spreadsheet and Salesforce modules."
-        },
-        {
-            "id": "amazons3_service",
-            "name": "Amazon S3 Connector",
-            "description": "This template demonstrates on how to use the Amazon S3 connector."
+            "description": "This template demonstrates some of the capabilities of Google SpreadSheet and Salesforce modules."
         },
         {
             "id": "kafka_service",
@@ -17,60 +12,47 @@
             "description": "This template demonstrates how to perform asynchronous messaging using the Ballerina Kafka connector."
         },
         {
-            "id": "ftp_listener",
-            "name": "Handling Files using FTP Connector",
-            "description": "This template will implement the FTP listener which can poll a remote directory and periodically notify the addition of a file that complies with the specified file pattern."
-        },
-        {
-            "id": "salesforce-client",
-            "name": "Working with Salesforce Client",
-            "description": "This template demonstrates how the Salesforce client performs CRUD operations for SObjects, query using SOQL, search using SOSL and describe SObjects and organizational data through the Salesforce REST API."
-        },
-        {
-            "id": "store_forwarding",
-            "name": "Guaranteed Delivery with Store Forwarding",
-            "description": "This template demonstrates how guaranteed delivery could be achieved using the message store message processor module."
-        },
-        {
             "id": "using_gmail_connector",
             "name": "Working with Gmail Connector",
             "description": "This template demonstrates how emails could be sent, read and deleted using the Ballerina Gmail connector."
         },
         {
-            "id": "salesforce_bulk",
-            "name": "Salesforce Bulk Connector",
-            "description": "This template demonstrates how the Salesforce Bulk Connector could be used for performing Bulk operations."
-        }
-    ],
-    "Database Integrations":
-    [
-        {
-            "id": "data_backend_service",
-            "name": "Data Backend Service",
-            "description": "This template demonstrates how a database-backed RESTful web service using Ballerina."
+            "id": "googlespreadsheet_service",
+            "name": "Working with SpreadSheet Connector",
+            "description": "This template demonstrates handling spreadsheets using the Ballerina Goodle SpreadSheet connector."
         },
         {
-            "id": "managing-database-transactions",
-            "name": "Managing Database Transactions",
-            "description": "This template demonstrates on how to manage database transactions using Ballerina."
-        }
-    ],
-    "Enterprise Integration Patterns":
-    [
-        {
-            "id": "backend_for_frontend",
-            "name": "Backend for Frontend",
-            "description": "This template demonstrates on how to apply the Backend for Frontend design pattern when working with Ballerina."
+            "id": "ftp_listener",
+            "name": "Handling Files using FTP Connector",
+            "description": "This template will implement the FTP listener which can poll a remote directory and periodically notify the addition of a file that complies with the specified file pattern."
         },
         {
-            "id": "content-based-routing",
+            "id": "smb_listener",
+            "name": "Handling Files using SMB Connector",
+            "description": "This template we'll implement SMB listener which will listen to a remote directory and periodically notify the addition of a file that complies with the specified file pattern."
+        },
+        {
+            "id": "salesforce_client",
+            "name": "Working with Salesforce Client",
+            "description": "This template demonstrates how the Salesforce client performs CRUD operations for SObjects, query using SOQL, search using SOSL and describe SObjects and organizational data through the Salesforce REST API."
+        },
+        {
+            "id": "amazons3_service",
+            "name": "Amazon S3 Connector",
+            "description": "This template demonstrates on how to use the Amazon S3 connector."
+        }
+    ],
+    "EI Patterns":
+    [
+        {
+            "id": "content_based_routing",
             "name": "Content Based Routing",
             "description": "This template demonstrates how to route a message to a specific recipient based on its content."
         },
         {
             "id": "header_based_routing",
             "name": "Header Based Routing",
-            "description": "This template demonstrates an instance where a Header based router is used to route requests to different endpoints based on the header of each request."
+            "description": "This template demonstrates an instance where a header based router is used to route requests to different endpoints based on the header of each request."
         },
         {
             "id": "scatter_gather_service",
@@ -91,29 +73,11 @@
             "id": "pass_through_messaging",
             "name": "Pass Through Messaging",
             "description": "This template demonstrates a simple pass-through messaging scenario."
-        }
-    ],
-    "Messaging Scenarios":
-    [
-        {
-            "id": "asynchronous_messaging",
-            "name": "Asynchronous Messaging",
-            "description": "This template demonstrates how asynchronous messaging could be achieved using Ballerina."
         },
         {
-            "id": "message_broadcasting",
-            "name": "Message Broadcasting",
-            "description": "This template demonstrates how message broadcasting could be achieved using Ballerina."
-        },
-        {
-            "id": "messaging_with_activemq",
-            "name": "Messaging with ActiveMQ",
-            "description": "This template demonstrates how messaging could be done using the Apache ActiveMQ message broker."
-        },
-        {
-            "id": "http_to_jms",
-            "name": "Protocol Switching HTTP to JMS",
-            "description": "This template demonstrates how protocol wwitching from HTTP to JMS could be done."
+            "id": "backend_for_frontend",
+            "name": "Backend for Frontend",
+            "description": "This template demonstrates on how to apply the Backend for Frontend design pattern when working with Ballerina."
         }
     ],
     "Services":
@@ -142,21 +106,29 @@
             "id": "service_composition",
             "name": "Service Composition",
             "description": "This template demonstrates on handling service compositions."
+        }
+    ],
+    "Messaging":
+    [
+        {
+            "id": "http_to_jms",
+            "name": "Protocol Switching HTTP to JMS",
+            "description": "This template demonstrates how protocol wwitching from HTTP to JMS could be done."
         },
         {
-            "id": "proxying_soap_api",
-            "name": "Proxying a SOAP API",
-            "description": "This template demonstrates on proxying a SOAP API"
+            "id": "message_broadcasting",
+            "name": "Message Broadcasting",
+            "description": "This template demonstrates how message broadcasting could be achieved using Ballerina."
         },
         {
-            "id": "proxying_rest_api",
-            "name": "Proxying a REST API",
-            "description": "This template demonstrates on proxying a REST API."
+            "id": "messaging_with_activemq",
+            "name": "Messaging with ActiveMQ",
+            "description": "This template demonstrates how messaging could be done using the Apache ActiveMQ message broker."
         },
         {
-            "id": "rest_to_soap",
-            "name": "REST to SOAP",
-            "description": "This template demonstrates on how to transform a request from REST to SOAP."
+            "id": "asynchronous_messaging",
+            "name": "Asynchronous Messaging",
+            "description": "This template demonstrates how asynchronous messaging could be achieved using Ballerina."
         }
     ]
 }

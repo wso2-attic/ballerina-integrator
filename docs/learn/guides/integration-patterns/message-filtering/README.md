@@ -18,7 +18,7 @@ To understand how you can build a message filltering web service using Ballerina
 
 The following figure illustrates all the required functionalities of the Message Filtering Service that we need to build. 
 
-![Message Filtering Service](resources/message-filtering.svg "Message Filtering Service")
+![Message Filtering Service](src/message_filtering/resources/message-filtering.svg "Message Filtering Service")
 
 
 ## Prerequisites

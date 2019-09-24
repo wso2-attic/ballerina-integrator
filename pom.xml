@@ -20,7 +20,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.wso2.ballerina-integrator</groupId>
    <artifactId>ballerina-integrator</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>1.0.0-alpha</version>
    <packaging>pom</packaging>
    <name>Ballerina Integrator</name>
    <organization>
@@ -103,6 +103,8 @@
    </profiles>
    <modules>
       <module>www</module>
+      <module>vscode/extension</module>
+      <module>vscode/snippet-generator</module>
    </modules>
    <dependencyManagement>
       <dependencies>

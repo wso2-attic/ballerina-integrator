@@ -1,4 +1,4 @@
-// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -22,7 +22,7 @@ import wso2/sfdc46;
 
 // Spreadsheet configuration.
 gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
-    clientConfig: {
+    oAuthClientConfig: {
         accessToken: config:getAsString("GSHEETS_ACCESS_TOKEN"),
         refreshConfig: {
             clientId: config:getAsString("GSHEETS_CLIENT_ID"),
@@ -70,7 +70,7 @@ service salesforceService on new http:Listener(config:getAsInt("LISTENER_PORT"))
         json|error jsonPayload = request.getJsonPayload();
 
         if (jsonPayload is json) {
-            string|sfdc46:SalesforceConnectorError accountId = salesforceClient->createAccount(<@untainted>jsonPayload);
+            string|sfdc46:ConnectorError accountId = salesforceClient->createAccount(<@untainted>jsonPayload);
 
             if (accountId is string) {
                 json account = {
@@ -129,11 +129,11 @@ service salesforceService on new http:Listener(config:getAsInt("LISTENER_PORT"))
         path: "/contacts/{accountId}"
     }
     resource function deleteContacts(http:Caller caller, http:Request request, string accountId) {
-        json[]|sfdc46:SalesforceError contacts = getContactsFromSalesforce(accountId);
+        json[]|sfdc46:ConnectorError contacts = getContactsFromSalesforce(accountId);
 
         if (contacts is json[]) {
 
-            sfdc46:Result[]|sfdc46:SalesforceError results = 
+            sfdc46:Result[]|sfdc46:ConnectorError results = 
                 deleteContactsFromSalesforce(createDeleteJson( <@untainted> contacts));
 
             if (results is sfdc46:Result[]) {
@@ -191,53 +191,53 @@ function extractContactsFromSpreadsheet(string accountId, string spreadsheetId, 
 
 function insertContactsToSalesforce(string csvContent) returns boolean {
     // Create csv insert operator.
-    sfdc46:CsvInsertOperator|sfdc46:SalesforceError csvInserter = sfBulkClient->createCsvInsertOperator("Contact");
+    sfdc46:CsvInsertOperator|sfdc46:ConnectorError csvInserter = sfBulkClient->createCsvInsertOperator("Contact");
 
     if (csvInserter is sfdc46:CsvInsertOperator) {
         // Upload the csv contacts.
-        sfdc46:Batch|sfdc46:SalesforceError batch = csvInserter->insert(csvContent);
+        sfdc46:BatchInfo|sfdc46:ConnectorError batch = csvInserter->insert(csvContent);
 
-        if (batch is sfdc46:Batch) {
-            sfdc46:Result[]|sfdc46:SalesforceError batchResult = csvInserter->getBatchResults(batch.id, 15);
+        if (batch is sfdc46:BatchInfo) {
+            sfdc46:Result[]|sfdc46:ConnectorError batchResult = csvInserter->getResult(batch.id, 15);
 
             if (batchResult is sfdc46:Result[]) {
                 return checkBatchResults(batchResult);
             } else {
                 log:printError("Error occurred while getting insert batch result, batchResult:" 
-                    + batchResult.message.toString(), err = ());
+                    + batchResult.detail()?.message.toString(), err = ());
                 return false;
             }
 
         } else {
-            log:printError("Error occurred while uploading the csv content, batch:" + batch.message.toString(), 
-                err = ());
+            log:printError("Error occurred while uploading the csv content, batch:" 
+                + batch.detail()?.message.toString(), err = ());
             return false;
         }
 
     } else {
         log:printError("Error occurred while creating salesforce bulk insert operator, csvInserter:" 
-            + csvInserter.message.toString(), err = ());
+            + csvInserter.detail()?.message.toString(), err = ());
         return false;
     }
 }
 
-function getContactsFromSalesforce(string accountId) returns @tainted json[]|sfdc46:SalesforceError {
+function getContactsFromSalesforce(string accountId) returns @tainted json[]|sfdc46:ConnectorError {
     // Create JSON query operator.
-    sfdc46:JsonQueryOperator|sfdc46:SalesforceError jsonQueryOp = sfBulkClient->createJsonQueryOperator("Contact");
+    sfdc46:JsonQueryOperator|sfdc46:ConnectorError jsonQueryOp = sfBulkClient->createJsonQueryOperator("Contact");
     // Query string
     string queryStr = "SELECT Id, Name FROM Contact where Account.Id = '" + accountId + "'";
 
     if (jsonQueryOp is sfdc46:JsonQueryOperator) {
         // Create json query batch.
-        sfdc46:Batch|sfdc46:SalesforceError batch = jsonQueryOp->query(queryStr);
+        sfdc46:BatchInfo|sfdc46:ConnectorError batch = jsonQueryOp->query(queryStr);
 
-        if (batch is sfdc46:Batch) {
+        if (batch is sfdc46:BatchInfo) {
 
             // Get query results list.
-            sfdc46:ResultList|sfdc46:SalesforceError resultList = jsonQueryOp->getResultList(batch.id, 25);
-            if (resultList is sfdc46:ResultList) {
+            string[]|sfdc46:ConnectorError resultList = jsonQueryOp->getResultList(batch.id, 25);
+            if (resultList is string[]) {
                 // Get query result.
-                json[]|sfdc46:SalesforceError result = getQueryResultsFromResultList(jsonQueryOp, resultList.result, 
+                json[]|sfdc46:ConnectorError result = getQueryResultsFromResultList(jsonQueryOp, resultList, 
                     batch.id);
                 if (result is json[]) {
                     return result;
@@ -257,17 +257,17 @@ function getContactsFromSalesforce(string accountId) returns @tainted json[]|sfd
     }
 }
 
-function deleteContactsFromSalesforce(json contacts) returns @tainted sfdc46:Result[]|sfdc46:SalesforceError {
+function deleteContactsFromSalesforce(json contacts) returns @tainted sfdc46:Result[]|sfdc46:ConnectorError {
     // Create a json delete operator.
-    sfdc46:JsonDeleteOperator|sfdc46:SalesforceError jsonDeleteOp = sfBulkClient->createJsonDeleteOperator("Contact");
+    sfdc46:JsonDeleteOperator|sfdc46:ConnectorError jsonDeleteOp = sfBulkClient->createJsonDeleteOperator("Contact");
 
     if (jsonDeleteOp is sfdc46:JsonDeleteOperator) {
         // Upload the batch should be deleted.
-        sfdc46:Batch|sfdc46:SalesforceError batch = jsonDeleteOp->delete(contacts);
+        sfdc46:BatchInfo|sfdc46:ConnectorError batch = jsonDeleteOp->delete(contacts);
 
-        if (batch is sfdc46:Batch) {
+        if (batch is sfdc46:BatchInfo) {
             // Get delete results
-            sfdc46:Result[]|sfdc46:SalesforceError batchResult = jsonDeleteOp->getBatchResults(batch.id, 25);
+            sfdc46:Result[]|sfdc46:ConnectorError batchResult = jsonDeleteOp->getResult(batch.id, 25);
             return batchResult;
         } else {
             return batch;
@@ -281,10 +281,10 @@ function deleteContactsFromSalesforce(json contacts) returns @tainted sfdc46:Res
 
 // Get results for all IDs in resultList as a single json array. 
 function getQueryResultsFromResultList(sfdc46:JsonQueryOperator jsonQueryOperator, string[] resultList, string batchId)
-    returns @tainted json[]|sfdc46:SalesforceError {
+    returns @tainted json[]|sfdc46:ConnectorError {
     json[] finalResultArr = [];
     foreach string resultId in resultList {
-        json|sfdc46:SalesforceError result = jsonQueryOperator->getResult(batchId, resultId);
+        json|sfdc46:ConnectorError result = jsonQueryOperator->getResult(batchId, resultId);
         if (result is json) {
             json[] resArr = <json[]> result;
             foreach json elem in resArr {
@@ -298,8 +298,7 @@ function getQueryResultsFromResultList(sfdc46:JsonQueryOperator jsonQueryOperato
 }
 
 // Log and respond error.
-function logAndRespondError(http:Caller caller, string errMsg, 
-    error?|sfdc46:SalesforceError|sfdc46:SalesforceConnectorError err, int statusCode) {
+function logAndRespondError(http:Caller caller, string errMsg, error?|sfdc46:ConnectorError err, int statusCode) {
     if (err is error) {
         log:printError(errMsg, err = err);
     } else {

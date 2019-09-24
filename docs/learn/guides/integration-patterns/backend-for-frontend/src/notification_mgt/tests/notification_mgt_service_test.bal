@@ -4,7 +4,8 @@ import ballerina/http;
 // Client endpoint to communicate with notification management service
 http:Client clientEP = new("http://localhost:9094/notification-mgt");
 
-@test:Config
+@test:Config{}
+
 // Function to test POST resource 'addNotification'.
 function testResourceAddNotification() {
     // Initialize the empty http request.
@@ -21,7 +22,7 @@ function testResourceAddNotification() {
         // Check whether the response is as expected.
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
-            test:assertEquals(resPayload.toString(),
+            test:assertEquals(resPayload.toJsonString(),
                 "{\"status\":\"Notification Created.\", \"notificationId\":\"NOT01\"}", msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "JSON Payload is expected");
@@ -46,7 +47,7 @@ function testResourceGetNotifications() {
         var resPayload = response.getJsonPayload();
         if (resPayload is json) {
             test:assertEquals(resPayload.toString(),
-                "{\"Notifications\":[{\"ID\":\"NOT01\", \"Name\":\"Test Notification\", \"Description\":\"Test\"}]}",
+                "Notifications=ID=NOT01 Name=Test Notification Description=Test",
                 msg = "Response mismatch!");
         } else {
             test:assertFail(msg = "JSON Payload is expected");

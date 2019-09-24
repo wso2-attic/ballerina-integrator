@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = commands.registerCommand('ballerinaIntegrator.projectTemplates', () => {
+	let disposable = commands.registerCommand('ballerina.integrator.activate', () => {
 		// The code you place here will be executed every time your command is executed
 		const columnToShowIn = window.activeTextEditor
 			? window.activeTextEditor.viewColumn
@@ -40,8 +40,8 @@ export function activate(context: vscode.ExtensionContext) {
 			currentPanel.reveal(columnToShowIn);
 		} else {
 			currentPanel = window.createWebviewPanel(
-				'ballerinaIntegrator', // Identifies the type of the webview. Used internally
-				'Ballerina Integrator Templates', // Title of the panel displayed to the user
+				'ballerina.integrator', // Identifies the type of the webview. Used internally
+				'Ballerina Integrator Dashboard', // Title of the panel displayed to the user
 				ViewColumn.One, // Editor column to show the new webview panel in.
 				{
 					enableScripts: true
