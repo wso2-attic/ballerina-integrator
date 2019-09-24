@@ -9,7 +9,7 @@ To understand how you can track logging for Ballerina services, let’s consider
 ## Set up the project 
 
 1. Open VS Code.
-   > **Tip**: Download and install [VS Code](https://code.visualstudio.com/Download) if you do not have it already. Find the extension for Ballerina in the VS Code marketplace if you do not have it. For instructions on installing and using it, see [The Visual Studio Code Extension](https://ballerina.io/learn/tools-ides/vscode-plugin/).
+   > **Tip**: Download and install [VS Code](https://code.visualstudio.com/Download) if you do not have it already. Find the extension for Ballerina in the VS Code marketplace if you do not have it. This extension is called `Ballerina`. For instructions on installing and using it, see [The Visual Studio Code Extension](https://ballerina.io/learn/tools-ides/vscode-plugin/).
 
 2. Press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Linux and the following page appears.
 
