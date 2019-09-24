@@ -30,7 +30,6 @@
                 </executions>
                 <configuration>
                     <executable>resources/run.${script.extension}</executable>
-                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

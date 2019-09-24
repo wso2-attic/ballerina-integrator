@@ -45,31 +45,6 @@ echo ' _____         _
                        
 '
 
-# Due to https://github.com/wso2/ballerina-integrator/issues/316, healthcare bir cache is not being created in the 
-# exposing-several-services-as-a-single-service' module. Therefore, when the healthcare module is build, we have to 
-# manually move the bir cache. 
-
-#build healthcare service
-echo "Executing healthcare-service"
-cd $BI_HOME/${executionPathList[0]}
-ballerina build healthcare > testResults
-if ((grep -q "[1-9][0-9]* failing" testResults) || ! (grep -q "Running tests" testResults))
-then
-	echo -e "failure in ${executionNameList[0]} \n"
-	exit 1
-else 
-	echo "No failures in ${executionNameList[0]} tests"
-fi
-echo -e "------End of executing ${executionNameList[0]} tests----- \n"
-((count++))
-cat testResults >> $BI_HOME/completeTestResults.log
-
-# move cache to ballerina home
-mkdir -p $HOME/.ballerina/bir_cache/wso2/healthcare/0.1.0
-
-cp $BI_HOME/docs/learn/backends/healthcare-service/target/caches/bir_cache/wso2/healthcare/0.1.0/healthcare.bir /$HOME/.ballerina/bir_cache/wso2/healthcare/0.1.0 
-
-# TODO: Count should be changed to 1 when issue (https://github.com/wso2/ballerina-integrator/issues/316) is fixed.
 count=0
 for i in "${executionPathList[@]}"; 
 do 

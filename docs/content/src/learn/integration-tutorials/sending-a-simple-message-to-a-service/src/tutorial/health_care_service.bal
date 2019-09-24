@@ -16,6 +16,7 @@
 
 import ballerina/http;
 import ballerina/log;
+import wso2/healthcare as _;
 
 // CODE-SEGMENT-BEGIN: segment_1
 listener http:Listener httpListener = new(9092);

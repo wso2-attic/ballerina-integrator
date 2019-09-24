@@ -16,6 +16,7 @@
 
 import ballerina/http;
 import ballerina/log;
+import wso2/healthcare as _;
 
 // Endpoint for the backend service
 http:Client healthcareEndpoint = new("http://localhost:9095");
