@@ -74,11 +74,16 @@ For more information refer [Grafana in Docker Hub](https://hub.docker.com/r/graf
 
 **Step 2:** Go to <http://localhost:3000/> to access the Grafana dashboard running on Docker.
 
-**Step 3:** Login to the dashboard with default user, username: `admin` and password: `admin`
+**Step 3:** Log in to the dashboard with default user, username: `admin` and password: `admin`
 
 **Step 4:** Add Prometheus as datasource with `Browser` access configuration as provided below. See [Grafana documentation regarding Prometheus](https://grafana.com/docs/features/datasources/prometheus/) for more information on how to do this.
 
 ![alt text](../../assets/img/grafana-prometheus-datasource.png)
+
+- Use `Prometheus` as the **Name** of the datasource.
+- In the **HTTP** section, enter `http://localhost:19090` as the **URL**.
+- Choose `Browser` from the **Access** dropdown list.
+- Click **Save & Test** to see if the connection works.
 
 **Step 5:** Import the Grafana dashboard designed to visualize Ballerina metrics from [https://grafana.com/dashboards/5841](https://grafana.com/dashboards/5841). See [Grafana documentation regarding exporting and importing dashboards](https://grafana.com/docs/reference/export_import/) for more information on how to do this.
 This dashboard consists of service and client invocation level metrics in near real-time view. 
