@@ -14,8 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-export let homeStyles: string = `
-        <style>
+export let homeStyles: string = `<style>
             /*!
             * Generated using the Bootstrap Customizer (https://getbootstrap.com/docs/3.4/customize/)
             *//*!
@@ -77,6 +76,21 @@ export let homeStyles: string = `
                 margin-bottom: 5%;
                 letter-spacing: 0px;
                 font-weight: 300;
+            }
+
+            .tag {
+                left: 20px;
+                position: absolute;
+                bottom: 0px;
+                vertical-align: middle;
+                padding: 0.188em 0.313em;
+            }
+
+            .tag-mark {
+                background-color: #E3FDFA;
+                color: inherit;
+                padding: 0.2em 0.3em;
+                margin: 2px
             }
 
             #searchTemplate {
@@ -193,6 +207,11 @@ export let homeStyles: string = `
                 padding:10px 30px;
                 color: #707070;
                 height: 42px;
+            }
+
+            .templates {
+                margin-right: -15px;
+                margin-left: -15px;
             }
         </style>`;
 
