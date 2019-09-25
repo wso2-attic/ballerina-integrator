@@ -18,18 +18,12 @@ import ballerina/log;
 import ballerina/config;
 import wso2/ftp;
 
-type Config record {
-    string fileNamePattern;
-    string filePath;
-};
 
-Config conf = {
-    fileNamePattern: config:getAsString("FTP_FILE_NAME_PATTERN"),
-    filePath: config:getAsString("FTP_LISTENER_PATH")
-};
-
+// Map to store processed file details
 map<int> fileMap = {};
 
+// Create FTP Listener
+// CODE-SEGMENT-BEGIN: segment_1
 listener ftp:Listener dataFileListener = new({
     protocol: ftp:FTP,
     host: config:getAsString("FTP_HOST"),
@@ -40,25 +34,32 @@ listener ftp:Listener dataFileListener = new({
             password: config:getAsString("FTP_PASSWORD")
         }
     },
-    path: conf.filePath,
-    fileNamePattern: conf.fileNamePattern,
+    path: config:getAsString("FTP_LISTENER_PATH"),
+    fileNamePattern: config:getAsString("FTP_FILE_NAME_PATTERN"),
     pollingInterval: config:getAsInt("FTP_POLLING_INTERVAL")
 });
+// CODE-SEGMENT-END: segment_1
 
+// Configurations for FTP Client
+// CODE-SEGMENT-BEGIN: segment_3
 ftp:ClientEndpointConfig ftpConfig = {
     protocol: ftp:FTP,
     host: config:getAsString("FTP_HOST"),
     port: config:getAsInt("FTP_LISTENER_PORT"),
     secureSocket: {
-     basicAuth: {
-         username: config:getAsString("FTP_USERNAME"),
-         password: config:getAsString("FTP_PASSWORD")
-     }
+        basicAuth: {
+            username: config:getAsString("FTP_USERNAME"),
+            password: config:getAsString("FTP_PASSWORD")
+        }
     }
 };
 
+// Create FTP Client
 ftp:Client ftpClient = new(ftpConfig);
+// CODE-SEGMENT-END: segment_3
 
+// Service to be invoked on file addition/deletion on FTP server
+// CODE-SEGMENT-BEGIN: segment_2
 service dataFileService on dataFileListener {
     resource function processDataFile(ftp:WatchEvent fileEvent) {
 
@@ -72,7 +73,10 @@ service dataFileService on dataFileListener {
         }
     }
 }
+// CODE-SEGMENT-END: segment_2
 
+// CODE-SEGMENT-BEGIN: segment_4
+// Process newly added files to the server, by adding them to the map
 function processNewFile(string filePath) {
     int|error fileSize = ftpClient -> size(filePath);
     if(fileSize is int){
@@ -83,9 +87,11 @@ function processNewFile(string filePath) {
     }
 }
 
+// Process deleted files from server, by removing them from the map
 function processDeletedFile(string filePath) {
     if(fileMap.hasKey(filePath)){
         int removedElement = fileMap.remove(filePath);
         log:printInfo("Deleted file: " + filePath);
     }
 }
+// CODE-SEGMENT-END: segment_4

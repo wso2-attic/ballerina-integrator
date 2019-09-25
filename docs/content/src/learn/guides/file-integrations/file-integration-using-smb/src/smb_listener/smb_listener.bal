@@ -14,22 +14,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/log;
 import ballerina/config;
+import ballerina/log;
 import wso2/smb;
 
-type Config record {
-    string fileNamePattern;
-    string filePath;
-};
 
-Config conf = {
-    fileNamePattern: config:getAsString("SMB_FILE_NAME_PATTERN"),
-    filePath: config:getAsString("SMB_LISTENER_PATH")
-};
-
+// Map to store processed file details
 map<int> fileMap = {};
 
+// Create Samba Listener
+// CODE-SEGMENT-BEGIN: segment_1
 listener smb:Listener dataFileListener = new({
     protocol: smb:SMB,
     host: config:getAsString("SMB_HOST"),
@@ -44,7 +38,10 @@ listener smb:Listener dataFileListener = new({
     fileNamePattern: conf.fileNamePattern,
     pollingInterval: config:getAsInt("SMB_POLLING_INTERVAL")
 });
+// CODE-SEGMENT-END: segment_1
 
+// Configurations for Samba Client
+// CODE-SEGMENT-BEGIN: segment_3
 smb:ClientEndpointConfig smbConfig = {
     protocol: smb:SMB,
     host: config:getAsString("SMB_HOST"),
@@ -57,8 +54,12 @@ smb:ClientEndpointConfig smbConfig = {
     }
 };
 
+// Create Samba Client
 smb:Client smbClient = new(smbConfig);
+// CODE-SEGMENT-END: segment_3
 
+// Service to be invoked on file addition/deletion on Samba server
+// CODE-SEGMENT-BEGIN: segment_2
 service dataFileService on dataFileListener {
     resource function processDataFile(smb:WatchEvent fileEvent) {
 
@@ -72,7 +73,10 @@ service dataFileService on dataFileListener {
         }
     }
 }
+// CODE-SEGMENT-END: segment_2
 
+// CODE-SEGMENT-BEGIN: segment_4
+// Process newly added files to the server, by adding them to the map
 function processNewFile(string filePath) {
     int|error fileSize = smbClient -> size(filePath);
     if(fileSize is int){
@@ -83,9 +87,11 @@ function processNewFile(string filePath) {
     }
 }
 
+// Process deleted files from server, by removing them from the map
 function processDeletedFile(string filePath) {
     if(fileMap.hasKey(filePath)){
         int removedElement = fileMap.remove(filePath);
         log:printInfo("Deleted file: " + filePath);
     }
 }
+// CODE-SEGMENT-END: segment_4
