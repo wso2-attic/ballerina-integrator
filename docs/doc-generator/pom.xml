@@ -103,7 +103,7 @@
                             <shouldMatchTo><![CDATA[^.*(?<!-SNAPSHOT)$]]></shouldMatchTo>
                         </validationProperty>
                     </validationProperties>
-                    <validationShouldFailIfNoMatch>true</validationShouldFailIfNoMatch>
+                    <validationShouldFailIfNoMatch>false</validationShouldFailIfNoMatch>
                     <evaluateOnCommit>HEAD</evaluateOnCommit>
                     <useBranchNameFromBuildEnvironment>true</useBranchNameFromBuildEnvironment>
                     <injectIntoSysProperties>true</injectIntoSysProperties>

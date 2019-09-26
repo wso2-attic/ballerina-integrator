@@ -19,46 +19,67 @@
 # Build Ballerina Integrator Tests
 # ----------------------------------------------------------------------------
 
-BI_HOME=`pwd`
-source $BI_HOME/resources/config.properties
-if [ -e $BI_HOME/completeTestResults.log ]
-then
-    rm -rf $BI_HOME/completeTestResults.log
-fi
+BI_CONTENT_HOME=`pwd`
+source ${BI_CONTENT_HOME}/resources/config.properties
 
-executionNameList=("healthcare-service" "exposing-several-services-as-a-single-service" 
-"sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content"
-"backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "backend-for-frontend"
-"backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "content-based-routing"
-"message-filtering" "pass-through-messaging" "scatter-gather-messaging") 
-executionPathList=($path1 $path2 $path3 $path4 $path5 $path6 $path7 $path8 $path9 $path10 $path11 $path12
-$path13 $path14 $path15)
-moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "appointment_mgt" "desktop_bff" 
-"medical_record_mgt" "message_mgt" "mobile_bff" "notification_mgt" "sample_data_publisher" 
-"company_data_service" "message_filtering" "passthrough" "auction_service")
+clear_directory() {
+    if [[ ! -e $1 ]]
+    then
+        rm -rf $1
+    fi
+}
 
-echo ' _____         _       
-|_   _|__  ___| |_ ___ 
-  | |/ _ \/ __| __/ __|
-  | |  __/\__ \ |_\__ \
-  |_|\___||___/\__|___/
-                       
-'
+create_directory() {
+    if [[ ! -d $1 ]]
+    then
+        mkdir $1
+    else
+        clear_directory $1
+    fi
+}
 
-count=0
-for i in "${executionPathList[@]}"; 
-do 
-	echo "Executing ${executionNameList[$count]}"
-	cd $BI_HOME/${executionPathList[$count]}
-	ballerina build ${moduleList[$count]} > testResults
-	if ((grep -q "[1-9][0-9]* failing" testResults) || ! (grep -q "Running tests" testResults))
-	then
-		echo -e "failure in ${executionNameList[$count]} \n"
-		exit 1
-	else 
-		echo "No failures in ${executionNameList[$count]} tests"
-	fi
-	echo -e "------End of executing ${executionNameList[$count]} tests----- \n"
-	((count++))
-	cat testResults >> $BI_HOME/completeTestResults.log
-done;
+execute_tests() {
+    clear_directory ${BI_CONTENT_HOME}/output
+
+    executionNameList=("healthcare-service" "exposing-several-services-as-a-single-service"
+    "sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content"
+    "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "backend-for-frontend"
+    "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "content-based-routing"
+    "message-filtering" "pass-through-messaging" "scatter-gather-messaging")
+    executionPathList=(${path1} ${path2} ${path3} ${path4} ${path5} ${path6} ${path7} ${path8} ${path9} ${path10} ${path11} ${path12}
+    ${path13} ${path14} ${path15})
+    moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "appointment_mgt" "desktop_bff"
+    "medical_record_mgt" "message_mgt" "mobile_bff" "notification_mgt" "sample_data_publisher"
+    "company_data_service" "message_filtering" "passthrough" "auction_service")
+
+    echo ' _____         _
+    |_   _|__  ___| |_ ___
+      | |/ _ \/ __| __/ __|
+      | |  __/\__ \ |_\__ \
+      |_|\___||___/\__|___/
+
+    '
+
+    count=0
+    for i in "${executionPathList[@]}";
+    do
+        echo "Executing ${executionNameList[$count]}"
+        cd ${BI_CONTENT_HOME}/${executionPathList[$count]}
+        create_directory output
+        ballerina build ${moduleList[$count]} > output/testResults
+        if (grep -q "[1-9][0-9]* failing" output/testResults) || ! (grep -q "Running tests" output/testResults)
+        then
+            echo -e "failure in ${executionNameList[$count]} \n"
+            exit 1
+        else
+            echo "No failures in ${executionNameList[$count]} tests"
+        fi
+        echo -e "------End of executing ${executionNameList[$count]} tests----- \n"
+        ((count++))
+        create_directory ${BI_CONTENT_HOME}/output
+        cat output/testResults >> ${BI_CONTENT_HOME}/output/completeTestResults.log
+    done;
+}
+
+execute_tests
+
