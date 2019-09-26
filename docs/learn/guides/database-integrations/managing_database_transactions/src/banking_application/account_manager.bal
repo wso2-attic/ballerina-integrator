@@ -15,23 +15,22 @@
 // under the License.
 
 import ballerina/config;
+import ballerina/jsonutils;
+import ballerina/lang.'int as ints;
 import ballerina/log;
-import ballerina/mysql;
-import ballerina/sql;
 import ballerina/transactions;
+import ballerinax/java.jdbc;
 
-// 'mysql:Client'.
-mysql:Client bankDB = new({
-    host: config:getAsString("DATABASE_HOST", defaultValue = "localhost"),
-    port: config:getAsInt("DATABASE_PORT", defaultValue = 3306),
-    name: config:getAsString("DATABASE_NAME", defaultValue = "bankDB"),
-    username: config:getAsString("DATABASE_USERNAME", defaultValue = "root"),
-    password: config:getAsString("DATABASE_PASSWORD", defaultValue = "root"),
+// 'jdbc:Client'.
+jdbc:Client bankDB = new({
+    url: config:getAsString("DATABASE_URL", "jdbc:mysql://127.0.0.1:3306/bankDB"),
+    username: config:getAsString("DATABASE_USERNAME", "root"),
+    password: config:getAsString("DATABASE_PASSWORD", "root"),
     dbOptions: { useSSL: false }
 });
 
 // Function to add users to 'ACCOUNT' table of 'bankDB' database.
-public function createAccount(string name) returns (int|error) {
+public function createAccount(string name) returns @tainted (int|error) {
     // Insert query.
     var updateRet = bankDB->update("INSERT INTO ACCOUNT (USERNAME, BALANCE) VALUES (?, ?)", name, 0);
     if (updateRet is error) {
@@ -43,16 +42,15 @@ public function createAccount(string name) returns (int|error) {
     int|error retVal = -1;
     if (selectRet is table<record {}>) {
         // convert the table to json
-        var jsonConvertRet = json.convert(selectRet);
+        var jsonConvertRet = jsonutils:fromTable(selectRet);
         int|error returnVal;
-        if (jsonConvertRet is json) {
-            retVal = int.convert(jsonConvertRet[0]["ACCOUNT_ID"]);
-            if (retVal is int) {
-                log:printInfo("Account ID for user: '" + name + "': " + retVal);
-            }
+        map<json>[] jsonConvert = <map<json>[]>jsonConvertRet;
+        retVal = ints:fromString(jsonConvert[0]["ACCOUNT_ID"].toString());
+        if (retVal is int) {
+            log:printInfo("Account ID for user: '" + name.toString() + "': " + retVal.toString());
         } else {
-            retVal = jsonConvertRet;
-            log:printError("Error occurred during JSON conversion", err = jsonConvertRet);
+            retVal = retVal;
+            log:printError("Error occurred during JSON conversion", err = retVal);
         }
         // Since we are not fully iterating the json value converted from the table we need to explicitly close the table
         // to avoid connection leak. If the json was fully iterated, the table would also have been fully iterated and
@@ -67,22 +65,27 @@ public function createAccount(string name) returns (int|error) {
 }
 
 // Function to verify an account whether it exists or not.
-public function verifyAccount(int accId) returns (boolean|error) {
-    log:printInfo("Verifying whether account ID " + accId + " exists");
+public function verifyAccount(int accId) returns @tainted (boolean|error) {
+    log:printInfo("Verifying whether account ID " + accId.toString() + " exists");
     // SQL query parameters.
     // Select query to check whether account exists.
     var selectRet = bankDB->select("SELECT COUNT(*) AS COUNT FROM ACCOUNT WHERE ID = ?", (), accId);
     boolean|error retVal = false;
     if (selectRet is table<record {}>) {
         // convert the table to json.
-        var jsonConvertRet = json.convert(selectRet);
-        if (jsonConvertRet is json) {
-            // convert the json to int.
-            int count = <int>jsonConvertRet[0]["COUNT"];
-            // Return a boolean, which will be true if account exists; false otherwise.
-            retVal = boolean.convert(count);
+        var jsonConvertRet = jsonutils:fromTable(selectRet);
+        map<json>[] jsonConvert = <map<json>[]>jsonConvertRet;
+        // convert the json to int.
+        int|error count = ints:fromString(jsonConvert[0]["COUNT"].toString());
+        // Return a boolean, which will be true if account exists; false otherwise.
+        if (count is int) {
+            if (count != 0) {
+                retVal = true;
+            } else {
+                retVal = false;
+            }  
         } else {
-            retVal = jsonConvertRet;
+            retVal = count;
         }
         // Since we are not fully iterating the json value converted from the table we need to explicitly close the table
         // to avoid connection leak. If the json was fully iterated, the table would also have been fully iterated and
@@ -95,7 +98,7 @@ public function verifyAccount(int accId) returns (boolean|error) {
 }
 
 // Function to check balance in an account.
-public function checkBalance(int accId) returns (int|error) {
+public function checkBalance(int accId) returns @tainted (int|error) {
     // Verify account whether it exists and return an error if not.
     var accountVerificationRet = verifyAccount(accId);
     if (accountVerificationRet is error) {
@@ -111,14 +114,15 @@ public function checkBalance(int accId) returns (int|error) {
     var selectRet = bankDB->select("SELECT BALANCE FROM ACCOUNT WHERE ID = ?", (), accId);
     if (selectRet is table<record {}>) {
         // convert the table to json.
-        var jsonConvertRet = json.convert(selectRet);
-        if (jsonConvertRet is json) {
-            // convert the json to int.
-            int balance = <int>jsonConvertRet[0]["BALANCE"];
+        var jsonConvertRet = jsonutils:fromTable(selectRet);
+        map<json>[] jsonConvert = <map<json>[]>jsonConvertRet;
+        // convert the json to int.
+        int|error balance = ints:fromString(jsonConvert[0]["BALANCE"].toString());
+        if (balance is int) {
+            log:printInfo("Available balance in account ID " + accId.toString() + ": " + balance.toString());
             retVal = balance;
-            log:printInfo("Available balance in account ID " + accId + ": " + balance);
         } else {
-            retVal = jsonConvertRet;
+            retVal = balance;
         }
         // Since we are not fully iterating the json value converted from the table we need to explicitly close the table
         // to avoid connection leak. If the json was fully iterated, the table would also have been fully iterated and
@@ -132,7 +136,7 @@ public function checkBalance(int accId) returns (int|error) {
 }
 
 // Function to deposit money to an account.
-public function depositMoney(int accId, int amount) returns error|() {
+public function depositMoney(int accId, int amount) returns @tainted error|() {
     // Check whether the amount specified is valid and return an error if not.
     if (amount <= 0) {
         error err = error("Error: Invalid amount");
@@ -148,11 +152,11 @@ public function depositMoney(int accId, int amount) returns error|() {
             return err;
         }
     }
-    log:printInfo("Depositing money to account ID: " + accId);
+    log:printInfo("Depositing money to account ID: " + accId.toString());
     // Update query to increase the current balance.
     var updateRet = bankDB->update("UPDATE ACCOUNT SET BALANCE = (BALANCE + ?) WHERE ID = ?", amount, accId);
-    if (updateRet is sql:UpdateResult) {
-        log:printInfo("$" + amount + " has been deposited to account ID " + accId);
+    if (updateRet is jdbc:UpdateResult) {
+        log:printInfo("$" + amount.toString() + " has been deposited to account ID " + accId.toString());
     } else {
         return updateRet;
     }
@@ -160,7 +164,7 @@ public function depositMoney(int accId, int amount) returns error|() {
 }
 
 // Function to withdraw money from an account.
-public function withdrawMoney(int accId, int amount) returns (error|()) {
+public function withdrawMoney(int accId, int amount) returns @tainted (error|()) {
     // Check whether the amount specified is valid and return an error if not.
     if (amount <= 0) {
         error err = error("Error: Invalid amount");
@@ -177,11 +181,11 @@ public function withdrawMoney(int accId, int amount) returns (error|()) {
     } else {
         return balanceVal;
     }
-    log:printInfo("Withdrawing money from account ID: " + accId);
+    log:printInfo("Withdrawing money from account ID: " + accId.toString());
     // Update query to reduce the current balance.
     var updateRet = bankDB->update("UPDATE ACCOUNT SET BALANCE = (BALANCE - ?) WHERE ID = ?", amount, accId);
-    if (updateRet is sql:UpdateResult) {
-        log:printInfo("$" + amount + " has been withdrawn from account ID " + accId);
+    if (updateRet is jdbc:UpdateResult) {
+        log:printInfo("$" + amount.toString() + " has been withdrawn from account ID " + accId.toString());
     } else {
         return updateRet;
     }
@@ -206,21 +210,22 @@ public function transferMoney(int fromAccId, int toAccId, int amount) returns bo
             } else {
                 log:printError("Error while depositing the money: " + depositRet.reason());
                 // Abort transaction if deposit fails.
-                log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " +
-                    toAccId);
+                log:printError("Failed to transfer money from account ID " + fromAccId.toString() + " to account ID " +
+                    toAccId.toString());
                 abort;
             }
         } else {
             log:printError("Error while withdrawing the money: " + withdrawRet.reason());
             // Abort transaction if withdrawal fails.
-            log:printError("Failed to transfer money from account ID " + fromAccId + " to account ID " + toAccId);
+            log:printError("Failed to transfer money from account ID " + fromAccId.toString() + " to account ID " 
+                + toAccId.toString());
             abort;
         }
     } committed {
         log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " committed");
         // If transaction successful.
-        log:printInfo("Successfully transferred $" + amount + " from account ID " + fromAccId + " to account ID " +
-                toAccId);
+        log:printInfo("Successfully transferred $" + amount.toString() + " from account ID " + fromAccId.toString() 
+            + " to account ID " + toAccId.toString());
     } aborted {
         log:printInfo("Transaction: " + transactions:getCurrentTransactionId() + " aborted");
     }
