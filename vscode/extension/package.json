@@ -2,6 +2,7 @@
 	"name": "ballerina-integrator",
 	"displayName": "WSO2 Ballerina Integrator",
 	"description": "VS Code extension for WSO2 Ballerina Integrator",
+	"icon": "resources/ballerina-vscode.png",
 	"version": "0.9.0",
 	"publisher": "WSO2",
 	"repository": {
