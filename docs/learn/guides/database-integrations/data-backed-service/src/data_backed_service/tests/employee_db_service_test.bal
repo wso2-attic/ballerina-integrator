@@ -17,7 +17,7 @@
 import ballerina/http;
 import ballerina/test;
 
-int TEST_EMPLOYEE_ID = 879796975;
+int TEST_EMPLOYEE_ID = 879796979;
 
 // Create an endpoint with employee db service
 http:Client httpEndpoint = new ("http://localhost:9090/records");
@@ -35,18 +35,17 @@ function testRetrieveByIdResource() {
     if (resp is http:Response) {
         // Test the responses from the service with the original test data
         test:assertEquals(resp.statusCode, 200, msg =
-        "Retreive employee resource did not reespond with 200 OK signal");
+            "Retreive employee resource did not reespond with 200 OK signal");
         var receivedPayload = resp.getJsonPayload();
         if (receivedPayload is json) {
             expectedPayload = [{
-                "EmployeeID": 879796975,
+                "EmployeeID": 879796979,
                 "Name": "Alice",
                 "Age": 30,
-                "SSN":
-                123456789
+                "SSN": 123456789
             }];
             test:assertEquals(receivedPayload, expectedPayload, msg =
-            "Name did not store in the database");
+                "Name did not store in the database");
         } else {
             test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail()?.message);
         }
@@ -68,8 +67,7 @@ function testAddEmployeeResource() {
         "name": "Alice",
         "age": 30,
         "ssn": 123456789,
-        "employeeId":
-        TEST_EMPLOYEE_ID
+        "employeeId": TEST_EMPLOYEE_ID
     };
     req.setJsonPayload(requestJson);
     // Send the request to service and get the response
@@ -77,13 +75,13 @@ function testAddEmployeeResource() {
     if (resp is http:Response) {
         // Test the response status code is correct
         test:assertEquals(resp.statusCode, 200, msg =
-        "Add new employee resource did not reespond with 200 OK signal");
+            "Add new employee resource did not reespond with 200 OK signal");
         // Test the responses from the service with the original test data
         var receivedPayload = resp.getJsonPayload();
         if (receivedPayload is json) {
             expectedJson = {"Status": "Data Inserted Successfully"};
             test:assertEquals(receivedPayload, expectedJson, msg =
-            "Name did not store in the database");
+                "Name did not store in the database");
         } else {
             test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail()?.message);
         }
@@ -114,13 +112,13 @@ function testUpdateEmployeeResource() {
     if (resp is http:Response) {
         // Test the responses from the service with the updated test data
         test:assertEquals(resp.statusCode, 200, msg =
-        "Add new employee resource did not reespond with 200 OK signal");
+            "Add new employee resource did not reespond with 200 OK signal");
 
         var receivedPayload = resp.getJsonPayload();
         if (receivedPayload is json) {
             expectedJson = {"Status": "Data Updated Successfully"};
             test:assertEquals(receivedPayload, expectedJson, msg =
-            "Name did not updated in the database");
+                "Name did not updated in the database");
         } else {
             test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail()?.message);
         }
@@ -144,7 +142,7 @@ function testDeleteEmployeeResource() {
     if (resp is http:Response) {
         // Test whether the delete operation succeed
         test:assertEquals(resp.statusCode, 200, msg =
-        "Delete employee resource did not reespond with 200 OK signal");
+            "Delete employee resource did not reespond with 200 OK signal");
 
         var receivedPayload = resp.getJsonPayload();
         if (receivedPayload is json) {

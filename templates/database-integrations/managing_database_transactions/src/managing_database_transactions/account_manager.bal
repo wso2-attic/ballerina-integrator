@@ -23,7 +23,7 @@ import ballerinax/java.jdbc;
 
 // 'jdbc:Client'.
 jdbc:Client bankDB = new({
-    url: config:getAsString("DATABASE_URL", "jdbc:mysql://127.0.0.1:3307/bankDB"),
+    url: config:getAsString("DATABASE_URL", "jdbc:mysql://127.0.0.1:3306/bankDB"),
     username: config:getAsString("DATABASE_USERNAME", "root"),
     password: config:getAsString("DATABASE_PASSWORD", "root"),
     dbOptions: { useSSL: false }

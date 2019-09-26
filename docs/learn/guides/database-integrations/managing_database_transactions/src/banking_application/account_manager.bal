@@ -49,7 +49,6 @@ public function createAccount(string name) returns @tainted (int|error) {
         if (retVal is int) {
             log:printInfo("Account ID for user: '" + name.toString() + "': " + retVal.toString());
         } else {
-            retVal = retVal;
             log:printError("Error occurred during JSON conversion", err = retVal);
         }
         // Since we are not fully iterating the json value converted from the table we need to explicitly close the table
