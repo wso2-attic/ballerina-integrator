@@ -1,0 +1,10 @@
+[project]
+org-name= "nipuni"
+version= "0.1.0"
+
+[platform]
+target = "java8"
+
+[[platform.libraries]]
+module = "querying_mysql"
+path = "./lib/mysql-connector-java-8.0.17.jar"
