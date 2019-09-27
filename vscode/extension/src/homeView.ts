@@ -37,13 +37,15 @@ export function getHomeView(): string {
                         <p class="tag">` + markElements + `
                         </p>
                         <a href="" style="none" onclick="pickTemplate('${templateId}')">
-                            <p class="create-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                                    <path d="M26,0A26,26,0,1,0,52,26,26,26,0,0,0,26,0ZM38.5,28H28V39a2,2,0,0,1-4,
-                                    0V28H13.5a2,2,0,0,1,0-4H24V14a2,2,0,0,1,4,0V24H38.5a2,2,0,0,1,0,4Z" />
-                                </svg>
-                                Create
-                            </p>
+                            <div class="create-button">
+                                <div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                        <path d="M26,0A26,26,0,1,0,52,26,26,26,0,0,0,26,0ZM38.5,28H28V39a2,2,0,0,1-4,0V28H13.5a2,
+                                        2,0,0,1,0-4H24V14a2,2,0,0,1,4,0V24H38.5a2,2,0,0,1,0,4Z"/>
+                                    </svg>
+                                    <span>Create</span>
+                                </div>
+                            </div>
                         </a>
                     </div>
                 </div>`;
