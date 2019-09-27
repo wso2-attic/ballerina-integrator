@@ -121,7 +121,8 @@ When you are mentioning the resource file please mention the valid path to the f
 
 Run below command in your terminal
 
+```bash
+cd docs/doc-generator
+mvn clean install
 ```
-./init.sh 
-```
-Get markdown files from **www/target/mkdocs-content** directory.
+Get markdown files from **docs/doc-generator/target/mkdocs-content** directory.
