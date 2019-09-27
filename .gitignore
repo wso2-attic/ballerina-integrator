@@ -3,6 +3,7 @@
 
 # Log file
 *.log.*
+*.log
 
 # BlueJ files
 *.ctxt
@@ -102,3 +103,6 @@ fabric.properties
 
 # mkdocs-content folder
 */mkdocs-content/
+
+# Ignore .conf files
+*.conf

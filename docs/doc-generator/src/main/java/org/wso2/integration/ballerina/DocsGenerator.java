@@ -39,6 +39,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.wso2.integration.ballerina.constants.Constants.ASSETS_IMG_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.BALLERINA_TOML;
 import static org.wso2.integration.ballerina.constants.Constants.CLOSE_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_BEGIN;
@@ -54,6 +55,7 @@ import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_SE
 import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_TAG;
 import static org.wso2.integration.ballerina.constants.Constants.MARKDOWN_FILE_EXT;
 import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
+import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
 import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
@@ -66,6 +68,7 @@ import static org.wso2.integration.ballerina.utils.Utils.deleteFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCodeFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCommitHash;
 import static org.wso2.integration.ballerina.utils.Utils.getCurrentDirectoryName;
+import static org.wso2.integration.ballerina.utils.Utils.getLeadingWhitespaces;
 import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWithCodeType;
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
 import static org.wso2.integration.ballerina.utils.Utils.getZipFileName;
@@ -118,6 +121,9 @@ public class DocsGenerator {
      * @param directoryPath path of the directory
      */
     private static void processDirectory(String directoryPath) {
+        // Delete doc-generator directory.
+        deleteDirectory(TEMP_DIR + File.separator + "doc-generator");
+
         File folder = new File(directoryPath);
         File[] listOfFiles = folder.listFiles();
 
@@ -197,7 +203,7 @@ public class DocsGenerator {
         String fullPathOfIncludeCodeFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line);
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
         String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath)).trim();
-        return getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code);
+        return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
     }
 
     /**
@@ -223,7 +229,7 @@ public class DocsGenerator {
         String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath));
 
         String code = getCodeSegment(codeFileContent, segment).trim();
-        return getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code);
+        return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
     }
 
     /**
@@ -239,6 +245,20 @@ public class DocsGenerator {
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new ServiceException("Invalid code segment including. segmentName: " + segmentName);
         }
+    }
+
+    /**
+     * Handle alignment of the code inclusion. Leading whitespaces of the INCLUDE_CODE_TAG line should be added
+     * to the beginning of each code line.
+     * <WHITESPACES>INCLUDE_CODE_TAG => <WHITESPACES>{code}
+     *
+     * @param line INCLUDE_CODE_TAG line
+     * @param code code content as a string
+     * @return aligned code
+     */
+    private static String handleCodeAlignment(String line, String code) {
+        String leadingSpaces = getLeadingWhitespaces(line);
+        return leadingSpaces + code.replace(NEW_LINE, NEW_LINE + leadingSpaces);
     }
 
     /**
@@ -285,8 +305,9 @@ public class DocsGenerator {
         boolean mdFile = FilenameUtils.getExtension(file.getName()).equals(MARKDOWN_FILE_EXT);
         boolean moduleMdFile = file.getName().equals("Module.md");
         boolean zipFile = FilenameUtils.getExtension(file.getName()).equals("zip");
+        boolean imgFile = new File(ASSETS_IMG_DIR, file.getName()).exists();
 
-        return !((mdFile && !moduleMdFile) || zipFile);
+        return !((mdFile && !moduleMdFile) || zipFile || imgFile);
     }
 
     /**
