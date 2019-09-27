@@ -1,0 +1,7 @@
+target
+
+# mkdocs-content folder
+*/mkdocs-content/
+
+# Ignore .conf files
+*.conf 
