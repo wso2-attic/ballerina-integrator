@@ -65,6 +65,51 @@ $ java -jar program.jar —ballerina.config.secret=src/MyModule/resources/secret
 
 ```
 
-## Passing configurations as system properties
+## Passing configurations as environment variables
 
-If the values are not set in the config file, it is read from the environment variables. For example, if you set a=10 in the command line and if your program's configuration is reading config key a, it will read it as 10 even if the a value is set in the config file.
+If the values are not set in the config file, it is read from the environment variables. For example, if you set a=10 in the command line as an environment variable and if your program's configuration is reading config key a, it will read it as 10 even if the a value is set differently in the config file. So priority is given to the environment variable you set.
+
+Consider the following example, which reads a Ballerina config value and prints it.
+
+```ballerina
+import ballerina/io;
+import ballerina/config;
+
+public function main() {
+  string name = config:getAsString("hellouser");
+  io:println("Hello, " + name + " !");
+}
+```
+
+The config key is `hellouser`. To pass a value to this config from the CLI, we can run the following command. The `-e` argument passes the key and value to the program.
+
+Now you can pass the value of `hellouser` in the `java -jar` command itself as shown below:
+
+```java
+
+java -jar  main.jar --hellouser=Ballerina
+
+```
+Alternatively you can set it as an environment variable as follows.
+
+```bash
+
+$ export hellouser=Ballerina
+
+```
+
+Once you set the above, you can simply run the program using the `java -jar` command and it will provide the result you want.
+
+```java
+
+java -jar  main.jar
+
+```
+
+The following output is the result for either of the above two scenarios.
+
+```bash
+
+Hello, Ballerina !
+
+```
