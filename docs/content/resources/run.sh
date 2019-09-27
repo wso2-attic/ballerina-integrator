@@ -44,8 +44,8 @@ execute_tests() {
     executionNameList=("healthcare-service" "exposing-several-services-as-a-single-service"
     "sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content"
     "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "backend-for-frontend"
-    "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "content-based-routing"
-    "message-filtering" "pass-through-messaging" "scatter-gather-messaging" "asynchronous-invocation"
+    "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "content-based-routing-advanced"
+    "message-filtering" "pass-through-messaging" "scatter-gather-messaging-advanced" "asynchronous-invocation"
     "asynchronous-invocation" "parallel-service-orchestration" "parallel-service-orchestration"
     "parallel-service-orchestration" "parallel-service-orchestration" "exposing-a-rest-service"
     "service-composition" "service-composition" "service-composition" "writing-tests-using-data-providers")

@@ -26,7 +26,8 @@ import java.io.File;
 public final class Constants {
 
     // Directory paths
-    public static final String DOCS_DIR = ".." + File.separator + ".." + File.separator + "docs";
+    public static final String DOCS_DIR = ".." + File.separator + ".." + File.separator + "docs" + File.separator
+            + "content" + File.separator + "src";
     public static final String TEMP_DIR = "target" + File.separator + "tempDirectory";
     public static final String MKDOCS_CONTENT = "target" + File.separator + "mkdocs-content";
     public static final String ASSETS_IMG_DIR = DOCS_DIR + File.separator + "assets" + File.separator + "img";
