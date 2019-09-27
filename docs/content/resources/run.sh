@@ -45,12 +45,18 @@ execute_tests() {
     "sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content"
     "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "backend-for-frontend"
     "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "content-based-routing"
-    "message-filtering" "pass-through-messaging" "scatter-gather-messaging")
+    "message-filtering" "pass-through-messaging" "scatter-gather-messaging" "asynchronous-invocation"
+    "asynchronous-invocation" "parallel-service-orchestration" "parallel-service-orchestration"
+    "parallel-service-orchestration" "parallel-service-orchestration" "exposing-a-rest-service"
+    "service-composition" "service-composition" "service-composition" "writing-tests-using-data-providers")
     executionPathList=(${path1} ${path2} ${path3} ${path4} ${path5} ${path6} ${path7} ${path8} ${path9} ${path10} ${path11} ${path12}
-    ${path13} ${path14} ${path15})
+    ${path13} ${path14} ${path15} ${path16} ${path17} ${path18} ${path19} ${path20} ${path21} ${path22} ${path24} ${path25}
+    ${path26} ${path28})
     moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "appointment_mgt" "desktop_bff"
     "medical_record_mgt" "message_mgt" "mobile_bff" "notification_mgt" "sample_data_publisher"
-    "company_data_service" "message_filtering" "passthrough" "auction_service")
+    "company_data_service" "message_filtering" "passthrough" "auction_service" "stock_quote_data_backend"
+    "stock_quote_summary_service" "airline_reservation" "car_rental" "hotel_reservation" "travel_agency" "restful_service"
+    "airline_reservation" "car_rental" "hotel_reservation" "hello_service")
 
     echo ' _____         _
     |_   _|__  ___| |_ ___
