@@ -251,6 +251,32 @@ public class Utils {
         }
     }
 
+    /**
+     * Remove leading whitespaces of a given string.
+     *
+     * @param param string want to remove leading whitespaces
+     * @return string without leading whitespaces
+     */
+    private static String removeLeadingSpaces(String param) {
+        return param.replaceAll("^\\s+", EMPTY_STRING);
+    }
+
+    /**
+     * Get leading whitespaces of a given string.
+     *
+     * @param param string want to get leading whitespaces
+     * @return leading whitespaces of the string
+     */
+    public static String getLeadingWhitespaces(String param) {
+        return param.replace(removeLeadingSpaces(param), EMPTY_STRING);
+    }
+
+    /**
+     * Get zip file name using the toml file path.
+     *
+     * @param tomlFile toml file
+     * @return zip file name
+     */
     public static String getZipFileName(File tomlFile) {
         File parent = tomlFile.getParentFile();
         return parent.getPath() + File.separator + parent.getName() + ".zip";
