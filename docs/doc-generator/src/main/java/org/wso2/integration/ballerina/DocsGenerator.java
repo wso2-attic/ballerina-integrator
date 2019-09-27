@@ -118,6 +118,9 @@ public class DocsGenerator {
      * @param directoryPath path of the directory
      */
     private static void processDirectory(String directoryPath) {
+        // Delete doc-generator directory.
+        deleteDirectory(TEMP_DIR + File.separator + "doc-generator");
+
         File folder = new File(directoryPath);
         File[] listOfFiles = folder.listFiles();
 
