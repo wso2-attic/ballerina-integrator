@@ -20,22 +20,14 @@ import ballerina/jsonutils;
 import ballerina/log;
 import ballerinax/java.jdbc;
 
-jdbc:Client employeeDB = new({
+jdbc:Client employeeDB = new ({
     url: config:getAsString("MYSQL_URL"),
     username: config:getAsString("MYSQL_USERNAME"),
     password: config:getAsString("MYSQL_PASSWORD"),
-    poolOptions: { maximumPoolSize: 5 },
-    dbOptions: { useSSL: false }
+    dbOptions: {useSSL: false}
 });
 
-listener http:Listener employeeEP = new(9095);
-
-type Employee record {
-    int id;
-    int age;
-    string firstName;
-    string lastName;
-};
+listener http:Listener employeeEP = new (9095);
 
 @http:ServiceConfig {
     basePath: "/staff"
@@ -47,28 +39,28 @@ service dbTransactions on employeeEP {
         path: "/employee/{lastName}"
     }
 
-resource function getEmployees(http:Caller caller, http:Request request, string lastName) {
-    http:Response response = new;
-    log:printInfo("The select operation - Select data from a table");
-    var selectResult = employeeDB->select("SELECT firstName FROM Employee WHERE lastName = ?",(), lastName);
+    resource function getEmployees(http:Caller caller, http:Request request, string lastName) {
+        http:Response response = new;
+        log:printInfo("The select operation - Select data from a table");
+        var selectResult = employeeDB->select("SELECT firstName FROM Employee WHERE lastName = ?", (), lastName);
 
-       if (selectResult is table<record {}>) {
-           json jsonConversionResult = jsonutils:fromTable(selectResult);
-           log:printInfo(jsonConversionResult.toString());
-           response.statusCode = http:STATUS_OK;
-           response.setJsonPayload(jsonConversionResult);     
-       } else {
-           log:printError("Error occurred in querying data");
-           response.statusCode = http:STATUS_NOT_FOUND;
-           json responseJson = { "Failed": selectResult.reason()};
-           response.setJsonPayload(<@untainted> responseJson);       
-       }
+        if (selectResult is table<record {}>) {
+            json jsonConversionResult = jsonutils:fromTable(selectResult);
+            log:printInfo(jsonConversionResult.toString());
+            response.statusCode = http:STATUS_OK;
+            response.setJsonPayload(jsonConversionResult);
+        } else {
+            log:printError("Error occurred in querying data");
+            response.statusCode = http:STATUS_NOT_FOUND;
+            json responseJson = {"Failed": selectResult.reason()};
+            response.setJsonPayload(<@untainted>responseJson);
+        }
 
-           var result = caller->respond(response);
+        var result = caller->respond(response);
 
-           if (result is error) {
-                log:printError("Error sending response to the client", err = result); 
-            }
-       }
-} 
+        if (result is error) {
+            log:printError("Error sending response to the client", err = result);
+        }
+    }
+}
 
