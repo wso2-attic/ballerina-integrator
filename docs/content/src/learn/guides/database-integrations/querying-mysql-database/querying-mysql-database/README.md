@@ -28,7 +28,7 @@ path = "./lib/mysql-connector-java-8.0.17.jar"
 - Run the employees.sql script inside resources folder to create the table and insert data required for the guide.
 
 ## Implementation
-The Ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/).
+The Ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [guide](../../../../develop/using-modules/).
 
 1. Create a project
 ```bash
@@ -68,56 +68,7 @@ MYSQL_PASSWORD = <mysql_password> <br/>
 4. Write the integration
 You can open the project with VS Code. The integration implementaion going to write in the `main.bal` file.
 
-``` ballerina
-import ballerina/config;
-import ballerina/http;
-import ballerina/jsonutils;
-import ballerina/log;
-import ballerinax/java.jdbc;
-jdbc:Client employeeDB = new({
-    url: config:getAsString("MYSQL_URL"),
-    username: config:getAsString("MYSQL_USERNAME"),
-    password: config:getAsString("MYSQL_PASSWORD"),
-    poolOptions: { maximumPoolSize: 5 },
-    dbOptions: { useSSL: false }
-});
-listener http:Listener employeeEP = new(9095);
-type Employee record {
-    int id;
-    int age;
-    string firstName;
-    string lastName;
-};
-@http:ServiceConfig {
-    basePath: "/staff"
-}
-service dbTransactions on employeeEP {
-    @http:ResourceConfig {
-        methods: ["GET"],
-        path: "/employee/{lastName}"
-    }
-    resource function getEmployees(http:Caller caller, http:Request request, string lastName) {
-        http:Response response = new;
-        log:printInfo("The select operation - Select data from a table");
-        var selectResult = employeeDB->select("SELECT firstName FROM Employee WHERE lastName = ?",(), lastName);
-       
-        if (selectResult is table<record {}>) {
-            json jsonConversionResult = jsonutils:fromTable(selectResult);
-            response.statusCode = http:STATUS_OK;
-            response.setJsonPayload(jsonConversionResult);      
-        } else {
-            response.statusCode = http:STATUS_NOT_FOUND;
-            json responseJson = { "Failed": selectResult.reason()};
-            response.setJsonPayload(<@untainted> responseJson);        
-        }
-            var result = caller->respond(response);
-            if (result is error) {
-                log:printError("Error sending response to the client", err = result);
-            }
-        }
-}
-        
-```
+<!-- INCLUDE_CODE: src/query_employee_data/main.bal -->
 
 ## Run the integration
 First, let’s build the module. While being in the querying_mysql_db directory, execute the following command.

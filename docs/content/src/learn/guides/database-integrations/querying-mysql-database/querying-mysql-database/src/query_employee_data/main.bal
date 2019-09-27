@@ -54,9 +54,11 @@ resource function getEmployees(http:Caller caller, http:Request request, string 
 
        if (selectResult is table<record {}>) {
            json jsonConversionResult = jsonutils:fromTable(selectResult);
+           log:printInfo(jsonConversionResult.toString());
            response.statusCode = http:STATUS_OK;
            response.setJsonPayload(jsonConversionResult);     
        } else {
+           log:printError("Error occurred in querying data");
            response.statusCode = http:STATUS_NOT_FOUND;
            json responseJson = { "Failed": selectResult.reason()};
            response.setJsonPayload(<@untainted> responseJson);       
@@ -69,3 +71,4 @@ resource function getEmployees(http:Caller caller, http:Request request, string 
             }
        }
 } 
+
