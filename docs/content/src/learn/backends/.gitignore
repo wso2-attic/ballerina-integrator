@@ -1,0 +1,3 @@
+healthcare-service/target/
+healthcare-service/output/
+*.log

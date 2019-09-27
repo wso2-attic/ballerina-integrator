@@ -53,5 +53,10 @@
 		"tslint": "^5.12.1",
 		"@types/node": "^10.12.21",
 		"@types/mocha": "^2.2.42"
+	},
+	"dependencies": {
+		"generator-code": "^1.2.6",
+		"vsce": "^1.66.0",
+		"yo": "^3.1.0"
 	}
 }
