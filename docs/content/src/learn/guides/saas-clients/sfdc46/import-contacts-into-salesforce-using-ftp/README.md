@@ -8,8 +8,8 @@ using FTP connector.
 
 The `wso2/sfdc46` module allows you to perform CRUD operations for SObjects, query using SOQL, search using SOSL, and 
 describe SObjects and organizational data through the Salesforce REST API. Also it supports insert, upsert, update, 
-query and delete operations for CSV, JSON and XML data types which provides in Salesforce bulk API. It handles OAuth 
-2.0 authentication.
+query, and delete operations for CSV, JSON, and XML data types that are available in Salesforce bulk API. It handles 
+OAuth 2.0 authentication.
 
 The `wso2/ftp` module provides an FTP client and an FTP server listener implementation to facilitate an FTP connection 
 to a remote location.
@@ -23,7 +23,7 @@ should be added to salesforce) it will fetch the CSV file content and insert all
 Salesforce using `salesforceBulkClient` as a single batch. Then it will get the insertion result using 
 `salesforceBulkClient` and if the operation is successful, a success message is logged.
 
-![import contacts to sfdc using ftp](../../../../../../../assets/img/import_contacts_to_sfdc_using_ftp.png)
+![import contacts to sfdc using ftp](../../../../../../../assets/img/import-contacts-into-salesforce-using-FTP.jpg)
 
 ## Prerequisites
 
