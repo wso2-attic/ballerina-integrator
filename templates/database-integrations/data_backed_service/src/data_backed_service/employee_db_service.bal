@@ -64,7 +64,7 @@ service EmployeeData on httpListener {
                 employeeData.employeeId == 0) {
                     response.setPayload("Error : json payload should contain
                         {name:<string>, age:<int>, ssn:<123456>, employeeId:<int>}");
-                    response.statusCode = 400;
+                    response.statusCode = http:STATUS_BAD_REQUEST;
                 } else {
                     // Invoke insertData function to save data in the MySQL database
                     json ret = insertData(employeeData.name, employeeData.age, employeeData.ssn,
@@ -74,12 +74,12 @@ service EmployeeData on httpListener {
                 }
             } else {
                 // Send an error response in case of a conversion failure
-                response.statusCode = 400;
+                response.statusCode = http:STATUS_BAD_REQUEST;
                 response.setPayload("Error: Please send the JSON payload in the correct format");
             }
         } else {
             // Send an error response in case of an error in retriving the request payload
-            response.statusCode = 500;
+            response.statusCode = http:STATUS_INTERNAL_SERVER_ERROR;
             response.setPayload("Error: An internal error occurred");
         }
         var respondRet = httpCaller->respond(response);
@@ -105,7 +105,7 @@ service EmployeeData on httpListener {
             // Send the response back to the client with the employee data
             response.setPayload(<@untainted>employeeData);
         } else {
-            response.statusCode = 400;
+            response.statusCode = http:STATUS_BAD_REQUEST;
             response.setPayload("Error: employeeId parameter should be a valid integer");
         }
         var respondRet = httpCaller->respond(response);
@@ -133,7 +133,7 @@ service EmployeeData on httpListener {
                 employeeData.employeeId == 0) {
                     response.setPayload("Error : json payload should contain
                         {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
-                    response.statusCode = 400;
+                    response.statusCode = http:STATUS_BAD_REQUEST;
                 } else {
                     // Invoke updateData function to update data in mysql database
                     json ret = updateData(employeeData.name, employeeData.age, employeeData.ssn,
@@ -143,12 +143,12 @@ service EmployeeData on httpListener {
                 }
             } else {
                 // Send an error response in case of a conversion failure
-                response.statusCode = 400;
+                response.statusCode = http:STATUS_BAD_REQUEST;
                 response.setPayload("Error: Please send the JSON payload in the correct format");
             }
         } else {
             // Send an error response in case of an error in retriving the request payload
-            response.statusCode = 500;
+            response.statusCode = http:STATUS_INTERNAL_SERVER_ERROR;
             response.setPayload("Error: An internal error occurred");
         }
         var respondRet = httpCaller->respond(response);
@@ -173,7 +173,7 @@ service EmployeeData on httpListener {
             // Send the response back to the client with the employee data
             response.setPayload(deleteStatus);
         } else {
-            response.statusCode = 400;
+            response.statusCode = http:STATUS_BAD_REQUEST;
             response.setPayload("Error: employeeId parameter should be a valid integer");
         }
         var respondRet = httpCaller->respond(response);
@@ -184,7 +184,7 @@ service EmployeeData on httpListener {
     }
 }
 
-public function insertData(string name, int age, int ssn, int employeeId) returns (json) {
+public function insertData(string name, int age, int ssn, int employeeId) returns json {
     json updateStatus;
     string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
     // Insert data to SQL database by invoking update action
@@ -200,7 +200,7 @@ public function insertData(string name, int age, int ssn, int employeeId) return
     return updateStatus;
 }
 
-public function retrieveById(int employeeID) returns (json) {
+public function retrieveById(int employeeID) returns json {
     json jsonReturnValue = {};
     string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
     // Retrieve employee data by invoking select remote function defined in ballerina sql client
@@ -215,7 +215,7 @@ public function retrieveById(int employeeID) returns (json) {
     return jsonReturnValue;
 }
 
-public function updateData(string name, int age, int ssn, int employeeId) returns (json) {
+public function updateData(string name, int age, int ssn, int employeeId) returns json {
     json updateStatus;
     string sqlString = "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
     // Update existing data by invoking update remote function defined in ballerina sql client
@@ -234,7 +234,7 @@ public function updateData(string name, int age, int ssn, int employeeId) return
     return updateStatus;
 }
 
-public function deleteData(int employeeID) returns (json) {
+public function deleteData(int employeeID) returns json {
     json updateStatus;
 
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";

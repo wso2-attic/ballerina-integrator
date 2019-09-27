@@ -30,7 +30,7 @@ jdbc:Client bankDB = new({
 });
 
 // Function to add users to 'ACCOUNT' table of 'bankDB' database.
-public function createAccount(string name) returns @tainted (int|error) {
+public function createAccount(string name) returns @tainted int|error {
     // Insert query.
     var updateRet = bankDB->update("INSERT INTO ACCOUNT (USERNAME, BALANCE) VALUES (?, ?)", name, 0);
     if (updateRet is error) {
@@ -65,7 +65,7 @@ public function createAccount(string name) returns @tainted (int|error) {
 }
 
 // Function to verify an account whether it exists or not.
-public function verifyAccount(int accId) returns @tainted (boolean|error) {
+public function verifyAccount(int accId) returns @tainted boolean|error {
     log:printInfo("Verifying whether account ID " + accId.toString() + " exists");
     // SQL query parameters.
     // Select query to check whether account exists.
@@ -98,7 +98,7 @@ public function verifyAccount(int accId) returns @tainted (boolean|error) {
 }
 
 // Function to check balance in an account.
-public function checkBalance(int accId) returns @tainted (int|error) {
+public function checkBalance(int accId) returns @tainted int|error {
     // Verify account whether it exists and return an error if not.
     var accountVerificationRet = verifyAccount(accId);
     if (accountVerificationRet is error) {
@@ -164,7 +164,7 @@ public function depositMoney(int accId, int amount) returns @tainted error|() {
 }
 
 // Function to withdraw money from an account.
-public function withdrawMoney(int accId, int amount) returns @tainted (error|()) {
+public function withdrawMoney(int accId, int amount) returns @tainted error|() {
     // Check whether the amount specified is valid and return an error if not.
     if (amount <= 0) {
         error err = error("Error: Invalid amount");

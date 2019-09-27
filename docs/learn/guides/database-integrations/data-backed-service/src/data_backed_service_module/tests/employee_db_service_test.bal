@@ -34,7 +34,7 @@ function testRetrieveByIdResource() {
     var resp = httpEndpoint->get(url);
     if (resp is http:Response) {
         // Test the responses from the service with the original test data
-        test:assertEquals(resp.statusCode, 200, msg =
+        test:assertEquals(resp.statusCode, http:STATUS_OK, msg =
             "Retreive employee resource did not reespond with 200 OK signal");
         var receivedPayload = resp.getJsonPayload();
         if (receivedPayload is json) {
@@ -74,7 +74,7 @@ function testAddEmployeeResource() {
     var resp = httpEndpoint->post("/employee", req);
     if (resp is http:Response) {
         // Test the response status code is correct
-        test:assertEquals(resp.statusCode, 200, msg =
+        test:assertEquals(resp.statusCode, http:STATUS_OK, msg =
             "Add new employee resource did not reespond with 200 OK signal");
         // Test the responses from the service with the original test data
         var receivedPayload = resp.getJsonPayload();
@@ -111,7 +111,7 @@ function testUpdateEmployeeResource() {
     var resp = httpEndpoint->put("/employee/", req);
     if (resp is http:Response) {
         // Test the responses from the service with the updated test data
-        test:assertEquals(resp.statusCode, 200, msg =
+        test:assertEquals(resp.statusCode, http:STATUS_OK, msg =
             "Add new employee resource did not reespond with 200 OK signal");
 
         var receivedPayload = resp.getJsonPayload();
@@ -141,7 +141,7 @@ function testDeleteEmployeeResource() {
     var resp = httpEndpoint->delete(url, req);
     if (resp is http:Response) {
         // Test whether the delete operation succeed
-        test:assertEquals(resp.statusCode, 200, msg =
+        test:assertEquals(resp.statusCode, http:STATUS_OK, msg =
             "Delete employee resource did not reespond with 200 OK signal");
 
         var receivedPayload = resp.getJsonPayload();
