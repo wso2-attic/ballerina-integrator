@@ -7,8 +7,7 @@ echo "Running jar file " $JAR_FULL_NAME
 java -jar target/$JAR_FULL_NAME > target/execution.log 2>&1
 
 if (grep -q "Invalid file path" target/execution.log)
-  then
+then
     echo "Invalid file path in INCLUDE_CODE tag. Mentioned file does not exists in the project. See more at execution.log"
     exit 1
-  fi
-  
+fi
