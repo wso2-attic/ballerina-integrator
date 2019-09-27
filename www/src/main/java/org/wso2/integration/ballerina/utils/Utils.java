@@ -255,4 +255,24 @@ public class Utils {
         File parent = tomlFile.getParentFile();
         return parent.getPath() + File.separator + parent.getName() + ".zip";
     }
+
+    /**
+     * Remove leading whitespaces of a given string.
+     *
+     * @param param string want to remove leading whitespaces
+     * @return string without leading whitespaces
+     */
+    public static String removeLeadingSpaces(String param) {
+        return param.replaceAll("^\\s+", EMPTY_STRING);
+    }
+
+    /**
+     * Get leading whitespaces of a given string.
+     *
+     * @param param string want to get leading whitespaces
+     * @return leading whitespaces of the string
+     */
+    public static String getLeadingWhitespaces(String param) {
+        return param.replace(removeLeadingSpaces(param), EMPTY_STRING);
+    }
 }
