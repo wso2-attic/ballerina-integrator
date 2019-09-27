@@ -1,27 +1,19 @@
-# Running as Java Program
+# Running as a Java Program
 
-Running a Ballerina program or service can be done using a Java command. This is necessary since a .jar file is created as part of building the project.
+Running a Ballerina program or service can be done using a Java command. This is useful since a .jar file is created as part of building the project and the program can be run using a `java -jar` command.
 
-## Creating a simple service
+## Running the simple Java command
 
-The following is a simple service that gets information from an endpoint.
+The following is an example of a `java -jar` command. This is used to run the project built in the [Quick Start Guide](../../getting-started/quick-start-guide).
 
-```ballerina
-import ballerina/http;
-import ballerina/io;
+```java
 
-// Creates a new client with the backend URL.
-http:Client clientEndpoint = new("https://postman-echo.com");
+$ java -jar target/bin/MyModule.jar --b7a.config.file=src/MyModule/resources/ballerina.conf
 
-public function main() {
-    io:println("GET request:");
-    // Sends a `GET` request to the specified endpoint.
-    var response = clientEndpoint->get("/get?test=123");
-    // Handles the response.
-    handleResponse(response);
-
-}
 ```
+
+Note that in the above example, you first mention the location of the .jar file and follow this up by pointing to a configuration file where you are passing some parameters. Instead of pointing to the configuration file you could pass different parameters here as we will explore in this document.
+
 
 ## Securing configurations
 
@@ -69,6 +61,10 @@ The file based approach is useful in automated deployments. The file containing 
 
 ```java
 
-$ java -jar program.jar —ballerina.config.secret=path/to/conf/file/custom-config-file-name.conf
+$ java -jar program.jar —ballerina.config.secret=src/MyModule/resources/secret.txt
 
 ```
+
+## Passing configurations as system properties
+
+If the values are not set in the config file, it is read from the environment variables. For example, if you set a=10 in the command line and if your program's configuration is reading config key a, it will read it as 10 even if the a value is set in the config file.
