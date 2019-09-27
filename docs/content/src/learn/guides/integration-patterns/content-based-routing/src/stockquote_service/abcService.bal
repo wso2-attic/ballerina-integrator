@@ -17,16 +17,16 @@
 import ballerina/http;
 
 @http:ServiceConfig {
-    basePath: "/ms"
+    basePath: "/abc"
 }
-service ms on new http:Listener(8082) {
+service abc on new http:Listener(8081) {
     @http:ResourceConfig {
         methods: ["GET"],
         path: "quote"
     }
     resource function quote(http:Caller caller, http:Request request) {
         http:Response response = new;
-        response.setTextPayload("12000.00");
+        response.setTextPayload("10000.00");
         error? respond = caller->respond(response);
     }
 }

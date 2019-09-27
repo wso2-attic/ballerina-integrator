@@ -16,8 +16,8 @@
 
 import ballerina/http;
 
-http:Client ibmEP = new("http://localhost:8081/ibm/quote");
-http:Client msEP = new("http://localhost:8082/ms/quote");
+http:Client abcEP = new("http://localhost:8081/abc/quote");
+http:Client xyzEP = new("http://localhost:8082/xyz/quote");
 
 @http:ServiceConfig {
     basePath: "/stocktrading"
@@ -31,11 +31,11 @@ service stockQuote on new http:Listener(9090) {
         var company = req.getQueryParamValue("company");
         http:Response response = new;
         match company {
-            "ibm" => {
-                response = checkpanic ibmEP->get("/");
+            "abc" => {
+                response = checkpanic abcEP->get("/");
             }
-            "ms" => {
-                response = checkpanic msEP->get("/");
+            "xyz" => {
+                response = checkpanic xyzEP->get("/");
             }
             _ => {
                 response.statusCode = http:STATUS_BAD_REQUEST;
