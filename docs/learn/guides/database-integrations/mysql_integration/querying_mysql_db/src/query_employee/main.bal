@@ -61,7 +61,7 @@ resource function getEmployees(http:Caller caller, http:Request request, string 
            json responseJson = { "Failed": selectResult.reason()};
            response.setJsonPayload(<@untainted> responseJson);       
        }
-           
+
            var result = caller->respond(response);
 
            if (result is error) {
@@ -69,4 +69,3 @@ resource function getEmployees(http:Caller caller, http:Request request, string 
             }
        }
 }
-

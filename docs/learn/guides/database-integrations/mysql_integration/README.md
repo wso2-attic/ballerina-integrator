@@ -1,9 +1,9 @@
-# Retreiving Data from MySQL Database
+# Querying MySQL Database
 
 ## About 
-Ballerina is an open-source programming language that supports developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on how to expose MySQL database as a service in Ballerina and do a select query upon it.
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on how to expose MySQL database as a service in Ballerina and do a select query upon it.
 
-ballerinax/java.jdbc module allows you to perform CRUD operations using JDBC Client. You can find other integrations modules from the [wso2-ballerina](https://github.com/wso2-ballerina) Github repository. 
+ballerinax/java.jdbc module allows you to perform CRUD operations using JDBC Client. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) Github repository. 
 
 ## What you'll build
 
@@ -12,7 +12,7 @@ Here the caller will send the last name of the employee for whom he want to fetc
 ![querying mysql database](../../../../assets/img/querying-mysql.png)
 
 ## Prerequisites
-Link to download ballerina integrator.
+Link to download Ballerina integrator.
 
 - Download MySQL JDBC driver
 - Create a folder called lib as shown in the folder structure and copy the downloaded jdbc_driver.jar into it.
@@ -29,13 +29,13 @@ path = "./lib/mysql-connector-java-8.0.17.jar"
 - Run the employees.sql script inside resources folder to create the table and insert data required for the guide.
 
 ## Implementation
-The ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the ballerina project and module in this link.
+The Ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/).
 
 1. Create a project
 ```bash
 $ ballerina new querying_mysql_db
 ```
-Change directory to the querying_mysql_db.
+Navigate to the querying_mysql_db directory.
 
 2. Add a module
 ```bash
@@ -68,7 +68,7 @@ MYSQL_PASSWORD = <mysql_password> <br/>
 ```
 
 4. Write the integration
-You can open the project with VSCode. The integration implementaion going to write in the `main.bal` file.
+You can open the project with VS Code. The integration implementaion going to write in the `main.bal` file.
 
 ``` ballerina
 import ballerina/config;
@@ -127,41 +127,7 @@ service dbTransactions on employeeEP {
 }
         
 ```
-
-As username and password are sensitive data, we should not expose those data to outside. Ballerina supports encrypting sensitive data and uses them in the program.
-
-```shell
-$ ballerina encrypt
-```
-
-The execution of the encrypt action will ask for value and secret key. Once you provide input, it'll output the encrypted value that can directly use in the config file.
-
-```shell
-Enter value:
-
-Enter secret:
-
-Re-enter secret to verify:
-
-Add the following to the configuration file:
-<key>="@encrypted:{aoIlSvOPeBEZ0COma+Wz2uWznlNn1IWz4StiWQCO6g4=}"
-
-Or provide it as a command line argument:
---<key>=@encrypted:{aoIlSvOPeBEZ0COma+Wz2uWznlNn1IWz4StiWQCO6g4=}
-```
-
-Use encrypted value in the `ballerina.conf` file.
-
-```
-  MYSQL_URL="<jdbc_url>"<br/>
-  MYSQL_USERNAME = "@encrypted:{3SCS/ET4uaJKVZwh+/If3rvU9ImbZSCmrruroMF5Sig=}"
-  MYSQL_PASSWORD = "@encrypted:{3SCS/ET4uaJKVZwh+/If3rvU9ImbZSCmrruroMF5Sig=}"
- 
-```
-
-After that `jdbc:Client` is  created with `employeeDB`.<br/>
-The HTTP listener service will run on port 9095  when you start running the program.
-    
+   
 ## Run the integration
 First, let’s build the module. While being in the querying_mysql_db directory, execute the following command.
 

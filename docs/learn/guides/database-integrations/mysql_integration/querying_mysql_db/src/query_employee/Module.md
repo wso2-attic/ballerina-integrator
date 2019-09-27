@@ -1,1 +1,1 @@
-## Querying-a-mysql-database
+# Querying MySQL Database

@@ -1,30 +1,30 @@
-# Reading data from a CSV file and inserting to MongoDB
+# Importing CSV Data to Mongo DB
 
 ## About 
-Ballerina is an open-source programming language that supports developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on importing CSV file having contacts into MongoDB using FTP connector.
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on importing CSV file having contacts into MongoDB using FTP connector.
 
 `wso2/mongodb` module allows you to perform CRUD operations on Mongo DB.<br/> 
-The `wso2/ftp` module provides a FTP client and a FTP server listener implementation to facilitate an FTP connection 
-to a remote location. You can find other integrations modules from the [wso2-ballerina](https://github.com/wso2-ballerina) Github repository. 
+The `wso2/ftp` module provides an FTP client and an FTP server listener implementation to facilitate an FTP connection 
+to a remote location. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) Github repository. 
 
 ## What you'll build
 
-This application listens to a remote FTP location and when a CSV file is added to that FTP location, it will fetch the CSV file, reads its content and insert the content into Mongo DB. Then a 
-success message is logged if the operation is successful, .
+This application listens to a remote FTP location and when a CSV file is added to that FTP location, it will fetch the CSV file, read its contents and insert the content into Mongo DB. Then a 
+success message is logged if the operation is successful.
 
 ![inserting csv data to mongo db](../../../../../assets/img/mongo_insert.png)
 
 ## Prerequisites
-Link to download ballerina integrator.
+Link to download Ballerina integrator.
 
 ## Implementation
-The ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the ballerina project and module in this link.
+The Ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/).
 
 1. Create a project
 ```bash
 $ ballerina new insert_data
 ```
-Change directory to the insert_data.
+Navigate to the insert_data directory.
 
 2. Add a module
 ```bash
@@ -59,20 +59,20 @@ The project structure should look like below.
 This file should have following Mongo DB and FTP configurations.
 
 ```  
-MONGO_HOST = "<MongoDB_Host>"
-MONGO_DB_NAME = "<MongoDB_Name>"
-MONGO_USERNAME = "<MongoDB_Username>"
-MONGO_PASSWORD = "<MongoDB_Password>"
+MONGO_HOST="<MongoDB_Host>"
+MONGO_DB_NAME="<MongoDB_Name>"
+MONGO_USERNAME="<MongoDB_Username>"
+MONGO_PASSWORD="<MongoDB_Password>"
 
-FTP_HOST = "<FTP_Host>"
-FTP_PORT = <FTP_PORT>
-FTP_USERNAME = "<FTP_Username>"
-FTP_PASSWORD = "<FTP_Password>"
-FTP_PATH = "<FTP_Location>""
+FTP_HOST="<FTP_Host>"
+FTP_PORT=<FTP_PORT>
+FTP_USERNAME="<FTP_Username>"
+FTP_PASSWORD="<FTP_Password>"
+FTP_PATH="<FTP_Location>""
 ```  
 
 3. Write the integration
-You can open the project with VSCode. The integration implementation is written in the `main.bal` file.
+You can open the project with VS Code. The integration implementation is written in the `main.bal` file.
 
   **main.bal**
     <!-- INCLUDE_CODE: src/guide/main.bal -->
