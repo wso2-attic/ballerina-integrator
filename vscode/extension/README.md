@@ -25,9 +25,9 @@ Open the Command Palette ([Command] + [Shift] + [P] on macOS and [Ctrl] + [Shift
 | Ballerina: Show File Overview   | Display the Ballerina File Overview.  | |
 
 ## Features
-#### Create New Project
-#### Create New Module from Template
-#### Search for Templates
+- Create a Ballerina Project
+- Create a Ballerina Module from Template
+- Search for Ballerina Templates
 
 ## License
 WSO2 Ballerina Integrator VS Code extension is licensed under [Apache License 2.0](https://github.com/wso2/ballerina-integrator/blob/master/LICENSE).
