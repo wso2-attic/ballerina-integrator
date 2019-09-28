@@ -25,6 +25,18 @@ actual code file in the git.
 ```
 When you are mentioning the code file please mention the valid path to the file you want to include.
 
+##### Example Usage:
+
+README.md file
+```
+#### Scheduling an appointment
+
+In the previous tutorial, we called the backend service from the add appointment resource itself. Since we are chaining 
+two services in this example, we will add a util function to handle scheduling appointments at the backend.
+
+<!-- INCLUDE_CODE: src/tutorial/health_care_service.bal -->
+```
+
 #### (b) Include a code segment
 
 *README.md file*
@@ -48,11 +60,13 @@ README.md file
 ```
 #### Scheduling an appointment
 
-In the previous tutorial, we called the backend service from the add appointment resource itself. Since we are chaining two services in this example, we will add a util function to handle scheduling appointments at the backend.
+In the previous tutorial, we called the backend service from the add appointment resource itself. Since we are chaining 
+two services in this example, we will add a util function to handle scheduling appointments at the backend.
 
 <!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_1 } -->
 
-When the client request is received, we check if the request payload is json. If so, we transform it to the format expected by the backend. Then we invoke the util function to add an appointment within the resource function.
+When the client request is received, we check if the request payload is json. If so, we transform it to the format 
+expected by the backend. Then we invoke the util function to add an appointment within the resource function.
 
 <!-- INCLUDE_CODE_SEGMENT: { file: src/tutorial/health_care_service.bal, segment: segment_3 } -->
 ```
@@ -107,22 +121,58 @@ function handleResponse(http:Response | error response) returns http:Response {
 }
 ```
 
-### 3. Include resources
+### 3. Include images
 
-If you want to add resources like images please create a directory with the name **"resources"** and add all your 
-resource files to that directory. 
-In the markdown file mention full qualified path of the resource as mentioned below.
-```
-![alt text](https://raw.githubusercontent.com/pramodya1994/ballerina-integrator/hugo-site/examples/guides/messaging/asynchronous-messaging/resources/Asynchronous_service_invocation.png)
-``` 
+If you want to add images and add image attachments to your `README.md` file add all the images to `docs/assets/img`
+and add the image attachment in the `README.md` file.
+
+When you are adding images: 
+  
+- Add image attachment as a new line in the `README.md`.
+    ```
+    ![alt text](../../../../assets/img/pass-through-messaging-1.svg)
+    ```
+- Do not use `[`, `]`, `(`, `)` to name images and for image alt text.
+    > **Tip**: "pass-through-messaging[1].svg" is not allowed.
+ 
 When you are mentioning the resource file please mention the valid path to the file you want to add.
 
-## Build markdown files to include in mkdocs site
+## Build website
 
-Run below command in your terminal
+#### Prerequisites
+
+- Install python
+- Install pip
+- Install mkdocs
+    ```bash
+    $ pip install mkdocs
+    ```
+- Install pymdown-extensions
+    ```bash
+    $ pip install pymdown-extensions
+    ```
+#### Generate website content
+
+Navigate to `docs/doc-generator` and run below command.
 
 ```bash
-cd docs/doc-generator
-mvn clean install
+$ cd docs/doc-generator
+$ mvn clean install
 ```
-Get markdown files from **docs/doc-generator/target/mkdocs-content** directory.
+
+This will generate website content inside `docs/doc-generator/target/www`.
+
+#### Testing the website
+
+Navigate to `docs/doc-generator/target/www` directory and run below command.
+
+```bash
+$ cd target/www
+$ mkdocs serve
+```
+
+You will see following log in the terminal. You can go to the serving Url and check your guide.
+
+```
+Serving on http://127.0.0.1:8000
+```
