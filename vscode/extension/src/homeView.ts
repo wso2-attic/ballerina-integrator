@@ -15,45 +15,41 @@
 // under the License.
 
 import { begin, end } from './html';
-import { homeStyles } from './styles';
 import data from './templateDetails.json';
 
 export function getHomeView(): string {
-
-    let htmlCode = begin + homeStyles;
-    for (var templateCategory in data) {
-        let startTags: string = `
-            <div class="row">
-                <div class="templates">
-                    <h3>` + templateCategory + `</h3>`;
-
-        htmlCode = htmlCode + startTags;
-        data[templateCategory].forEach(element => {
-            let templateId = element.id;
-            let templateName = element.name;
-            let templateDescription = element.description;
-            let card: string = `
-                    <div class="col-md-3 col-xs-4 col-lg-3">
-                        <div class="box">
-                            <h4>` + templateName + `</h4>
-                            <p class="description" align="center">` + templateDescription + `</p>
-                            <a href="" style="none" onclick="pickTemplate('${templateId}')">
-                                <p class="create-button">
+    let htmlCode = begin;
+    for (var i=0; i<data.length; i++) {
+        let templateId = data[i].id;
+        let templateName = data[i].name;
+        let templateDescription = data[i].description;
+        let tags = data[i].tags;
+        let markElements: string = "";
+        tags.forEach(element => {
+            markElements += `
+                            <mark class="tag-mark">` + element + `</mark>`;
+        });
+        let card: string = `
+                <div class="col-md-3 col-xs-4 col-lg-3">
+                    <div class="box">
+                        <h4>` + templateName + `</h4>
+                        <p class="description" align="center">` + templateDescription + `</p>
+                        <p class="tag">` + markElements + `
+                        </p>
+                        <a href="" style="none" onclick="pickTemplate('${templateId}')">
+                            <div class="create-button">
+                                <div>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                                         <path d="M26,0A26,26,0,1,0,52,26,26,26,0,0,0,26,0ZM38.5,28H28V39a2,2,0,0,1-4,0V28H13.5a2,
-                                        2,0,0,1,0-4H24V14a2,2,0,0,1,4,0V24H38.5a2,2,0,0,1,0,4Z" />
+                                        2,0,0,1,0-4H24V14a2,2,0,0,1,4,0V24H38.5a2,2,0,0,1,0,4Z"/>
                                     </svg>
-                                    Create
-                                </p>
-                            </a>
-                        </div>
-                    </div>`;
-            htmlCode = htmlCode + card;
-        });
-        let endTags: string = `
-                </div>
-            </div>`;
-        htmlCode = htmlCode + endTags;
+                                    <span>Create</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>`;
+        htmlCode = htmlCode + card;
     }
 
     let scriptHandling = `
@@ -65,47 +61,46 @@ export function getHomeView(): string {
                     })
                 }
                 function searchFunction() {
+                    // Retrieve the selected category
                     var categoryPicker = document.getElementById("templateCategory");
-                    var category = categoryPicker.options[categoryPicker.selectedIndex].text;
+                    var category = categoryPicker.options[categoryPicker.selectedIndex].value;
+
+                    // Retrieve the search input values
                     var input, filter;
                     input = document.getElementById("searchTemplate");
                     filter = input.value.toUpperCase();
-                    var templateCategories = document.getElementsByClassName("templates");
-                    for (var i = 0; i < templateCategories.length; i++) {
-                        var name = templateCategories[i].getElementsByTagName("h3");
-                        if (category == "Search Category") {
-                            var count = 0;
-                            templateCategories[i].style.display = "";
-                            var boxes = templateCategories[i].getElementsByClassName("col-md-3 col-xs-4 col-lg-3");
-                            for (var j = 0; j < boxes.length; j++) {
-                                var heading = boxes[j].getElementsByTagName("h4");
-                                var txtValue = heading[0].textContent || heading[0].innerText;
-                                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                                    boxes[j].style.display = "";
-                                    count = count + 1;
+
+                    // Retrieve all the box elements
+                    var boxes = document.getElementsByClassName("col-md-3 col-xs-4 col-lg-3");
+
+                    for (var i = 0; i < boxes.length; i++) {
+                        var tags = boxes[i].getElementsByClassName("tag-mark");
+                        for (var j = 0; j < tags.length; j++) {
+                            var txtValue = tags[0].textContent || tags[0].innerText;
+                            if (category == "#all") {
+                                // Processing for 'all' category
+                                boxes[i].hidden = false;
+                                var heading = boxes[i].getElementsByTagName("h4");
+                                var headingValue = heading[0].textContent || heading[0].innerText;
+                                if (headingValue.toUpperCase().indexOf(filter) > -1) {
+                                    boxes[i].hidden = false;
                                 } else {
-                                    boxes[j].style.display = "none";
+                                    boxes[i].hidden = true;
                                 }
-                            }
-                            if (count == 0) {
-                                name[0].style.display = "none";
+                            } else if (txtValue.toUpperCase().indexOf(category.toUpperCase()) > -1) {
+                                // Processing for other specific categories
+                                boxes[i].hidden = false;
+                                var heading = boxes[i].getElementsByTagName("h4");
+                                var headingValue = heading[0].textContent || heading[0].innerText;
+                                if (headingValue.toUpperCase().indexOf(filter) > -1) {
+                                    boxes[i].hidden = false;
+                                } else {
+                                    boxes[i].hidden = true;
+                                }
                             } else {
-                                name[0].style.display = "";
+                                // Hiding unselected categories
+                                boxes[i].hidden = true;
                             }
-                        } else if (name[0].textContent.localeCompare(category) == 0) {
-                            templateCategories[i].style.display = "";
-                            var boxes = templateCategories[i].getElementsByClassName("col-md-3 col-xs-4 col-lg-3");
-                            for (var j = 0; j < boxes.length; j++) {
-                                var heading = boxes[j].getElementsByTagName("h4");
-                                var txtValue = heading[0].textContent || heading[0].innerText;
-                                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                                    boxes[j].style.display = "";
-                                } else {
-                                    boxes[j].style.display = "none";
-                                }
-                            }
-                        } else {
-                            templateCategories[i].style.display = "none";
                         }
                     }
                 }
