@@ -1,4 +1,4 @@
-// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -15,33 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/log;
-//import ballerinax/docker;
-//import ballerinax/kubernetes;
-
-//@docker:Config {
-//    registry:"ballerina.guides.io",
-//    name:"car_rental_service",
-//    tag:"v1.0"
-//}
-//
-//@docker:Expose{}
-
-//@kubernetes:Ingress {
-//  hostname:"ballerina.guides.io",
-//  name:"ballerina-guides-car-rental-service",
-//  path:"/"
-//}
-//
-//@kubernetes:Service {
-//  serviceType:"NodePort",
-//  name:"ballerina-guides-car-rental-service"
-//}
-//
-//@kubernetes:Deployment {
-//  image:"ballerina.guides.io/car_rental_service:v1.0",
-//  name:"ballerina-guides-car-rental-service"
-//}
 
 // Service endpoint
 listener http:Listener carEP = new(9093);
@@ -74,10 +47,10 @@ service carRentalService on carEP {
             return;
         }
 
-        json name = reqPayload.Name;
-        json arrivalDate = reqPayload.ArrivalDate;
-        json departDate = reqPayload.DepartureDate;
-        json preferredType = reqPayload.Preference;
+        json name = checkpanic reqPayload.Name;
+        json arrivalDate = checkpanic reqPayload.ArrivalDate;
+        json departDate = checkpanic reqPayload.DepartureDate;
+        json preferredType = checkpanic reqPayload.Preference;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (name == () || arrivalDate == () || departDate == () || preferredType == ()) {
@@ -91,7 +64,7 @@ service carRentalService on carEP {
         // Mock logic
         // If request is for an available car type, send a rental successful status
         string preferredTypeStr = preferredType.toString();
-        if (preferredTypeStr.equalsIgnoreCase(AC) || preferredTypeStr.equalsIgnoreCase(NORMAL)) {
+        if (equalIgnoreCase(preferredTypeStr, AC) || equalIgnoreCase(preferredTypeStr, NORMAL)) {
             response.setJsonPayload({"Status":"Success"});
         }
         else {
@@ -102,10 +75,7 @@ service carRentalService on carEP {
         var result = caller->respond(response);
         handleError(result);
     }
+
 }
 
-function handleError(error? result) {
-    if (result is error) {
-        log:printError(result.reason(), err = result);
-    }
-}
+
