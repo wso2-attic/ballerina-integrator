@@ -17,7 +17,7 @@
 import ballerina/config;
 import wso2/amazonsqs;
 
-function createNotificationQueue(string queueName) returns string|error {
+function createNotificationQueue(string queueName) returns @tainted string|error {
     // Amazon SQS client configuration
     amazonsqs:Configuration configuration = {
         accessKey: config:getAsString("ACCESS_KEY_ID"),
