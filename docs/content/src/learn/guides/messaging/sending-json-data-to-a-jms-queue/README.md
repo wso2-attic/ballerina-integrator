@@ -6,7 +6,7 @@ Ballerina is an open-source programming language that supports developers to int
 The JMS connector created with a minimum deviation of JMS API for developers who are working with integrates messaging systems. It supports creating consumer, producer as well as listeners. You can find out more about JMS connector from [here](https://github.com/wso2-ballerina/module-jms).
 
 ## What you'll build
-The Ballerina has first-class support for HTTP and implementing an HTTP service is straightforward. The caller will send JSON payload that consists of a sales order. The HTTP service read payload as text. Then with the support of JMS connector, build JMS text message and send to the ActiveMQ.
+Ballerina has first-class support for HTTP and implementing an HTTP service is straightforward. The caller will send a JSON payload that consists of a sales order. The HTTP service reads the payload as text. Then with the support of JMS connector, a JMS text message is built and sent to ActiveMQ.
 
 ## Prerequisites
 - [Java](https://www.oracle.com/technetwork/java/index.html)
@@ -14,15 +14,15 @@ The Ballerina has first-class support for HTTP and implementing an HTTP service 
 - Link to download Ballerina Integrator
 
 ## Implementation
-The ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the ballerina project and module in this link.
+The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module in this link.
 
-1. Create a project
+1. Create a project.
 ```bash
 $ ballerina new sending-json-data-to-a-jms-queue
 ```
 Change directory to the sending-json-data-to-a-jms-queue.
 
-2. Add a module
+2. Add a module.
 ```bash
 $ ballerina add jsontojms
 ```
@@ -40,8 +40,8 @@ sending-json-data-to-a-jms-queue
             └── resources
 ```
 
-3. Write the integration
-You can open the project with VSCode. The integration implemention going to write in the `main.bal` file. 
+3. Write the integration.
+You can open the project with VS Code. The integration implementation is written in the `main.bal` file. 
 
 <!-- INCLUDE_CODE: src/jsontojms/main.bal -->
 
