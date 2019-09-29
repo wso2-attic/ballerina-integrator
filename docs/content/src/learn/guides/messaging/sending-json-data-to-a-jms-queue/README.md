@@ -113,7 +113,7 @@ $ curl -H "application/json" \
 http://localhost:8080/sales/orders
 ```
 
-You will see the following response in a successful invocation. Also, the published message should be able visible in the sales queue when you log into the ActiveMQ web console.  
+You will see the following response in a successful invocation. Also, the published message should be visible in the sales queue when you log into the ActiveMQ web console.  
 
 ```json
 {"Message": "Order sent for processing."}
