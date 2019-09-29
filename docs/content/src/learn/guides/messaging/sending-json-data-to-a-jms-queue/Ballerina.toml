@@ -1,0 +1,20 @@
+[project]
+org-name= "indika"
+version= "0.1.0"
+
+[dependencies]
+
+[platform]
+target = "java8"
+
+  [[platform.libraries]]
+  module = "jsontojms"
+  path = "./lib/activemq-client-5.15.5.jar"
+
+  [[platform.libraries]]
+  module = "jsontojms"
+  path = "./lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar"
+
+  [[platform.libraries]]
+  module = "jsontojms"
+  path = "./lib/hawtbuf-1.11.jar"
