@@ -1,42 +1,11 @@
 import ballerina/http;
 import ballerina/log;
-//import ballerinax/docker;
-//import ballerinax/kubernetes;
 
-//@kubernetes:Ingress {
-//    hostname:"ballerina.guides.io",
-//    name:"passthrough",
-//    path:"/"
-//}
-//@kubernetes:Service {
-//    serviceType:"NodePort",
-//    name:"OnlineShopping"
-//}
-//
-//@kubernetes:Deployment {
-//    image: "ballerina.guides.io/passthrough:v1.0",
-//    name: "ballerina-guides-passt-hrough-messaging"
-//}
-
-//@docker:Expose {}
 listener http:Listener OnlineShoppingEP = new(9090);
-
-//@kubernetes:Service {
-//    serviceType:"NodePort",
-//    name:"LocalShop"
-//}
-//@docker:Expose {}
-
 listener http:Listener LocalShopEP = new(9091);
 
 //Defines a client endpoint for the local shop with online shop link.
 http:Client clientEP = new("http://localhost:9091/LocalShop");
-
-//@docker:Config {
-//    registry:"ballerina.guides.io",
-//    name:"passthrough",
-//    tag:"v1.0"
-//}
 
 //This is a passthrough service.
 service OnlineShopping on OnlineShoppingEP {
@@ -46,7 +15,7 @@ service OnlineShopping on OnlineShoppingEP {
     }
     resource function passthrough(http:Caller caller, http:Request req) {
         log:printInfo("Request will be forwarded to Local Shop  .......");
-        //'Forward()' sends the incoming request unaltered to the backend. Forward function
+        //'forward()' sends the incoming request unaltered to the backend. Forward function
         //uses the same HTTP method as in the incoming request.
         var clientResponse = clientEP->forward("/", req);
         if (clientResponse is http:Response) {
@@ -56,9 +25,8 @@ service OnlineShopping on OnlineShoppingEP {
         } else {
             //Sends the error response to the caller.
             http:Response res = new;
-            res.statusCode = 500;
+            res.statusCode = http:STATUS_INTERNAL_SERVER_ERROR;
             res.setPayload(<string>clientResponse.detail()?.message);
-            string payload = <string>clientResponse.detail()?.message;
             var result = caller->respond(res);
             handleError(result);
         }
