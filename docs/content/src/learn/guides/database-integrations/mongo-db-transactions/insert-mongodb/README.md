@@ -86,7 +86,7 @@ First, let’s build the module. While being in the insert_data directory, execu
 $ ballerina build import_csv
 ```
 
-The build command would create an executable jar file. Now run the jar file created in the above step to execute the jar.
+The build command would create an executable .jar file. Now run the .jar file created in the above step to execute the .jar.
 
 ```bash
 $ java -jar target/bin/import_csv.jar

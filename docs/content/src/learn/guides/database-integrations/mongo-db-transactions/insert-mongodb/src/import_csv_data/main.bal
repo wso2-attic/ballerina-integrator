@@ -29,6 +29,8 @@ mongodb:ClientEndpointConfig mongoConfig = {
     options: {sslEnabled: false, serverSelectionTimeout: 500}
 };
 
+mongodb:Client mongoClient = check new (mongoConfig);
+
 listener ftp:Listener ftpListener = new ({
     protocol: ftp:FTP,
     host: config:getAsString("FTP_HOST"),
@@ -56,7 +58,6 @@ ftp:ClientEndpointConfig ftpConfig = {
     }
 };
 ftp:Client ftp = new (ftpConfig);
-mongodb:Client mongoClient = check new (mongoConfig);
 
 service ftpServerConnector on ftpListener {
     resource function fileResource(ftp:WatchEvent m) returns error? {

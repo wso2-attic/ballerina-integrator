@@ -343,5 +343,4 @@ public class SnippetsGenerator {
         return new SnippetsBlock(ItemResolverConstants.RESPOND_AND_HANDLE_ERROR, snippet,
                                  ItemResolverConstants.SNIPPET_TYPE, SnippetsBlock.SnippetType.SNIPPET, logImport);
     }
-
 }

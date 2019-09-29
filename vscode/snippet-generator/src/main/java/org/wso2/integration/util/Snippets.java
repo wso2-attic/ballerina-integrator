@@ -19,11 +19,12 @@ package org.wso2.integration.util;
 import org.wso2.integration.ballerinalangserver.SnippetsBlock;
 import org.wso2.integration.ballerinalangserver.SnippetsGenerator;
 
+
+public enum Snippets {
+
     /**
      * Snippets for the Ballerina Integrator.
      */
-
-public enum Snippets {
 
     DEF_RECORD(SnippetsGenerator.getRecordDefinitionSnippet()),
     DEF_RESOURCE_HTTP(SnippetsGenerator.getHttpResourceDefinitionSnippet()),
@@ -41,6 +42,7 @@ public enum Snippets {
     DEF_CLIENT_AMAZONS3(SnippetsGenerator.getAmazonS3ClientSnippet()),
     DEF_SQS_CLIENT(SnippetsGenerator.getSQSClientDefSnippet()),
     DEF_ERROR_HANDLING(SnippetsGenerator.getRespondAndHandleError());
+
 
     private String snippetName;
     private SnippetsBlock snippetBlock;

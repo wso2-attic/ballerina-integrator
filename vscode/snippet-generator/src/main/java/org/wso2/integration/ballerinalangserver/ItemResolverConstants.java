@@ -28,7 +28,6 @@ public class ItemResolverConstants {
     // Symbol Types Constants
     public static final String SNIPPET_TYPE = "Snippet";
     public static final String RECORD_TYPE = "type <RecordName> record";
-    // End Symbol Types Constants
 
     // AmazonS3 Connector Constructs
     public static final String AMAZONS3_CLIENT_CONFIG = "amazonS3/clientConfiguration";

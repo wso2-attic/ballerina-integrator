@@ -54,8 +54,7 @@
   
   In settings.json file set ballerina.home to the location of your JBallerinaTools folder .<br/> 
      
-  ```ballerina
-    
+  ```ballerina   
     "ballerina.plugin.dev.mod":false,
     "ballerina.debugLog": true,
     "ballerina.allowExperimental": true,
@@ -81,7 +80,6 @@
 
 3 . In settings.json file set ballerina.home to the location of your Ballerina_Home.<br/>  
   ```ballerina
-    
     "ballerina.plugin.dev.mod":false,
     "ballerina.debugLog": true,
     "ballerina.allowExperimental": true,
@@ -89,3 +87,4 @@
 ```
 
 4 . When you open a .bal file in VSCode IDE and pressed ctrl + space keys together you can see the added snippets.
+
