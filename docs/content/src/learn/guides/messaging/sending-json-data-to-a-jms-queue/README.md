@@ -6,7 +6,7 @@ Ballerina is an open-source programming language that supports developers to int
 The JMS connector created with a minimum deviation of JMS API for developers who are working with integrates messaging systems. It supports creating consumer, producer as well as listeners. You can find out more about JMS connector from [here](https://github.com/wso2-ballerina/module-jms).
 
 ## What you'll build
-The Ballerina has first-class support for HTTP and implementing an HTTP service is straightforward. The caller will send JSON payload that consists of a sales order. The HTTP service read payload as text. Then with the support of JMS connector, build JMS text message and send to the ActiveMQ.
+Ballerina has first-class support for HTTP and implementing an HTTP service is straightforward. The caller will send a JSON payload that consists of a sales order. The HTTP service reads the payload as text. Then with the support of JMS connector, a JMS text message is built and sent to ActiveMQ.
 
 ## Prerequisites
 - [Java](https://www.oracle.com/technetwork/java/index.html)
