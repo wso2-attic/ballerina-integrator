@@ -41,7 +41,7 @@ sending-json-data-to-a-jms-queue
 ```
 
 3. Write the integration
-You can open the project with VSCode. The integration implemention going to write in the `main.bal` file. 
+You can open the project with VS Code. The integration implementation is written in the `main.bal` file. 
 
 <!-- INCLUDE_CODE: src/jsontojms/main.bal -->
 
