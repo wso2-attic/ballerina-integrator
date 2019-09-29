@@ -1,4 +1,4 @@
-# Convert JSON to XML and upload to FTP
+# Sending JSON data to ActiveMQ queue
 
 ## About 
 Ballerina is an open-source programming language that supports developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on connecting to a ActiveMQ broker with the JMS connector. You can find other integrations modules from the [wso2-ballerina](https://github.com/wso2-ballerina) Github repository.
@@ -48,7 +48,7 @@ You can open the project with VSCode. The integration implemention going to writ
 Same as JMS API, create `jms:Connection` then `jms:Session` and finally create `jms:Destination`, `jms:MessageProducer`. In the HTTP resource, build `jms:TextMessage` getting the payload as a `string`. Next, send the message to the sales queue in the ActiveMQ. Once message send, verify the return result is an error. If it is an error, build `http:Response` as JSON payload. If it is a success, do the same. As the last step, respond to the caller with build `http:Response`.
 
 ## Run the integration
-Before building the module, we have to copy the necessary ActiveMQ dependencies into the project. There are three jar files listed down below.
+Before building the module, we have to copy the necessary ActiveMQ dependencies into the project. There are three jar files listed down below. These jar files you can find in the lib folder of ActiveMQ distribution.
 
 * activemq-client-5.15.5.jar
 * geronimo-j2ee-management_1.1_spec-1.0.1.jar

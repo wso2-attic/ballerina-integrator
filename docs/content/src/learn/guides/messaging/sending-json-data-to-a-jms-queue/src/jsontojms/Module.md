@@ -1,3 +1,1 @@
-# Hello World
-
-Prints "hello world" to command line output
+# Sending JSON data to ActiveMQ queue

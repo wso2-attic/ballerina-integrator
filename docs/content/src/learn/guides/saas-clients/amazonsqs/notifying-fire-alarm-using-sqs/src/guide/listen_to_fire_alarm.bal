@@ -16,11 +16,12 @@
 
 import ballerina/config;
 import ballerina/log;
+import ballerina/runtime;
 import wso2/amazonsqs;
 
 // listenToFireAlarm, which listens to the Amazon SQS queue for fire notifications with polling
 function listenToFireAlarm(string queueResourcePath) {
-    
+
     // Amazon SQS client configuration
     amazonsqs:Configuration configuration = {
         accessKey: config:getAsString("ACCESS_KEY_ID"),
@@ -57,16 +58,16 @@ function listenToFireAlarm(string queueResourcePath) {
                 log:printInfo("************** Received fire alerts! ******************");
                 int deleteMssageCount = response.length();
                 log:printInfo("Going to delete " + deleteMssageCount.toString() + " messages from queue.");
-                
+
                 // Iterate on each message
                 foreach var eachResponse in response {
-                    
+
                     // Keep receipt handle for deleting the message from the queue
                     receivedReceiptHandler = eachResponse.receiptHandle;
 
                     // Delete the received the messages from the queue
                     boolean|error deleteResponse = sqsClient->deleteMessage(queueResourcePath, receivedReceiptHandler);
-                    
+
                     // When the response from the delete operation is valid
                     if (deleteResponse is boolean && deleteResponse) {
                         if (deleteResponse) {

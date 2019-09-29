@@ -14,10 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/grpc;
-import ballerina/http;
 import ballerina/log;
-import ballerina/websub;
 import wso2/amazonsqs;
 
 // Executes the workers in the guide
@@ -43,7 +40,7 @@ public function main(string... args) {
         // Send the resource path of the queue to the fire listener
         queueResourcePath -> fireListener;
     }
-    
+
     // Fire notifier worker which publishes to the SQS queue
     worker fireNotifier {
         log:printInfo("fireNotifier started ....");

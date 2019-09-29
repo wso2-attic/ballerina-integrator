@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.ballerina-integrator</groupId>
     <artifactId>ballerina-integrator</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-beta</version>
     <packaging>pom</packaging>
     <name>Ballerina Integrator</name>
     <organization>
@@ -196,7 +196,7 @@
         <maven.checkstyleplugin.excludes>**/SourceGen.java</maven.checkstyleplugin.excludes>
         <maven.spotbugsplugin.exclude.file>spotbugs-exclude.xml</maven.spotbugsplugin.exclude.file>
 
-        <ballerina.version>1.0.0-alpha</ballerina.version>
+        <ballerina.version>1.0.0</ballerina.version>
         <lsp4j.version>0.6.0</lsp4j.version>
         <apache.commons.io.version>2.6</apache.commons.io.version>
         <ballerina.lang.compiler.version>1.0.0-alpha</ballerina.lang.compiler.version>
