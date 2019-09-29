@@ -40,7 +40,7 @@ function periodicallySendFireNotifications(string queueResourcePath) {
         string queueUrl = "";
 
         // Send a fire notification to the queue
-        amazonsqs:OutboundMessage|error response = sqsClient->sendMessage("There is a fire!", 
+        amazonsqs:OutboundMessage|error response = sqsClient->sendMessage("There is a fire!",
             queueResourcePath, {});
         // When the response is valid
         if (response is amazonsqs:OutboundMessage) {

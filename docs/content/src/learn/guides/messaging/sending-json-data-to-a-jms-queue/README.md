@@ -1,4 +1,4 @@
-# Convert JSON to XML and upload to FTP
+# Sending JSON data to ActiveMQ queue
 
 ## About 
 Ballerina is an open-source programming language that supports developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on connecting to a ActiveMQ broker with the JMS connector. You can find other integrations modules from the [wso2-ballerina](https://github.com/wso2-ballerina) Github repository.

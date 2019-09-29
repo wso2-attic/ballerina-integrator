@@ -87,10 +87,11 @@ export let homeStyles: string = `<style>
             }
 
             .tag-mark {
-                background-color: #E3FDFA;
-                color: inherit;
+                background-color: #71CAC0;
+                color: #FFFFFF;
                 padding: 0.2em 0.3em;
-                margin: 2px
+                margin: 2px;
+                font-weight: bolder;
             }
 
             #searchTemplate {
@@ -150,29 +151,6 @@ export let homeStyles: string = `<style>
                 margin-top: 2em;
             }
 
-            .create-button {
-                right: 20px;
-                position: absolute;
-                bottom: 0px;
-                vertical-align: middle;
-                padding: 0.188em 0.313em;
-            }
-
-            .create-button:hover {
-                cursor: pointer;
-                color: #0078CF;
-            }
-
-            .create-button:hover svg {
-                fill: #0078CF;
-            }
-
-            .create-button svg {
-                width: 20px;
-                padding-right: 5px;
-                fill: #707070;
-            }
-
             p.description {
                 max-height: 6.250em;
                 overflow: scroll;
@@ -212,6 +190,127 @@ export let homeStyles: string = `<style>
             .templates {
                 margin-right: -15px;
                 margin-left: -15px;
+            }
+
+            ::-webkit-scrollbar-corner {
+                color: transparent;
+            }
+
+            .templates {
+                margin-right: -15px;
+                margin-left: -15px;
+            }
+
+            body.vscode-light {
+                color: #707070;
+            }
+
+            body.vscode-dark {
+                background: #2C2C2C;
+                color: #FFFFFF;
+            }
+
+            body.vscode-dark a {
+                color: #FFFFFF;
+            }
+
+            body.vscode-dark .create svg path {
+                fill: #03DAC5;
+            }
+
+            body.vscode-dark .box {
+                background-color:#4B4B4B;
+            }
+
+            body.vscode-dark h4 {
+                color: #FFFFFF;
+            }
+
+            body.vscode-dark .box:hover h4 {
+                color: #03DAC5;
+            }
+
+            body.vscode-dark .create-button:hover div svg {
+                fill: #0078CF;
+            }
+
+            body.vscode-dark .create-button svg {
+                fill: rgba(255,255,255);
+            }
+
+            body.vscode-dark .create-button:hover {
+                color: #FFF;
+            }
+
+            body.vscode-dark .create-button:hover div span {
+                background: #03DAC5;
+            }
+
+            body.vscode-dark .create-button:hover div svg {
+                fill: #FFF;
+            }
+
+            .create-button {
+                font-weight: bolder;
+                right: 20px;
+                position: absolute;
+                bottom: 13px;
+                vertical-align: middle;
+                padding: 0.188em 0.313em;
+            }
+
+            .create-button:hover {
+                cursor: pointer;
+                color: #0078CF;
+            }
+
+            .create-button:hover svg {
+                fill: #0078CF;
+            }
+
+            .create-button div svg {
+                width: 24px;
+                padding-right: 5px;
+                fill: #0078CF;
+                position: absolute;
+                left: -6px;
+            }
+
+             .create-button div span {
+                padding: 2.2px 10px 1.2px 15px;
+                background: #D9DEDE;
+            }
+
+            body.vscode-dark p.description {
+                color: rgba(255,255,255,0.6);
+            }
+
+            body.vscode-dark #searchTemplate {
+                line-height: 30px;
+                padding: 5px 13px;
+                font-size: 20px;
+                background: #4B4B4B;
+                border: 1px solid #BDC3C7;
+                width: 100%;
+            }
+
+            body.vscode-dark select {
+                -webkit-appearance: menulist-button;
+                -moz-appearance : menulist-button;
+                border:1px solid #ccc;
+                border-radius:3px;
+                padding:10px 30px;
+                background: #4B4B4B;
+                color: #FFFFFF;
+                height: 42px;
+            }
+
+            body.vscode-dark .tag-mark {
+                background-color: #78B7B0;
+                color: #FFFFFF;
+                padding: 0.2em 0.3em;
+                margin: 2px;
+                font-weight: bolder;
             }
         </style>`;
 

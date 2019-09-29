@@ -9,7 +9,9 @@ The FTP connector support as listener where listen to given remote location and 
 The Ballerina has first-class support for HTTP and implementing an HTTP service is straightforward. The caller will send JSON payload that consists of employees data. The HTTP service read the JSON payload and transform to XML. Then with the support of FTP connector, the XML employees data upload to the FTP server.
 
 ## Prerequisites
-Link to download ballerina integrator.
+- [Java](https://www.oracle.com/technetwork/java/index.html)
+- A Text Editor or an IDE
+- Link to download Ballerina Integrator
 
 ## Implementation
 The ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the ballerina project and module in this link.

@@ -16,9 +16,9 @@
 
 import ballerina/config;
 import ballerina/http;
+import ballerina/log;
 import ballerina/xmlutils;
 import wso2/ftp;
-import ballerina/log;
 
 const string remoteLocation = "/home/in/employees.xml";
 

@@ -44,8 +44,8 @@ execute_tests() {
     executionNameList=("healthcare-service" "exposing-several-services-as-a-single-service"
     "sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content"
     "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "backend-for-frontend"
-    "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "content-based-routing"
-    "message-filtering" "pass-through-messaging" "scatter-gather-messaging")
+    "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "content-based-routing-advanced"
+    "message-filtering" "pass-through-messaging" "scatter-gather-messaging-advanced")
     executionPathList=(${path1} ${path2} ${path3} ${path4} ${path5} ${path6} ${path7} ${path8} ${path9} ${path10} ${path11} ${path12}
     ${path13} ${path14} ${path15})
     moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "appointment_mgt" "desktop_bff"
