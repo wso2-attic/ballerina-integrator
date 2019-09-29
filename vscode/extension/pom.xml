@@ -4,15 +4,13 @@
     <parent>
         <groupId>org.wso2.ballerina-integrator</groupId>
         <artifactId>ballerina-integrator</artifactId>
-        <version>1.0.0-alpha</version>
+        <version>1.0.0-beta</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wso2.ballerina-integrator</groupId>
     <artifactId>ballerina-integrator-vscode-plugin</artifactId>
-    <version>1.0.0-alpha</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
@@ -28,7 +26,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.3.2</version>
                 <executions>
                     <execution>
                         <id>npm install</id>
@@ -92,24 +89,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                <execution>
-                    <id>my-exec</id>
-                    <phase>pre-integration-test</phase>
-                    <goals>
-                        <goal>exec</goal>
-                    </goals>
-                </execution>
-                </executions>
-                <configuration>
-                    <executable>${project-home}/resources/run${script.extension}</executable>
-                    <skip>true</skip>
-                </configuration>
             </plugin>
         </plugins>
     </build>
