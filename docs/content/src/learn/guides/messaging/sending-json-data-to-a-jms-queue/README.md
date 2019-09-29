@@ -16,7 +16,7 @@ Ballerina has first-class support for HTTP and implementing an HTTP service is s
 ## Implementation
 The ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the ballerina project and module in this link.
 
-1. Create a project
+1. Create a project.
 ```bash
 $ ballerina new sending-json-data-to-a-jms-queue
 ```
