@@ -48,7 +48,7 @@ You can open the project with VS Code. The integration implementation is written
 Same as JMS API, create `jms:Connection` then `jms:Session` and finally create `jms:Destination` and `jms:MessageProducer`. In the HTTP resource, build `jms:TextMessage` getting the payload as a `string`. Next, send the message to the sales queue in ActiveMQ. Once the message is sent, verify if the return result is an error. If it is an error, build `http:Response` as the JSON payload. If it is a success, do the same. As the last step, respond to the caller with build `http:Response`.
 
 ## Run the integration
-Before building the module, we have to copy the necessary ActiveMQ dependencies into the project. There are three jar files listed down below. These jar files you can find in the lib folder of ActiveMQ distribution.
+Before building the module, we have to copy the necessary ActiveMQ dependencies into the project. There are three jar files listed down below. These .jar files can be found in the `lib` folder of the ActiveMQ distribution.
 
 * activemq-client-5.15.5.jar
 * geronimo-j2ee-management_1.1_spec-1.0.1.jar
