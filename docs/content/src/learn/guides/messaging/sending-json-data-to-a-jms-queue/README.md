@@ -22,7 +22,7 @@ $ ballerina new sending-json-data-to-a-jms-queue
 ```
 Change directory to the sending-json-data-to-a-jms-queue.
 
-2. Add a module
+2. Add a module.
 ```bash
 $ ballerina add jsontojms
 ```
