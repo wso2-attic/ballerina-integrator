@@ -93,9 +93,9 @@ nav:
       - 'Deploying on Docker': 'develop/deploy-on-docker.md'
       - 'Deploying on Kubernetes': 'develop/deploy-on-kubernetes.md'
       - 'Running as a Java Program': 'develop/running-as-a-java-program.md'
-    - Observe:
-      - 'Observing a Service with Prometheus' : 'observe/observing-a-service.md'
-      - 'Logging using logstash and Kibana' : 'observe/logstash-kibana.md'
+    - Observability:
+      - 'Observing a Service with Prometheus' : 'observability/observing-a-service.md'
+      - 'Logging using logstash and Kibana' : 'observability/logstash-kibana.md'
     - References:
       - 'References' : 'references/references.md'
     - '': page-not-found.md
