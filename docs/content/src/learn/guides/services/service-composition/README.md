@@ -9,11 +9,8 @@ The following are the sections available in this guide.
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
 - [Implementation](#implementation)
-  - [Creating the project structure](#Creating-the-project-structure)
-  - [Developing the service](#Developing-the-service)
 - [Testing](#testing)
 - [Deployment](#deployment)
-  - [Deploying locally](#Deploying-locally)
 
 ## What you’ll build
 To understand how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation and hotel room reservation. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
