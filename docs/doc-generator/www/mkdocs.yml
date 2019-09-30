@@ -46,9 +46,9 @@ theme:
 # Navigation
 nav:
     - 'Home': index.md
-    - Getting Started:
-      - 'Introduction': 'getting-started/introduction.md'
-      - 'Quick Start Guide': 'getting-started/quick-start-guide.md'
+    - Get Started:
+      - 'Introduction': 'get-started/introduction.md'
+      - 'Quick Start Guide': 'get-started/quick-start-guide.md'
     - Learn:
       - 'Integration Use Cases': 'learn/use-cases.md'
       - Guides:
