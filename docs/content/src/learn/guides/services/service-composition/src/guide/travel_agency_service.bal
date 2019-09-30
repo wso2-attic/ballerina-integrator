@@ -35,6 +35,7 @@ service travelAgencyService on travelAgencyEP {
         http:Response outResponse = new;
         json inReqPayload = {};
 
+        // CODE-SEGMENT-BEGIN: segment_1
         // Try parsing the JSON payload from the user request
         var payload = inRequest.getJsonPayload();
         if (payload is json) {
@@ -70,7 +71,9 @@ service travelAgencyService on travelAgencyEP {
             handleError(result);
             return;
         }
+        // CODE-SEGMENT-END: segment_1
 
+        // CODE-SEGMENT-BEGIN: segment_2
         // Reserve airline ticket for the user by calling Airline reservation service
         // construct the payload
         json outReqJsonPayloadAirline = {
@@ -97,7 +100,9 @@ service travelAgencyService on travelAgencyEP {
             handleError(result);
             return;
         }
+        // CODE-SEGMENT-END: segment_2
 
+        // CODE-SEGMENT-BEGIN: segment_3
         // Reserve hotel room for the user by calling Hotel reservation service
         // construct the payload
         json outReqJsonPayloadHotel = {
@@ -124,6 +129,7 @@ service travelAgencyService on travelAgencyEP {
             handleError(result);
             return;
         }
+        // CODE-SEGMENT-END: segment_3
 
         // If all three services response positive status, send a successful message to the user
         outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
