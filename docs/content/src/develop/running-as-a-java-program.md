@@ -2,6 +2,10 @@
 
 Running a Ballerina program or service can be done using a Java command. This is useful since a .jar file is created as part of building the project and the program can be run using a `java -jar` command.
 
+## Pre-requisites
+
+To run Ballerina code as a Java program, you need to have Oracle JDK 1.8.* installed.
+
 ## Running the simple Java command
 
 The following is an example of a `java -jar` command. This is used to run the project built in the [Quick Start Guide](../../getting-started/quick-start-guide).
