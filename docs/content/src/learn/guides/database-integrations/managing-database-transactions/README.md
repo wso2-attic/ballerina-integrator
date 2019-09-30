@@ -87,7 +87,7 @@ The transaction will be successful only when both withdrawal from the transferor
    $mysql -u username -p <database_initializer.sql 
 ``` 
 
-> NOTE : You can find the SQL script [here](resources/database_initializer.sql).
+> **Note** : You can find the SQL script [here](resources/database_initializer.sql).
 
 - Add database configurations to the `ballerina.conf` file.
    - `ballerina.conf` file can be used to provide external configurations to Ballerina programs. Since this guide needs MySQL database integration, a Ballerina configuration file is used to provide the database connection properties to our Ballerina program.
