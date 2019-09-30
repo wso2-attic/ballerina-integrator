@@ -90,11 +90,9 @@ nav:
       - 'Setting up the Developer Environment' : 'develop/setup-dev.md'
       - 'Creating a Project' : 'develop/using-modules.md'
       - 'Working with VS Code' : 'develop/working-with-vscode.md'
-    - Deploy:
-      - 'Deploying on Docker': 'deploy/deploy-on-docker.md'
-      - 'Deploying on Kubernetes': 'deploy/deploy-on-kubernetes.md'
-      - 'Running as a Java Program': 'deploy/running-as-a-java-program.md'
-      - 'CI/CD' : 'deploy/cicd.md'
+      - 'Deploying on Docker': 'develop/deploy-on-docker.md'
+      - 'Deploying on Kubernetes': 'develop/deploy-on-kubernetes.md'
+      - 'Running as a Java Program': 'develop/running-as-a-java-program.md'
     - Observe:
       - 'Observing a Service with Prometheus' : 'observe/observing-a-service.md'
       - 'Logging using logstash and Kibana' : 'observe/logstash-kibana.md'
