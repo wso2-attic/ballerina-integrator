@@ -8,6 +8,8 @@ The FTP connector offers support as a listener, where it listens to the given re
 ## What you'll build
 Ballerina has first-class support for HTTP and implementing an HTTP service is straightforward. The caller will send a JSON payload that consists of employees data. The HTTP service reads the JSON payload and transforms it to XML. Then with the support of FTP connector, the employee's data in XML format gets uploaded to the FTP server.
 
+![Transform JSON to XML and upload to FTP](../../../../assets/img/Transform-JSON-to-XML-and-upload-to-FTP.jpg)
+
 ## Prerequisites
 - [Java](https://www.oracle.com/technetwork/java/index.html)
 - A Text Editor or an IDE
@@ -16,13 +18,13 @@ Ballerina has first-class support for HTTP and implementing an HTTP service is s
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module in this link.
 
-1. Create a project.
+####1. Create a project.
 ```bash
 $ ballerina new converting-json-to-xml-and-upload-to-ftp
 ```
 Change directory to converting-json-to-xml-and-upload-to-ftp.
 
-2. Add a module.
+####2. Add a module.
 ```bash
 $ ballerina add uploadtoftp
 ```
@@ -40,7 +42,7 @@ converting-json-to-xml-and-upload-to-ftp
             └── resources
 ```
 
-3. Write the integration.
+####3. Write the integration.
 You can open the project with VS Code. The integration implementation will be written in the `main.bal` file.  
 
 <!-- INCLUDE_CODE: src/uploadtoftp/main.bal -->
@@ -89,7 +91,7 @@ Use the encrypted value in the `ballerina.conf` file.
 
 After that `ftp:Client` is created with `ftpConfig`. The HTTP listener service will run on 8080 port when you start running the program. When the request is received by the HTTP service, it gets the JSON payload and transforms it to XML. Since Ballerina language is a type-safe language, we have to check if the transformed result returns XML or error. If XML is returned, then we write the XML to the remote FTP location specified in the top with the FTP client. If the return result of the `ftp:put` operation was successful, respond to the call by building JSON payload using `http:Response`. If any error is returned from the above actions, the relevant error message builds with the error reason and responds to the caller. 
 
-## Run the integration
+## Testing
 First, let’s build the module. While being in the converting-json-to-xml-and-upload-to-ftp directory, execute the following command.
 
 ```bash
