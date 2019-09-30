@@ -25,9 +25,6 @@ http:Client airlineReservationEP = new("http://localhost:9091/airline");
 // Client endpoint to communicate with Hotel reservation service
 http:Client hotelReservationEP = new("http://localhost:9092/hotel");
 
-// Client endpoint to communicate with Car rental service
-http:Client carRentalEP = new("http://localhost:9093/car");
-
 // Travel agency service to arrange a complete tour for a user
 @http:ServiceConfig {basePath:"/travel"}
 service travelAgencyService on travelAgencyEP {
@@ -123,33 +120,6 @@ service travelAgencyService on travelAgencyEP {
         if (equalIgnoreCase(hotelStatus, "Failed")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
                     "Provide a valid 'Preference' for 'Accommodation' and try again"});
-            var result = caller->respond(outResponse);
-            handleError(result);
-            return;
-        }
-
-        // Renting car for the user by calling Car rental service
-        // construct the payload
-        json outReqJsonPayloadCar = {
-            Name: check outReqPayload.Name,
-            ArrivalDate: check outReqPayload.ArrivalDate,
-            DepartureDate: check outReqPayload.DepartureDate,
-            Preference: carPreference
-        };
-
-        http:Request outReqPayloadCar = new;
-        outReqPayloadCar.setJsonPayload(<@untainted>outReqJsonPayloadCar);
-
-        // Send a post request to carRentalService with appropriate payload and get response
-        http:Response inResCar = check carRentalEP->post("/rent", outReqPayloadCar);
-
-        // Get the rental status
-        var carResPayload = check inResCar.getJsonPayload();
-        string carRentalStatus = carResPayload.Status.toString();
-        // If rental status is negative, send a failure response to user
-        if (equalIgnoreCase(carRentalStatus, "Failed")) {
-            outResponse.setJsonPayload({"Message":"Failed to rent car! " +
-                    "Provide a valid 'Preference' for 'Car' and try again"});
             var result = caller->respond(outResponse);
             handleError(result);
             return;

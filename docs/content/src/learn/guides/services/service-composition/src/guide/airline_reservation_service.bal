@@ -48,15 +48,21 @@ service airlineReservationService on airlineEP {
             return;
         }
 
-        json name = checkpanic reqPayload.Name;
-        json arrivalDate = checkpanic reqPayload.ArrivalDate;
-        json departDate = checkpanic reqPayload.DepartureDate;
-        json preferredClass = checkpanic reqPayload.Preference;
+        json|error name = reqPayload.Name;
+        json|error arrivalDate = reqPayload.ArrivalDate;
+        json|error departDate = reqPayload.DepartureDate;
+        json|error preferredClass = reqPayload.Preference;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (name == () || arrivalDate == () || departDate == () || preferredClass == ()) {
             response.statusCode = 400;
             response.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
+            var result = caller->respond(response);
+            handleError(result);
+            return;
+        } else if (name is error || arrivalDate is error || departDate is error || preferredRoomType is error) {
+            response.statusCode = 500;
+            response.setJsonPayload({"Message":"Internal Server Error - Error while processing request parameters"});
             var result = caller->respond(response);
             handleError(result);
             return;
