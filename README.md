@@ -1,5 +1,8 @@
 # Ballerina Integrator
 
+[![Build Status](https://wso2.org/jenkins/buildStatus/icon?job=products/ballerina-integrator)](https://wso2.org/jenkins/view/products/job/products/job/ballerina-integrator/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 A powerful, simple-to-learn, code-driven approach to programming integrations - based on the [Ballerina programming language](ballerina.io). It includes first-class cloud-native functions as well as a graphical sequence diagram tool. 
 
 The Ballerina Integrator appeals to those using decentralized integration architectures, Microservices, and cloud-native apps.
