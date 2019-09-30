@@ -39,6 +39,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.wso2.integration.ballerina.constants.Constants.ASSETS_IMG_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.BALLERINA_TOML;
 import static org.wso2.integration.ballerina.constants.Constants.CLOSE_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_BEGIN;
@@ -54,10 +55,12 @@ import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_SE
 import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_TAG;
 import static org.wso2.integration.ballerina.constants.Constants.MARKDOWN_FILE_EXT;
 import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
+import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
 import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR_MD;
+import static org.wso2.integration.ballerina.constants.Constants.WEBSITE_DIR;
 import static org.wso2.integration.ballerina.utils.Utils.copyDirectoryContent;
 import static org.wso2.integration.ballerina.utils.Utils.createDirectory;
 import static org.wso2.integration.ballerina.utils.Utils.createFile;
@@ -66,10 +69,12 @@ import static org.wso2.integration.ballerina.utils.Utils.deleteFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCodeFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCommitHash;
 import static org.wso2.integration.ballerina.utils.Utils.getCurrentDirectoryName;
+import static org.wso2.integration.ballerina.utils.Utils.getLeadingWhitespaces;
 import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWithCodeType;
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
 import static org.wso2.integration.ballerina.utils.Utils.getZipFileName;
 import static org.wso2.integration.ballerina.utils.Utils.isDirEmpty;
+import static org.wso2.integration.ballerina.utils.Utils.isImageAttachmentLine;
 import static org.wso2.integration.ballerina.utils.Utils.removeLicenceHeader;
 
 /**
@@ -105,6 +110,8 @@ public class DocsGenerator {
             deleteEmptyDirs(TEMP_DIR);
             // Copy tempDirectory content to mkdocs content directory.
             copyDirectoryContent(TEMP_DIR, MKDOCS_CONTENT);
+            // Create `target/www` website directory.
+            createWebsiteDirectory();
         } catch (ServiceException e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -166,6 +173,8 @@ public class DocsGenerator {
                 } else if (lineNumber == 1 && line.contains(HASH)) {
                     // Adding front matter to posts.
                     readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line, commitHash));
+                } else if (isImageAttachmentLine(line)) {
+                    readMeFileContent = readMeFileContent.replace(line, getWebsiteImageAttachment(line));
                 }
             }
             IOUtils.write(readMeFileContent, new FileOutputStream(file), String.valueOf(StandardCharsets.UTF_8));
@@ -200,7 +209,7 @@ public class DocsGenerator {
         String fullPathOfIncludeCodeFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line);
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
         String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath)).trim();
-        return getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code);
+        return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
     }
 
     /**
@@ -226,7 +235,7 @@ public class DocsGenerator {
         String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath));
 
         String code = getCodeSegment(codeFileContent, segment).trim();
-        return getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code);
+        return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
     }
 
     /**
@@ -242,6 +251,20 @@ public class DocsGenerator {
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new ServiceException("Invalid code segment including. segmentName: " + segmentName);
         }
+    }
+
+    /**
+     * Handle alignment of the code inclusion. Leading whitespaces of the INCLUDE_CODE_TAG line should be added
+     * to the beginning of each code line.
+     * <WHITESPACES>INCLUDE_CODE_TAG => <WHITESPACES>{code}
+     *
+     * @param line INCLUDE_CODE_TAG line
+     * @param code code content as a string
+     * @return aligned code
+     */
+    private static String handleCodeAlignment(String line, String code) {
+        String leadingSpaces = getLeadingWhitespaces(line);
+        return leadingSpaces + code.replace(NEW_LINE, NEW_LINE + leadingSpaces);
     }
 
     /**
@@ -288,8 +311,9 @@ public class DocsGenerator {
         boolean mdFile = FilenameUtils.getExtension(file.getName()).equals(MARKDOWN_FILE_EXT);
         boolean moduleMdFile = file.getName().equals("Module.md");
         boolean zipFile = FilenameUtils.getExtension(file.getName()).equals("zip");
+        boolean imgFile = new File(ASSETS_IMG_DIR, file.getName()).exists();
 
-        return !((mdFile && !moduleMdFile) || zipFile);
+        return !((mdFile && !moduleMdFile) || zipFile || imgFile);
     }
 
     /**
@@ -415,5 +439,26 @@ public class DocsGenerator {
         } catch (IOException e) {
             throw new ServiceException("Could not find the README.md file: " + file.getPath(), e);
         }
+    }
+
+    /**
+     * Create `target/www` website directory.
+     */
+    private static void createWebsiteDirectory() {
+        // Copy `www` directory inside `target` directory.
+        copyDirectoryContent("www", WEBSITE_DIR);
+        // Copy `target/mkdocs-content` directory content to `target/www/docs`.
+        copyDirectoryContent(MKDOCS_CONTENT, WEBSITE_DIR + File.separator + "docs");
+    }
+
+    /**
+     * Since GitHub repo Image attachment Url is not working in the website, `../` should be added to the image Url.
+     *
+     * @param line image attachment line
+     * @return image attachment line for website
+     */
+    private static String getWebsiteImageAttachment(String line) {
+        String imageUrl = line.trim().split("]\\(")[1].replace(")", EMPTY_STRING);
+        return line.replace(imageUrl, "../" + imageUrl);
     }
 }
