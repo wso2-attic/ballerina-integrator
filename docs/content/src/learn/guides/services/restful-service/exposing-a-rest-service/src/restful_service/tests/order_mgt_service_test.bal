@@ -20,7 +20,6 @@ import ballerina/http;
 http:Client clientEP = new("http://localhost:9090/ordermgt");
 
 @test:Config {}
-
 // Function to test POST resource 'addOrder'.
 function testResourceAddOrder() {
     // Initialize the empty http request.
