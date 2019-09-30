@@ -110,7 +110,7 @@ The travel agency service communicates with the hotel reservation service to boo
 
 ### Invoking the service
 
-- Navigate to `service-composition` and run the following command to start all four HTTP services. This starts the `Airline Reservation`, `Hotel Reservation` and `Travel Agency` services on ports 9091, 9092 and 9090 respectively.
+- Navigate to `service-composition` and run the following command to start all three HTTP services. This starts the `Airline Reservation`, `Hotel Reservation` and `Travel Agency` services on ports 9091, 9092 and 9090 respectively.
 
 ```bash
    $ ballerina run guide
