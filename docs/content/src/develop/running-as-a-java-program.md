@@ -85,7 +85,7 @@ public function main() {
 }
 ```
 
-The config key is `hellouser`. To pass a value to this config from the CLI, we can run the following command. The `-e` argument passes the key and value to the program.
+The config key is `hellouser`. To pass a value to this config from the CLI, we can run the following command.
 
 Now you can pass the value of `hellouser` in the `java -jar` command itself as shown below:
 
