@@ -16,7 +16,7 @@ The following are the sections available in this guide.
 ## What you’ll build
 When it comes to data communication, the major challenge is formats of storage mechanisms vary among the systems. 
 
-![alt text](resources/eip-message-transformation-01.svg)
+![alt text](../../../../assets/img/eip-message-transformation-01.svg)
 
 Also, the message producers and consumers use different techniques according to their requirement. So message transformation plays an important role in coupling those message producers and the message consumers. 
 Additionally, the performance impact while message transformation is also an important fact in the real world. Here we discuss main three message transformation patterns in Integration as content filter, content enricher, and claim check.
@@ -24,21 +24,21 @@ Additionally, the performance impact while message transformation is also an imp
 ### Content filter
 The content filter EIP is important when we need to manage a large message in order to get a few data from it. It removes unimportant data items from a message and leaves only the important ones. In addition to removing data elements, Content Filter can be used to simplify a message structure.
 
-![alt text](resources/eip-message-transformation-02.svg)
+![alt text](../../../../assets/img/eip-message-transformation-02.svg)
 
 In our sample scenario, input request contains a lot of student's details. So, content filter uses to simplify the input request such as request contains only student ID. Additional data such as student name, student's city, and gender will be dropped to ensure the performance of message transformation.
 
 ### Content Enricher
 The Content Enricher EIP facilitates communication with another system if the message originator does not have all the required data items available. It accesses an external data source to augment a message with missing information.
 
-![alt text](resources/eip-message-transformation-03.svg)
+![alt text](../../../../assets/img/eip-message-transformation-03.svg)
 
 Content enricher EIP uses to enrich the request data, in our example, it is used to enrich the student's details. We used two databases as student's results details and student's personal details. Using student's ID, it maps the details which belong to a particular student from the tables and send those to the enricher. Then enricher added particular data to the request.
 
 ### Claim check
 The Claim Check EIP reduces the data volume of messages sent across a system without sacrificing information content. It stores the entire message at the initial stage of a sequence of processing steps, and it extracts only the parts required by the following steps. Once processing is completed, it retrieves the stored message and performs any operations. This pattern ensures better performance since large chunks of unwanted data is reduced to lightweight bits before being processed.
 
-![alt text](resources/eip-message-transformation-04.svg)
+![alt text](../../../../assets/img/eip-message-transformation-04.svg)
 
 The ultimate goal of the claim check EIP in our scenario is to validate the student's ID. Check luggage used to send unwanted data which not uses invalidation process, to the student's detail database. After the validation of the student's ID, the original data will add to the request again.
 

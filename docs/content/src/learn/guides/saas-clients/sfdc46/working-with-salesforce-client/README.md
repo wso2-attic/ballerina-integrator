@@ -24,7 +24,7 @@ following operations:
 
 - [Java](https://www.oracle.com/technetwork/java/index.html)
 - A Text Editor or an IDE
-    > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: 
+  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: 
 [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), 
 [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 - Link to download Ballerina Integrator.

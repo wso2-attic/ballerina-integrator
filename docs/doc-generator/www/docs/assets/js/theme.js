@@ -225,12 +225,6 @@ if (distributionDropdown){
 }
 
 /*
- * Initialize highlightjs
- */
-hljs.initHighlightingOnLoad();
-
-
-/*
  * Register ballerina language for highlightJS
  * Grammer: https://github.com/ballerina-platform/ballerina-lang/blob/master/compiler/ballerina-lang/src/main/resources/grammar/BallerinaLexer.g4
  */
@@ -308,10 +302,15 @@ if (typeof hljs === 'object') {
         };
     });
 
+    /*
+    * Initialize highlightjs
+    */
+    hljs.initHighlightingOnLoad();
 
-/*
- * Handle TOC toggle
- */
+
+    /*
+     * Handle TOC toggle
+     */
 var tocBtn = document.querySelector('.md-sidebar.md-sidebar--secondary #tocToggleBtn');
 var tocClass = document.getElementsByTagName('main')[0];
 

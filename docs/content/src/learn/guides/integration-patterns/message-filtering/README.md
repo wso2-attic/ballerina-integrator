@@ -14,11 +14,11 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you’ll build 
-To understand how you can build a message filltering web service using Ballerina, let’s consider a real world use case of a qualified students filtering service based on the marks of subjects.
+To understand how you can build a message filtering web service using Ballerina, let’s consider a real world use case of a qualified students filtering service based on the marks of subjects.
 
 The following figure illustrates all the required functionalities of the Message Filtering Service that we need to build. 
 
-![Message Filtering Service](src/message_filtering/resources/message-filtering.svg "Message Filtering Service")
+![Message Filtering Service](../../../../assets/img/message-filtering.svg)
 
 
 ## Prerequisites
