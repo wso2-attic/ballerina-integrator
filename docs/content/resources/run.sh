@@ -49,9 +49,9 @@ execute_tests() {
     "asynchronous-invocation" "parallel-service-orchestration" "parallel-service-orchestration"
     "parallel-service-orchestration" "parallel-service-orchestration" "exposing-a-rest-service"
     "service-composition" "service-composition" "service-composition" "writing-tests-using-data-providers")
-    executionPathList=(${path1} ${path2} ${path3} ${path4} ${path5} ${path6} ${path7} ${path8} ${path9} ${path10} ${path11} ${path12}
-    ${path13} ${path14} ${path15} ${path16} ${path17} ${path18} ${path19} ${path20} ${path21} ${path22} ${path24} ${path25}
-    ${path26} ${path28})
+    executionPathList=(${path1} ${path2} ${path3} ${path4} ${path5} ${path5} ${path5} ${path5} ${path5} ${path5} ${path5} ${path6}
+    ${path7} ${path8} ${path9} ${path10} ${path10} ${path11} ${path11} ${path11} ${path11} ${path12} ${path14} ${path14}
+    ${path14} ${path15})
     moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "appointment_mgt" "desktop_bff"
     "medical_record_mgt" "message_mgt" "mobile_bff" "notification_mgt" "sample_data_publisher"
     "company_data_service" "message_filtering" "passthrough" "auction_service" "stock_quote_data_backend"
