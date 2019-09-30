@@ -50,7 +50,7 @@ nav:
       - 'Introduction': 'getting-started/introduction.md'
       - 'Quick Start Guide': 'getting-started/quick-start-guide.md'
     - Learn:
-      - 'Overview': 'learn/about-learn.md'
+      - 'Integration Use Cases': 'learn/use-cases.md'
       - Guides:
         - Messaging:
           - 'Asynchronous Messaging' : 'learn/guides/messaging/asynchronous-messaging/asynchronous-messaging.md'
