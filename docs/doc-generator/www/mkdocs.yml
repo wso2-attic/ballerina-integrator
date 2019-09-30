@@ -95,7 +95,7 @@ nav:
       - 'Running as a Java Program': 'develop/running-as-a-java-program.md'
     - Observability:
       - 'Observing a Service with Prometheus' : 'observability/observing-a-service.md'
-      - 'Logging using logstash and Kibana' : 'observability/logstash-kibana.md'
+      - 'Logging using Logstash and Kibana' : 'observability/logstash-kibana.md'
     - References:
       - 'References' : 'references/references.md'
     - '': page-not-found.md
