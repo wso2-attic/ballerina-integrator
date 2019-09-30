@@ -18,15 +18,15 @@ success message is logged if the operation is successful.
 Link to download Ballerina integrator.
 
 ## Implementation
-The Ballerina project should create for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [guide](../../../../develop/using-modules/).
+The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [documentation on creating a project and using modules](../../../../develop/using-modules/).
 
-1. Create a project
+1. Create a project.
 ```bash
 $ ballerina new insert_data
 ```
 Navigate to the insert_data directory.
 
-2. Add a module
+2. Add a module.
 ```bash
 $ ballerina add import_csv
 ```
@@ -45,7 +45,7 @@ The project structure should look like below.
                 └── resources
 ```
 
-3. Set up remote FTP server and obtain the following credentials:
+3. Set up remote FTP server and obtain the following credentials.
    - FTP Host
    - FTP Port
    - FTP Username
@@ -69,14 +69,14 @@ FTP_PASSWORD="<FTP_Password>"
 FTP_PATH="<FTP_Location>""
 ```  
 
-3. Write the integration
-You can open the project with VS Code. The integration implementation is written in the `main.bal` file.
+3. Write your integration.
+You can open the project with VS Code. The implementation will be written in the `main.bal` file.
 
   **main.bal**
     <!-- INCLUDE_CODE: src/import_csv_data/main.bal -->
 
- Here `ftpServerConnector` service is running on `remoteServer` which listens to the configured FTP server location.
- When a CSV file added to the FTP server, file content will be retrieved and inserted into Mongo DB.
+ Here `ftpServerConnector` service is running on `remoteServer`, which listens to the configured FTP server location.
+ When a CSV file is added to the FTP server, the file content will be retrieved and inserted into Mongo DB.
 
 
 ## Run the integration
@@ -86,7 +86,7 @@ First, let’s build the module. While being in the insert_data directory, execu
 $ ballerina build import_csv
 ```
 
-The build command would create an executable jar file. Now run the jar file created in the above step to execute the jar.
+The build command would create an executable .jar file. Now run the .jar file created in the above step to execute the .jar.
 
 ```bash
 $ java -jar target/bin/import_csv.jar

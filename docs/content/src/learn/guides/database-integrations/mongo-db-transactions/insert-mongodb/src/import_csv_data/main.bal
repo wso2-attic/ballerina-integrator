@@ -59,7 +59,7 @@ ftp:Client ftp = new (ftpConfig);
 mongodb:Client mongoClient = check new (mongoConfig);
 
 service ftpServerConnector on ftpListener {
-    resource function fileResource(ftp:WatchEvent m) returns error? {
+    resource function onFileChange(ftp:WatchEvent fileEvent) returns error? {
         foreach ftp:FileInfo v1 in m.addedFiles {
             log:printInfo("Added file path  " + v1.path + " to FTP location");
 
