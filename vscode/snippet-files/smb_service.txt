@@ -1,0 +1,15 @@
+Name : SMB_Service
+Trigger : service/smb
+Imports : wso2/smb
+
+service smbServerConnector on smbListener {
+    resource function fileResource(WatchEvent m) {
+
+        foreach FileInfo v1 in m.addedFiles {
+            log:printInfo("Added file path: " + v1.path);
+        }
+        foreach string v1 in m.deletedFiles {
+            log:printInfo("Deleted file path: " + v1);
+        }
+    }
+}

@@ -8,6 +8,8 @@ The JMS connector is created with a minimum deviation of JMS API for developers 
 ## What you'll build
 Ballerina has first-class support for HTTP and implementing an HTTP service is straightforward. The caller will send a JSON payload that consists of a sales order. The HTTP service reads the payload as text. Then with the support of JMS connector, a JMS text message is built and sent to ActiveMQ.
 
+![Sending JSON data to ActiveMQ queue](../../../../assets/img/JSON-to-ActiveMQ-Queue.jpg)
+
 ## Prerequisites
 - [Java](https://www.oracle.com/technetwork/java/index.html)
 - A Text Editor or an IDE
@@ -16,13 +18,13 @@ Ballerina has first-class support for HTTP and implementing an HTTP service is s
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module in this link.
 
-1. Create a project.
+####1. Create a project.
 ```bash
 $ ballerina new sending-json-data-to-a-jms-queue
 ```
 Change directory to the sending-json-data-to-a-jms-queue.
 
-2. Add a module.
+####2. Add a module.
 ```bash
 $ ballerina add jsontojms
 ```
@@ -40,14 +42,14 @@ sending-json-data-to-a-jms-queue
             └── resources
 ```
 
-3. Write the integration.
+####3. Write the integration.
 You can open the project with VS Code. The integration implementation is written in the `main.bal` file. 
 
 <!-- INCLUDE_CODE: src/jsontojms/main.bal -->
 
 Same as JMS API, create `jms:Connection` then `jms:Session` and finally create `jms:Destination` and `jms:MessageProducer`. In the HTTP resource, build `jms:TextMessage` getting the payload as a `string`. Next, send the message to the sales queue in ActiveMQ. Once the message is sent, verify if the return result is an error. If it is an error, build `http:Response` as the JSON payload. If it is a success, do the same. As the last step, respond to the caller with build `http:Response`.
 
-## Run the integration
+## Testing
 Before building the module, we have to copy the necessary ActiveMQ dependencies into the project. There are three jar files listed down below. These .jar files can be found in the `lib` folder of the ActiveMQ distribution.
 
 * activemq-client-5.15.5.jar

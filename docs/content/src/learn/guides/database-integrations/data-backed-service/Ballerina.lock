@@ -1,0 +1,9 @@
+org_name = "wso2"
+version = "0.0.1"
+lockfile_version = "1.0.0"
+ballerina_version = "1.0.0"
+
+[[imports."wso2/data_backed_service_module:0.0.1"]]
+org_name = "ballerinax"
+name = "java.jdbc"
+version = "0.0.0"

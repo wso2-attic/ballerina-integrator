@@ -50,7 +50,7 @@ execute_tests() {
     ${path13} ${path14} ${path15})
     moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "appointment_mgt" "desktop_bff"
     "medical_record_mgt" "message_mgt" "mobile_bff" "notification_mgt" "sample_data_publisher"
-    "company_data_service" "message_filtering" "passthrough" "auction_service")
+    "company_data_service" "message_filtering" "pass_through" "auction_service")
 
     echo ' _____         _
     |_   _|__  ___| |_ ___

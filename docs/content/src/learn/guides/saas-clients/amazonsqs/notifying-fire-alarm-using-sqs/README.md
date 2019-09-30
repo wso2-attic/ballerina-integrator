@@ -32,7 +32,6 @@ As there can be multiple alert messages available in the queue, the listener is 
 
 
 ## Implementation
-> If you want to skip the basics and move directly to the [Testing](#testing) section, you can download the project from GitHub and skip the [Implementation](#implementation) instructions.
 
 Take a look at the code samples below to understand how to implement the scenario.
 
