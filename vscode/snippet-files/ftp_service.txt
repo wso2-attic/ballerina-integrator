@@ -1,0 +1,15 @@
+Name : FTP_Service
+Trigger : service/ftp
+Imports : wso2/ftp
+
+service ftpServerConnector on ftpListener {
+    resource function fileResource(WatchEvent m) {
+
+        foreach FileInfo v1 in m.addedFiles {
+            log:printInfo("Added file path: " + v1.path);
+        }
+        foreach string v1 in m.deletedFiles {
+            log:printInfo("Deleted file path: " + v1);
+        }
+    }
+}
