@@ -8,7 +8,7 @@ Service orchestration is a common integration scenario where, upon a request fro
 
 We will build a service called `doctorAppointment` that accepts a client's request for a doctor’s appointment. The service calls the reservation service with the request payload sent by the client to reserve the appointment, gets the response, checks if the appointment is confirmed, and if confirmed, calls the payment endpoint to settle the fee of the appointment. Finally, if the payment is successful, it will merge both the responses from the appointment service and the payment service and respond back to the client. If the appointment reservation is not successful, it sends back a payload saying the appointment failed.
 
-![service-orchestration](../../assets/img/service_orchestration.png)
+![service-orchestration](../../../../assets/img/service_orchestration.png)
 
 ## Prerequisites
 

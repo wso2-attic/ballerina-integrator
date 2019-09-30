@@ -66,8 +66,11 @@ nav:
           - 'Parallel Service Orchestration' : 'learn/guides/services/parallel-service-orchestration/parallel-service-orchestration.md'
         - Integration Patterns:
           - 'Content-based Routing' : 'learn/guides/integration-patterns/content-based-routing/content-based-routing.md'
+          - 'Content-based Routing Advanced': 'learn/guides/integration-patterns/content-based-routing-advanced/content-based-routing-advanced.md'
           - 'Pass-through Messaging' : 'learn/guides/integration-patterns/pass-through-messaging/pass-through-messaging.md'
-          - 'Scatter-gather Messaging' : 'learn/guides/integration-patterns/scatter-gather-messaging/scatter-gather-messaging.md'
+          - 'Scatter-gather Messaging' : 'learn/guides/integration-patterns/scatter-gather-flow/scatter-gather-flow.md'
+          - 'Scatter-gather Messaging Advanced': 'learn/guides/integration-patterns/scatter-gather-messaging-advanced/scatter-gather-messaging-advanced.md'
+          - 'Service-orchestration': 'learn/guides/integration-patterns/service-orchestration/service-orchestration.md'
           - 'Message Filtering' : 'learn/guides/integration-patterns/message-filtering/message-filtering.md'
           - 'Backend for Frontend' : 'learn/guides/integration-patterns/backend-for-frontend/backend-for-frontend.md'
           - 'EIP Message Construction' : 'learn/guides/integration-patterns/eip-message-construction/eip-message-construction.md'
@@ -76,6 +79,11 @@ nav:
           - 'Data-backed Service' : 'learn/guides/database-integrations/data-backed-service/data-backed-service.md'
           - 'Managing Database Transactions' : 'learn/guides/database-integrations/managing-database-transactions/managing-database-transactions.md'
           - 'Integration with MongoDB' : 'learn/guides/database-integrations/mongo/mongo.md'
+        - Saas Clients:
+          - 'sfdc46':
+            - 'Working With Salesforce Client': 'learn/guides/saas-clients/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
+            - 'Import Contacts into Salesforce Using FTP': 'learn/guides/saas-clients/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
+            - 'Salesforce to MySQL Database': 'learn/guides/saas-clients/sfdc46/salesforce-to-mysql-db/salesforce-to-mysql-db.md'
       - Tutorials:
         - 'Sending a Simple Message to a Service' : 'learn/integration-tutorials/sending-a-simple-message-to-a-service/README.md'
         - 'Sending a Simple Message to a Datasource' : 'learn/integration-tutorials/sending-a-simple-message-to-a-datasource/README.md'
