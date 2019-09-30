@@ -6,7 +6,7 @@ In this example, we are going to send a message input to a service which will ou
 The backend has been implemented to accept user input and provide an output message. 
 
 ## Developement
-It is implemented a service as 'hello' which has the function as sayHello. As an exmaple, if user provides an input as 'John', it will send the response to the client as 'Hello John'. 
+A service called `hello` is implemented, which has a function called `sayHello`. For example, if you provide an input 'John', it will send the response to the client as 'Hello John'.
 
 ## Invoking the Service
  Navigate to the folder 'sending-a-simple-message-to-a-service' and start the 'hello service.'
