@@ -4,7 +4,7 @@ A transaction is a small unit of a program that must maintain Atomicity, Consist
 commonly known as ACID properties − in order to ensure accuracy, completeness, and data integrity.
 
 > In this guide, you will learn about managing database transactions using Ballerina. Please note that Ballerina
-> transactions is an experimental feature. Please use `--experimental` flag when compiling Ballerina modules which
+> transactions is an experimental feature. Please use `--experimental` flag when compiling Ballerina modules that
 > contain transaction-related constructs.
 
 Following are the sections available in this guide.
