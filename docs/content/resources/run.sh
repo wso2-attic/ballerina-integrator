@@ -54,7 +54,7 @@ execute_tests() {
     ${path14} ${path15})
     moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "appointment_mgt" "desktop_bff"
     "medical_record_mgt" "message_mgt" "mobile_bff" "notification_mgt" "sample_data_publisher"
-    "company_data_service" "message_filtering" "passthrough" "auction_service" "stock_quote_data_backend"
+    "company_data_service" "message_filtering" "pass_through" "auction_service" "stock_quote_data_backend"
     "stock_quote_summary_service" "airline_reservation" "car_rental" "hotel_reservation" "travel_agency" "restful_service"
     "airline_reservation" "car_rental" "hotel_reservation" "hello_service")
 

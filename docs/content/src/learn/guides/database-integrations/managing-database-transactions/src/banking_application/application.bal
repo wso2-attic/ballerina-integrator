@@ -1,4 +1,4 @@
-// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -23,8 +23,8 @@ public function main () {
     var createAccRet = createAccounts();
     int accIdUser1;
     int accIdUser2;
-    if (createAccRet is (int, int)) {
-        (accIdUser1, accIdUser2) = createAccRet;
+    if (createAccRet is [int, int]) {
+        [accIdUser1, accIdUser2] = createAccRet;
 
         // Deposit money to both new accounts
         log:printInfo("Deposit $500 to Alice's account initially");
@@ -75,13 +75,13 @@ public function main () {
     }
 }
 
-function createAccounts() returns (int, int)|error {
+function createAccounts() returns @tainted [int, int]|error {
     var createAccRet1 = createAccount("Alice");
-    (int,int)|error retVal;
+    [int,int]|error retVal;
     if (createAccRet1 is int) {
         var createAccRet2 = createAccount("Bob");
         if (createAccRet2 is int) {
-           return (createAccRet1, createAccRet2) ;
+           return [createAccRet1, createAccRet2] ;
         } else {
             error err = error("Account creation failed");
             return err;

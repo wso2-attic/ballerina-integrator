@@ -1,4 +1,4 @@
-// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -20,37 +20,41 @@ import ballerina/test;
 int TEST_EMPLOYEE_ID = 879796979;
 
 // Create an endpoint with employee db service
-http:Client httpEndpoint = new("http://localhost:9090/records");
+http:Client httpEndpoint = new ("http://localhost:9090/records");
 
 @test:Config {
     dependsOn: ["testAddEmployeeResource"]
 }
 function testRetrieveByIdResource() {
-    json expectedJson;
+    json expectedPayload;
     // Testing retrieve by employee id resource
     // Prepare request with query parameter
-    string url = "/employee/" + TEST_EMPLOYEE_ID;
+    string url = "/employee/" + TEST_EMPLOYEE_ID.toString();
     // Send the request to service and get the response
     var resp = httpEndpoint->get(url);
     if (resp is http:Response) {
         // Test the responses from the service with the original test data
-        test:assertEquals(resp.statusCode, 200, msg =
+        test:assertEquals(resp.statusCode, http:STATUS_OK, msg =
             "Retreive employee resource did not reespond with 200 OK signal");
         var receivedPayload = resp.getJsonPayload();
         if (receivedPayload is json) {
-            expectedJson = [{ "EmployeeID": 879796979, "Name": "Alice", "Age": 30, "SSN":
-            123456789 }];
-            test:assertEquals(receivedPayload[0], expectedJson[0], msg =
+            expectedPayload = [{
+                "EmployeeID": 879796979,
+                "Name": "Alice",
+                "Age": 30,
+                "SSN": 123456789
+            }];
+            test:assertEquals(receivedPayload, expectedPayload, msg =
                 "Name did not store in the database");
         } else {
-            test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail().message);
+            test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail()?.message);
         }
     } else {
-        test:assertFail(msg = "Request failed: " + <string>resp.detail().message);
+        test:assertFail(msg = "Request failed: " + <string>resp.detail()?.message);
     }
 }
 
-@test:Config
+@test:Config {}
 function testAddEmployeeResource() {
 
     // Initialize the empty http request
@@ -59,26 +63,30 @@ function testAddEmployeeResource() {
 
     // Testing add new employee resource
     // Prepare sample employee and set the json payload
-    json requestJson = { "name": "Alice", "age": 30, "ssn": 123456789, "employeeId":
-    TEST_EMPLOYEE_ID };
+    json requestJson = {
+        "name": "Alice",
+        "age": 30,
+        "ssn": 123456789,
+        "employeeId": TEST_EMPLOYEE_ID
+    };
     req.setJsonPayload(requestJson);
     // Send the request to service and get the response
     var resp = httpEndpoint->post("/employee", req);
     if (resp is http:Response) {
         // Test the response status code is correct
-        test:assertEquals(resp.statusCode, 200, msg =
+        test:assertEquals(resp.statusCode, http:STATUS_OK, msg =
             "Add new employee resource did not reespond with 200 OK signal");
         // Test the responses from the service with the original test data
         var receivedPayload = resp.getJsonPayload();
         if (receivedPayload is json) {
-            expectedJson = { "Status": "Data Inserted Successfully" };
+            expectedJson = {"Status": "Data Inserted Successfully"};
             test:assertEquals(receivedPayload, expectedJson, msg =
                 "Name did not store in the database");
         } else {
-            test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail().message);
+            test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail()?.message);
         }
     } else {
-        test:assertFail(msg = "Request failed: " + <string>resp.detail().message);
+        test:assertFail(msg = "Request failed: " + <string>resp.detail()?.message);
     }
 }
 
@@ -92,26 +100,30 @@ function testUpdateEmployeeResource() {
 
     // Testing update employee resource
     // Prepare sample employee and set the json payload
-    json requestJson = { "name": "'Alice_Updated'", "age": 35, "ssn": 123456789,
-        "employeeId": TEST_EMPLOYEE_ID };
+    json requestJson = {
+        "name": "'Alice_Updated'",
+        "age": 35,
+        "ssn": 123456789,
+        "employeeId": TEST_EMPLOYEE_ID
+    };
     req.setJsonPayload(requestJson);
     // Send the request to service and get the response
     var resp = httpEndpoint->put("/employee/", req);
     if (resp is http:Response) {
         // Test the responses from the service with the updated test data
-        test:assertEquals(resp.statusCode, 200, msg =
+        test:assertEquals(resp.statusCode, http:STATUS_OK, msg =
             "Add new employee resource did not reespond with 200 OK signal");
 
         var receivedPayload = resp.getJsonPayload();
         if (receivedPayload is json) {
-            expectedJson = { "Status": "Data Updated Successfully" };
+            expectedJson = {"Status": "Data Updated Successfully"};
             test:assertEquals(receivedPayload, expectedJson, msg =
                 "Name did not updated in the database");
         } else {
-            test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail().message);
+            test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail()?.message);
         }
     } else {
-        test:assertFail(msg = "Request failed: " + <string>resp.detail().message);
+        test:assertFail(msg = "Request failed: " + <string>resp.detail()?.message);
     }
 }
 
@@ -125,21 +137,21 @@ function testDeleteEmployeeResource() {
 
     // Testing delete employee resource
     // Send the request to service and get the response
-    string url = "/employee/" + TEST_EMPLOYEE_ID;
+    string url = "/employee/" + TEST_EMPLOYEE_ID.toString();
     var resp = httpEndpoint->delete(url, req);
     if (resp is http:Response) {
         // Test whether the delete operation succeed
-        test:assertEquals(resp.statusCode, 200, msg =
+        test:assertEquals(resp.statusCode, http:STATUS_OK, msg =
             "Delete employee resource did not reespond with 200 OK signal");
 
         var receivedPayload = resp.getJsonPayload();
         if (receivedPayload is json) {
-            expectedJson = { "Status": "Data Deleted Successfully" };
+            expectedJson = {"Status": "Data Deleted Successfully"};
             test:assertEquals(receivedPayload, expectedJson, msg = "Delete data resource failed");
         } else {
-            test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail().message);
+            test:assertFail(msg = "Payload retrieval failed: " + <string>receivedPayload.detail()?.message);
         }
     } else {
-        test:assertFail(msg = "Request failed: " + <string>resp.detail().message);
+        test:assertFail(msg = "Request failed: " + <string>resp.detail()?.message);
     }
 }
