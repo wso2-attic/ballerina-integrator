@@ -17,13 +17,13 @@ The following are the sections available in this guide.
 
 There are different ways of messaging between services such as pass-through messaging, content-based routing of messages, header-based routing of messages, and scatter-gather messaging. There is a delay in messaging while processing an incoming message in all messaging methods excluding pass-through messaging. When routing the message without processing/inspecting the message payload, the most efficient way is the pass-through messaging. Here are some differences between conventional message processing vs pass-through messaging.
 
-![alt text](src/passthrough/resources/pass-through-messaging-1.svg	)
+![alt text](../../../../assets/img/pass-through-messaging-1.svg)
 
 Conventional message processing methods include a message processor for processing messages, but pass-through messaging skipped the message processor. It thereby saves the processing time and power and is more efficient when compared to other types.
 
 Now let's understand the scenario described here. The owner needs to expand the business, so he makes online shop that is connected to the local shop, to expand the business. When you connect to the online shop, it will automatically be redirected to the local shop without any latency. To do so, the pass-through messaging method is used.
 
-![alt text](src/passthrough/resources/pass-through-messaging-2.svg	)
+![alt text](../../../../assets/img/pass-through-messaging-2.svg	)
 
 The two shops are implemented as two separate services named as 'OnlineShopping' and 'LocalShop'. When a user makes a call to 'OnlineShopping' using an HTTP request, the request is redirected to the 'LocalShop' service without processing the incoming request. Also the response from the 'LocalShop' is not be processed in 'OnlineShopping'. If it processes the incoming request or response from the 'LocalShop', it will no longer be a pass-through messaging method. 
 

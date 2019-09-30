@@ -281,4 +281,19 @@ public class Utils {
         File parent = tomlFile.getParentFile();
         return parent.getPath() + File.separator + parent.getName() + ".zip";
     }
+
+    /**
+     * Check whether given string has a image attachment syntax.
+     *
+     * @param line line
+     * @return is image attachment line
+     */
+    public static boolean isImageAttachmentLine(String line) {
+        try {
+            return line.trim().substring(0, 2).equals("![") && line.contains("assets/img");
+        } catch (Exception e) {
+            logger.error("Checking image attachment syntax failed, line:" + line, e);
+            return false;
+        }
+    }
 }
