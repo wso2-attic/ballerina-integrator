@@ -14,10 +14,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/test;
 import ballerina/http;
 import ballerina/io;
 import ballerina/stringutils;
+import ballerina/test;
 
 http:Client clientEP = new("http://localhost:9090/stockQuote");
 

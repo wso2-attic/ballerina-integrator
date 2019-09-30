@@ -29,7 +29,6 @@ http:Client clientEP = new("http://localhost:9092/hotel");
 
 // Function to test resource 'miramar'
 @test:Config {}
-
 function testResourceMiramar () {
     // Initialize the empty http requests and responses
     http:Request req = new;
@@ -59,7 +58,6 @@ function testResourceMiramar () {
 
 // Function to test resource 'aqueen'
 @test:Config {}
-
 function testResourceAqueen () {
     // Initialize the empty http requests and responses
     http:Request req = new;
