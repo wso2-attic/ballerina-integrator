@@ -1,0 +1,10 @@
+[project]
+org-name= "wso2"
+version= "0.1.0"
+
+[platform]
+target = "java8"
+
+    [[platform.libraries]]
+    module = "data_backed_service_module"
+    path = "./lib/mysql-connector-java-8.0.11.jar"

@@ -50,7 +50,7 @@ to create the project and modules. You can learn about the Ballerina project and
 2. Create a module.
 
     ```bash
-    $ ballerina add sfdc_to_mysql_db
+    $ ballerina add guide
     ```
 
    The project structure is created as indicated below.
@@ -59,7 +59,7 @@ to create the project and modules. You can learn about the Ballerina project and
     salesforce-to-mysql-db
     ├── Ballerina.toml
     └── src
-        └── sfdc_to_mysql_db
+        └── guide
             ├── Module.md
             ├── main.bal
             ├── resources

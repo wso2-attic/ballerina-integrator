@@ -60,6 +60,7 @@ import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRAC
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR_MD;
+import static org.wso2.integration.ballerina.constants.Constants.WEBSITE_DIR;
 import static org.wso2.integration.ballerina.utils.Utils.copyDirectoryContent;
 import static org.wso2.integration.ballerina.utils.Utils.createDirectory;
 import static org.wso2.integration.ballerina.utils.Utils.createFile;
@@ -73,6 +74,7 @@ import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWit
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
 import static org.wso2.integration.ballerina.utils.Utils.getZipFileName;
 import static org.wso2.integration.ballerina.utils.Utils.isDirEmpty;
+import static org.wso2.integration.ballerina.utils.Utils.isImageAttachmentLine;
 import static org.wso2.integration.ballerina.utils.Utils.removeLicenceHeader;
 
 /**
@@ -108,6 +110,8 @@ public class DocsGenerator {
             deleteEmptyDirs(TEMP_DIR);
             // Copy tempDirectory content to mkdocs content directory.
             copyDirectoryContent(TEMP_DIR, MKDOCS_CONTENT);
+            // Create `target/www` website directory.
+            createWebsiteDirectory();
         } catch (ServiceException e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -169,6 +173,8 @@ public class DocsGenerator {
                 } else if (lineNumber == 1 && line.contains(HASH)) {
                     // Adding front matter to posts.
                     readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line, commitHash));
+                } else if (isImageAttachmentLine(line)) {
+                    readMeFileContent = readMeFileContent.replace(line, getWebsiteImageAttachment(line));
                 }
             }
             IOUtils.write(readMeFileContent, new FileOutputStream(file), String.valueOf(StandardCharsets.UTF_8));
@@ -433,5 +439,26 @@ public class DocsGenerator {
         } catch (IOException e) {
             throw new ServiceException("Could not find the README.md file: " + file.getPath(), e);
         }
+    }
+
+    /**
+     * Create `target/www` website directory.
+     */
+    private static void createWebsiteDirectory() {
+        // Copy `www` directory inside `target` directory.
+        copyDirectoryContent("www", WEBSITE_DIR);
+        // Copy `target/mkdocs-content` directory content to `target/www/docs`.
+        copyDirectoryContent(MKDOCS_CONTENT, WEBSITE_DIR + File.separator + "docs");
+    }
+
+    /**
+     * Since GitHub repo Image attachment Url is not working in the website, `../` should be added to the image Url.
+     *
+     * @param line image attachment line
+     * @return image attachment line for website
+     */
+    private static String getWebsiteImageAttachment(String line) {
+        String imageUrl = line.trim().split("]\\(")[1].replace(")", EMPTY_STRING);
+        return line.replace(imageUrl, "../" + imageUrl);
     }
 }
