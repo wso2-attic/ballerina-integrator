@@ -23,7 +23,7 @@ should be added to salesforce) it will fetch the CSV file content and insert all
 Salesforce using `salesforceBulkClient` as a single batch. Then it will get the insertion result using 
 `salesforceBulkClient` and if the operation is successful, a success message is logged.
 
-![import contacts to sfdc using ftp](../../../../../../assets/img/import_contacts_to_sfdc_using_ftp.png)
+![import contacts to sfdc using ftp](../../../../../../assets/img/import-contacts-into-salesforce-using-ftp.jpg)
 
 ## Prerequisites
 
