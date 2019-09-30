@@ -46,11 +46,11 @@ theme:
 # Navigation
 nav:
     - 'Home': index.md
-    - Getting Started:
-      - 'Introduction': 'getting-started/introduction.md'
-      - 'Quick Start Guide': 'getting-started/quick-start-guide.md'
+    - Get Started:
+      - 'Introduction': 'get-started/introduction.md'
+      - 'Quick Start Guide': 'get-started/quick-start-guide.md'
     - Learn:
-      - 'Overview': 'learn/about-learn.md'
+      - 'Integration Use Cases': 'learn/use-cases.md'
       - Guides:
         - Messaging:
           - 'Asynchronous Messaging' : 'learn/guides/messaging/asynchronous-messaging/asynchronous-messaging.md'
@@ -90,14 +90,12 @@ nav:
       - 'Setting up the Developer Environment' : 'develop/setup-dev.md'
       - 'Creating a Project' : 'develop/using-modules.md'
       - 'Working with VS Code' : 'develop/working-with-vscode.md'
-    - Deploy:
-      - 'Deploying on Docker': 'deploy/deploy-on-docker.md'
-      - 'Deploying on Kubernetes': 'deploy/deploy-on-kubernetes.md'
-      - 'Running as a Java Program': 'deploy/running-as-a-java-program.md'
-      - 'CI/CD' : 'deploy/cicd.md'
-    - Observe:
-      - 'Observing a Service with Prometheus' : 'observe/observing-a-service.md'
-      - 'Logging using logstash and Kibana' : 'observe/logstash-kibana.md'
+      - 'Deploying on Docker': 'develop/deploy-on-docker.md'
+      - 'Deploying on Kubernetes': 'develop/deploy-on-kubernetes.md'
+      - 'Running as a Java Program': 'develop/running-as-a-java-program.md'
+    - Observability:
+      - 'Observing a Service with Prometheus' : 'observability/observing-a-service.md'
+      - 'Logging using Logstash and Kibana' : 'observability/logstash-kibana.md'
     - References:
       - 'References' : 'references/references.md'
     - '': page-not-found.md
