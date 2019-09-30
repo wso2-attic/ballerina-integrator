@@ -76,7 +76,7 @@ managing-database-transactions
 5. Open the project with VS Code and write the integration implementation and tests in the `account_manager.bal`, `application.bal`, and `account_manager_test.bal` files respectively.
 
 6. The `transferMoney` function of `account_manager.bal` demonstrates how we can use transactions in Ballerina. It comprises of two different operations; withdrawal and deposit. To ensure that the transferring operation happens as a whole, it needs to reside in a database transaction block.
-Transactions guarantee the 'ACID' properties. So if any of the withdrawal or deposit fails, the transaction will be aborted and all the operations carried out in the same transaction will be rolled back.
+Transactions guarantee the 'ACID' properties. So if any of the withdrawal or deposit operations fail, the transaction will be aborted and all the operations carried out in the same transaction will be rolled back.
 The transaction will be successful only when both, withdrawal from the transferor and deposit to the transferee are successful. 
 
 ## Testing 
