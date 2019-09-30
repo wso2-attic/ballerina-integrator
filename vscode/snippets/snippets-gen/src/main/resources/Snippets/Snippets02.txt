@@ -1,0 +1,18 @@
+Name :    AmazonS3_Service
+Trigger : service/http
+Imports : ballerina/http, ballerina/web
+
+service ${serviceName} on new webSub:Listener(9098) {
+    resource func ${newResource}(grpc:Caller caller, string requ) {
+
+        }
+ } external
+
+
+
+
+
+
+
+
+
