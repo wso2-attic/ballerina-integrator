@@ -16,7 +16,6 @@
 
 import ballerina/http;
 import ballerina/log;
-import ballerina/stringutils;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
@@ -60,13 +59,13 @@ service hotelReservationService on hotelEP {
         produces:["application/json"]}
     resource function reserveRoom(http:Caller caller, http:Request request) {
         http:Response response = new;
-        map<json> reqPayload = {};
+        json reqPayload = {};
 
         var payload = request.getJsonPayload();
         // Try parsing the JSON payload from the request
         if (payload is json) {
             // Valid JSON payload
-            reqPayload = <map<json>> payload;
+            reqPayload = payload;
         } else {
             // NOT a valid JSON payload
             response.statusCode = 400;
@@ -76,10 +75,10 @@ service hotelReservationService on hotelEP {
             return;
         }
 
-        json name = reqPayload["Name"];
-        json arrivalDate = reqPayload["ArrivalDate"];
-        json departDate = reqPayload["DepartureDate"];
-        json preferredRoomType = reqPayload["Preference"];
+        json name = reqPayload.Name;
+        json arrivalDate = reqPayload.ArrivalDate;
+        json departDate = reqPayload.DepartureDate;
+        json preferredRoomType = reqPayload.Preference;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (name == () || arrivalDate == () || departDate == () || preferredRoomType == ()) {
@@ -93,7 +92,7 @@ service hotelReservationService on hotelEP {
         // Mock logic
         // If request is for an available room type, send a reservation successful status
         string preferredTypeStr = preferredRoomType.toString();
-        if (stringutils:equalsIgnoreCase(preferredTypeStr, AC) || stringutils:equalsIgnoreCase(preferredTypeStr, NORMAL)) {
+        if (preferredTypeStr.equalsIgnoreCase(AC) || preferredTypeStr.equalsIgnoreCase(NORMAL)) {
             response.setJsonPayload({"Status":"Success"});
         }
         else {

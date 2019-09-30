@@ -16,7 +16,6 @@
 
 import ballerina/http;
 import ballerina/log;
-import ballerina/stringutils;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
@@ -61,13 +60,13 @@ service airlineReservationService on airlineEP {
         produces:["application/json"]}
     resource function reserveTicket(http:Caller caller, http:Request request) {
         http:Response response = new;
-        map<json> reqPayload = {};
+        json reqPayload = {};
 
         var payload = request.getJsonPayload();
         // Try parsing the JSON payload from the request
         if (payload is json) {
             // Valid JSON payload
-            reqPayload = <map<json>> payload;
+            reqPayload = payload;
         } else {
             // NOT a valid JSON payload
             response.statusCode = 400;
@@ -77,10 +76,10 @@ service airlineReservationService on airlineEP {
             return;
         }
 
-        json name = reqPayload["Name"];
-        json arrivalDate = reqPayload["ArrivalDate"];
-        json departDate = reqPayload["DepartureDate"];
-        json preferredClass = reqPayload["Preference"];
+        json name = reqPayload.Name;
+        json arrivalDate = reqPayload.ArrivalDate;
+        json departDate = reqPayload.DepartureDate;
+        json preferredClass = reqPayload.Preference;
 
         // If payload parsing fails, send a "Bad Request" message as the response
         if (name == () || arrivalDate == () || departDate == () || preferredClass == ()) {
@@ -94,8 +93,8 @@ service airlineReservationService on airlineEP {
         // Mock logic
         // If request is for an available flight class, send a reservation successful status
         string preferredClassStr = preferredClass.toString();
-        if (stringutils:equalsIgnoreCase(preferredClassStr, ECONOMY) || stringutils:equalsIgnoreCase(preferredClassStr, BUSINESS) ||
-            stringutils:equalsIgnoreCase(preferredClassStr, FIRST)) {
+        if (preferredClassStr.equalsIgnoreCase(ECONOMY) || preferredClassStr.equalsIgnoreCase(BUSINESS) ||
+            preferredClassStr.equalsIgnoreCase(FIRST)) {
             response.setJsonPayload({"Status":"Success"});
         }
         else {
