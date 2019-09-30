@@ -1,4 +1,4 @@
-// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -16,9 +16,10 @@
 
 import ballerina/config;
 import ballerina/http;
+import ballerina/jsonutils;
+import ballerina/lang.'int as ints;
 import ballerina/log;
-import ballerina/mysql;
-import ballerina/sql;
+import ballerinax/java.jdbc;
 //import ballerinax/docker;
 //import ballerinax/kubernetes;
 
@@ -65,12 +66,10 @@ type Employee record {
 };
 
 // Create SQL client for MySQL database
-mysql:Client employeeDB = new({
-        host: config:getAsString("DATABASE_HOST", defaultValue = "localhost"),
-        port: config:getAsInt("DATABASE_PORT", defaultValue = 3306),
-        name: config:getAsString("DATABASE_NAME", defaultValue = "EMPLOYEE_RECORDS"),
-        username: config:getAsString("DATABASE_USERNAME", defaultValue = "root"),
-        password: config:getAsString("DATABASE_PASSWORD", defaultValue = "root"),
+jdbc:Client employeeDB = new({
+        url: config:getAsString("DATABASE_URL", "jdbc:mysql://127.0.0.1:3306/EMPLOYEE_RECORDS"),
+        username: config:getAsString("DATABASE_USERNAME", "root"),
+        password: config:getAsString("DATABASE_PASSWORD", "root"),
         dbOptions: { useSSL: false }
     });
 
@@ -92,7 +91,7 @@ service EmployeeData on httpListener {
         var payloadJson = request.getJsonPayload();
 
         if (payloadJson is json) {
-            Employee|error employeeData = Employee.convert(payloadJson);
+            Employee|error employeeData = Employee.constructFrom(payloadJson);
 
             if (employeeData is Employee) {
                 // Validate JSON payload
@@ -100,7 +99,7 @@ service EmployeeData on httpListener {
                     employeeData.employeeId == 0) {
                     response.setPayload("Error : json payload should contain
                     {name:<string>, age:<int>, ssn:<123456>, employeeId:<int>}");
-                    response.statusCode = 400;
+                    response.statusCode = http:STATUS_BAD_REQUEST;
                 } else {
                     // Invoke insertData function to save data in the MySQL database
                     json ret = insertData(employeeData.name, employeeData.age, employeeData.ssn,
@@ -110,12 +109,12 @@ service EmployeeData on httpListener {
                 }
             } else {
                 // Send an error response in case of a conversion failure
-                response.statusCode = 400;
+                response.statusCode = http:STATUS_BAD_REQUEST;
                 response.setPayload("Error: Please send the JSON payload in the correct format");
             }
         } else {
             // Send an error response in case of an error in retriving the request payload
-            response.statusCode = 500;
+            response.statusCode = http:STATUS_INTERNAL_SERVER_ERROR;
             response.setPayload("Error: An internal error occurred");
         }
         var respondRet = httpCaller->respond(response);
@@ -134,14 +133,14 @@ service EmployeeData on httpListener {
         // Initialize an empty http response message
         http:Response response = new;
         // Convert the employeeId string to integer
-        var empID = int.convert(employeeId);
+        var empID = ints:fromString(employeeId);
         if (empID is int) {
             // Invoke retrieveById function to retrieve data from Mymysql database
             var employeeData = retrieveById(empID);
             // Send the response back to the client with the employee data
-            response.setPayload(untaint employeeData);
+            response.setPayload(<@untainted> employeeData);
         } else {
-            response.statusCode = 400;
+            response.statusCode = http:STATUS_BAD_REQUEST;
             response.setPayload("Error: employeeId parameter should be a valid integer");
         }
         var respondRet = httpCaller->respond(response);
@@ -162,14 +161,14 @@ service EmployeeData on httpListener {
         // Extract the data from the request payload
         var payloadJson = request.getJsonPayload();
         if (payloadJson is json) {
-            Employee|error employeeData = Employee.convert(payloadJson);
+            Employee|error employeeData = Employee.constructFrom(payloadJson);
 
             if (employeeData is Employee) {
                 if (employeeData.name == "" || employeeData.age == 0 || employeeData.ssn == 0 ||
                     employeeData.employeeId == 0) {
                     response.setPayload("Error : json payload should contain
                         {name:<string>, age:<int>, ssn:<123456>,employeeId:<int>} ");
-                    response.statusCode = 400;
+                    response.statusCode = http:STATUS_BAD_REQUEST;
                 } else {
                     // Invoke updateData function to update data in mysql database
                     json ret = updateData(employeeData.name, employeeData.age, employeeData.ssn,
@@ -179,12 +178,12 @@ service EmployeeData on httpListener {
                 }
             } else {
                 // Send an error response in case of a conversion failure
-                response.statusCode = 400;
+                response.statusCode = http:STATUS_BAD_REQUEST;
                 response.setPayload("Error: Please send the JSON payload in the correct format");
             }
         } else {
             // Send an error response in case of an error in retriving the request payload
-            response.statusCode = 500;
+            response.statusCode = http:STATUS_INTERNAL_SERVER_ERROR;
             response.setPayload("Error: An internal error occurred");
         }
         var respondRet = httpCaller->respond(response);
@@ -203,13 +202,13 @@ service EmployeeData on httpListener {
         // Initialize an empty http response message
         http:Response response = new;
         // Convert the employeeId string to integer
-        var empID = int.convert(employeeId);
+        var empID = ints:fromString(employeeId);
         if (empID is int) {
             var deleteStatus = deleteData(empID);
             // Send the response back to the client with the employee data
             response.setPayload(deleteStatus);
         } else {
-            response.statusCode = 400;
+            response.statusCode = http:STATUS_BAD_REQUEST;
             response.setPayload("Error: employeeId parameter should be a valid integer");
         }
         var respondRet = httpCaller->respond(response);
@@ -220,14 +219,14 @@ service EmployeeData on httpListener {
     }
 }
 
-public function insertData(string name, int age, int ssn, int employeeId) returns (json) {
+public function insertData(string name, int age, int ssn, int employeeId) returns json {
     json updateStatus;
     string sqlString =
     "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES (?,?,?,?)";
     // Insert data to SQL database by invoking update action
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
     // Check type to verify the validity of the result from database
-    if (ret is sql:UpdateResult) {
+    if (ret is jdbc:UpdateResult) {
         updateStatus = { "Status": "Data Inserted Successfully" };
     } else {
         updateStatus = { "Status": "Data Not Inserted", "Error": "Error occurred in data update" };
@@ -237,20 +236,14 @@ public function insertData(string name, int age, int ssn, int employeeId) return
     return updateStatus;
 }
 
-public function retrieveById(int employeeID) returns (json) {
+public function retrieveById(int employeeID) returns json {
     json jsonReturnValue = {};
     string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = ?";
     // Retrieve employee data by invoking select remote function defined in ballerina sql client
     var ret = employeeDB->select(sqlString, (), employeeID);
     if (ret is table<record {}>) {
         // Convert the sql data table into JSON using type conversion
-        var jsonConvertRet = json.convert(ret);
-        if (jsonConvertRet is json) {
-            jsonReturnValue = jsonConvertRet;
-        } else {
-            jsonReturnValue = { "Status": "Data Not Found", "Error": "Error occurred in data conversion" };
-            log:printError("Error occurred in data conversion", err = jsonConvertRet);
-        }
+        jsonReturnValue = jsonutils:fromTable(ret);
     } else {
         jsonReturnValue = { "Status": "Data Not Found", "Error": "Error occurred in data retrieval" };
         log:printError("Error occurred in data retrieval", err = ret);
@@ -258,13 +251,13 @@ public function retrieveById(int employeeID) returns (json) {
     return jsonReturnValue;
 }
 
-public function updateData(string name, int age, int ssn, int employeeId) returns (json) {
+public function updateData(string name, int age, int ssn, int employeeId) returns json {
     json updateStatus;
     string sqlString =
     "UPDATE EMPLOYEES SET Name = ?, Age = ?, SSN = ? WHERE EmployeeID  = ?";
     // Update existing data by invoking update remote function defined in ballerina sql client
     var ret = employeeDB->update(sqlString, name, age, ssn, employeeId);
-    if (ret is sql:UpdateResult) {
+    if (ret is jdbc:UpdateResult) {
         if (ret.updatedRowCount > 0) {
             updateStatus = { "Status": "Data Updated Successfully" };
         } else {
@@ -278,13 +271,13 @@ public function updateData(string name, int age, int ssn, int employeeId) return
     return updateStatus;
 }
 
-public function deleteData(int employeeID) returns (json) {
+public function deleteData(int employeeID) returns json {
     json updateStatus;
 
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = ?";
     // Delete existing data by invoking update remote function defined in ballerina sql client
     var ret = employeeDB->update(sqlString, employeeID);
-    if (ret is sql:UpdateResult) {
+    if (ret is jdbc:UpdateResult) {
         updateStatus = { "Status": "Data Deleted Successfully" };
     } else {
         updateStatus = { "Status": "Data Not Deleted",  "Error": "Error occurred during delete operation" };
