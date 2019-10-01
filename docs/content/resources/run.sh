@@ -45,12 +45,17 @@ execute_tests() {
     "sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content"
     "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "backend-for-frontend"
     "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "content-based-routing-advanced"
-    "message-filtering" "pass-through-messaging" "scatter-gather-messaging-advanced")
-    executionPathList=(${path1} ${path2} ${path3} ${path4} ${path5} ${path6} ${path7} ${path8} ${path9} ${path10} ${path11} ${path12}
-    ${path13} ${path14} ${path15})
+    "message-filtering" "pass-through-messaging" "scatter-gather-messaging-advanced" "asynchronous-invocation"
+    "asynchronous-invocation" "parallel-service-orchestration" "parallel-service-orchestration"
+    "parallel-service-orchestration" "parallel-service-orchestration" "exposing-a-rest-service"
+    "writing-tests-using-data-providers")
+    executionPathList=(${path1} ${path2} ${path3} ${path4} ${path5} ${path5} ${path5} ${path5} ${path5} ${path5} ${path5} ${path6}
+    ${path7} ${path8} ${path9} ${path10} ${path10} ${path11} ${path11} ${path11} ${path11} ${path12} ${path15})
     moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "appointment_mgt" "desktop_bff"
     "medical_record_mgt" "message_mgt" "mobile_bff" "notification_mgt" "sample_data_publisher"
-    "company_data_service" "message_filtering" "pass_through" "auction_service")
+    "company_data_service" "message_filtering" "pass_through" "auction_service" "stock_quote_data_backend"
+    "stock_quote_summary_service" "airline_reservation" "car_rental" "hotel_reservation" "travel_agency" "restful_service"
+    "hello_service")
 
     echo ' _____         _
     |_   _|__  ___| |_ ___
