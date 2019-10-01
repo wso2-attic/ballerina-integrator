@@ -47,7 +47,7 @@ The following diagram illustrates all the required functionality of the Salesfor
     - Refresh Token
     - Refresh Token URL
 
-    > **Note**: When you are setting up the connected app, select the following scopes under **Selected OAuth Scopes**:
+- **Note**: When you are setting up the connected app, select the following scopes under **Selected OAuth Scopes**:
     - Access and manage your data (api)
     - Perform requests on your behalf at any time (refresh_token, offline_access)
     - Provide access to your data via the Web (web)
@@ -97,6 +97,7 @@ REFRESH_URL=""
 #### Developing the service
 
 The following code is the completed sample which exposes the following services:
+
 - createAccount: Creates a new Account and related Contacts & Opportunities using the given JSON.
 - executeQuery: Execute a given SOQL query and return results as a JSON.
 
@@ -124,7 +125,7 @@ You will see service the following log.
 
 #### Test createAccount resource
 
-- Create a file called `account.json` with following JSON content:
+Create a file called `account.json` with following JSON content:
 ```json
 {
     "Name": "Levi Straus & Co",
@@ -165,13 +166,13 @@ You will see service the following log.
 }
 ```
 
-- Invoke the following curl request to create a new Account and related Contacts & Opportunities using the created 
+Invoke the following curl request to create a new Account and related Contacts & Opportunities using the created 
 JSON file.
 ```bash
 curl -X POST -H "Content-Type: application/json" -d @account.json http://localhost:9090/salesforce/account
 ```
 
-- You see the response as follows:
+You will see the following response.
 ```json
 {
   "accountId":"0012v00002Xaac8AAB",
@@ -194,12 +195,12 @@ We can achieve this by running following SOQL query.
 SELECT Id, Name FROM Opportunity WHERE AccountId = '<ACCOUNT_ID_OF_THE_CREATED_ACCOUNT>'
 ```
 
-- Invoke the following curl request to execute the query.
+Invoke the following curl request to execute the query.
 ```bash
 curl -X POST -H "Content-Type: text/plain" -d "SELECT Id, Name FROM Opportunity WHERE AccountId = '<ACCOUNT_ID_OF_THE_CREATED_ACCOUNT>'" http://localhost:9090/salesforce/query
 ```
 
-You see the response as follows:
+You will see the following response.
 ```json
 {
     "totalSize": 3,

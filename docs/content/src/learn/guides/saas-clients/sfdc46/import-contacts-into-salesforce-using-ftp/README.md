@@ -68,28 +68,29 @@ import-contacts-into-salesforce-using-ftp
 
 #### 3. Set up credentials for accessing Salesforce
    
-i. Visit [Salesforce](https://www.salesforce.com) and create a Salesforce Account.
+- Visit [Salesforce](https://www.salesforce.com) and create a Salesforce Account.
 
-ii. Create a connected app and obtain the following credentials: 
-- Base URL (Endpoint)
-- Access Token
-- Client ID
-- Client Secret
-- Refresh Token
-- Refresh Token URL
+- Create a connected app and obtain the following credentials: 
+    - Base URL (Endpoint)
+    - Access Token
+    - Client ID
+    - Client Secret
+    - Refresh Token
+    - Refresh Token URL
 
-> **Note**: When you are setting up the connected app, select the following scopes under **Selected OAuth Scopes**:
-- Access and manage your data (api)
-- Perform requests on your behalf at any time (refresh_token, offline_access)
-- Provide access to your data via the Web (web)
+- **Note**: When you are setting up the connected app, select the following scopes under **Selected OAuth Scopes**:
+    - Access and manage your data (api)
+    - Perform requests on your behalf at any time (refresh_token, offline_access)
+    - Provide access to your data via the Web (web)
 
-iii. Provide the client ID and client secret to obtain the refresh token and access token. For more information on 
-  obtaining OAuth2 credentials, see the 
-  [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
+- Provide the client ID and client secret to obtain the refresh token and access token. For more information on 
+obtaining OAuth2 credentials, see the 
+[Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
 
 #### 4. Set up remote FTP server
 
 Set up remote FTP server and obtain the following credentials:
+
 - FTP Host
 - FTP Port
 - FTP Username
