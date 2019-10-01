@@ -1,18 +1,21 @@
-// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-//
-// WSO2 Inc. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
+/*
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 
 package org.wso2.integration.ballerina;
 
@@ -25,24 +28,26 @@ import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Genearates the content of the snippet.
+ */
 class SnippetsContentGenerator {
-    private SnippetsContentGenerator() {
-    }
+
+    private SnippetsContentGenerator() {}
 
     private static final Logger log = LoggerFactory.getLogger(SnippetsContentGenerator.class);
 
     static void generateSnippetContent(List<Snippet> snippetList) throws IOException {
-        String snippetLine ;
-        String snippetBody ;
-        String snippetFooter ;
-        String autoImports = "" ;
+        String snippetLine;
+        String snippetBody;
+        String snippetFooter;
 
         File sourceFile = Paths.get("vscode", "snippets", "ei-snippets", "src", "main", "java", "org",
                                     "wso2", "integration", "ballerina", "autogen", "SnippetsContent.java").toFile();
 
         try {
-             if(sourceFile.createNewFile()) {
-                log.info(" Successfully created ItemResolverConstants.java file");
+            if (sourceFile.createNewFile()) {
+                log.info("Successfully created ItemResolverConstants.java file");
             }
         } catch (IOException e) {
              String message = "Error while generating SnippetsContent.java file.";
@@ -54,33 +59,32 @@ class SnippetsContentGenerator {
                                       "import org.wso2.integration.ballerina.util.SnippetsBlock;\n" +
                                       "import org.ballerinalang.langserver.common.utils.CommonUtil;\n" +
                                                                                                "\n \n \n" +
-                                      "public class SnippetsContent {\n" + "\n" +
+                                      "public class SnippetsContent {\n\n" +
                                       "    private SnippetsContent() {\n" + "    } " + "\n";
 
-        Pair<String, Integer> pair = getImports(snippetList);
         String snippetContent = "";
-        for(int k = 0; k< pair.getValue(); k++){
+
+        for (Snippet snippetObject : snippetList) {
             StringBuilder stringBuilder = new StringBuilder();
-            String importList = "imports"+k;
-           autoImports = stringBuilder.append(autoImports).append(",").append(importList).toString();
-        }
-        for (Snippet aSnippetList : snippetList) {
-            StringBuilder stringBuilder = new StringBuilder();
-            String[] namesParts = aSnippetList.getName().split(":");
+            Pair<String, String> pair = getImportText(snippetObject);
+
+            String[] namesParts = snippetObject.getName().split(":");
 
             snippetLine = "\n public static SnippetsBlock get" + namesParts[1].trim().
                     replaceAll("_", "") + "() {" + "\n" + pair.getKey();
-            snippetBody = "\n" + "\n" + "\t" + "String snippet = " + "\"" + aSnippetList.getCode() + "\"" + ";";
+            String generated = snippetObject.getCode().replaceAll("\"", "\\\\\"");
 
-            snippetFooter = "\n" + "\n" + "return new SnippetsBlock(ItemResolverConstants." + namesParts[1].trim().
+            snippetBody = " \n \n String snippet = " + "\"" + generated + "\"" + ";";
+
+            snippetFooter = "\n \n" + "return new SnippetsBlock(ItemResolverConstants." + namesParts[1].trim().
                     toUpperCase() + ", snippet," + "ItemResolverConstants.SNIPPET_TYPE," +
-                            "SnippetsBlock.SnippetType.SNIPPET" + autoImports + ");" + "\n" + "}";
+                                     "SnippetsBlock.SnippetType.SNIPPET," + pair.getValue() + ");" + "\n" + "}";
 
             snippetContent = stringBuilder.append(snippetContent).append(snippetLine).append(snippetBody).
                     append(snippetFooter).append("\n").toString();
         }
 
-       String snippetGenerated = snippetContentHeder + snippetContent  + "}";
+        String snippetGenerated = snippetContentHeder + snippetContent + "}";
 
         FileWriter writer = new FileWriter(sourceFile);
         writer.write(snippetGenerated);
@@ -88,28 +92,32 @@ class SnippetsContentGenerator {
 
     }
 
-    private static Pair<String, Integer> getImports(List<Snippet> snippet) {
-        String[] splitImports = {};
+    private static Pair<String, String> getImportText(Snippet snippet) {
+        String[] splitImports;
         String immutablePairs = "";
-        for (Snippet snippetContent : snippet) {
-            String imports = snippetContent.getImports();
-            splitImports = imports.split(",");
-        }
+        String importsList = "";
+
+        String imports = snippet.getImports();
+        splitImports = imports.split(",");
 
         for (int k = 0; k < splitImports.length; k++) {
-            StringBuilder stringBuilder =  new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
             String[] pair = splitImports[k].split("/");
+
             if (pair[0].contains(":")) {
                 String[] keys = pair[0].split(":");
                 pair[0] = keys[1];
             }
 
             immutablePairs = stringBuilder.append(immutablePairs).append("\n").append("\t").
-                            append("ImmutablePair<String, String> imports").append(k).
+                    append("ImmutablePair<String, String> imports").append(k).
                                                   append("= new ImmutablePair<> (").append("\"").append(pair[0]).
                                                   append("\"").append(",").append("\"").append(pair[1]).append("\"").
                                                   append(" )").append(";").toString();
+
+            importsList = "imports" + k;
         }
-        return new Pair<>(immutablePairs, splitImports.length);
+        return new Pair<>(immutablePairs, importsList);
     }
 }
+

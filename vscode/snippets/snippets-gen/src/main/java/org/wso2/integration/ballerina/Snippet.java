@@ -18,7 +18,15 @@
 
 package org.wso2.integration.ballerina;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Generates the Snippet object from the input .txt files.
+ */
 public class Snippet {
+    private static final Logger log = LoggerFactory.getLogger(Snippet.class);
+
     private String name;
     private String imports;
     private String trigger;
@@ -31,8 +39,7 @@ public class Snippet {
         this.code = code;
     }
 
-    public Snippet() {
-    }
+    public Snippet() {}
 
     public Snippet(String trigger) {
         this.trigger = trigger;
@@ -45,7 +52,8 @@ public class Snippet {
     public void setName(String name) {
         this.name = name;
 
-        if (name == null){
+        if (name == null) {
+            log.debug("Name of the snippet is not provided");
             throw new IllegalArgumentException();
         }
     }
@@ -57,7 +65,8 @@ public class Snippet {
     public void setImports(String imports) {
         this.imports = imports;
 
-        if (imports == null){
+        if (imports == null) {
+            log.debug("Imports of the snippet is not provided");
             throw new IllegalArgumentException();
         }
     }
@@ -69,7 +78,8 @@ public class Snippet {
     public void setTrigger(String trigger) {
         this.trigger = trigger;
 
-        if (trigger == null){
+        if (trigger == null) {
+            log.debug("Trigger of the snippet is not provided");
             throw new IllegalArgumentException();
         }
 
@@ -82,7 +92,8 @@ public class Snippet {
     public void setCode(String code) {
         this.code = code;
 
-        if (code == null){
+        if (code == null) {
+            log.debug("Snippet Content for the snippet is not provided");
             throw new IllegalArgumentException();
         }
     }

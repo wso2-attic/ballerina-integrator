@@ -1,18 +1,21 @@
-// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-//
-// WSO2 Inc. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
+/*
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 
 package org.wso2.integration.ballerina.util;
 
@@ -24,13 +27,31 @@ import org.ballerinalang.model.elements.PackageID;
 import org.ballerinalang.model.symbols.SymbolKind;
 import org.ballerinalang.model.types.ConstrainedType;
 import org.ballerinalang.util.BLangConstants;
-import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.CompletionItem;
+import org.eclipse.lsp4j.CompletionItemKind;
+import org.eclipse.lsp4j.InsertTextFormat;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.Range;
+import org.eclipse.lsp4j.TextEdit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.ballerinalang.compiler.semantics.model.symbols.BAnnotationSymbol;
 import org.wso2.ballerinalang.compiler.semantics.model.symbols.BInvokableSymbol;
 import org.wso2.ballerinalang.compiler.semantics.model.symbols.BSymbol;
-import org.wso2.ballerinalang.compiler.semantics.model.types.*;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BArrayType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BErrorType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BField;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BFiniteType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BFutureType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BInvokableType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BMapType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BNilType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BRecordType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BStreamType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BTableType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BTupleType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BUnionType;
 import org.wso2.ballerinalang.compiler.tree.BLangImportPackage;
 import org.wso2.ballerinalang.compiler.tree.BLangPackage;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangExpression;
@@ -38,25 +59,23 @@ import org.wso2.ballerinalang.compiler.util.Name;
 import org.wso2.ballerinalang.util.Flags;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Util functions for the snippet generator.
+ */
 public class CommonUtils {
-    private static final Logger logger = LoggerFactory.getLogger(CommonUtils.class);
-
-    public static final String MD_LINE_SEPARATOR = "  " + System.lineSeparator();
 
     public static final String LINE_SEPARATOR = System.lineSeparator();
-
     public static final String FILE_SEPARATOR = File.separator;
-
-    public static final String LINE_SEPARATOR_SPLIT = "\\r?\\n";
-
     public static final boolean LS_DEBUG_ENABLED;
-
     public static final String BALLERINA_HOME;
-
-    public static final String MARKDOWN_MARKUP_KIND = "markdown";
 
     static {
         String debugLogStr = System.getProperty("ballerina.debugLog");
@@ -66,59 +85,6 @@ public class CommonUtils {
 
     private CommonUtils() {
     }
-
-    /**
-     * Get the Annotation completion Item.
-     *
-     * @param packageID        Package Id
-     * @param annotationSymbol BLang annotation to extract the completion Item
-     * @param ctx              LS Service operation context, in this case completion context
-     * @param pkgAlias         LS Service operation context, in this case completion context
-     * @return {@link CompletionItem} Completion item for the annotation
-     */
-    public static CompletionItem getAnnotationCompletionItem(PackageID packageID, BAnnotationSymbol annotationSymbol,
-                                                             LSContext ctx, CommonToken pkgAlias,
-                                                             Map<String, String> pkgAliasMap) {
-        PackageID currentPkgID = ctx.get(ServiceKeys.CURRENT_PACKAGE_ID_KEY);
-
-        String aliasComponent = "";
-        if (pkgAliasMap.containsKey(packageID.toString())) {
-            // Check if the imported packages contains the particular package with the alias
-            aliasComponent = pkgAliasMap.get(packageID.toString());
-        } else if (!currentPkgID.name.value.equals(packageID.name.value)) {
-            aliasComponent = CommonUtils.getLastItem(packageID.getNameComps()).getValue();
-        }
-
-        boolean withAlias = (pkgAlias == null && !aliasComponent.isEmpty());
-
-        String label = getAnnotationLabel(aliasComponent, annotationSymbol, withAlias);
-        String insertText = getAnnotationInsertText(aliasComponent, annotationSymbol, withAlias);
-        CompletionItem annotationItem = new CompletionItem();
-        annotationItem.setLabel(label);
-        annotationItem.setInsertText(insertText);
-        annotationItem.setInsertTextFormat(InsertTextFormat.Snippet);
-        annotationItem.setDetail(ItemResolverConstants.ANNOTATION_TYPE);
-        annotationItem.setKind(CompletionItemKind.Property);
-        if (currentPkgID.name.value.equals(packageID.name.value)) {
-            // If the annotation resides within the current package, no need to set the additional text edits
-            return annotationItem;
-        }
-        List<BLangImportPackage> imports = CommonUtils.getCurrentModuleImports(ctx);
-        Optional currentPkgImport = imports.stream().filter(bLangImportPackage -> {
-            String pkgName = bLangImportPackage.orgName + "/" + CommonUtils.getPackageNameComponentsCombined
-                                                                                                 (bLangImportPackage);
-            String evalPkgName = packageID.orgName + "/" + packageID.nameComps.stream().map(Name::getValue).
-                                                                             collect(Collectors.joining("."));
-            return pkgName.equals(evalPkgName);
-        }).findAny();
-        // if the particular import statement not available we add the additional text edit to auto import
-        if (!currentPkgImport.isPresent()) {
-            annotationItem.setAdditionalTextEdits(getAutoImportTextEdits(packageID.orgName.getValue(),
-                                                                         packageID.name.getValue(), ctx));
-        }
-        return annotationItem;
-    }
-
 
     /**
      * Get the text edit for an auto import statement.
@@ -149,56 +115,6 @@ public class CommonUtils {
         return Collections.singletonList(new TextEdit(new Range(start, start), importStatement));
     }
 
-    /**
-     * Get the annotation Insert text.
-     *
-     * @param aliasComponent   Package ID
-     * @param annotationSymbol Annotation to get the insert text
-     * @param withAlias        insert text with alias
-     * @return {@link String} Insert text
-     */
-    private static String getAnnotationInsertText(String aliasComponent, BAnnotationSymbol annotationSymbol,
-                                                  boolean withAlias) {
-        StringBuilder annotationStart = new StringBuilder();
-        if (withAlias) {
-            annotationStart.append(aliasComponent).append(CommonKeys.PKG_DELIMITER_KEYWORD);
-        }
-        if (annotationSymbol.attachedType != null) {
-            annotationStart.append(annotationSymbol.getName().getValue()).append(" ").append(CommonKeys.OPEN_BRACE_KEY)
-                           .append(LINE_SEPARATOR);
-            List<BField> requiredFields = new ArrayList<>();
-            if (annotationSymbol.attachedType.type instanceof BRecordType) {
-                requiredFields = getRecordRequiredFields(((BRecordType) annotationSymbol.attachedType.type));
-                List<String> insertTexts = new ArrayList<>();
-                requiredFields.forEach(field -> {
-                    String fieldInsertionText = "\t" + getRecordFieldCompletionInsertText(field, 1);
-                    insertTexts.add(fieldInsertionText);
-                });
-                annotationStart.append(String.join("," + LINE_SEPARATOR, insertTexts));
-            }
-            if (requiredFields.isEmpty()) {
-                annotationStart.append("\t").append("${1}").append(LINE_SEPARATOR);
-            }
-            annotationStart.append(CommonKeys.CLOSE_BRACE_KEY);
-        } else {
-            annotationStart.append(annotationSymbol.getName().getValue());
-        }
-
-        return annotationStart.toString();
-    }
-
-    /**
-     * Get the completion Label for the annotation.
-     *
-     * @param aliasComponent package alias
-     * @param annotation     BLang annotation
-     * @param withAlias      label with alias
-     * @return {@link String} Label string
-     */
-    private static String getAnnotationLabel(String aliasComponent, BAnnotationSymbol annotation, boolean withAlias) {
-        String pkgComponent = withAlias ? aliasComponent + CommonKeys.PKG_DELIMITER_KEYWORD : "";
-        return pkgComponent + annotation.getName().getValue();
-    }
 
     /**
      * Get the default value for the given BType.
@@ -351,9 +267,10 @@ public class CommonUtils {
         if (recordType.tsymbol.kind == SymbolKind.RECORD && recordType.tsymbol.name.value.contains("$anonType")) {
             StringBuilder recordTypeName = new StringBuilder("record {");
             recordTypeName.append(CommonUtils.LINE_SEPARATOR);
-            String fieldsList = recordType.fields.stream().map(field -> getBTypeName(field.type, ctx) + " " +
-                                                                        field.name.getValue() + ";").collect(Collectors
-                                                                                                                                                                                                                                                   .joining(CommonUtils.LINE_SEPARATOR));
+            String fieldsList = recordType.fields.stream().map(field ->
+                                                                       getBTypeName(field.type, ctx) + " " +
+                                                                       field.name.getValue() + ";").collect(Collectors
+                                                                                                                                                                                          .joining(CommonUtils.LINE_SEPARATOR));
             recordTypeName.append(fieldsList).append(CommonUtils.LINE_SEPARATOR).append("}");
             return recordTypeName.toString();
         }
@@ -402,11 +319,7 @@ public class CommonUtils {
         if (bType instanceof BStreamType) {
             return ((BStreamType) bType).constraint;
         }
-//        if (bType instanceof BTypedescType) {
-//            return ((BTypedescType) bType).constraint;
-//        }
         return ((BTableType) bType).constraint;
-
     }
 
     /**

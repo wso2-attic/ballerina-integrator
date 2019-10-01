@@ -1,24 +1,23 @@
-// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-//
-// WSO2 Inc. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
+/*
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 
-//make Singelton
 package org.wso2.integration.ballerina;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -26,11 +25,16 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
-class ItemResolverConstantsGenerator {
-    private ItemResolverConstantsGenerator() {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    }
-//make singelton
+/**
+ * Genearates the snippet display labels.
+ */
+class ItemResolverConstantsGenerator {
+
+    private ItemResolverConstantsGenerator() {}
+
     private static final Logger log = LoggerFactory.getLogger(ItemResolverConstantsGenerator.class);
 
     static void generateItemResolverConstants(List<Snippet> snippetList) throws IOException {
@@ -41,10 +45,12 @@ class ItemResolverConstantsGenerator {
                                     "wso2", "integration", "ballerina", "autogen", "ItemResolverConstants.java").
                                       toFile();
 
-
+        if(sourceFile.exists()){
+            sourceFile.delete();
+        }
         try {
-            if(sourceFile.createNewFile()) {
-                log.info(" Successfully created ItemResolverConstants.java file");
+            if (sourceFile.createNewFile()) {
+                log.info("Successfully created ItemResolverConstants.java file");
             }
         } catch (IOException e) {
             String message = "Error while generating ItemResolverConstants.java file.";
