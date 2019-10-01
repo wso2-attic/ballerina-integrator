@@ -292,7 +292,6 @@ public class Utils {
         try {
             return line.trim().substring(0, 2).equals("![") && line.contains("assets/img");
         } catch (Exception e) {
-            logger.error("Checking image attachment syntax failed, line:" + line, e);
             return false;
         }
     }
