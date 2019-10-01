@@ -1,8 +1,8 @@
 Name : MongoDB_Client
 Trigger : client/mongodb
-Imports : ballerinax/java.jdbc
+Imports : wso2/mongodb
 
-mongodb:Client mongodbClient = new({
+mongodb:Client ${mongodbClient} = new({
     host: "${host}",
     dbName: "${database_name}",
     username: "${username}",

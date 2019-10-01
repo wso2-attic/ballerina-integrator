@@ -2,7 +2,7 @@ Name : FTP_Listener
 Trigger : listener/ftp
 Imports : wso2/ftp
 
-listener ftp:Listener ftpListener = new({
+listener ftp:Listener ${ftpListener} = new({
     protocol: ftp:FTP,
     host: "${ftp_host}",
     secureSocket: {

@@ -2,7 +2,7 @@ Name : SAP_Listener
 Trigger : listener/sap
 Imports : wso2/sap
 
-sap:ConsumerServerConfig serverConfig = {
+sap:ConsumerServerConfig ${serverConfig} = {
     transportName: <sap:Transport>"${transport_name}",
     serverName: "${server_name}",
     gwhost: "${gwhost}",
@@ -12,7 +12,7 @@ sap:ConsumerServerConfig serverConfig = {
     unicode: <sap:Value>"${unicode}"
 };
 
-sap:ConsumerDestinationConfig destinationConfig = {
+sap:ConsumerDestinationConfig ${destinationConfig} = {
     sapclient: "${sap_client}",
     username: "${username}",
     password: "${password}",
@@ -21,4 +21,4 @@ sap:ConsumerDestinationConfig destinationConfig = {
     language: "${language}"
 };
 
-listener sap:Listener sapListener = new (serverConfig, destinationConfig);
+listener sap:Listener ${sapListener} = new (${serverConfig}, ${destinationConfig});

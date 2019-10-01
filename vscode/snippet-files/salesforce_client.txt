@@ -2,7 +2,7 @@ Name : Salesforce_Client
 Trigger : client/salesforce
 Imports : wso2/sfdc46
 
-sfdc46:SalesforceConfiguration salesforceConfig = {
+sfdc46:SalesforceConfiguration ${salesforceConfig} = {
     baseUrl: "${baseUrl}",
     clientConfig: {
         accessToken: "${access_token}",
@@ -15,4 +15,4 @@ sfdc46:SalesforceConfiguration salesforceConfig = {
     }
 };
 
-sfdc46:Client salesforceClient = new(salesforceConfig);
+sfdc46:Client ${salesforceClient} = new(${salesforceConfig});
