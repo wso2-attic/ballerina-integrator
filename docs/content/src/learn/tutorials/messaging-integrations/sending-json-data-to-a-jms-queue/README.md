@@ -15,6 +15,12 @@ Ballerina has first-class support for HTTP and implementing an HTTP service is s
 - A Text Editor or an IDE
 - Link to download Ballerina Integrator
 
+## Get the code
+
+Download the ZIP file and extract the contents to get the code.
+
+<a href="https://github.com/wso2/docs-ei/blob/master/en/ballerina-integrator/docs/learn/guides/messaging/sending-json-data-to-a-jms-queue/sending-json-data-to-a-jms-queue.zip"><img src="../../../../assets/img/download-zip.png" width="200" alt="Download ZIP"></a>
+
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module in this link.
 
