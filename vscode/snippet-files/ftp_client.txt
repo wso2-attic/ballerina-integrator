@@ -2,7 +2,7 @@ Name : FTP_Client
 Trigger : client/ftp
 Imports : wso2/ftp
 
-ftp:ClientEndpointConfig ftpConfig = {
+ftp:ClientEndpointConfig ${ftpConfig} = {
     protocol: ftp:FTP,
     host: "${ftp_host}",
     port: ${ftp_port},
@@ -14,4 +14,4 @@ ftp:ClientEndpointConfig ftpConfig = {
     }
 };
 
-ftp:Client ftpClient = new(ftpConfig);
+ftp:Client ${ftpClient} = new(${ftpConfig});

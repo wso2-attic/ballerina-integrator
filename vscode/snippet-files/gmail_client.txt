@@ -2,7 +2,7 @@ Name : Gmail_Client
 Trigger : client/gmail
 Imports : wso2/gmail
 
-gmail:GmailConfiguration gmailConfig = {
+gmail:GmailConfiguration ${gmailConfig} = {
     oauthClientConfig: {
         accessToken: "${access_token}",
         refreshConfig: {
@@ -14,4 +14,4 @@ gmail:GmailConfiguration gmailConfig = {
     }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+gmail:Client ${gmailClient} = new (${gmailConfig});

@@ -2,7 +2,7 @@ Name : SMB_Client
 Trigger : client/smb
 Imports : wso2/smb
 
-smb:ClientEndpointConfig smbConfig = {
+smb:ClientEndpointConfig ${smbConfig} = {
     protocol: smb:SMB,
     host: "${smb_host}",
     port: ${smb_port},
@@ -14,4 +14,4 @@ smb:ClientEndpointConfig smbConfig = {
     }
 };
 
-smb:Client smbClient = new(smbConfig);
+smb:Client ${smbClient} = new(${smbConfig});
