@@ -66,7 +66,7 @@ Mainly consists of below-stated components.
 You can use the following options to try out Ballerina Integrator and get started.
 
 * [Quick Start Guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/getting-started/quick-start-guide/)
-* [Ballerina Guides and Tutorials](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/about-learn/)
+* [Learn Documentation](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/use-cases/)
 
 ## Contributing to Ballerina
 
