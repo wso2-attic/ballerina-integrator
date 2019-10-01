@@ -80,6 +80,8 @@ nav:
           - 'Managing Database Transactions' : 'learn/guides/database-integrations/managing-database-transactions/managing-database-transactions.md'
           - 'Integration with MongoDB' : 'learn/guides/database-integrations/mongo/mongo.md'
         - Saas Clients:
+          - 'Amazon SQS':
+            - 'Notifying fire alarm using SQS': 'learn/guides/saas-clients/amazonsqs/notifying-fire-alarm-using-sqs/notifying-fire-alarm-using-sqs.md'
           - 'sfdc46':
             - 'Working With Salesforce Client': 'learn/guides/saas-clients/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
             - 'Import Contacts into Salesforce Using FTP': 'learn/guides/saas-clients/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
