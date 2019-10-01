@@ -1,0 +1,18 @@
+Name : FTP_Listener
+Trigger : listener/ftp
+Imports : wso2/ftp
+
+listener ftp:Listener ${1:ftpListener} = new({
+    protocol: ftp:FTP,
+    host: "${2:ftp_host}",
+    secureSocket: {
+        basicAuth: {
+            username: "${3:ftp_username}",
+            password: "${4:ftp_password}"
+        }
+    },
+    port: ${5:ftp_port},
+    path: "${6:remote_ftp_directory_location}",
+    pollingInterval: ${7:polling_interval},
+    fileNamePattern: "${8:file_type}"
+});

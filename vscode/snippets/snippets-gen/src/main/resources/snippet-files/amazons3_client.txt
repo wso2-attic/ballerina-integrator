@@ -1,0 +1,11 @@
+Name : AmazonS3_Client
+Trigger : client/amazons3
+Imports : wso2/amazons3
+
+amazons3:ClientConfiguration ${1:amazonS3Config} = {
+    accessKeyId: "${2:access_key_id}",
+    secretAccessKey: "${3:secret_access_key}",
+    region: "${4:region}"
+};
+
+amazons3:AmazonS3Client|amazons3:ConnectorError ${5:amazonS3Client} = new(${6:amazonS3Config});

@@ -184,6 +184,12 @@
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
+             <dependency>
+                 <groupId>org.ballerinalang</groupId>
+                 <artifactId>ballerina-runtime</artifactId>
+                 <version>${language.server.core.version}</version>
+                 <scope>compile</scope>
+             </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -220,6 +226,6 @@
         <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
         <apache.source.release.assembly.descriptor.version>1.0.6</apache.source.release.assembly.descriptor.version>
 
-        <language.server.core.version>1.0.0</language.server.core.version>
+        <language.server.core.version>ballerina-runtime1.0.0</language.server.core.version>
     </properties>
 </project>

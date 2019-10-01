@@ -21,6 +21,7 @@ package org.wso2.integration.ballerina;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -38,20 +39,14 @@ class SnippetGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(SnippetGenerator.class);
 
-    public static void main(String[] args) {
-
-        try {
-            processSnippet();
-        } catch (Exception e) {
-            String message = "Error in processing the message";
-            log.error(message, e);
-        }
+    public static void main(String[] args) throws  Exception {
+        processSnippet();
     }
 
     private static List<File> readFiles() throws Exception {
 
         File files = Paths.get
-                ("vscode", "snippets", "snippets-gen", "src", "main", "resources", "Snippets").toFile();
+                ("vscode", "snippets", "snippets-gen", "src", "main", "resources", "snippet-files","ddd").toFile();
         if (files.listFiles().length != 0) {
             return new ArrayList<>(Arrays.asList(files.listFiles()));
         } else {
@@ -60,15 +55,10 @@ class SnippetGenerator {
         }
     }
 
-    private static void processSnippet() {
+    private static void processSnippet() throws Exception{
 
-        List<File> fileList = null;
-        try {
-            fileList = readFiles();
-        } catch (Exception e) {
-            String message = "Unable to read file list";
-            log.error(message, e);
-        }
+        List<File> fileList;
+        fileList = readFiles();
 
         String sCurrentLine;
         List<Snippet> snippetList = new ArrayList<>();
@@ -139,4 +129,3 @@ class SnippetGenerator {
         return snippetContent;
     }
 }
-

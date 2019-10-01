@@ -63,17 +63,14 @@
         <dependency>
             <groupId>org.ballerinalang</groupId>
             <artifactId>language-server-core</artifactId>
-            <version>${language.server.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.8.1</version>
         </dependency>
         <dependency>
             <groupId>org.ballerinalang</groupId>
             <artifactId>language-server-compiler</artifactId>
-            <version>${language.server.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.lsp4j</groupId>
@@ -82,8 +79,6 @@
         <dependency>
             <groupId>org.ballerinalang</groupId>
             <artifactId>ballerina-runtime</artifactId>
-            <version>${language.server.core.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
@@ -92,12 +87,6 @@
         <dependency>
             <groupId>org.ballerinalang</groupId>
             <artifactId>ballerina-lang</artifactId>
-            <version>${language.server.core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ballerinalang</groupId>
-            <artifactId>ballerina-runtime</artifactId>
-            <version>${language.server.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -105,8 +94,5 @@
             <version>${slf4j.version}</version>
             <scope>compile</scope>
         </dependency>
-
     </dependencies>
-
 </project>
-
