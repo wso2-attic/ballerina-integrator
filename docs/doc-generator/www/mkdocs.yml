@@ -46,58 +46,48 @@ theme:
 # Navigation
 nav:
     - 'Home': index.md
-    - Getting Started:
-      - 'Introduction': 'getting-started/introduction.md'
-      - 'Quick Start Guide': 'getting-started/quick-start-guide.md'
+    - Get Started:
+      - 'Introduction': 'get-started/introduction.md'
+      - 'Quick Start Guide': 'get-started/quick-start-guide.md'
     - Learn:
-      - 'Overview': 'learn/about-learn.md'
-      - Guides:
-        - Messaging:
-          - 'Asynchronous Messaging' : 'learn/guides/messaging/asynchronous-messaging/asynchronous-messaging.md'
-          - 'Message Broadcasting' : 'learn/guides/messaging/message-broadcasting/message-broadcasting.md'
-          - 'Messaging with ActiveMQ' : 'learn/guides/messaging/messaging-with-activemq/messaging-with-activemq.md'
-          - 'Messaging with Kafka' : 'learn/guides/messaging/messaging-with-kafka/messaging-with-kafka.md'
-          - 'Reliable Delivery' : 'learn/guides/messaging/reliable-delivery/reliable-delivery.md'
-        - Services:
-          - 'Exposing a REST Service' : 'learn/guides/services/restful-service/exposing-a-rest-service/exposing-a-rest-service.md'
-          - 'Exposing a SOAP Service' : 'learn/guides/services/restful-service/exposing-a-soap-service/exposing-a-soap-service.md'
-          - 'Service Composition' : 'learn/guides/services/service-composition/service-composition.md'
-          - 'Asynchronous Invocation' : 'learn/guides/services/asynchronous-invocation/asynchronous-invocation.md'
-          - 'Parallel Service Orchestration' : 'learn/guides/services/parallel-service-orchestration/parallel-service-orchestration.md'
-        - Integration Patterns:
-          - 'Content-based Routing' : 'learn/guides/integration-patterns/content-based-routing/content-based-routing.md'
-          - 'Pass-through Messaging' : 'learn/guides/integration-patterns/pass-through-messaging/pass-through-messaging.md'
-          - 'Scatter-gather Messaging' : 'learn/guides/integration-patterns/scatter-gather-messaging/scatter-gather-messaging.md'
-          - 'Message Filtering' : 'learn/guides/integration-patterns/message-filtering/message-filtering.md'
-          - 'Backend for Frontend' : 'learn/guides/integration-patterns/backend-for-frontend/backend-for-frontend.md'
-          - 'EIP Message Construction' : 'learn/guides/integration-patterns/eip-message-construction/eip-message-construction.md'
-          - 'EIP Message Transformation' : 'learn/guides/integration-patterns/eip-message-transformation/eip-message-transformation.md'
-        - Database Integration:
-          - 'Data-backed Service' : 'learn/guides/database-integrations/data-backed-service/data-backed-service.md'
-          - 'Managing Database Transactions' : 'learn/guides/database-integrations/managing-database-transactions/managing-database-transactions.md'
-          - 'Integration with MongoDB' : 'learn/guides/database-integrations/mongo/mongo.md'
+      - 'Integration Use Cases': 'learn/use-cases.md'
       - Tutorials:
-        - 'Sending a Simple Message to a Service' : 'learn/integration-tutorials/sending-a-simple-message-to-a-service/README.md'
-        - 'Sending a Simple Message to a Datasource' : 'learn/integration-tutorials/sending-a-simple-message-to-a-datasource/README.md'
-        - 'Routing Requests Based on Message Content' : 'learn/integration-tutorials/routing-requests-based-on-message-content/README.md'
-        - 'Transforming Message Content' : 'learn/integration-tutorials/transforming-message-content/README.md'
-        - 'Exposing Several Services as a Single Service' : 'learn/integration-tutorials/exposing-several-services-as-a-single-service/README.md'
-        - 'Storing and Forwarding Messages' : 'learn/integration-tutorials/storing-and-forwarding-messages/README.md'
-        - 'Using the Gmail Connector' : 'learn/integration-tutorials/using-the-gmail-connector/README.md'
-        - 'Using the Analytics Dashboard' : 'learn/integration-tutorials/using-the-analytics-dashboard/README.md'
+        - Saas Integration:
+          - 'Amazon SQS':
+            - 'Notifying fire alarm using SQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/notifying-fire-alarm-using-sqs.md'
+          - 'sfdc46':
+            - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
+            - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
+            - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/salesforce-to-mysql-db.md'
+        - Messaging Integration:
+          - 'Messaging with ActiveMQ' : 'learn/tutorials/messaging-integrations/messaging-with-activemq/messaging-with-activemq.md'
+          - 'Messaging with Kafka' : 'learn/tutorials/messaging-integrations/messaging-with-kafka/messaging-with-kafka.md'
+          - 'Sending JSON Data to a JMS Queue' : 'learn/tutorials/messaging-integrations/sending-json-data-to-a-jms-queue/sending-json-data-to-a-jms-queue.md'
+        - Database Integration:
+          - 'Data-backed Service' : 'learn/tutorials/database-integrations/data-backed-service/data-backed-service.md'
+          - 'Managing Database Transactions' : 'learn/tutorials/database-integrations/managing-database-transactions/managing-database-transactions.md'
+          - 'Integration with MongoDB' : 'learn/tutorials/database-integrations/mongo-db-transactions/insert-mongodb/insert-mongodb.md'
+          - 'Querying a MySQL Database' : 'learn/tutorials/database-integrations/querying-mysql-database/querying-mysql-database.md'
+        - File-based Integration:
+          - 'File Integration Using FTP' : 'learn/tutorials/file-based-integrations/file-integration-using-ftp/file-integration-using-ftp.md'
+          - 'File Integration Using Samba' : 'learn/tutorials/file-based-integrations/file-integration-using-smb/file-integration-using-smb.md'
+        - Integration Patterns and SOA:
+          - 'Content-based Routing' : 'learn/tutorials/integration-patterns-and-soa/content-based-routing/content-based-routing.md'
+          - 'Pass-through Messaging' : 'learn/tutorials/integration-patterns-and-soa/pass-through-messaging/pass-through-messaging.md'
+          - 'Scatter-gather Flow Control' : 'learn/tutorials/integration-patterns-and-soa/scatter-gather-flow/scatter-gather-flow.md'
+          - 'Service Orchestration': 'learn/tutorials/integration-patterns-and-soa/service-orchestration/service-orchestration.md'
+          - 'Service Composition': 'learn/tutorials/integration-patterns-and-soa/service-composition/service-composition.md'
+          - 'Backend for Frontend' : 'learn/tutorials/integration-patterns-and-soa/backend-for-frontend/backend-for-frontend.md'
     - Develop:
       - 'Re-introducing Ballerina Programming Language' : 'develop/reintroducing-ballerina.md'
       - 'Setting up the Developer Environment' : 'develop/setup-dev.md'
       - 'Creating a Project' : 'develop/using-modules.md'
-      - 'Working with VS Code' : 'develop/working-with-vscode.md'
-    - Deploy:
-      - 'Deploying on Docker': 'deploy/deploy-on-docker.md'
-      - 'Deploying on Kubernetes': 'deploy/deploy-on-kubernetes.md'
-      - 'Running as a Java Program': 'deploy/running-as-a-java-program.md'
-      - 'CI/CD' : 'deploy/cicd.md'
-    - Observe:
-      - 'Observing a Service with Prometheus' : 'observe/observing-a-service.md'
-      - 'Logging using logstash and Kibana' : 'observe/logstash-kibana.md'
+      - 'Deploying on Docker': 'develop/deploy-on-docker.md'
+      - 'Deploying on Kubernetes': 'develop/deploy-on-kubernetes.md'
+      - 'Running as a Java Program': 'develop/running-as-a-java-program.md'
+    - Observability:
+      - 'Observing a Service with Prometheus' : 'observability/observing-a-service.md'
+      - 'Logging using Logstash and Kibana' : 'observability/logstash-kibana.md'
     - References:
       - 'References' : 'references/references.md'
     - '': page-not-found.md

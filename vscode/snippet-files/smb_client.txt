@@ -1,0 +1,17 @@
+Name : SMB_Client
+Trigger : client/smb
+Imports : wso2/smb
+
+smb:ClientEndpointConfig ${smbConfig} = {
+    protocol: smb:SMB,
+    host: "${smb_host}",
+    port: ${smb_port},
+    secureSocket: {
+        basicAuth: {
+            username: "${smb_username}",
+            password: "${smb_password}"
+        }
+    }
+};
+
+smb:Client ${smbClient} = new(${smbConfig});

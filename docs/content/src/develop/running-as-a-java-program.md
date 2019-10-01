@@ -1,105 +1,119 @@
-# Deploying on Docker
+# Running as a Java Program
 
-Deploying your Ballerina code is easier than ever with the growth of containers and container platforms such as Kubernetes.
+Running a Ballerina program or service can be done using a Java command. This is useful since a .jar file is created as part of building the project and the program can be run using a `java -jar` command.
 
-Deploying a Ballerina program or service is the process of creating assets that ready the program and service(s) for activation in another runtime, such as Docker Engine, Moby, Kubernetes, or Cloud Foundry. The Ballerina compiler is able to generate the necessary artifacts for different deployment annotations based on annotations that decorate the source code, which provide compiler instructions for artifact generation.
+## Pre-requisites
 
-> **Tip**: The `docker` command line tool needs to be installed and working. Try: `docker ps` to verify this. Go to the [install page](#https://get.docker.io/) if you need to install Docker.
+To run Ballerina code as a Java program, you need to have Oracle JDK 1.8.* installed.
 
-## Creating a simple service
+## Running the simple Java command
 
-The following is a simple service that gets information from an endpoint.
+The following is an example of a `java -jar` command. This is used to run the project built in the [Quick Start Guide](../../getting-started/quick-start-guide).
+
+```java
+
+$ java -jar target/bin/MyModule.jar --b7a.config.file=src/MyModule/resources/ballerina.conf
+
+```
+
+Note that in the above example, you first mention the location of the .jar file and follow this up by pointing to a configuration file where you are passing some parameters. Instead of pointing to the configuration file you could pass different parameters here as we will explore in this document.
+
+
+## Securing configurations
+
+Ballerina provides an API to access configuration values from different sources. For more information, see [Config Ballerina by Example](https://ballerina.io/learn/by-example/config-api.html).
+
+Configuration values containing passwords or secrets should be encrypted. The Ballerina Config API will decrypt such configuration values when being accessed.
+
+Use the following command to encrypt a configuration value:
+
+```cmd
+$ ballerina encrypt
+```
+
+The encrypt command will prompt for the plain-text value to be encrypted and an encryption secret.
+
+```cmd
+$ ballerina encrypt
+Enter value:
+
+Enter secret:
+
+Re-enter secret to verify:
+
+Add the following to the runtime config:
+@encrypted:{pIQrB9YfCQK1eIWH5d6UaZXA3zr+60JxSBcpa2PY7a8=}
+
+Or add to the runtime command line:
+-e<param>=@encrypted:{pIQrB9YfCQK1eIWH5d6UaZXA3zr+60JxSBcpa2PY7a8=}
+```
+
+Ballerina uses AES, CBC mode with PKCS#5 padding for encryption. The generated encrypted value should be used in place of the plain-text configuration value.
+
+For example, contents of a configuration file that includes a secret value should look as follows:
+
+```
+api.secret="@encrypted:{pIQrB9YfCQK1eIWH5d6UaZXA3zr+60JxSBcpa2PY7a8=}"
+api.provider="not-a-security-sensitive-value"
+```
+
+When running a Ballerina program that uses encrypted configuration values, it is required to provide the secret used during the encryption process to perform the decryption.
+
+A file named `secret.txt` is used for this purpose. If such file exists, the decryption secret is read from the file and immediately removed from the file to make sure secret cannot be accessed afterwards.
+
+The file based approach is useful in automated deployments. The file containing the decryption secret can be deployed along with the Ballerina program. The name and the path of the secret file can be configured using the `ballerina.config.secret` runtime parameter:
+
+```java
+
+$ java -jar program.jar —ballerina.config.secret=src/MyModule/resources/secret.txt
+
+```
+
+## Passing configurations as environment variables
+
+If the values are not set in the config file, it is read from the environment variables. For example, if you set a=10 in the command line as an environment variable and if your program's configuration is reading config key a, it will read it as 10 even if the a value is set differently in the config file. So priority is given to the environment variable you set.
+
+Consider the following example, which reads a Ballerina config value and prints it.
 
 ```ballerina
-import ballerina/http;
 import ballerina/io;
-
-// Creates a new client with the backend URL.
-http:Client clientEndpoint = new("https://postman-echo.com");
+import ballerina/config;
 
 public function main() {
-    io:println("GET request:");
-    // Sends a `GET` request to the specified endpoint.
-    var response = clientEndpoint->get("/get?test=123");
-    // Handles the response.
-    handleResponse(response);
-
+  string name = config:getAsString("hellouser");
+  io:println("Hello, " + name + " !");
 }
 ```
 
-## Deploying your service on Docker
+The config key is `hellouser`. To pass a value to this config from the CLI, we can run the following command.
 
-You can run the service that you developed above as a Docker container. The Ballerina language includes a [Ballerina_Docker_Extension](#https://github.com/ballerinax/docker) that offers native support to run Ballerina programs on containers.
+Now you can pass the value of `hellouser` in the `java -jar` command itself as shown below:
 
-To run a service as a Docker container, add the corresponding Docker annotations to your service code.
+```java
 
-See the following example on how you can add Docker support in the code.
+java -jar  main.jar --hellouser=Ballerina
 
-To add Docker support, add the following code to the service you created above.
-
-```ballerina
-import ballerina/http;  
-import ballerinax/docker;  
-  
-@http:ServiceConfig {  
-    basePath:"/helloWorld"  
-}  
-@docker:Config {
-    registry:"docker.abc.com",
-    name:"helloworld",
-    tag:"v1.0"
-}
-service helloWorld on new http:Listener(9090) {
-    resource function sayHello (http:Caller caller, http:Request request) {
-        http:Response response = new;
-        response.setTextPayload("Hello, World! \n");
-        _ = caller -> respond(response);
-    }
-}
 ```
-
-Now your code is ready to generate deployment artifacts. In this case it is a Docker image.
-  
-```bash
-$ ballerina build hello_world_docker.bal  
-Compiling source
-    hello_world_docker.bal
-
-Generating executable
-    ./target/hello_world_docker.balx
-	@docker 		 - complete 3/3
-
-	Run the following command to start a Docker container:
-	docker run -d -p 9090:9090 docker.abc.com/helloworld:v1.0
-```
-  
-```bash
-$ tree  
-.
-├── hello_world_docker.bal
-├── hello_world_docker.balx
-└── docker
-    └── Dockerfile
-```
-```bash
-$ docker images  
-REPOSITORY                TAG IMAGE ID       CREATED             SIZE  
-docker.abc.com/helloworld  v1 df83ae43f69b   2 minutes ago       102MB
-```
-  
-You can run a Docker container by copying and pasting the Docker `run` command that displays as output of the Ballerina `build` command.
-```bash
-$ docker run -d -p 9090:9090 docker.abc.com/helloworld:v1.0  
-130ded2ae413d0c37021f2026f3a36ed92e993c39c260815e3aa5993d947dd00
-```
+Alternatively you can set it as an environment variable as follows.
 
 ```bash
-$ docker ps  
-CONTAINER ID  IMAGE                          COMMAND                CREATED                STATUS       PORTS                  NAMES  
-130ded2ae413  docker.abc.com/helloworld:v1.0 "/bin/sh -c 'balleri…" Less than a second ago Up 3 seconds 0.0.0.0:9090->9090/tcp thirsty_hopper
+
+$ export hellouser=Ballerina
+
 ```
-Invoke the hello world service with a cURL command:
-```bash 
-$ curl http://localhost:9090/helloWorld/sayHello  
-Hello, World!
+
+Once you set the above, you can simply run the program using the `java -jar` command and it will provide the result you want.
+
+```java
+
+java -jar  main.jar
+
+```
+
+The following output is the result for either of the above two scenarios.
+
+```bash
+
+Hello, Ballerina !
+
 ```

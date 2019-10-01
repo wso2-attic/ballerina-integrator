@@ -1,0 +1,15 @@
+Name : FTP_Service
+Trigger : service/ftp
+Imports : wso2/ftp
+
+service ${ftpServerConnector} on ${ftpListener} {
+    resource function onFileChange(ftp:WatchEvent ${fileEvent}) {
+
+        foreach ftp:FileInfo ${addedFile} in ${fileEvent}.addedFiles {
+            log:printInfo("Added file path: " + ${addedFile}.path);
+        }
+        foreach string ${deletedFile} in ${fileEvent}.deletedFiles {
+            log:printInfo("Deleted file path: " + ${deletedFile});
+        }
+    }
+}

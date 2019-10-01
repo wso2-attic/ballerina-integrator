@@ -1,0 +1,24 @@
+Name : SAP_Listener
+Trigger : listener/sap
+Imports : wso2/sap
+
+sap:ConsumerServerConfig ${serverConfig} = {
+    transportName: <sap:Transport>"${transport_name}",
+    serverName: "${server_name}",
+    gwhost: "${gwhost}",
+    progid: "${progid}",
+    repositorydestination: "${repository_destination}",
+    gwserv: "${gwserv}",
+    unicode: <sap:Value>"${unicode}"
+};
+
+sap:ConsumerDestinationConfig ${destinationConfig} = {
+    sapclient: "${sap_client}",
+    username: "${username}",
+    password: "${password}",
+    ashost: "${ashost}",
+    sysnr: "${sysnr}",
+    language: "${language}"
+};
+
+listener sap:Listener ${sapListener} = new (${serverConfig}, ${destinationConfig});
