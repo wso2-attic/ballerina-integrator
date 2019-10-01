@@ -17,7 +17,6 @@
 import ballerina/config;
 import ballerina/io;
 import ballerina/log;
-import ballerina/lang.'string as strings;
 import wso2/ftp;
 import wso2/sfdc46;
 
@@ -76,24 +75,20 @@ service ftpServerConnector on remoteServer {
         // Create CSV insert operator.
         sfdc46:CsvInsertOperator csvInserter = check sfBulkClient->createCsvInsertOperator("Contact");
 
-        foreach ftp:FileInfo v1 in m.addedFiles {
-            log:printInfo("CSV file added to the FTP location: " + v1.path);
-            (string | error)? fileContent = getFileContent(v1.path);
-
-            if (fileContent is string) {
-                // Import csv contacts to Salesforce.
-                sfdc46:BatchInfo batch = check csvInserter->insert(<@untainted> fileContent);
-                // Getting the results of the import.
-                sfdc46:Result[] batchResult = check csvInserter->getResult(batch.id, config:getAsInt("SF_NO_OF_RETRIES"));
-
-                if (checkBatchResults(batchResult)) {
-                    log:printInfo("Imported contacts successfully!");
-                } else {
-                    log:printError("Errors in imported contacts!");
-                }
+        foreach ftp:FileInfo file in m.addedFiles {
+            log:printInfo("CSV file added to the FTP location: " + file.path);
+            io:ReadableByteChannel rbc = check ftpClient->get(file.path);
+            // Import csv contacts to Salesforce.
+            sfdc46:BatchInfo batch = check csvInserter->insert(<@untainted> rbc);
+            // Getting the results of the import.
+            sfdc46:Result[] batchResult = check csvInserter->getResult(batch.id, config:getAsInt("SF_NO_OF_RETRIES"));
+            // Check whether all batch results are successful.
+            if (checkBatchResults(batchResult)) {
+                log:printInfo("Imported contacts successfully!");
             } else {
-                log:printError("Error occurred while getting file comtent from FTP", fileContent);
+                log:printError("Errors in imported contacts!");
             }
+            closeReadableByteChannel(rbc);
         }
     }
 }
@@ -109,44 +104,9 @@ function checkBatchResults(sfdc46:Result[] results) returns boolean {
     return true;
 }
 
-// Read content of a remote file.
-function getFileContent(string path) returns @tainted string | error? {
-    io:ReadableByteChannel | error rbc = ftpClient->get(path);
-
-    if (rbc is io:ReadableByteChannel) {
-        // Read content.
-        byte[] readContent;
-        string textContent = "";
-
-        while (true) {
-            byte[] | io:Error result = rbc.read(1000);
-
-            if (result is io:EofError) {
-                break;
-            } else if (result is io:Error) {
-                log:printError("Error occurred while reading the csv file, file: " + path, err = result);
-                return;
-            } else {
-                readContent = result;
-                string | error readContentStr = strings:fromBytes(readContent);
-
-                if (readContentStr is string) {
-                    textContent = textContent + readContentStr;
-                } else {
-                    log:printError("Error occurred while converting readContent byte array to string.",
-                    err = readContentStr);
-                    return;
-                }
-            }
-        }
-        // close channel.
-        error? close = rbc.close();
-        if (close is error) {
-            log:printError("Error occurred while closing ReadableByteChannel", close);
-        }
-        return textContent;
-    } else {
-        log:printError("Error occured in retrieving content.", rbc);
-        return;
+function closeReadableByteChannel(io:ReadableByteChannel rbc) {
+    error? close = rbc.close();
+    if (close is error) {
+        log:printError("Error occurred while closing Readable Byte Channel.", err = close);
     }
 }
