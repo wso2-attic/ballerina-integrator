@@ -187,6 +187,13 @@
         </dependencies>
     </dependencyManagement>
 
+    <scm>
+        <url>https://github.com/wso2/ballerina-integrator.git</url>
+        <developerConnection>scm:git:https://github.com/wso2/ballerina-integrator.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2/ballerina-integrator.git</connection>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <project-home>${project.basedir}</project-home>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
