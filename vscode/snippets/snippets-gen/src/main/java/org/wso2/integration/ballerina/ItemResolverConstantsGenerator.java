@@ -38,16 +38,17 @@ class ItemResolverConstantsGenerator {
     private static final Logger log = LoggerFactory.getLogger(ItemResolverConstantsGenerator.class);
 
     static void generateItemResolverConstants(List<Snippet> snippetList) throws IOException {
+
         String snippetBody = "";
         String snippetLine;
 
         File sourceFile = Paths.get("vscode", "snippets", "ei-snippets", "src", "main", "java", "org",
-                                    "wso2", "integration", "ballerina", "autogen", "ItemResolverConstants.java").
-                                      toFile();
+                "wso2", "integration", "ballerina", "autogen", "ItemResolverConstants.java").toFile();
 
-        if(sourceFile.exists()){
+        if (sourceFile.exists()) {
             sourceFile.delete();
         }
+
         try {
             if (sourceFile.createNewFile()) {
                 log.info("Successfully created ItemResolverConstants.java file");
@@ -57,13 +58,13 @@ class ItemResolverConstantsGenerator {
             log.error(message, e);
         }
 
-        String snippetHeader = "package org.wso2.integration.ballerina.autogen;" + "\n \n" +
-                               "public class ItemResolverConstants" + "{ " + "\n \n" +
+        String snippetHeader = "package org.wso2.integration.ballerina.autogen;\n\n" +
+                               "public class ItemResolverConstants { \n \n" +
                                // Symbol Types Constants\n" +
                                "    public static final String SNIPPET_TYPE = \"Snippet\";\n" +
                                "    public static final String RESOURCE = \"resource\";\n" +
                                "    public static final String RECORD_TYPE = \"type <RecordName> record\";\n" +
-                               "    // End Symbol Types Constants" + "\n";
+                               "    // End Symbol Types Constants \n";
 
         for (Snippet snippet : snippetList) {
             StringBuilder sb = new StringBuilder();
@@ -73,7 +74,7 @@ class ItemResolverConstantsGenerator {
             String[] triggerParts = trigger.split(":");
 
             snippetLine = "\t" + "public static final String" + namesParts[1].toUpperCase() + " =" + "\"" +
-                           triggerParts[1].trim() + "\"" + ";" + "\n";
+                    triggerParts[1].trim() + "\"" + ";" + "\n";
             snippetBody = sb.append(snippetBody).append(snippetLine).toString();
         }
 
@@ -83,4 +84,3 @@ class ItemResolverConstantsGenerator {
         writer.close();
     }
 }
-

@@ -190,6 +190,16 @@
                  <version>${language.server.core.version}</version>
                  <scope>compile</scope>
              </dependency>
+            <dependency>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${builder.helper.maven.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven.plugin.api.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -225,7 +235,8 @@
         <gson.version>2.8.5</gson.version>
         <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
         <apache.source.release.assembly.descriptor.version>1.0.6</apache.source.release.assembly.descriptor.version>
-
-        <language.server.core.version>ballerina-runtime1.0.0</language.server.core.version>
+        <builder.helper.maven.plugin.version>1.7.1</builder.helper.maven.plugin.version>
+        <language.server.core.version>1.0.0</language.server.core.version>
+        <maven.plugin.api.version>3.3.3</maven.plugin.api.version>
     </properties>
 </project>

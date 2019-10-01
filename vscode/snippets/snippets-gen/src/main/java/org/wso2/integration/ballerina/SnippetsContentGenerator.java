@@ -73,10 +73,10 @@ class SnippetsContentGenerator {
             String[] namesParts = snippetObject.getName().split(":");
 
             snippetLine = "\n public static SnippetBlock get" + namesParts[1].trim().
-                    replaceAll("_", "") + "() {" + "\n" + pair.getKey();
+                    replaceAll("_", "") + "() { \n" + pair.getKey();
             String generated = snippetObject.getCode().replaceAll("\"", "\\\\\"");
 
-            snippetBody = " \n \n String snippet = " + "\"" + generated + "\"" + ";";
+            snippetBody = " \n \n String snippet =  \"" + generated + "\" ;";
 
             snippetFooter = "\n \n" + "return new SnippetBlock(ItemResolverConstants." + namesParts[1].trim().
                     toUpperCase() + ", snippet,ItemResolverConstants.SNIPPET_TYPE," +
@@ -122,4 +122,3 @@ class SnippetsContentGenerator {
         return new Pair<>(immutablePairs, importsList);
     }
 }
-

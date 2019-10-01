@@ -21,7 +21,6 @@ package org.wso2.integration.ballerina;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,6 +31,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * Main method executed for the auto generation of files to create the snippet.
  */
@@ -39,14 +39,16 @@ class SnippetGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(SnippetGenerator.class);
 
-    public static void main(String[] args) throws  Exception {
+    public static void main(String[] args) throws Exception {
         processSnippet();
     }
 
     private static List<File> readFiles() throws Exception {
 
         File files = Paths.get
-                ("vscode", "snippets", "snippets-gen", "src", "main", "resources", "snippet-files","ddd").toFile();
+                ("vscode", "snippets", "snippets-gen", "src", "main", "resources", "snippet-files", "ddd").
+                toFile();
+
         if (files.listFiles().length != 0) {
             return new ArrayList<>(Arrays.asList(files.listFiles()));
         } else {
@@ -55,27 +57,26 @@ class SnippetGenerator {
         }
     }
 
-    private static void processSnippet() throws Exception{
+    private static void processSnippet() throws Exception {
 
-        List<File> fileList;
-        fileList = readFiles();
+        List<File> fileList = readFiles();
 
-        String sCurrentLine;
+        String currentLine;
         List<Snippet> snippetList = new ArrayList<>();
 
         for (File file : fileList) {
             Snippet snippet = new Snippet();
             try (BufferedReader reader = Files.newBufferedReader(Paths.get(String.valueOf(file)))) {
-                while ((sCurrentLine = reader.readLine()) != null) {
-                    if (sCurrentLine.trim().length() != 0) {
-                        if (sCurrentLine.contains("Name ")) {
-                            snippet.setName(sCurrentLine);
+                while ((currentLine = reader.readLine()) != null) {
+                    if (currentLine.trim().length() != 0) {
+                        if (currentLine.contains("Name ")) {
+                            snippet.setName(currentLine);
                         }
-                        if (sCurrentLine.contains("Trigger ")) {
-                            snippet.setTrigger(sCurrentLine);
+                        if (currentLine.contains("Trigger ")) {
+                            snippet.setTrigger(currentLine);
                         }
-                        if (sCurrentLine.contains("Imports ")) {
-                            snippet.setImports(sCurrentLine);
+                        if (currentLine.contains("Imports ")) {
+                            snippet.setImports(currentLine);
                         }
                     } else {
                         String snippets = readSnippet(reader);
@@ -114,10 +115,8 @@ class SnippetGenerator {
 
         while ((currentLine = reader.readLine()) != null) {
             StringBuilder stringBuilder = new StringBuilder();
-
             if (currentLine.trim().length() != 0) {
                 snippetContent = stringBuilder.append(snippetContent).append("\\n").append(currentLine).toString();
-
             } else {
                 consecutiveEmptyLineCounter++;
                 if (consecutiveEmptyLineCounter > 3) {

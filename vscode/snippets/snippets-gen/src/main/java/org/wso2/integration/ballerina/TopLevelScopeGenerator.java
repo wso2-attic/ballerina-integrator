@@ -72,14 +72,13 @@ class TopLevelScopeGenerator {
                 "@JavaSPIService(\"org.ballerinalang.langserver.completions.spi.LSCompletionProvider\")\n" +
                 "public class TopLevelScope extends TopLevelScopeProvider {\n\n" +
                 " public static Precedence precedence;\n\n" +
-                "    public TopLevelScope() {\n" + " this.attachmentPoints.add(BLangPackage.class); \n" +
+                "    public TopLevelScope() {\n this.attachmentPoints.add(BLangPackage.class); \n" +
                 "        this.precedence = Precedence.HIGH;\n }\n \n /**\n" +
                 "     * Get a static completion Item for the given snippet.\n *\n" +
                 "     * @param snippet Snippet to generate the static completion item\n" +
-                "     * @return {@link CompletionItem} Generated static completion Item\n" +
-                "     */\n\n" +
+                "     * @return {@link CompletionItem} Generated static completion Item\n */\n\n" +
                 "    protected CompletionItem getStaticItem(LSContext ctx, Snippets snippet) {\n" +
-                "        return snippet.get().build(ctx);\n" + "    }\n\n" +
+                "        return snippet.get().build(ctx);\n      }\n\n" +
                 "    public static final LSContext.Key<List<CommonToken>> LHS_DEFAULT_TOKENS_KEY = " +
                 "new LSContext.Key<>();\n" +
                 "\n\n //Override the getCompletions method in LSCompletion Provider\n  @Override\n" +
@@ -106,15 +105,13 @@ class TopLevelScopeGenerator {
         for (Snippet snippet : snippetList) {
             StringBuilder stringBuilder = new StringBuilder();
             String[] namesSplit = snippet.getName().split(":");
-            scopeLine = "\t" + "\t" + "completionItemsArr.add(getStaticItem(context, Snippets.DEF_" +
-                    namesSplit[1].trim() + ")) ;" + "\n";
+            scopeLine = "\t \t completionItemsArr.add(getStaticItem(context, Snippets.DEF_" +
+                    namesSplit[1].trim() + ")) ; \n";
             scopeBody = stringBuilder.append(scopeBody).append(scopeLine).toString();
         }
-        String topLevelScope = scopeHeader + scopeBody + "\n" + "\n" + "return completionItemsArr; \n \n }"
-                + "\n" + "}";
+        String topLevelScope = scopeHeader + scopeBody + "\n \n return completionItemsArr; \n \n } \n }";
         FileWriter writer = new FileWriter(sourceFile);
         writer.write(topLevelScope);
         writer.close();
     }
 }
-

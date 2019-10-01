@@ -33,9 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 class SnippetsDefinitionGenerator {
 
-    private SnippetsDefinitionGenerator() {
-
-    }
+    private SnippetsDefinitionGenerator() {}
 
     private static final Logger log = LoggerFactory.getLogger(SnippetsDefinitionGenerator.class);
 
@@ -97,4 +95,3 @@ class SnippetsDefinitionGenerator {
         writer.close();
     }
 }
-
