@@ -16,7 +16,7 @@ The high level sections of this guide are as follows:
 
 The following diagram illustrates the scenario:
 
-![Message flow diagram image](../../../../../../../assets/img/sqs-alert.png)
+![Message flow diagram image](../../../../../assets/img/sqs-alert.png)
 
 Let's consider a scenario where a fire alarm sends fire alerts to an Amazon SQS queue. As message duplication is not an issue, an Amazon SQS Standard Queue is used as the queue. A fire alarm listener is polling the messages in the SQS queue. When fire alerts are available, it will consume the messages from the queue and remove the messages from the queue. Consumed messages are showed in the console to the User.
 

@@ -19,7 +19,7 @@ The following are the sections available in this guide.
 ## What you’ll build
 To understand how you can build scatter-gather messaging using Ballerina, let's consider a real-world use case of an online auction service that gets the highest bid value from bidders. This package includes a scatter-gather component to get the highest bid value by processing responses and three bidder endpoints. Therefore, the online auction service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
 
-![alt text](/src/auction_service/resources/scatter-gather-messaging.svg)
+![alt text](../../../../assets/img/scatter-gather-messaging-advanced.svg)
 
 Auction service is the service that acts as the scatter-gather component. The other three endpoints are external services that the auction service calls to get bid values according to the request details. These are not necessarily Ballerina services and can theoretically be third-party services that the auction service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
