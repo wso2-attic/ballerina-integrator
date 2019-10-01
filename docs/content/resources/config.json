@@ -1,0 +1,18 @@
+{
+  "tutorials": [
+    {
+      "name": "healthcare-service",
+      "path": "src/learn/backends/healthcare-service",
+      "modules": [
+        "healthcare"
+      ]
+    },
+    {
+      "name": "exposing-several-services-as-a-single-service",
+      "path": "src/learn/tutorials/integration-patterns-and-soa/exposing-several-services-as-a-single-service",
+      "modules": [
+        "tutorial"
+      ]
+    }
+  ]
+}
