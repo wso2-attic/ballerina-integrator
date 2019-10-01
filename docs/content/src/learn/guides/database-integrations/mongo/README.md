@@ -1,2 +1,0 @@
-# Intgrating with MongoDB
-
