@@ -2,7 +2,7 @@ Name : JDBC_Client
 Trigger : client/jdbc
 Imports : ballerinax/java.jdbc
 
-jdbc:Client jdbcClient = new ({
+jdbc:Client ${jdbcClient} = new ({
     url: "${jdbc_url}",
     username: "${username}",
     password: "${password}",

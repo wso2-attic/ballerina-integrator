@@ -2,18 +2,18 @@ Name : JMS_Durable_Subscriber
 Trigger : jms/durable_subscriber
 Imports : wso2/jms
 
-jms:Connection connection = check jms:createConnection({
+jms:Connection ${connection} = check jms:createConnection({
     initialContextFactory: "${org.apache.activemq.jndi.ActiveMQInitialContextFactory}",
     providerUrl: "${tcp://localhost:61616}"
 });
-jms:Session session = check connection->createSession({acknowledgementMode: "${AUTO_ACKNOWLEDGE}"});
-jms:Destination topic = check session->createTopic("${topic_name}");
+jms:Session ${session} = check ${connection}->createSession({acknowledgementMode: "${AUTO_ACKNOWLEDGE}"});
+jms:Destination ${topic} = check ${session}->createTopic("${topic_name}");
 
-listener jms:MessageConsumer jmsConsumer = check session->createDurableSubscriber(topic, "${subscription_name}");
+listener jms:MessageConsumer ${jmsConsumer} = check session->createDurableSubscriber(${topic}, "${subscription_name}");
 
-service messageListener on jmsConsumer {
+service ${messageListener} on ${jmsConsumer} {
 
-    resource function onMessage(jms:Message message) {
+    resource function onMessage(jms:Message ${message}) {
 
     }
 }
