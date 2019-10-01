@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
  * Generates the Snippet object from the input .txt files.
  */
 public class Snippet {
+
     private static final Logger log = LoggerFactory.getLogger(Snippet.class);
 
     private String name;
@@ -33,6 +34,7 @@ public class Snippet {
     private String code;
 
     public Snippet(String name, String imports, String trigger, String code) {
+
         this.name = name;
         this.imports = imports;
         this.trigger = trigger;
@@ -82,7 +84,6 @@ public class Snippet {
             log.debug("Trigger of the snippet is not provided");
             throw new IllegalArgumentException();
         }
-
     }
 
     public String getCode() {

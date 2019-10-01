@@ -221,7 +221,5 @@
         <apache.source.release.assembly.descriptor.version>1.0.6</apache.source.release.assembly.descriptor.version>
 
         <language.server.core.version>1.0.0</language.server.core.version>
-        <ballerina.formatter.version>0.992.0-m7</ballerina.formatter.version>
-        <composer.server.distribution>0.982.1-SNAPSHOT</composer.server.distribution>
     </properties>
 </project>

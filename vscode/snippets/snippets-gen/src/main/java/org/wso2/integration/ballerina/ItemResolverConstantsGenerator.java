@@ -65,26 +65,22 @@ class ItemResolverConstantsGenerator {
                                "    public static final String RECORD_TYPE = \"type <RecordName> record\";\n" +
                                "    // End Symbol Types Constants" + "\n";
 
-
         for (Snippet snippet : snippetList) {
             StringBuilder sb = new StringBuilder();
-
             String name = snippet.getName();
             String trigger = snippet.getTrigger();
             String[] namesParts = name.split(":");
             String[] triggerParts = trigger.split(":");
 
             snippetLine = "\t" + "public static final String" + namesParts[1].toUpperCase() + " =" + "\"" +
-                          triggerParts[1].trim() + "\"" + ";" + "\n";
+                           triggerParts[1].trim() + "\"" + ";" + "\n";
             snippetBody = sb.append(snippetBody).append(snippetLine).toString();
         }
 
         String itemResolver = snippetHeader + snippetBody + "\n \n" + "}";
-
         FileWriter writer = new FileWriter(sourceFile);
         writer.write(itemResolver);
         writer.close();
-
     }
 }
 

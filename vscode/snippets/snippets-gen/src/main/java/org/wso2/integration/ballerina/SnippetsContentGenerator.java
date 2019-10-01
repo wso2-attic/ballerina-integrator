@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+
 import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,17 +34,20 @@ import org.slf4j.LoggerFactory;
  */
 class SnippetsContentGenerator {
 
-    private SnippetsContentGenerator() {}
+    private SnippetsContentGenerator() {
+
+    }
 
     private static final Logger log = LoggerFactory.getLogger(SnippetsContentGenerator.class);
 
     static void generateSnippetContent(List<Snippet> snippetList) throws IOException {
+
         String snippetLine;
         String snippetBody;
         String snippetFooter;
 
         File sourceFile = Paths.get("vscode", "snippets", "ei-snippets", "src", "main", "java", "org",
-                                    "wso2", "integration", "ballerina", "autogen", "SnippetsContent.java").toFile();
+                          "wso2", "integration", "ballerina", "autogen", "SnippetsContent.java").toFile();
 
         try {
             if (sourceFile.createNewFile()) {
@@ -54,13 +58,11 @@ class SnippetsContentGenerator {
              log.error(message, e);
         }
 
-        String snippetContentHeder =  "package org.wso2.integration.ballerina.autogen;\n" + "\n" +
+        String snippetContentHeder =  "package org.wso2.integration.ballerina.autogen;\n\n" +
                                       "import org.apache.commons.lang3.tuple.ImmutablePair;\n" +
-                                      "import org.wso2.integration.ballerina.util.SnippetsBlock;\n" +
-                                      "import org.ballerinalang.langserver.common.utils.CommonUtil;\n" +
-                                                                                               "\n \n \n" +
+                                      "import org.ballerinalang.langserver.SnippetBlock;\n\n\n" +
                                       "public class SnippetsContent {\n\n" +
-                                      "    private SnippetsContent() {\n" + "    } " + "\n";
+                                      "   private SnippetsContent() { \n } \n";
 
         String snippetContent = "";
 
@@ -70,29 +72,29 @@ class SnippetsContentGenerator {
 
             String[] namesParts = snippetObject.getName().split(":");
 
-            snippetLine = "\n public static SnippetsBlock get" + namesParts[1].trim().
+            snippetLine = "\n public static SnippetBlock get" + namesParts[1].trim().
                     replaceAll("_", "") + "() {" + "\n" + pair.getKey();
             String generated = snippetObject.getCode().replaceAll("\"", "\\\\\"");
 
             snippetBody = " \n \n String snippet = " + "\"" + generated + "\"" + ";";
 
-            snippetFooter = "\n \n" + "return new SnippetsBlock(ItemResolverConstants." + namesParts[1].trim().
-                    toUpperCase() + ", snippet," + "ItemResolverConstants.SNIPPET_TYPE," +
-                                     "SnippetsBlock.SnippetType.SNIPPET," + pair.getValue() + ");" + "\n" + "}";
+            snippetFooter = "\n \n" + "return new SnippetBlock(ItemResolverConstants." + namesParts[1].trim().
+                    toUpperCase() + ", snippet,ItemResolverConstants.SNIPPET_TYPE," +
+                    "SnippetBlock.SnippetType.SNIPPET," + pair.getValue() + "); \n }";
 
             snippetContent = stringBuilder.append(snippetContent).append(snippetLine).append(snippetBody).
                     append(snippetFooter).append("\n").toString();
         }
 
-        String snippetGenerated = snippetContentHeder + snippetContent + "}";
+        String finalSnippet = snippetContentHeder + snippetContent + "}";
 
         FileWriter writer = new FileWriter(sourceFile);
-        writer.write(snippetGenerated);
+        writer.write(finalSnippet);
         writer.close();
-
     }
 
     private static Pair<String, String> getImportText(Snippet snippet) {
+
         String[] splitImports;
         String immutablePairs = "";
         String importsList = "";
@@ -111,9 +113,9 @@ class SnippetsContentGenerator {
 
             immutablePairs = stringBuilder.append(immutablePairs).append("\n").append("\t").
                     append("ImmutablePair<String, String> imports").append(k).
-                                                  append("= new ImmutablePair<> (").append("\"").append(pair[0]).
-                                                  append("\"").append(",").append("\"").append(pair[1]).append("\"").
-                                                  append(" )").append(";").toString();
+                    append("= new ImmutablePair<> (").append("\"").append(pair[0].trim()).
+                    append("\"").append(",").append("\"".trim()).append(pair[1]).append("\"").
+                    append(" )").append(";").toString();
 
             importsList = "imports" + k;
         }

@@ -19,9 +19,6 @@
 
 package org.wso2.integration.ballerina;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Main method executed for the auto generation of files to create the snippet.
  */
@@ -39,6 +39,7 @@ class SnippetGenerator {
     private static final Logger log = LoggerFactory.getLogger(SnippetGenerator.class);
 
     public static void main(String[] args) {
+
         try {
             processSnippet();
         } catch (Exception e) {
@@ -49,7 +50,8 @@ class SnippetGenerator {
 
     private static List<File> readFiles() throws Exception {
 
-        File files = Paths.get("vscode", "snippets", "snippets-gen", "src", "main", "resources","Snippets" ).toFile();
+        File files = Paths.get
+                ("vscode", "snippets", "snippets-gen", "src", "main", "resources", "Snippets").toFile();
         if (files.listFiles().length != 0) {
             return new ArrayList<>(Arrays.asList(files.listFiles()));
         } else {
@@ -68,7 +70,6 @@ class SnippetGenerator {
             log.error(message, e);
         }
 
-
         String sCurrentLine;
         List<Snippet> snippetList = new ArrayList<>();
 
@@ -85,33 +86,27 @@ class SnippetGenerator {
                         }
                         if (sCurrentLine.contains("Imports ")) {
                             snippet.setImports(sCurrentLine);
-
                         }
                     } else {
                         String snippets = readSnippet(reader);
                         snippet.setCode(snippets);
                     }
                 }
-
                 if (null != snippet.getName() && !snippet.getName().isEmpty()) {
                     snippetList.add(snippet);
                 }
-
             } catch (IOException e) {
                 String message = "Error while reading file content.";
                 log.error(message, e);
             }
         }
-
         try {
             genearteFiles(snippetList);
         } catch (IOException e) {
-            String message= "Error in generating snippets";
-            log.error(message,e);
+            String message = "Error in generating snippets";
+            log.error(message, e);
         }
-
     }
-
 
     private static void genearteFiles(List<Snippet> snippetList) throws IOException {
 
@@ -119,10 +114,10 @@ class SnippetGenerator {
         SnippetsContentGenerator.generateSnippetContent(snippetList);
         SnippetsDefinitionGenerator.generateSnippetDefinition(snippetList);
         TopLevelScopeGenerator.generateTopLevelScope(snippetList);
-
     }
 
     private static String readSnippet(BufferedReader reader) throws IOException {
+
         int consecutiveEmptyLineCounter = 0;
         String currentLine;
         String snippetContent = "";
