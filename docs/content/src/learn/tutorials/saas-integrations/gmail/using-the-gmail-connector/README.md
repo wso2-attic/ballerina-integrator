@@ -18,7 +18,7 @@ This tutorial demonstrates a scenario where a customer feedback Gmail account of
 
 ## Implementation
 
-#### Obtaining auth tokens to access Google APIs
+#### 1. Obtaining auth tokens to access Google APIs
 
 > If you want to skip the basics, you can download the git repo and directly move to the `Testing` section by skipping the `Implementation` section.
 
@@ -34,6 +34,8 @@ First, we need to obtain AuthTokens to access Google APIs. Follow the steps belo
 8. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token and access token.
 9. You can enter the credentials in the HTTP client config when defining the service.
 
+#### 2. Creating the project structure
+
 Create a project.
 ```bash
 ballerina new using-the-gmail-connector
@@ -42,22 +44,22 @@ Navigate to the project directory and add a module using the following command.
 ```bash
 ballerina add gmail_client_application
 ```
-
-Add a `ballerina.conf` file and create .bal files with meaningful names as shown in the project structure given below.
+Project structure is created as indicated below.
 ```
 using-the-gmail-connector
 ├── Ballerina.toml
-├── ballerina.conf
 └── src
     └── gmail_client_application
         ├── Module.md
         ├── gmail_client.bal
         ├── resources
         └── tests
-            ├── resources
-            └── gmail_client_test.bal
+            └── resources
 ```
 
+#### 3. Add project configurations file
+
+Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure.
 Update the `ballerina.conf` file with the token configuration required for accessing the Gmail account.
 ```
 ACCESS_TOKEN = ""
@@ -66,25 +68,12 @@ CLIENT_SECRET = ""
 REFRESH_TOKEN = ""
 ```
 
+#### 4. Write the integration
+
 You can open the project with VS Code. The integration implementation is written in the `gmail_client.bal` file.
 
-The code segment given below can be used to create a Gmail client. Ballerina Integrator VS Code plugin contains a snippet for the same, which can be loaded using the autocomplete feature for the `client/gmail` keyword.
-
-```ballerina
-gmail:GmailConfiguration gmailConfig = {
-    oauthClientConfig: {
-        accessToken: config:getAsString("ACCESS_TOKEN"),
-        refreshConfig: {
-            refreshUrl: gmail:REFRESH_URL,
-            refreshToken: config:getAsString("REFRESH_TOKEN"),
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET")
-        }
-    }
-};
-
-gmail:Client gmailClient = new(gmailConfig);
-```
+**gmail_client.bal**
+<!-- INCLUDE_CODE: src/gmail_client_application/gmail_client.bal -->
 
 ## Testing
 
@@ -94,32 +83,13 @@ Let’s build the module. Navigate to the project directory and execute the foll
 $ ballerina build gmail_client_application
 ```
 
-The build command creates an executable .jar file. Now run the .jar file created in the above step. Path to the `ballerina.conf` could be provided using the `--b7a.config.file` option.
+The build command creates an executable .jar file. Now run the .jar file created in the above step.
 
 ```bash
-$ java -jar target/bin/gmail_client_application.jar --b7a.config.file=path/to/ballerina.conf/file
+$ java -jar target/bin/gmail_client_application.jar
 ```
 Now we can see that the service has started on port 9090. Let’s invoke this service by executing the following cURL command.
 ```
 curl -X GET http://localhost:9090/gmail/reviews
 ```
 You will see the list of email body contents during a successful invocation.
-
-### Writing unit tests
-
-In Ballerina, the unit test cases should be in the same package inside a folder named `tests`. When writing test functions the convention given below should be followed.
-
-Test functions should be annotated with `@test:Config {}`. See the example below.
-```ballerina
-@test:Config {}
-function testSendTextMessage() {
-}
-```
-
-This guide contains unit tests for the Gmail application in the `gmail_client_test.bal`.
-
-To run the unit tests, navigate to the project directory and run the following command.
-```
-ballerina test
-```
-> **Note:** The `--b7a.config.file=path/to/ballerina.conf/file` option is required if it is needed to read configurations from a Ballerina configuration file.

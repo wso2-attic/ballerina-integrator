@@ -174,14 +174,16 @@ public class Utils {
      * Remove licence header of the code.
      *
      * @param code code file content
+     * @param file code file
      * @return code without licence header
      */
-    public static String removeLicenceHeader(String code) {
+    public static String removeLicenceHeader(String code, String file) {
         if (code.contains(LICENCE_LAST_LINE)) {
             String[] temp = code.split(LICENCE_LAST_LINE);
             return temp[1].trim();
         } else {
-            throw new ServiceException("Licence header is not in the correct format. code: " + code);
+            throw new ServiceException("Licence header is not in the correct format.\nGuide\t: " + file + "\nCode\t:\n"
+                    + code);
         }
     }
 

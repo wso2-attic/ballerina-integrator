@@ -61,6 +61,8 @@ nav:
             - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
             - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
             - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/salesforce-to-mysql-db.md'
+          - 'Gmail':
+            - 'Using the Gmail Connector': 'learn/tutorials/saas-integrations/gmail/using-the-gmail-connector/using-the-gmail-connector.md'
         - Messaging Integration:
           - 'Messaging with ActiveMQ' : 'learn/tutorials/messaging-integrations/messaging-with-activemq/messaging-with-activemq.md'
           - 'Messaging with Kafka' : 'learn/tutorials/messaging-integrations/messaging-with-kafka/messaging-with-kafka.md'

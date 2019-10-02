@@ -58,7 +58,7 @@ service gmailService on new http:Listener(9090) {
 
         // A search filter is used to to filter out emails inside the "Inbox".
         gmail:MsgSearchFilter searchFilter = {includeSpamTrash: false, labelIds: [inboxLabel]};
-        // Obtains the list of emails that statisfy the above search filter.
+        // Obtains the list of emails that satisfy the above search filter.
         gmail:MessageListPage mailList = check gmailClient->listMessages(userId, searchFilter);
 
         string attachmentPath = "src/gmail_client_application/resources/email.png";
