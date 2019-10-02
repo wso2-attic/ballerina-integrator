@@ -15,12 +15,11 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/log;
 
 // Service endpoint
 listener http:Listener hotelEP = new(9092);
 
-// Available car types
+// Available room types
 final string AC = "Air Conditioned";
 final string NORMAL = "Normal";
 
@@ -85,12 +84,6 @@ service hotelReservationService on hotelEP {
         handleError(result);
     }
 
-}
-
-function handleError(error? result) {
-    if (result is error) {
-        log:printError(result.reason(), err = result);
-    }
 }
 
 function equalIgnoreCase(string string1, string string2) returns boolean {

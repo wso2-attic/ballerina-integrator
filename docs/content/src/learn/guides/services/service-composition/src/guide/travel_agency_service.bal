@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/log;
 
 // Service endpoint
 listener http:Listener travelAgencyEP = new(9090);
@@ -25,6 +26,10 @@ http:Client airlineReservationEP = new("http://localhost:9091/airline");
 // Client endpoint to communicate with Hotel reservation service
 http:Client hotelReservationEP = new("http://localhost:9092/hotel");
 
+http:Response outResponse = new;
+
+http:Caller requestCaller = new;
+
 // Travel agency service to arrange a complete tour for a user
 @http:ServiceConfig {basePath:"/travel"}
 service travelAgencyService on travelAgencyEP {
@@ -32,110 +37,118 @@ service travelAgencyService on travelAgencyEP {
     // Resource to arrange a tour
     @http:ResourceConfig {methods:["POST"], consumes:["application/json"], produces:["application/json"]}
     resource function arrangeTour(http:Caller caller, http:Request inRequest) returns error? {
-        http:Response outResponse = new;
-        json inReqPayload = {};
+        requestCaller = <@untainted>caller;
 
-        // CODE-SEGMENT-BEGIN: segment_1
         // Try parsing the JSON payload from the user request
-        var payload = inRequest.getJsonPayload();
+        json|error payload = inRequest.getJsonPayload();
+        check self.validateRequest(payload);
+        check self.reserveAirline(payload);
+        check self.reserveHotel(payload);
+
+        // If all three services response positive status, send a successful message to the user
+        outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
+        var result = caller->respond(outResponse);
+        handleError(result);
+        return;
+    }
+
+    // CODE-SEGMENT-BEGIN: segment_1
+    function validateRequest(json|error payload) returns error? {
         if (payload is json) {
-            // Valid JSON payload
-            inReqPayload = payload;
+            // Valid JSON payload for all JSON parameters
+            if (payload.Name == () || payload.ArrivalDate == () || payload.DepartureDate == () ||
+                payload.Preference.Airline == () || payload.Preference.Accommodation == ()) {
+                outResponse.statusCode = 400;
+                outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
+                var result = requestCaller->respond(outResponse);
+                handleError(result);
+                if (result is error) {
+                    return result;
+                }
+            }
         } else {
             // NOT a valid JSON payload
             outResponse.statusCode = 400;
             outResponse.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
-            var result = caller->respond(outResponse);
+            var result = requestCaller->respond(outResponse);
             handleError(result);
-            return;
+            if (result is error) {
+                return result;
+            }
         }
+    }
+    // CODE-SEGMENT-END: segment_1
 
-        // Json payload format for an http out request
-        json outReqPayload = {
-            Name: check inReqPayload.Name,
-            ArrivalDate: check inReqPayload.ArrivalDate,
-            DepartureDate: check inReqPayload.DepartureDate,
-            Preference:""
-        };
-
-        json airlinePreference = check inReqPayload.Preference.Airline;
-        json hotelPreference = check inReqPayload.Preference.Accommodation;
-        json carPreference = check inReqPayload.Preference.Car;
-
-        // If payload parsing fails, send a "Bad Request" message as the response
-        if (outReqPayload.Name == () || outReqPayload.ArrivalDate == () || outReqPayload.DepartureDate == () ||
-            airlinePreference == () || hotelPreference == () || carPreference == ()) {
-            outResponse.statusCode = 400;
-            outResponse.setJsonPayload({"Message":"Bad Request - Invalid Payload"});
-            var result = caller->respond(outResponse);
-            handleError(result);
-            return;
-        }
-        // CODE-SEGMENT-END: segment_1
-
-        // CODE-SEGMENT-BEGIN: segment_2
+    // CODE-SEGMENT-BEGIN: segment_2
+    function reserveAirline(json|error payload) returns error? {
         // Reserve airline ticket for the user by calling Airline reservation service
         // construct the payload
+        json jsonPayload = check payload;
         json outReqJsonPayloadAirline = {
-            Name: check outReqPayload.Name,
-            ArrivalDate: check outReqPayload.ArrivalDate,
-            DepartureDate: check outReqPayload.DepartureDate,
-            Preference: airlinePreference
+            Name: check jsonPayload.Name,
+            ArrivalDate: check jsonPayload.ArrivalDate,
+            DepartureDate: check jsonPayload.DepartureDate,
+            Preference: check jsonPayload.Preference.Airline
         };
 
         http:Request outReqPayloadAirline = new;
         outReqPayloadAirline.setJsonPayload(<@untainted>outReqJsonPayloadAirline);
 
         // Send a post request to airlineReservationService with appropriate payload and get response
-        http:Response inResAirline = check airlineReservationEP->post("/reserve", outReqPayloadAirline);
+        http:Response inResponseAirline = check airlineReservationEP->post("/reserve", outReqPayloadAirline);
 
         // Get the reservation status
-        var airlineResPayload = check inResAirline.getJsonPayload();
-        string airlineStatus = airlineResPayload.Status.toString();
+        var airlineResponsePayload = check inResponseAirline.getJsonPayload();
+        string airlineStatus = airlineResponsePayload.Status.toString();
         // If reservation status is negative, send a failure response to user
-        if (equalIgnoreCase(airlineStatus, "Failed")) {
+        if (!equalIgnoreCase(airlineStatus, "Success")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve airline! " +
                     "Provide a valid 'Preference' for 'Airline' and try again"});
-            var result = caller->respond(outResponse);
+            var result = requestCaller->respond(outResponse);
             handleError(result);
-            return;
+            if (result is error) {
+                return result;
+            }
         }
-        // CODE-SEGMENT-END: segment_2
+    }
+    // CODE-SEGMENT-END: segment_2
 
-        // CODE-SEGMENT-BEGIN: segment_3
-        // Reserve hotel room for the user by calling Hotel reservation service
-        // construct the payload
-        json outReqJsonPayloadHotel = {
-            Name: check outReqPayload.Name,
-            ArrivalDate: check outReqPayload.ArrivalDate,
-            DepartureDate: check outReqPayload.DepartureDate,
-            Preference: hotelPreference
+    // CODE-SEGMENT-BEGIN: segment_3
+    function reserveHotel(json|error payload) returns error? {
+        json jsonPayload = check payload;
+        json outRequestJsonPayloadHotel = {
+            Name: check jsonPayload.Name,
+            ArrivalDate: check jsonPayload.ArrivalDate,
+            DepartureDate: check jsonPayload.DepartureDate,
+            Preference: check jsonPayload.Preference.Accommodation
         };
 
-        http:Request outReqPayloadHotel = new;
-        outReqPayloadHotel.setJsonPayload(<@untainted>outReqJsonPayloadHotel);
+        http:Request outRequestPayloadHotel = new;
+        outRequestPayloadHotel.setJsonPayload(<@untainted>outRequestJsonPayloadHotel);
 
         // Send a post request to hotelReservationService with appropriate payload and get response
-        http:Response inResHotel = check hotelReservationEP->post("/reserve", outReqPayloadHotel);
+        http:Response inResponseHotel = check hotelReservationEP->post("/reserve", outRequestPayloadHotel);
 
         // Get the reservation status
-        var hotelResPayload = check inResHotel.getJsonPayload();
-        string hotelStatus = hotelResPayload.Status.toString();
+        var hotelResponsePayload = check inResponseHotel.getJsonPayload();
+        string hotelStatus = hotelResponsePayload.Status.toString();
         // If reservation status is negative, send a failure response to user
-        if (equalIgnoreCase(hotelStatus, "Failed")) {
+        if (!equalIgnoreCase(hotelStatus, "Success")) {
             outResponse.setJsonPayload({"Message":"Failed to reserve hotel! " +
                     "Provide a valid 'Preference' for 'Accommodation' and try again"});
-            var result = caller->respond(outResponse);
+            var result = requestCaller->respond(outResponse);
             handleError(result);
-            return;
+            if (result is error) {
+                return result;
+            }
         }
-        // CODE-SEGMENT-END: segment_3
-
-        // If all three services response positive status, send a successful message to the user
-        outResponse.setJsonPayload({"Message":"Congratulations! Your journey is ready!!"});
-        var result = caller->respond(outResponse);
-        handleError(result);
-        return ();
     }
+    // CODE-SEGMENT-END: segment_3
 
+}
+
+function handleError(error? result) {
+    if (result is error) {
+        log:printError(result.reason(), err = result);
+    }
 }

@@ -1,28 +1,38 @@
 # Service Composition
 
-A service composition is an aggregate of services collectively composed to automate a particular task or business process. 
-
-> This guide walks you through the process of implementing a service composition using Ballerina language. 
-
 The following are the sections available in this guide.
 
+- [About](#about)
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
+- [Get the code](#get-the-code)
 - [Implementation](#implementation)
 - [Testing](#testing)
-- [Deployment](#deployment)
+
+## About
+
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are focusing on aggregating services collectively composed to automate a particular task or business process. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
+
+This guide walks you through the process of implementing a service composition using Ballerina language.
 
 ## What you’ll build
 To understand how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation and hotel room reservation. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
 
 ![alt text](/docs/content/resources/service-composition.svg)
 
-Travel agency is the service that acts as the composition initiator. The other three services are external services that the travel agency service calls to do airline ticket booking and hotel reservation. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
+Travel agency is the service that acts as the composition initiator. The other two services are external services that the travel agency service calls to do airline ticket booking and hotel reservation. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
 ## Prerequisites
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - A Text Editor or an IDE 
 > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+- Link to download Ballerina Integrator
+
+## Get the code
+
+Download the ZIP file and extract the contents to get the code.
+
+<a href="https://github.com/wso2/docs-ei/blob/master/en/ballerina-integrator/docs/learn/guides/"><img src="../../../../../assets/img/download-zip.png" width="200" alt="Download ZIP"></a>
 
 ## Implementation
 
@@ -87,7 +97,7 @@ If all services work successfully, the travel agency service confirms and arrang
 **travel_agency_service.bal**
 <!-- INCLUDE_CODE: src/guide/travel_agency_service.bal -->
 
-Let's now look at the code segment that is responsible for parsing the JSON payload from the user request.
+Let's now look at the code segment that is responsible for validating the JSON payload from the user request.
 
 <!-- INCLUDE_CODE_SEGMENT: { file: src/guide/travel_agency_service.bal, segment: segment_1 } -->
 
@@ -108,35 +118,9 @@ The travel agency service communicates with the hotel reservation service to boo
 
 ## Testing 
 
-### Invoking the service
+### Starting the service
 
-- Navigate to `service-composition` and run the following command to start all three HTTP services. This starts the `Airline Reservation`, `Hotel Reservation` and `Travel Agency` services on ports 9091, 9092 and 9090 respectively.
-
-```bash
-   $ ballerina run guide
-```
-   
-- Invoke the travel agency service by sending a POST request to arrange a tour.
-
-```bash
-   curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2020",
-   "DepartureDate":"13-04-2022", "Preference":{"Airline":"Business",
-   "Accommodation":"Air Conditioned", "Car":"Air Conditioned"}}' \
-   "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
-```
-
-  Travel agency service sends a response similar to the following:
-    
-```bash
-   < HTTP/1.1 200 OK
-   {"Message":"Congratulations! Your journey is ready!!"}
-``` 
-
-## Deployment
-
-Once you are done with the development, you can deploy the services using any of the methods that are listed below. 
-
-### Deploying locally
+Once you are done with the development, you can start the services as follows.
 
 - To deploy locally, navigate to `service-composition` directory, and execute the following command.
 ```bash
@@ -153,4 +137,23 @@ Once you are done with the development, you can deploy the services using any of
    [ballerina/http] started HTTP/WS listener 0.0.0.0:9091
    [ballerina/http] started HTTP/WS listener 0.0.0.0:9092
    [ballerina/http] started HTTP/WS listener 0.0.0.0:9090
+```
+This starts the `Airline Reservation`, `Hotel Reservation` and `Travel Agency` services on ports 9091, 9092 and 9090 respectively.
+
+### Invoking the service
+
+Invoke the travel agency service by sending a POST request to arrange a tour.
+
+```bash
+   curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2020",
+   "DepartureDate":"13-04-2022", "Preference":{"Airline":"Business",
+   "Accommodation":"Air Conditioned"}}' \
+   "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
+```
+
+Travel agency service sends a response similar to the following:
+
+```bash
+   < HTTP/1.1 200 OK
+   {"Message":"Congratulations! Your journey is ready!!"}
 ```
