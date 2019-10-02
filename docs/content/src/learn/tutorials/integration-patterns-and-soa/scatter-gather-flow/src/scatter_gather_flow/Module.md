@@ -1,8 +1,8 @@
-# Scatter-Gather Flow Control
+Guide on Scatter-Gather Flow using Ballerina.
+
+# Guide Overview
 
 ## About
-
-Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors.
 
 Scatter-Gather is an integration pattern where a request is sent to multiple recipients and each of the responses are aggregated and returned back to the client as a single response. This guide demonstrates a simple scatter-gather scenario where two files in an FTP location are read simultaneously, their contents aggregated and sent back to the client.
 
@@ -10,12 +10,12 @@ Scatter-Gather is an integration pattern where a request is sent to multiple rec
 
 We create service `employeeDetails` which accepts a client request and reads two different CSV files with employee details from an FTP server. It then converts the responses of each read to json, aggregates both the json and sends back to the client.
 
-![scatter-gather](../../../../assets/img/scatter_gather.jpg)
+## Prerequisites
 
-<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
-* An FTP Server
-
-<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
+- Ballerina Integrator
+- A Text Editor or an IDE
+> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VS Code](https://code.visualstudio.com).
+- An FTP Server
 
 ## Implementation
 
@@ -48,7 +48,7 @@ We create service `employeeDetails` which accepts a client request and reads two
                ├── main_test.bal
                └── resources
    ```
-   We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
+We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
 
 * Now let's create a file called `ballerina.conf` under the root path of the project structure. The file should have the following configurations.
 
@@ -114,7 +114,8 @@ FTP_PASSWORD = "@encrypted:{aoIlSvOPeBEZ0COma+Wz2uWznlNn1IWz4StiWQCO6g4=}"
 
 <!-- INCLUDE_CODE: src/scatter_gather_flow/main.bal -->
 
-## Testing
+
+## Run the Integration
 
 * First let’s build the module. While being in the scatter-gather-flow directory, execute the following command.
 
@@ -122,7 +123,7 @@ FTP_PASSWORD = "@encrypted:{aoIlSvOPeBEZ0COma+Wz2uWznlNn1IWz4StiWQCO6g4=}"
    $ ballerina build scatter_gather_flow
    ```
 
-This would create the executables. 
+This would create the executables.
 
 * Now run the .jar file created in the above step.
 
@@ -134,7 +135,7 @@ You will be prompted to enter the secret you used for encrypting the FTP usernam
 ```bash
 ballerina: enter secret for config value decryption:
 ```
-Now we can see that the service has started on port 9090. 
+Now we can see that the service has started on port 9090.
 
 * Let’s access this service by executing the following curl command.
 
@@ -142,69 +143,69 @@ Now we can see that the service has started on port 9090.
    $ curl http://localhost:9090/organization/employees
    ```
 
-   We receive a JSON response similar to the following.
+We receive a JSON response similar to the following.
 
-   ```json
-   [
-      {
-         "empId":"100",
-         "firstName":"Lois",
-         "lastName":"Walker",
-         "joinedDate":"11/24/2003"
-      },
-      {
-         "empId":"101",
-         "firstName":"Brenda",
-         "lastName":"Robinson",
-         "joinedDate":"7/27/2008"
-      },
-      {
-         "empId":"102",
-         "firstName":"Joe",
-         "lastName":"Robinson",
-         "joinedDate":"8/3/2016"
-      },
-      {
-         "empId":"103",
-         "firstName":"Diane",
-         "lastName":"Evans",
-         "joinedDate":"4/16/1999"
-      },
-      {
-         "empId":"104",
-         "firstName":"Benjamin",
-         "lastName":"Russell",
-         "joinedDate":"7/25/2013"
-      },
-      {
-         "empId":"105",
-         "firstName":"Nancy",
-         "lastName":"Baker",
-         "joinedDate":"7/22/2005"
-      },
-      {
-         "empId":"106",
-         "firstName":"Carol",
-         "lastName":"Murphy",
-         "joinedDate":"9/14/2016"
-      },
-      {
-         "empId":"107",
-         "firstName":"Frances",
-         "lastName":"Young",
-         "joinedDate":"1/28/1983"
-      },
-      {
-         "empId":"108",
-         "firstName":"Diana",
-         "lastName":"Peterson",
-         "joinedDate":"4/27/1994"
-      },
-      {
-         "empId":"109",
-         "firstName":"Ralph",
-         "lastName":"Flores",
-         "joinedDate":"2/17/2014"
-      }
-   ]
-   ```
+```json
+[
+   {
+      "empId":"100",
+      "firstName":"Lois",
+      "lastName":"Walker",
+      "joinedDate":"11/24/2003"
+   },
+   {
+      "empId":"101",
+      "firstName":"Brenda",
+      "lastName":"Robinson",
+      "joinedDate":"7/27/2008"
+   },
+   {
+      "empId":"102",
+      "firstName":"Joe",
+      "lastName":"Robinson",
+      "joinedDate":"8/3/2016"
+   },
+   {
+      "empId":"103",
+      "firstName":"Diane",
+      "lastName":"Evans",
+      "joinedDate":"4/16/1999"
+   },
+   {
+      "empId":"104",
+      "firstName":"Benjamin",
+      "lastName":"Russell",
+      "joinedDate":"7/25/2013"
+   },
+   {
+      "empId":"105",
+      "firstName":"Nancy",
+      "lastName":"Baker",
+      "joinedDate":"7/22/2005"
+   },
+   {
+      "empId":"106",
+      "firstName":"Carol",
+      "lastName":"Murphy",
+      "joinedDate":"9/14/2016"
+   },
+   {
+      "empId":"107",
+      "firstName":"Frances",
+      "lastName":"Young",
+      "joinedDate":"1/28/1983"
+   },
+   {
+      "empId":"108",
+      "firstName":"Diana",
+      "lastName":"Peterson",
+      "joinedDate":"4/27/1994"
+   },
+   {
+      "empId":"109",
+      "firstName":"Ralph",
+      "lastName":"Flores",
+      "joinedDate":"2/17/2014"
+   }
+]
+```
