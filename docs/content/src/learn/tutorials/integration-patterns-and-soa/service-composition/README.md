@@ -138,7 +138,7 @@ Once you are done with the development, you can start the services as follows.
    [ballerina/http] started HTTP/WS listener 0.0.0.0:9092
    [ballerina/http] started HTTP/WS listener 0.0.0.0:9090
 ```
-This starts the `Airline Reservation`, `Hotel Reservation` and `Travel Agency` services on ports 9091, 9092 and 9090 respectively.
+This starts the `Airline Reservation`, `Hotel Reservation`, and `Travel Agency` services on ports 9091, 9092, and 9090 respectively.
 
 ### Invoking the service
 
