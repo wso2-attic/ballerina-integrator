@@ -68,7 +68,7 @@ REFRESH_TOKEN = ""
 
 You can open the project with VS Code. The integration implementation is written in the `gmail_client.bal` file.
 
-The code segment given below could be used to create a Gmail client. Ballerina Integrator VS Code plugin contains a snippet for the same, which could be loaded using the autocomplete feature for `client/gmail` keyword.
+The code segment given below can be used to create a Gmail client. Ballerina Integrator VS Code plugin contains a snippet for the same, which can be loaded using the autocomplete feature for the `client/gmail` keyword.
 
 ```ballerina
 gmail:GmailConfiguration gmailConfig = {
