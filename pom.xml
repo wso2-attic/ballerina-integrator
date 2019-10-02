@@ -38,7 +38,7 @@
     <modules>
         <module>docs</module>
         <module>vscode/extension</module>
-        <module>vscode/snippet-generator</module>
+        <module>vscode/snippets</module>
     </modules>
 
     <repositories>

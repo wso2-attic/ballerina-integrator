@@ -48,7 +48,7 @@ class SnippetGenerator {
 
     private static List<File> readSnippetTextFiles() throws IOException {
 
-        File files = Paths.get("snippets-gen","src", "main", "resources", "snippet-files").toFile();
+        File files = Paths.get("vscode","snippets","snippets-gen","src", "main", "resources", "snippet-files").toFile();
 
         if (files.listFiles().length != 0) {
             return new ArrayList<>(Arrays.asList(files.listFiles()));
