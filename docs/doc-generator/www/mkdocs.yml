@@ -55,6 +55,8 @@ nav:
         - Saas Integration:
           - 'Amazon SQS':
             - 'Notifying fire alarm using SQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/notifying-fire-alarm-using-sqs.md'
+          - 'SAP':
+            - 'Interacting with SAP': 'learn/tutorials/saas-integrations/sap/interacting-with-sap/interacting-with-sap.md'
           - 'sfdc46':
             - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
             - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
