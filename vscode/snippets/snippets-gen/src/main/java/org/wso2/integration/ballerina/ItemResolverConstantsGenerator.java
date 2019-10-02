@@ -45,10 +45,6 @@ class ItemResolverConstantsGenerator {
         File sourceFile = Paths.get("../ei-snippets", "src", "main", "java", "org",
                 "wso2", "integration", "ballerina", "autogen", "ItemResolverConstants.java").toFile();
 
-        if (sourceFile.exists()) {
-            sourceFile.delete();
-        }
-
         try {
             if (sourceFile.createNewFile()) {
                 log.info("Successfully created ItemResolverConstants.java file");

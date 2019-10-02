@@ -212,10 +212,10 @@
         <maven.checkstyleplugin.excludes>**/SourceGen.java</maven.checkstyleplugin.excludes>
         <maven.spotbugsplugin.exclude.file>spotbugs-exclude.xml</maven.spotbugsplugin.exclude.file>
 
-        <ballerina.version>1.0.0</ballerina.version>
+        <ballerina.version>1.0.1</ballerina.version>
         <lsp4j.version>0.6.0</lsp4j.version>
         <apache.commons.io.version>2.6</apache.commons.io.version>
-        <ballerina.lang.compiler.version>1.0.0-alpha</ballerina.lang.compiler.version>
+        <ballerina.lang.compiler.version>1.0.1</ballerina.lang.compiler.version>
         <jackson.databind.version>2.9.8</jackson.databind.version>
         <mvn.processor.plugin.version>2.2.4</mvn.processor.plugin.version>
         <h2.database.version>1.4.199</h2.database.version>
@@ -236,7 +236,7 @@
         <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
         <apache.source.release.assembly.descriptor.version>1.0.6</apache.source.release.assembly.descriptor.version>
         <builder.helper.maven.plugin.version>1.7.1</builder.helper.maven.plugin.version>
-        <language.server.core.version>1.0.0</language.server.core.version>
+        <language.server.core.version>1.0.1</language.server.core.version>
         <maven.plugin.api.version>3.3.3</maven.plugin.api.version>
     </properties>
 </project>

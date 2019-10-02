@@ -68,8 +68,7 @@ class TopLevelScopeGenerator {
                 "\n import java.util.ArrayList; import java.util.Collection;\n" +
                 "import java.util.List;\n import java.util.Optional;\n\n" +
                 "@JavaSPIService(\"org.ballerinalang.langserver.completions.spi.LSCompletionProvider\")\n" +
-                "public class TopLevelScope extends TopLevelScopeProvider {\n\n" +
-                " public static Precedence precedence;\n\n" +
+                "public class TopLevelScope extends TopLevelScopeProvider {\n\n  public Precedence precedence;" +
                 "    public TopLevelScope() {\n this.attachmentPoints.add(BLangPackage.class); \n" +
                 "        this.precedence = Precedence.HIGH;\n }\n \n /**\n" +
                 "     * Get a static completion Item for the given snippet.\n *\n" +
@@ -107,7 +106,8 @@ class TopLevelScopeGenerator {
                     namesSplit[1].trim() + ")) ; \n";
             scopeBody = stringBuilder.append(scopeBody).append(scopeLine).toString();
         }
-        String topLevelScope = scopeHeader + scopeBody + "\n \n return completionItemsArr; \n \n } \n }";
+        String topLevelScope = scopeHeader + scopeBody + "\n \n return completionItemsArr;} \n @Override\n" +
+                "   public Precedence getPrecedence() {\n \n  return this.precedence;\n  }\n }";
         FileWriter writer = new FileWriter(sourceFile);
         writer.write(topLevelScope);
         writer.close();
