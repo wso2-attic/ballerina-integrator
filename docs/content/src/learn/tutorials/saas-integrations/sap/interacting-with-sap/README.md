@@ -90,7 +90,7 @@ SYSNR = "01"
 LANGUAGE = "en"
 ```
 
-7. A SAP client could be configured as follows. Ballerina Integrator VS Code plugin contains a snippet for the same, which could be loaded using the autocomplete feature for `client/sap` keyword.
+7. A SAP client can be configured as follows. Ballerina Integrator VS Code plugin contains a snippet for the same, which could be loaded using the autocomplete feature for `client/sap` keyword.
 ```
 sap:ProducerConfig producerConfigs = {
     destinationName: config:getAsString("DESTINATION_NAME"),
