@@ -115,7 +115,7 @@ Let’s build the module. Navigate to the project directory and execute the foll
 ballerina build sap_producer
 ```
 
-The build command would create an executable .jar file. Now run the .jar file created in the above step. Path to the `ballerina.conf` could be provided using the `--b7a.config.file` option.
+The build command creates an executable .jar file. Now run the .jar file created in the above step. Path to the `ballerina.conf` could be provided using the `--b7a.config.file` option.
 
 ```bash
 java -jar target/bin/sap_producer.jar --b7a.config.file=path/to/ballerina.conf/file
