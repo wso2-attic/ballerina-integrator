@@ -42,7 +42,7 @@ class ItemResolverConstantsGenerator {
         String snippetBody = "";
         String snippetLine;
 
-        File sourceFile = Paths.get("ei-snippets", "src", "main", "java", "org",
+        File sourceFile = Paths.get("vscode","snippets","ei-snippets", "src", "main", "java", "org",
                 "wso2", "integration", "ballerina", "autogen", "ItemResolverConstants.java").toFile();
 
         try {

@@ -44,7 +44,7 @@ class SnippetsContentGenerator {
         String snippetBody;
         String snippetFooter;
 
-        File sourceFile = Paths.get("ei-snippets", "src", "main", "java", "org",
+        File sourceFile = Paths.get("vscode","snippets","ei-snippets", "src", "main", "java", "org",
                 "wso2", "integration", "ballerina", "autogen", "SnippetsContent.java").toFile();
 
         try {
