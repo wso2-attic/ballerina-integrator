@@ -16,8 +16,6 @@
 
 import ballerina/http;
 import ballerina/log;
-import ballerina/io;
-import ballerina/test;
 
 // hospital service endpoint
 http:Client hospitalEP = new("http://localhost:9095");

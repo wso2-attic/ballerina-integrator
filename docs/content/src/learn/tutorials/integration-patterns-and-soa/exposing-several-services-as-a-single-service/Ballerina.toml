@@ -3,4 +3,4 @@ org-name= "wso2"
 version= "0.1.0"
 
 [dependencies]
-"wso2/healthcare" = { path = "../../backends/healthcare-service/target/balo/healthcare-2019r3-any-0.1.0.balo" }
+"wso2/healthcare" = { path = "../../../backends/healthcare-service/target/balo/healthcare-2019r3-any-0.1.0.balo" }

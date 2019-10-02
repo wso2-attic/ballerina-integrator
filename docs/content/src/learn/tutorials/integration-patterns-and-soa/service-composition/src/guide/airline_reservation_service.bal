@@ -60,7 +60,7 @@ service airlineReservationService on airlineEP {
             var result = caller->respond(response);
             handleError(result);
             return;
-        } else if (name is error || arrivalDate is error || departDate is error || preferredRoomType is error) {
+        } else if (name is error || arrivalDate is error || departDate is error || preferredClass is error) {
             response.statusCode = 500;
             response.setJsonPayload({"Message":"Internal Server Error - Error while processing request parameters"});
             var result = caller->respond(response);

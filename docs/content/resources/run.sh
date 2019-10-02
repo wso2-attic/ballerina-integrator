@@ -39,25 +39,11 @@ create_directory() {
 }
 
 execute_tests() {
+    config_file=${BI_CONTENT_HOME}/resources/config.json
+
     clear_directory ${BI_CONTENT_HOME}/output
 
-    executionNameList=("healthcare-service" "exposing-several-services-as-a-single-service"
-    "sending-a-simple-message-to-a-service" "routing-requests-based-on-message-content"
-    "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "backend-for-frontend"
-    "backend-for-frontend" "backend-for-frontend" "backend-for-frontend" "content-based-routing-advanced"
-    "message-filtering" "pass-through-messaging" "scatter-gather-messaging-advanced" "asynchronous-invocation"
-    "asynchronous-invocation" "parallel-service-orchestration" "parallel-service-orchestration"
-    "parallel-service-orchestration" "parallel-service-orchestration" "exposing-a-rest-service"
-    "writing-tests-using-data-providers")
-    executionPathList=(${path1} ${path2} ${path3} ${path4} ${path5} ${path5} ${path5} ${path5} ${path5} ${path5} ${path5} ${path6}
-    ${path7} ${path8} ${path9} ${path10} ${path10} ${path11} ${path11} ${path11} ${path11} ${path12} ${path15})
-    moduleList=("healthcare" "tutorial" "tutorial" "tutorial" "appointment_mgt" "desktop_bff"
-    "medical_record_mgt" "message_mgt" "mobile_bff" "notification_mgt" "sample_data_publisher"
-    "company_data_service" "message_filtering" "pass_through" "auction_service" "stock_quote_data_backend"
-    "stock_quote_summary_service" "airline_reservation" "car_rental" "hotel_reservation" "travel_agency" "restful_service"
-    "hello_service")
-
-    echo ' _____         _
+    echo '     _____         _
     |_   _|__  ___| |_ ___
       | |/ _ \/ __| __/ __|
       | |  __/\__ \ |_\__ \
@@ -65,25 +51,36 @@ execute_tests() {
 
     '
 
-    count=0
-    for i in "${executionPathList[@]}";
-    do
-        echo "Executing ${executionNameList[$count]}"
-        cd ${BI_CONTENT_HOME}/${executionPathList[$count]}
+    for k in $(jq '.tutorials | keys | .[]' $config_file); do
+        tutorial=$(jq -r ".tutorials[$k]" $config_file)
+        path=$(jq '.path' <<< "$tutorial")
+
+        echo "Executing $path"
+
+        # Remove quotes from path
+        temp="${path%\"}"
+        temp="${temp#\"}"
+
+        cd ${BI_CONTENT_HOME}/$temp
         create_directory output
-        ballerina build ${moduleList[$count]} > output/testResults
-        if (grep -q "[1-9][0-9]* failing" output/testResults) || ! (grep -q "Running tests" output/testResults)
-        then
-            echo -e "failure in ${executionNameList[$count]} \n"
-            exit 1
-        else
-            echo "No failures in ${executionNameList[$count]} tests"
-        fi
-        echo -e "------End of executing ${executionNameList[$count]} tests----- \n"
-        ((count++))
+
+        for l in $(jq '.modules | keys | .[]' <<< "$tutorial"); do
+            module=$(jq -r ".modules[$l]" <<< "$tutorial")
+            ballerina build $module > output/testResults
+
+            if (grep -q "[1-9][0-9]* failing" output/testResults) || ! (grep -q "Running tests" output/testResults)
+            then
+                echo -e "failure in $path: $module \n"
+                exit 1
+            else
+                echo "No failures in $path: $module tests"
+            fi
+        done
+
+        echo -e "------End of executing $path tests----- \n"
         create_directory ${BI_CONTENT_HOME}/output
         cat output/testResults >> ${BI_CONTENT_HOME}/output/completeTestResults.log
-    done;
+    done
 }
 
 execute_tests

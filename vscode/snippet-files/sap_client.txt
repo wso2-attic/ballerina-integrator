@@ -2,7 +2,7 @@ Name : SAP_Client
 Trigger : client/sap
 Imports : wso2/sap
 
-sap:ProducerConfig sapProducerConfig = {
+sap:ProducerConfig ${sapProducerConfig} = {
     destinationName: "${destination_name}",
     sapclient: "${sap_client}",
     username: "${username}",
@@ -12,4 +12,4 @@ sap:ProducerConfig sapProducerConfig = {
     language: "${language}"
 };
 
-sap:Producer sapProducer = new (sapProducerConfig);
+sap:Producer ${sapProducer} = new (${sapProducerConfig});

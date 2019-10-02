@@ -22,6 +22,7 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.integration.ballerina.utils.ServiceException;
@@ -89,6 +90,8 @@ public class DocsGenerator {
 
     public static void main(String[] args) {
         try {
+            BasicConfigurator.configure();
+            logger.info("Docs generating process started...");
             DocsGenerator docsGenerator = new DocsGenerator();
             // Get current commit hash.
             commitHash = docsGenerator.getCommitHashByReadingGitProperties();
@@ -112,6 +115,7 @@ public class DocsGenerator {
             copyDirectoryContent(TEMP_DIR, MKDOCS_CONTENT);
             // Create `target/www` website directory.
             createWebsiteDirectory();
+            logger.info("Docs generating process finished...");
         } catch (ServiceException e) {
             logger.error(e.getMessage(), e);
         } finally {
