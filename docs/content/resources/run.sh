@@ -43,7 +43,7 @@ execute_tests() {
 
     clear_directory ${BI_CONTENT_HOME}/output
 
-    echo ' _____         _
+    echo '     _____         _
     |_   _|__  ___| |_ ___
       | |/ _ \/ __| __/ __|
       | |  __/\__ \ |_\__ \
@@ -53,10 +53,10 @@ execute_tests() {
 
     for k in $(jq '.tutorials | keys | .[]' $config_file); do
         tutorial=$(jq -r ".tutorials[$k]" $config_file)
-        name=$(jq '.name' <<< "$tutorial")
         path=$(jq '.path' <<< "$tutorial")
 
-        echo "Executing $name"
+        echo "Executing $path"
+
         # Remove quotes from path
         temp="${path%\"}"
         temp="${temp#\"}"
@@ -70,14 +70,14 @@ execute_tests() {
 
             if (grep -q "[1-9][0-9]* failing" output/testResults) || ! (grep -q "Running tests" output/testResults)
             then
-                echo -e "failure in $name: $module \n"
+                echo -e "failure in $path: $module \n"
                 exit 1
             else
-                echo "No failures in $name: $module tests"
+                echo "No failures in $path: $module tests"
             fi
         done
 
-        echo -e "------End of executing $name tests----- \n"
+        echo -e "------End of executing $path tests----- \n"
         create_directory ${BI_CONTENT_HOME}/output
         cat output/testResults >> ${BI_CONTENT_HOME}/output/completeTestResults.log
     done
