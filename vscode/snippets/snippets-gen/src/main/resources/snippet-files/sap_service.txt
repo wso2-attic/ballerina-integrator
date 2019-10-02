@@ -1,0 +1,10 @@
+Name : SAP_Service
+Trigger : service/sap
+Imports : wso2/sap
+
+service ${1:sapConsumer} on ${2:sapListener} {
+
+   resource function onMessage(string ${3:message}) {
+       io:println("Message received from SAP: " + ${4:message});
+   }
+}

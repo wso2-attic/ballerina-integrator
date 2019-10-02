@@ -1,0 +1,15 @@
+Name : SAP_Client
+Trigger : client/sap
+Imports : wso2/sap
+
+sap:ProducerConfig ${1:sapProducerConfig} = {
+    destinationName: "${2:destination_name}",
+    sapclient: "${3:sap_client}",
+    username: "${4:username}",
+    password: "${5:password}",
+    ashost: "${6:ashost}",
+    sysnr: "${7:sysnr}",
+    language: "${8:language}"
+};
+
+sap:Producer ${9:sapProducer} = new (${10:sapProducerConfig});

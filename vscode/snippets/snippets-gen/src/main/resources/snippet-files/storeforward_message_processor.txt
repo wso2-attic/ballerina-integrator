@@ -1,0 +1,28 @@
+Name : StoreForward_Message_Processor
+Trigger : storeforward/message_processor
+Imports : wso2/storeforward
+
+storeforward:MessageStoreConfiguration ${1:storeConfig} = {
+    messageBroker: "${2:ACTIVE_MQ}",
+    providerUrl: "${3:tcp://localhost:61616}",
+    queueName: "${4:queue_name}"
+};
+
+storeforward:ForwardingProcessorConfiguration ${5:processorConfig} = {
+    storeConfig: ${6:storeConfig},
+    HttpEndpointUrl: "${7:http://localhost:9000/services/SimpleStockQuoteService}",
+    pollTimeConfig: 1000,
+    retryInterval: 3000,
+    maxRedeliveryAttempts: 5
+};
+
+storeforward:MessageForwardingProcessor ${8:forwardingProcessor} = check new storeforward:MessageForwardingProcessor(${9:processorConfig}, ${10:handleResponse});
+
+function ${11:handleResponse}(http:Response ${12:response}) {
+    int ${13:statusCode} = ${14:response}.statusCode;
+    if (${15:statusCode} == http:STATUS_OK) {
+        log:printInfo("Successful");
+    } else {
+        log:printError("Error: " + ${16:statusCode}.toString());
+    }
+}

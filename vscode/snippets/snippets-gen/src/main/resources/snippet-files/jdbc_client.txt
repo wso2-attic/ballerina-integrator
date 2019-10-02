@@ -2,10 +2,10 @@ Name : JDBC_Client
 Trigger : client/jdbc
 Imports : ballerinax/java.jdbc
 
-jdbc:Client ${jdbcClient} = new ({
-    url: "${jdbc_url}",
-    username: "${username}",
-    password: "${password}",
+jdbc:Client ${1:jdbcClient} = new ({
+    url: "${2:jdbc_url}",
+    username: "${3:username}",
+    password: "${4:password}",
     poolOptions: { maximumPoolSize: 5 },
     dbOptions: { useSSL: false }
 });

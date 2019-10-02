@@ -1,0 +1,18 @@
+Name : SMB_Listener
+Trigger : listener/smb
+Imports : wso2/smb
+
+listener smb:Listener ${1:smbListener} = new({
+     protocol: smb:SMB,
+     host: "${2:smb_host}",
+     secureSocket: {
+         basicAuth: {
+             username: "${3:smb_username}",
+             password: "${4:smb_password}"
+         }
+     },
+     port: ${5:smb_port},
+     path: "${6:remote_smb_directory_location}",
+     pollingInterval: ${7:polling_interval},
+     fileNamePattern: "${8:file_type}"
+ });

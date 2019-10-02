@@ -1,0 +1,11 @@
+Name : StoreForward_Message_Store
+Trigger : storeforward/message_store
+Imports : wso2/storeforward
+
+storeforward:MessageStoreConfiguration ${1:storeConfig} = {
+    messageBroker: "${2:ACTIVE_MQ}",
+    providerUrl: "${3:tcp://localhost:61616}",
+    queueName: "${4:queue_name}"
+};
+
+storeforward:Client ${5:storeClient} = check new storeforward:Client(${6:storeConfig});
