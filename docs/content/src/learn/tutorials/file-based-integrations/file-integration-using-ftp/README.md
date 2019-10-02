@@ -14,7 +14,7 @@ To understand how to build a service to listen to an FTP server, let's consider 
 an FTP server to store data files. When a new file is added to the server, the FTP listener will read the file and add 
 the file name and size to a map, and when the file is deleted from the server, it will remove the entry from the map. 
 
-![File integration using FTP](/src/ftp_listener/resources/file-integration-using-ftp.png)
+![File integration using FTP](../../../../assets/img/file-integration-using-ftp.png)
 
 <!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 * An FTP Server (See [here](https://www.digitalocean.com/community/tutorials/how-to-set-up-vsftpd-for-a-user-s-directory-on-ubuntu-16-04) on how to setup an FTP server)
@@ -30,16 +30,16 @@ Ballerina is a complete programming language that supports custom project struct
 ```
 file-integration-using-ftp
     └── src
-       └── ftp_listener
+       └── file_integration_using_ftp
            └── ftp_listener.bal
 ```
 
-Create the Ballerina project `file-integration-using-ftp` and add the `ftp_listener` module using the below commands. 
+Create the Ballerina project `file-integration-using-ftp` and add the `file_integration_using_ftp` module using the below commands.
 
 ```bash
-    $ ballerina new file-integration-using-ftp
-    $ cd file-integration-using-ftp
-    $ ballerina add ftp_listener
+$ ballerina new file-integration-using-ftp
+$ cd file-integration-using-ftp
+$ ballerina add file_integration_using_ftp
 ```
 
 The above package structure will be created for you. Create the `ftp_listener.bal` file inside the Ballerina module.
@@ -62,16 +62,16 @@ should be invoked for text files, the config for `FTP_FILE_NAME_PATTERN` should 
 the location to poll for files and how frequently the listener should poll for files, using the values 
 `FTP_LISTENER_PATH` and `FTP_POLLING_INTERVAL`respectively.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/ftp_listener/ftp_listener.bal, segment: segment_1 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_ftp/ftp_listener.bal, segment: segment_1 } -->
 
 Create the service to listen to the FTP server using the above listener. When files are added or deleted on the server, 
 this service will be invoked, and the files will be processed.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/ftp_listener/ftp_listener.bal, segment: segment_2 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_ftp/ftp_listener.bal, segment: segment_2 } -->
 
 Then implement the FTP Client, which will connect to the FTP server and get the details of new files to process. 
      
-<!-- INCLUDE_CODE_SEGMENT: { file: src/ftp_listener/ftp_listener.bal, segment: segment_3 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_ftp/ftp_listener.bal, segment: segment_3 } -->
 
 Declare a map to store the details of processed files.
 
@@ -83,7 +83,7 @@ Now, implement the processing of added and deleted files. When files are added t
 retrieve the file size from the server, and the file name and its size will be added to the `fileMap`. When a file is 
 removed from the server, the file will be removed from the map.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/ftp_listener/ftp_listener.bal, segment: segment_4 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_ftp/ftp_listener.bal, segment: segment_4 } -->
 
 ## Testing
 
@@ -101,10 +101,10 @@ The successful build of a service will show us something similar to the followin
 
 ```
 Compiling source
-        wso2/ftp_listener:0.1.0
+        wso2/file_integration_using_ftp:0.1.0
 
 Creating balos
-        target/balo/ftp_listener-2019r3-java8-0.1.0.balo
+        target/balo/file_integration_using_ftp-2019r3-java8-0.1.0.balo
 ```
 
 This will create the Ballerina executables inside the `/target` directory.
@@ -112,7 +112,7 @@ This will create the Ballerina executables inside the `/target` directory.
 Then run the jar file created in the above step.
 
 ```bash
-   $ java -jar target/bin/ftp_listener.jar --b7a.config.file=src/ftp_listener/resources/ballerina.conf 
+   $ java -jar target/bin/file_integration_using_ftp.jar --b7a.config.file=src/file_integration_using_ftp/resources/ballerina.conf
 ```
 
 Add and delete files in the FTP server, and check the logs to verify whether the service is working as expected.

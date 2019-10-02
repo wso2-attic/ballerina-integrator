@@ -34,8 +34,8 @@ listener smb:Listener dataFileListener = new({
             password: config:getAsString("SMB_PASSWORD")
         }
     },
-    path: conf.filePath,
-    fileNamePattern: conf.fileNamePattern,
+    path: config:getAsString("SMB_LISTENER_PATH"),
+    fileNamePattern: config:getAsString("SMB_FILE_NAME_PATTERN"),
     pollingInterval: config:getAsInt("SMB_POLLING_INTERVAL")
 });
 // CODE-SEGMENT-END: segment_1
