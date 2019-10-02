@@ -1,14 +1,14 @@
 org_name = "wso2"
-version = "0.1.0"
+version = "1.1.0"
 lockfile_version = "1.0.0"
-ballerina_version = "1.0.0"
+ballerina_version = "1.0.1"
 
-[[imports."wso2/jsontojms:0.1.0"]]
-org_name = "wso2"
-name = "jms"
-version = "0.6.0"
-
-[[imports."wso2/jms:0.6.0"]]
+[[imports."wso2/jms:0.6.1"]]
 org_name = "ballerinax"
 name = "java"
 version = "0.0.0"
+
+[[imports."wso2/json_to_jms:1.1.0"]]
+org_name = "wso2"
+name = "jms"
+version = "0.6.1"
