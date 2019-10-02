@@ -8,7 +8,7 @@ The Ballerina Gmail connector allows you to send, read, and delete emails throug
 You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
 
 ## What you'll build
-This guide will demonstrate a scenario where a customer feedback Gmail account of a company could be easily handled using the Ballerina Gmail Connector. This application contains a service which could be invoked through an HTTP GET request. Once the service is invoked, it would return the contents of unread emails in the `Inbox` while sending an automated response to the customer, thanking for their feedback. The number of emails that could be handled in a single invokation could be specified in the application.
+This tutorial demonstrates a scenario where a customer feedback Gmail account of a company can be easily managed using the Ballerina Gmail Connector. This application contains a service that can be invoked through an HTTP GET request. Once the service is invoked, it returns the contents of unread emails in the `Inbox`, while sending an automated response to the customer, thanking them for their feedback. The number of emails that can be handled in a single invocation is specified in the application.
 
 ## Prerequisites
 - [Java](https://www.oracle.com/technetwork/java/index.html)
