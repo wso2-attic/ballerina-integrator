@@ -23,14 +23,14 @@ export let begin: string = `<!DOCTYPE html>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
-        <title>Ballerina Integrator 7.0.0</title>
+        <title>Ballerina Integrator 1.0.0</title>
         ` + homeStyles + `
     </head>
     <body>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="heading-page">Ballerina Integrator 7.0.0</h1>
+                    <h1 class="heading-page">Ballerina Integrator 1.0.0</h1>
                 </div>
             </div>
             <div class="row">
