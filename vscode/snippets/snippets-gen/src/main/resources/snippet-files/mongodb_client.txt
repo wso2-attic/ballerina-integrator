@@ -1,0 +1,11 @@
+Name : MongoDB_Client
+Trigger : client/mongodb
+Imports : wso2/mongodb
+
+mongodb:Client ${1:mongodbClient} = new({
+    host: "${2:host}",
+    dbName: "${3:database_name}",
+    username: "${4:username}",
+    password: "${5:password}",
+    options: { sslEnabled: false, serverSelectionTimeout: 500 }
+});
