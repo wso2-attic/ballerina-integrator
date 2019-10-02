@@ -116,7 +116,7 @@ function testSendTextMessage() {
 }
 ```
 
-This guide contains unit tests for Gmail application in the `gmail_client_test.bal`.
+This guide contains unit tests for the Gmail application in the `gmail_client_test.bal`.
 
 To run the unit tests, navigate to the project directory and run the following command.
 ```
