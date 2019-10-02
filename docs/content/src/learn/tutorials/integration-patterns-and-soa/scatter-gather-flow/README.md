@@ -8,6 +8,8 @@ Scatter-Gather is an integration pattern where a request is sent to multiple rec
 
 We create service `employeeDetails` which accepts a client request and reads two different CSV files with employee details from an FTP server. It then converts the responses of each read to json, aggregates both the json and sends back to the client.
 
+![scatter-gather](../../../../assets/img/scatter_gather.jpg)
+
 ## Prerequisites
 
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
