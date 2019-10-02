@@ -34,9 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 class SnippetsContentGenerator {
 
-    private SnippetsContentGenerator() {
-
-    }
+    private SnippetsContentGenerator() {}
 
     private static final Logger log = LoggerFactory.getLogger(SnippetsContentGenerator.class);
 
@@ -46,8 +44,8 @@ class SnippetsContentGenerator {
         String snippetBody;
         String snippetFooter;
 
-        File sourceFile = Paths.get("vscode", "snippets", "ei-snippets", "src", "main", "java", "org",
-                          "wso2", "integration", "ballerina", "autogen", "SnippetsContent.java").toFile();
+        File sourceFile = Paths.get("../ei-snippets", "src", "main", "java", "org",
+                "wso2", "integration", "ballerina", "autogen", "SnippetsContent.java").toFile();
 
         try {
             if (sourceFile.createNewFile()) {

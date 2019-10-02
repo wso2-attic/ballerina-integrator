@@ -32,9 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 class TopLevelScopeGenerator {
 
-    private TopLevelScopeGenerator() {
-
-    }
+    private TopLevelScopeGenerator() {}
 
     private static final Logger log = LoggerFactory.getLogger(SnippetGenerator.class);
 
@@ -43,7 +41,7 @@ class TopLevelScopeGenerator {
         String scopeBody = "";
         String scopeLine;
 
-        File sourceFile = Paths.get("vscode", "snippets", "ei-snippets", "src", "main", "java", "org",
+        File sourceFile = Paths.get("../ei-snippets", "src", "main", "java", "org",
                 "wso2", "integration", "ballerina", "autogen", "TopLevelScope.java").toFile();
 
         try {

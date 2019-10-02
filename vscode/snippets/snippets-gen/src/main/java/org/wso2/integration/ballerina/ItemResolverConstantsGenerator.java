@@ -42,7 +42,7 @@ class ItemResolverConstantsGenerator {
         String snippetBody = "";
         String snippetLine;
 
-        File sourceFile = Paths.get("vscode", "snippets", "ei-snippets", "src", "main", "java", "org",
+        File sourceFile = Paths.get("../ei-snippets", "src", "main", "java", "org",
                 "wso2", "integration", "ballerina", "autogen", "ItemResolverConstants.java").toFile();
 
         if (sourceFile.exists()) {
@@ -59,8 +59,7 @@ class ItemResolverConstantsGenerator {
         }
 
         String snippetHeader = "package org.wso2.integration.ballerina.autogen;\n\n" +
-                               "public class ItemResolverConstants { \n \n" +
-                               // Symbol Types Constants\n" +
+                               "public class ItemResolverConstants { \n \n // Symbol Types Constants\n" +
                                "    public static final String SNIPPET_TYPE = \"Snippet\";\n" +
                                "    public static final String RESOURCE = \"resource\";\n" +
                                "    public static final String RECORD_TYPE = \"type <RecordName> record\";\n" +
