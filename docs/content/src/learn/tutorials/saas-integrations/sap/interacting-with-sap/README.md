@@ -105,7 +105,7 @@ sap:ProducerConfig producerConfigs = {
 sap:Producer sapProducer = new (producerConfigs);
 ```
 
-8. Functions `sendBapi()` and `sendIdoc()` could be used to send the BAPI requests and IDoc messages respectively.
+8. Functions `sendBapi()` and `sendIdoc()` can be used to send the BAPI requests and IDoc messages respectively.
 
 ## Testing
 
