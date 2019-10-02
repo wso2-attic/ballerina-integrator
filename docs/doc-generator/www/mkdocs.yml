@@ -78,6 +78,7 @@ nav:
           - 'Service Orchestration': 'learn/tutorials/integration-patterns-and-soa/service-orchestration/service-orchestration.md'
           - 'Service Composition': 'learn/tutorials/integration-patterns-and-soa/service-composition/service-composition.md'
           - 'Backend for Frontend' : 'learn/tutorials/integration-patterns-and-soa/backend-for-frontend/backend-for-frontend.md'
+          - 'REST to SOAP' : 'learn/tutorials/integration-patterns-and-soa/rest-to-soap/rest-to-soap.md'
     - Develop:
       - 'Re-introducing Ballerina Programming Language' : 'develop/reintroducing-ballerina.md'
       - 'Setting up the Developer Environment' : 'develop/setup-dev.md'
