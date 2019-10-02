@@ -29,8 +29,8 @@ The RESTful service we are going to create contains resources to carry out the f
 Ballerina is a complete programming language that supports custom project structures. We will use the following package structure for this guide.
 
 ```
-  └──sending-a-simple-message-to-a-datasource
-    └── src/tutorial
+  └──sending-a-message-to-datasource
+    └── src/sending_a_message_to_datasource
         ├── ballerina.conf
         └── db_interaction
              ├── data_service.bal
@@ -41,7 +41,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 Create the above directories in your local machine and create the empty .bal files as mentioned.
 
-Then open the terminal and navigate to `sending-a-simple-message-to-a-datasource/src/tutorial` directory. Run the following command to initialize a Ballerina project.
+Then open the terminal and navigate to `sending-a-message-to-datasource/src/sending_a_message_to_datasource` directory. Run the following command to initialize a Ballerina project.
 
 ```
 $ ballerina new MyNewProject
@@ -53,7 +53,7 @@ First we have to define the MySQL client in the `data_service.bal` file.
 
 The properties of the database connection should be added to a configuration file, and accessed from the file at runtime. In Ballerina, name of this config file has to be `ballerina.conf`.
 
-Navigate to `sending-a-simple-message-to-a-datasource/src/tutorial` directory, create the config file `ballerina.conf`, and add the following database connection properties to the file.
+Navigate to `sending-a-message-to-datasource/src/sending_a_message_to_datasource` directory, create the config file `ballerina.conf`, and add the following database connection properties to the file.
 
 ```
 MYSQL_DB_HOST = "localhost"
@@ -184,10 +184,10 @@ final string QUERY_DELETE_DOCTOR_INFORMATION =
 
 #### Starting the Database Service
 
-To deploy locally, navigate to `routing-requests-based-on-message-content/src/tutorial`, and execute the following command.
+To deploy locally, navigate to `routing-requests-based-on-message-content/src/sending_a_message_to_datasource`, and execute the following command.
 
 ```
-$ ballerina build
+$ ballerina build sending_a_message_to_datasource
 ``
 
 After adding the implementation and building the project, we can start the RESTful service as below.

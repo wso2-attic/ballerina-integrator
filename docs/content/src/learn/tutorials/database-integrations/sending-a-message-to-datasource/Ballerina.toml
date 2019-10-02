@@ -1,0 +1,10 @@
+[project]
+org-name = "wso2"
+version = "1.1.0"
+license= ["Apache-2.0"]
+authors= ["WSO2"]
+keywords= ["ballerina", "integrator", "datasource"]
+repository= "https://github.com/wso2/ballerina-integrator"
+templates= ["sending_a_message_to_datasource"]
+
+[dependencies]

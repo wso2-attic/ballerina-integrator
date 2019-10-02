@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/log;
-import ballerina/io;
 import ballerinax/java.jdbc;
 
 // This function returns the output from the SELECT Query when a doctor's speciality is given as the input

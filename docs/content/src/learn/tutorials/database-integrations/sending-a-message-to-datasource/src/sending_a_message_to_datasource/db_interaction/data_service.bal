@@ -16,7 +16,6 @@
 
 import ballerina/http;
 import ballerina/log;
-import ballerina/config;
 import ballerinax/java.jdbc;
 
 jdbc:Client testDB = new({
