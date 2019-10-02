@@ -14,7 +14,7 @@ This tutorial demonstrates a scenario where a customer feedback Gmail account of
 - [Java](https://www.oracle.com/technetwork/java/index.html)
 - Ballerina Integrator
 - A Text Editor or an IDE
-> **Tip**: For a better development experience, install the `Ballerina Integrator` extension in [VSCode](https://code.visualstudio.com/).
+> **Tip**: For a better development experience, install the `Ballerina Integrator` extension in [VS Code](https://code.visualstudio.com/).
 
 ## Implementation
 
