@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.ballerina-integrator</groupId>
     <artifactId>ballerina-integrator</artifactId>
-    <version>1.0.0-rc1</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>Ballerina Integrator</name>
     <organization>

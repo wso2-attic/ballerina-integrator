@@ -22,13 +22,13 @@
     <parent>
         <artifactId>ballerina-integrator</artifactId>
         <groupId>org.wso2.ballerina-integrator</groupId>
-        <version>1.0.0-rc1</version>
+        <version>1.0.0</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>snippets</artifactId>
-    <version>1.0.0-rc1</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>snippets-gen</module>
