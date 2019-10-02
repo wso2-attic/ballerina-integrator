@@ -74,12 +74,10 @@ class SnippetsContentGenerator {
                     replaceAll("_", "") + "() { \n" + pair.getKey();
             String generated = snippetObject.getCode().replaceAll("\"", "\\\\\"");
 
-            snippetBody = " \n \n String snippet =  \"" + generated + "\" ;";
-
-            snippetFooter = "\n \n" + "return new SnippetBlock(ItemResolverConstants." + namesParts[1].trim().
+            snippetBody = "\n \n String snippet =\"" + generated + "\" ;";
+            snippetFooter = "\n \nreturn new SnippetBlock(ItemResolverConstants." + namesParts[1].trim().
                     toUpperCase() + ", snippet,ItemResolverConstants.SNIPPET_TYPE," +
                     "SnippetBlock.SnippetType.SNIPPET," + pair.getValue() + "); \n }";
-
             snippetContent = stringBuilder.append(snippetContent).append(snippetLine).append(snippetBody).
                     append(snippetFooter).append("\n").toString();
         }
@@ -100,9 +98,9 @@ class SnippetsContentGenerator {
         String imports = snippet.getImports();
         splitImports = imports.split(",");
 
-        for (int k = 0; k < splitImports.length; k++) {
+        for (int i = 0; i < splitImports.length; i++) {
             StringBuilder stringBuilder = new StringBuilder();
-            String[] pair = splitImports[k].split("/");
+            String[] pair = splitImports[i].split("/");
 
             if (pair[0].contains(":")) {
                 String[] keys = pair[0].split(":");
@@ -110,12 +108,12 @@ class SnippetsContentGenerator {
             }
 
             immutablePairs = stringBuilder.append(immutablePairs).append("\n").append("\t").
-                    append("ImmutablePair<String, String> imports").append(k).
+                    append("ImmutablePair<String, String> imports").append(i).
                     append("= new ImmutablePair<> (").append("\"").append(pair[0].trim()).
                     append("\"").append(",").append("\"".trim()).append(pair[1]).append("\"").
                     append(" )").append(";").toString();
 
-            importsList = "imports" + k;
+            importsList = "imports" + i;
         }
         return new Pair<>(immutablePairs, importsList);
     }

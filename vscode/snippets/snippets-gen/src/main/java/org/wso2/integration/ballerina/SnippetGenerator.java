@@ -40,69 +40,15 @@ class SnippetGenerator {
     private static final Logger log = LoggerFactory.getLogger(SnippetGenerator.class);
 
     public static void main(String[] args) throws Exception {
-        processSnippet();
+
+        List<File> fileList = readSnippetTextFiles();
+        List<Snippet> snippetList = processSnippet(fileList);
+        genearteJavaCode(snippetList);
     }
 
-    private static void processSnippet() throws IOException {
+    private static List<File> readSnippetTextFiles() throws IOException {
 
-        try {
-            List<File> fileList = readFiles();
-
-            String currentLine;
-            List<Snippet> snippetList = new ArrayList<>();
-
-            for (File file : fileList) {
-                Snippet snippet = new Snippet();
-                try (BufferedReader reader = Files.newBufferedReader(Paths.get(String.valueOf(file)))) {
-                    while ((currentLine = reader.readLine()) != null) {
-                        if (currentLine.trim().length() != 0) {
-                            if (currentLine.contains("Name ")) {
-                                snippet.setName(currentLine);
-                            }
-                            if (currentLine.contains("Trigger ")) {
-                                snippet.setTrigger(currentLine);
-                            }
-                            if (currentLine.contains("Imports ")) {
-                                snippet.setImports(currentLine);
-                            }
-                        } else {
-                            String snippets = readSnippet(reader);
-                            snippet.setCode(snippets);
-                        }
-                    }
-                    if (null != snippet.getName() && !snippet.getName().isEmpty()) {
-                        snippetList.add(snippet);
-                    }
-                } catch (IOException e) {
-                    String message = "Error while reading file content.";
-                    log.error(message, e);
-                    throw new IOException(e);
-                }
-            }
-            createFiles(snippetList);
-        } catch (IOException e) {
-            log.debug("Error in reading the file list in the given location");
-            throw new IOException(e);
-        }
-    }
-
-    private static void createFiles(List<Snippet> snippetList) throws IOException {
-
-        try {
-            genearteFiles(snippetList);
-        } catch (IOException e) {
-            String message = "Error in generating snippets";
-            log.error(message, e);
-            throw new IOException(e);
-        }
-    }
-
-
-    private static List<File> readFiles() throws IOException {
-
-        File files = Paths.get
-                ( "src", "main", "resources", "snippet-files").
-                toFile();
+        File files = Paths.get("src", "main", "resources", "snippet-files").toFile();
 
         if (files.listFiles().length != 0) {
             return new ArrayList<>(Arrays.asList(files.listFiles()));
@@ -110,6 +56,43 @@ class SnippetGenerator {
             log.debug("No files are found in the given location");
             throw new IOException("Error in reading files");
         }
+    }
+
+    private static List<Snippet> processSnippet(List<File> fileList) throws IOException {
+
+        String currentLine;
+        List<Snippet> snippetList = new ArrayList<>();
+
+        for (File file : fileList) {
+            Snippet snippet = new Snippet();
+            try (BufferedReader reader = Files.newBufferedReader(Paths.get(String.valueOf(file)))) {
+
+                while ((currentLine = reader.readLine()) != null) {
+                    if (currentLine.trim().length() != 0) {
+                        if (currentLine.contains("Name ")) {
+                            snippet.setName(currentLine);
+                        }
+                        if (currentLine.contains("Trigger ")) {
+                            snippet.setTrigger(currentLine);
+                        }
+                        if (currentLine.contains("Imports ")) {
+                            snippet.setImports(currentLine);
+                        }
+                    } else {
+                        String snippets = readSnippet(reader);
+                        snippet.setCode(snippets);
+                    }
+                }
+                if (null != snippet.getName() && !snippet.getName().isEmpty()) {
+                    snippetList.add(snippet);
+                }
+            } catch (IOException e) {
+                String message = "Error while reading file content.";
+                log.error(message, e);
+                throw new IOException(message, e);
+            }
+        }
+        return snippetList;
     }
 
     private static String readSnippet(BufferedReader reader) throws IOException {
@@ -133,7 +116,7 @@ class SnippetGenerator {
         return snippetContent;
     }
 
-    private static void genearteFiles(List<Snippet> snippetList) throws IOException {
+    private static void genearteJavaCode(List<Snippet> snippetList) throws IOException {
 
         ItemResolverConstantsGenerator.generateItemResolverConstants(snippetList);
         SnippetsContentGenerator.generateSnippetContent(snippetList);
