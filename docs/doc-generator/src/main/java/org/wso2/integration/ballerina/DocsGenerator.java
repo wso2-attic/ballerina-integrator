@@ -212,7 +212,7 @@ public class DocsGenerator {
     private static String getIncludeCodeFile(String readMeParentPath, String line) {
         String fullPathOfIncludeCodeFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line);
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath)).trim();
+        String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath), readMeParentPath).trim();
         return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
     }
 
@@ -236,7 +236,7 @@ public class DocsGenerator {
         String segment = tempDataArr[1].replace("segment:", EMPTY_STRING).trim();
 
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath));
+        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath), readMeParentPath);
 
         String code = getCodeSegment(codeFileContent, segment).trim();
         return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));

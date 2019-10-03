@@ -55,10 +55,14 @@ nav:
         - Saas Integration:
           - 'Amazon SQS':
             - 'Notifying fire alarm using SQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/notifying-fire-alarm-using-sqs.md'
+          - 'SAP':
+            - 'Interacting with SAP': 'learn/tutorials/saas-integrations/sap/interacting-with-sap/interacting-with-sap.md'
           - 'sfdc46':
             - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
             - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
             - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/salesforce-to-mysql-db.md'
+          - 'Gmail':
+            - 'Using the Gmail Connector': 'learn/tutorials/saas-integrations/gmail/using-the-gmail-connector/using-the-gmail-connector.md'
         - Messaging Integration:
           - 'Messaging with ActiveMQ' : 'learn/tutorials/messaging-integrations/messaging-with-activemq/messaging-with-activemq.md'
           - 'Messaging with Kafka' : 'learn/tutorials/messaging-integrations/messaging-with-kafka/messaging-with-kafka.md'
@@ -78,6 +82,7 @@ nav:
           - 'Service Orchestration': 'learn/tutorials/integration-patterns-and-soa/service-orchestration/service-orchestration.md'
           - 'Service Composition': 'learn/tutorials/integration-patterns-and-soa/service-composition/service-composition.md'
           - 'Backend for Frontend' : 'learn/tutorials/integration-patterns-and-soa/backend-for-frontend/backend-for-frontend.md'
+          - 'REST to SOAP' : 'learn/tutorials/integration-patterns-and-soa/rest-to-soap/rest-to-soap.md'
     - Develop:
       - 'Re-introducing Ballerina Programming Language' : 'develop/reintroducing-ballerina.md'
       - 'Setting up the Developer Environment' : 'develop/setup-dev.md'

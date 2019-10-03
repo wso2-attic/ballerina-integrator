@@ -1,0 +1,19 @@
+org_name = "wso2"
+version = "0.1.0"
+lockfile_version = "1.0.0"
+ballerina_version = "1.0.0"
+
+[[imports."wso2/sap_consumer:0.1.0"]]
+org_name = "wso2"
+name = "sap"
+version = "0.9.0"
+
+[[imports."wso2/sap_producer:0.1.0"]]
+org_name = "wso2"
+name = "sap"
+version = "0.9.0"
+
+[[imports."wso2/sap:0.9.0"]]
+org_name = "ballerinax"
+name = "java"
+version = "0.0.0"

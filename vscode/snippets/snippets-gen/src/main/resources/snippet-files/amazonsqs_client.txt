@@ -1,0 +1,12 @@
+Name : AmazonSQS_Client
+Trigger : client/amazonsqs
+Imports : wso2/amazonsqs
+
+amazonsqs:Configuration ${1:sqsConfig} = {
+    accessKey: "${2:access_key_id}",
+    secretKey: "${3:secret_access_key}",
+    region: "${4:region}",
+    accountNumber: "${5:account_number}"
+};
+
+amazonsqs:Client ${6:sqsClient} = new(${7:sqsConfig});

@@ -1,0 +1,17 @@
+Name : FTP_Client
+Trigger : client/ftp
+Imports : wso2/ftp
+
+ftp:ClientEndpointConfig ${1:ftpConfig} = {
+    protocol: ftp:FTP,
+    host: "${2:ftp_host}",
+    port: ${3:ftp_port},
+    secureSocket: {
+        basicAuth: {
+            username: "${4:ftp_username}",
+            password: "${5:ftp_password}"
+        }
+    }
+};
+
+ftp:Client ${6:ftpClient} = new(${7:ftpConfig});

@@ -66,6 +66,10 @@ export let homeStyles: string = `<style>
                 margin-right: 0.938em;
             }
 
+            .create-button:hover svg {
+                transform: rotate(90deg)
+            }
+
             .create svg path {
                 fill: #0078CF;
             }
@@ -92,6 +96,7 @@ export let homeStyles: string = `<style>
                 padding: 0.2em 0.3em;
                 margin: 2px;
                 font-weight: bolder;
+                font-size: 0.750em;
             }
 
             #searchTemplate {
@@ -230,31 +235,24 @@ export let homeStyles: string = `<style>
                 color: #03DAC5;
             }
 
-            body.vscode-dark .create-button:hover div svg {
-                fill: #0078CF;
-            }
-
             body.vscode-dark .create-button svg {
-                fill: rgba(255,255,255);
+                fill: #03DAC5;
             }
 
-            body.vscode-dark .create-button:hover {
-                color: #FFF;
+            body.vscode-dark .create-button span {
+                color: #FFFFFF;
+                background: transparent;
             }
 
-            body.vscode-dark .create-button:hover div span {
-                background: #03DAC5;
-            }
-
-            body.vscode-dark .create-button:hover div svg {
-                fill: #FFF;
+            body.vscode-dark .create-button:hover span {
+                color: #03DAC5;
             }
 
             .create-button {
                 font-weight: bolder;
                 right: 20px;
                 position: absolute;
-                bottom: 13px;
+                bottom: 14px;
                 vertical-align: middle;
                 padding: 0.188em 0.313em;
             }
@@ -270,15 +268,16 @@ export let homeStyles: string = `<style>
 
             .create-button div svg {
                 width: 24px;
-                padding-right: 5px;
                 fill: #0078CF;
                 position: absolute;
-                left: -6px;
+                left: -10px;
+                transition: transform 0.3s ease-in;
             }
 
-             .create-button div span {
-                padding: 2.2px 10px 1.2px 15px;
+            .create-button div span {
+                padding: 3.8px 10px 4.2px 15px;
                 background: #D9DEDE;
+                line-height: 24px;
             }
 
             body.vscode-dark p.description {

@@ -1,0 +1,18 @@
+Name : Salesforce_Client
+Trigger : client/salesforce
+Imports : wso2/sfdc46
+
+sfdc46:SalesforceConfiguration ${1:salesforceConfig} = {
+    baseUrl: "${2:baseUrl}",
+    clientConfig: {
+        accessToken: "${3:access_token}",
+        refreshConfig: {
+            clientId: "${4:client_id}",
+            clientSecret: "${5:client_secret}",
+            refreshToken: "${6:refresh_token}",
+            refreshUrl: "${7:refresh_url}"
+        }
+    }
+};
+
+sfdc46:Client ${8:salesforceClient} = new(${9:salesforceConfig});

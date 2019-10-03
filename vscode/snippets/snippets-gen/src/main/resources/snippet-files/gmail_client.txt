@@ -1,0 +1,17 @@
+Name : Gmail_Client
+Trigger : client/gmail
+Imports : wso2/gmail
+
+gmail:GmailConfiguration ${1:gmailConfig} = {
+    oauthClientConfig: {
+        accessToken: "${2:access_token}",
+        refreshConfig: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: "${3:refresh_token}",
+            clientId: "${4:client_id}",
+            clientSecret: "${5:client_secret}"
+        }
+    }
+};
+
+gmail:Client ${6:gmailClient} = new (${7:gmailConfig});
