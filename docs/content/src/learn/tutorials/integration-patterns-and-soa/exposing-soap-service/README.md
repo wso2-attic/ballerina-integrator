@@ -18,12 +18,12 @@ We create a service `stockQuote` that fronts a SOAP backend. The service has two
 
 ## Implementation
 
-* Create a new Ballerina project named `rest-to-soap`.
+* Create a new Ballerina project named `exposing-soap-service`.
     ```bash
-    $ ballerina new rest-to-soap
+    $ ballerina new exposing-soap-service
     ```
 
-* Navigate to the rest-to-soap directory.
+* Navigate to the exposing-soap-service directory.
 
 * Add a new module named `stockquote_service` to the project.
 
@@ -68,7 +68,7 @@ Here we create a SOAP client with the mock SOAP service we created earlier. Ther
 
 ## Run the Integration
 
-* First let’s build the module. While being in the rest-to-soap directory, execute the following command.
+* First let’s build the module. While being in the exposing-soap-service directory, execute the following command.
 
     ```bash
     $ ballerina build stockquote_service
