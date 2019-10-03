@@ -86,21 +86,8 @@ Your service is now up and running. You can invoke the service using an HTTP cli
 
 > **Tip**: If you do not have cURL installed, you can download it from [https://curl.haxx.se/download.html](https://curl.haxx.se/download.html).
 
-First we create an XML file inside `MyModule`.
-
-```xml
-
-<user>
-    <name>Sam</name>
-    <job>Scientist</job>
-</user>
-
-```
-
-Invoke the service using the following curl command.
-
 ```bash
-$ curl -X POST -d @request.xml  http://localhost:9092/laboratory/user  -H "Content-Type: text/xml"
+$ curl -X POST -d '<user><name>Sam</name><job>Scientist</job></user>'  http://localhost:9092/laboratory/user  -H "Content-Type: text/xml"
 ```
 
 You get the following response.

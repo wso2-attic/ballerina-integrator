@@ -36,6 +36,10 @@ import ballerina/docker;
     username: "$env{DOCKER_USERNAME}",
     password: "$env{DOCKER_PASSWORD}"
 }
+@http:ServiceConfig {
+    basePath: "/laboratory"
+}
+service scienceLabService on new http:Listener(config:getAsInt("LISTENER_PORT")) {
 ```
 
 Now your code is ready to generate deployment artifacts. In this case it is a Docker image. Navigate to the directory of your porject and run the following command to build the module and generate the Docker artifacts.
@@ -47,7 +51,7 @@ $ ballerina build MyModule
 
 You get the following output.
 
-```
+```bash
 Compiling source
 	sam/MyModule:0.1.0
 
@@ -88,7 +92,7 @@ sciencelab             v2.0.0              d43ff0513901        34 minutes ago   
 You can run a Docker container by copying and pasting the Docker `run` command that displays as output of the Ballerina `build` command.
 
 ```bash
-$ docker run -d -p 9191:9191 sciencelab:v2.0.0
+$ docker run -d -p 9092:9092 sciencelab:v2.0.0
 
 ```
 
@@ -101,14 +105,13 @@ $ docker ps
 
 This results in the following output.
 
-```
+```bash
 CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                    NAMES
-8f1a10c89700        sciencelab:v2.0.0   "/bin/sh -c 'java ..."   44 minutes ago      Up 15 minutes       0.0.0.0:9191->9191/tcp   cranky_kowalevski
+8f1a10c89700        sciencelab:v2.0.0   "/bin/sh -c 'java ..."   44 minutes ago      Up 15 minutes       0.0.0.0:9092->9092/tcp   cranky_kowalevski
 ```
 
 Invoke the service with a cURL command:
 
-```bash 
-$ curl -X POST -d @request.xml  http://localhost:9092/laboratory/user  -H "Content-Type: text/xml"  
-
+```bash
+$ curl -X POST -d '<user><name>Sam</name><job>Scientist</job></user>'  http://localhost:9092/laboratory/user  -H "Content-Type: text/xml"  
 ```
