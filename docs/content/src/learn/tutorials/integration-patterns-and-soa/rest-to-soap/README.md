@@ -8,7 +8,7 @@ This guide demonstrates a scenario where Ballerina is used to call a SOAP backen
 
 We create a service `stockQuote` that fronts a SOAP backend. The service has two resources `getQuote` and `placeOrder`, which calls respectively the relevant services from the SOAP backend. The response received from the backend is finally sent back to the client.
 
-![rest_to_soap](../../../../assets/img/rest_to_soap.png)
+![rest_to_soap](../../../../assets/img/RESTtoSOAP.svg)
 
 ## Prerequisites
 
