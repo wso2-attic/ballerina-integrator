@@ -200,6 +200,11 @@
                 <artifactId>maven-plugin-api</artifactId>
                 <version>${maven.plugin.api.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -245,5 +250,6 @@
         <builder.helper.maven.plugin.version>1.7.1</builder.helper.maven.plugin.version>
         <language.server.core.version>1.0.1</language.server.core.version>
         <maven.plugin.api.version>3.3.3</maven.plugin.api.version>
+        <commons.io.version>1.3.2</commons.io.version>
     </properties>
 </project>
