@@ -48,7 +48,7 @@ We create service `employeeDetails` which accepts a client request and reads two
                ├── main_test.bal
                └── resources
    ```
-We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
+   We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
 
 * Now let's create a file called `ballerina.conf` under the root path of the project structure. The file should have the following configurations.
 
@@ -143,70 +143,69 @@ Now we can see that the service has started on port 9090.
    $ curl http://localhost:9090/organization/employees
    ```
 
-We receive a JSON response similar to the following.
+   We receive a JSON response similar to the following.
 
-```json
-[
-   {
-      "empId":"100",
-      "firstName":"Lois",
-      "lastName":"Walker",
-      "joinedDate":"11/24/2003"
-   },
-   {
-      "empId":"101",
-      "firstName":"Brenda",
-      "lastName":"Robinson",
-      "joinedDate":"7/27/2008"
-   },
-   {
-      "empId":"102",
-      "firstName":"Joe",
-      "lastName":"Robinson",
-      "joinedDate":"8/3/2016"
-   },
-   {
-      "empId":"103",
-      "firstName":"Diane",
-      "lastName":"Evans",
-      "joinedDate":"4/16/1999"
-   },
-   {
-      "empId":"104",
-      "firstName":"Benjamin",
-      "lastName":"Russell",
-      "joinedDate":"7/25/2013"
-   },
-   {
-      "empId":"105",
-      "firstName":"Nancy",
-      "lastName":"Baker",
-      "joinedDate":"7/22/2005"
-   },
-   {
-      "empId":"106",
-      "firstName":"Carol",
-      "lastName":"Murphy",
-      "joinedDate":"9/14/2016"
-   },
-   {
-      "empId":"107",
-      "firstName":"Frances",
-      "lastName":"Young",
-      "joinedDate":"1/28/1983"
-   },
-   {
-      "empId":"108",
-      "firstName":"Diana",
-      "lastName":"Peterson",
-      "joinedDate":"4/27/1994"
-   },
-   {
-      "empId":"109",
-      "firstName":"Ralph",
-      "lastName":"Flores",
-      "joinedDate":"2/17/2014"
-   }
-]
-```
-
+   ```json
+   [
+      {
+         "empId":"100",
+         "firstName":"Lois",
+         "lastName":"Walker",
+         "joinedDate":"11/24/2003"
+      },
+      {
+         "empId":"101",
+         "firstName":"Brenda",
+         "lastName":"Robinson",
+         "joinedDate":"7/27/2008"
+      },
+      {
+         "empId":"102",
+         "firstName":"Joe",
+         "lastName":"Robinson",
+         "joinedDate":"8/3/2016"
+      },
+      {
+         "empId":"103",
+         "firstName":"Diane",
+         "lastName":"Evans",
+         "joinedDate":"4/16/1999"
+      },
+      {
+         "empId":"104",
+         "firstName":"Benjamin",
+         "lastName":"Russell",
+         "joinedDate":"7/25/2013"
+      },
+      {
+         "empId":"105",
+         "firstName":"Nancy",
+         "lastName":"Baker",
+         "joinedDate":"7/22/2005"
+      },
+      {
+         "empId":"106",
+         "firstName":"Carol",
+         "lastName":"Murphy",
+         "joinedDate":"9/14/2016"
+      },
+      {
+         "empId":"107",
+         "firstName":"Frances",
+         "lastName":"Young",
+         "joinedDate":"1/28/1983"
+      },
+      {
+         "empId":"108",
+         "firstName":"Diana",
+         "lastName":"Peterson",
+         "joinedDate":"4/27/1994"
+      },
+      {
+         "empId":"109",
+         "firstName":"Ralph",
+         "lastName":"Flores",
+         "joinedDate":"2/17/2014"
+      }
+   ]
+   ```

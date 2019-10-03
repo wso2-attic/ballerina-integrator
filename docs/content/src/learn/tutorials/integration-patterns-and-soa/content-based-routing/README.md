@@ -47,7 +47,7 @@ We create a service called `stockQuote` that accepts an HTTP request from a clie
                 └── resources
     ```
 
-We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
+    We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
 
 First let's create the services that we will use as backend endpoints.
 
@@ -99,4 +99,4 @@ Now we can see that three service have started on ports 8081, 8082, and 9090.
     $ curl http://localhost:9090/stocktrading/stockquote?company=abc
     ```
 
-We will get a text value 10000.00 as the response.
+    We will get a text value 10000.00 as the response.
