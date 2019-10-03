@@ -4,7 +4,8 @@
       "path": "src/learn/backends/healthcare-service",
       "modules": [
         "healthcare"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/backend-for-frontend",
@@ -16,31 +17,36 @@
         "mobile_bff",
         "notification_mgt",
         "sample_data_publisher"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/content-based-routing",
       "modules": [
         "stockquote_service"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/content-based-routing-advanced",
       "modules": [
         "company_data_service"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/exposing-several-services-as-a-single-service",
       "modules": [
         "tutorial"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/message-filtering",
       "modules": [
         "message_filtering"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/parallel-service-orchestration",
@@ -49,74 +55,86 @@
         "car_rental",
         "hotel_reservation",
         "travel_agency"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/pass-through-messaging",
       "modules": [
         "pass_through"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/restful-service/exposing-a-rest-service",
       "modules": [
         "restful_service"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/routing-requests-based-on-message-content",
       "modules": [
         "tutorial"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/scatter-gather-flow",
       "modules": [
         "employee_details_service"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/scatter-gather-messaging-advanced",
       "modules": [
         "auction_service"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/sending-a-simple-message-to-a-service",
       "modules": [
         "tutorial"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/service-composition",
       "modules": [
         "guide"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/service-orchestration",
       "modules": [
         "appointment_service"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/transforming-message-content",
       "modules": [
         "tutorial"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/using-the-analytics-dashboard",
       "modules": [
         "tutorial"
-      ]
+      ],
+      "skipTests": false
     },
     {
       "path": "src/learn/tutorials/messaging-integrations/asynchronous-invocation",
       "modules": [
         "stock_quote_data_backend",
         "stock_quote_summary_service"
-      ]
+      ],
+      "skipTests": false
     }
   ]
 }
