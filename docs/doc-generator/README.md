@@ -141,8 +141,25 @@ When you are mentioning the resource file please mention the valid path to the f
 
 #### Prerequisites
 
-- Install python
-- Install pip
+- Install Python 3
+- Install `pip`
+- Install `virtualenv` on Python. (This will avoid Python dependency issues when installing `mkdocs`)
+    ```bash
+    $ pip install virtualenv
+    ```
+  Navigate to `docs` directory and add a virtual environment and activate it.
+    ```bash
+    $ cd docs
+    $ virtualenv doc-generator
+    $ virtualenv -p /usr/bin/python3 doc-generator
+    $ source doc-generator/bin/activate
+    ```
+  Now the virtual environment prompt will appear.
+    ```
+    (doc-generator) $
+    ```
+> **Note**: Once the virtual environment is required to be deactivated, enter `deactivate` command on this prompt.
+
 - Install mkdocs
     ```bash
     $ pip install mkdocs
@@ -151,6 +168,11 @@ When you are mentioning the resource file please mention the valid path to the f
     ```bash
     $ pip install pymdown-extensions
     ```
+- Install mkdocs-material
+    ```bash
+    $ pip install mkdocs-material
+    ```
+
 #### Generate website content
 
 Navigate to `docs/doc-generator` and run below command.
