@@ -24,8 +24,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Contains methods required to display the Top Level Scope snippets  .
@@ -43,6 +46,13 @@ class TopLevelScopeGenerator {
 
         File sourceFile = Paths.get("vscode","snippets","ei-snippets", "src", "main", "java", "org",
                 "wso2", "integration", "ballerina", "autogen", "TopLevelScope.java").toFile();
+
+        File globalVarDefFileSource = Paths.get("vscode","snippets","snippets-gen","src", "main",
+                                       "resources", "GlobalVariableDefinition.java").toFile();
+
+        File globalVarDefFileDestination = Paths.get("vscode","snippets","ei-snippets", "src", "main",
+                "java", "org", "wso2", "integration", "ballerina", "autogen", "GlobalVariableDefinition.java").toFile();
+
 
         try {
             if (sourceFile.createNewFile()) {
@@ -93,8 +103,11 @@ class TopLevelScopeGenerator {
         }
         String topLevelScope = scopeHeader + scopeBody + "\n \n return completionItemsArr;} \n @Override\n" +
                 "   public Precedence getPrecedence() {\n \n  return this.precedence;\n  }\n }";
+
         FileWriter writer = new FileWriter(sourceFile);
         writer.write(topLevelScope);
         writer.close();
+
+        FileUtils.copyFile(globalVarDefFileSource, globalVarDefFileDestination);
     }
 }

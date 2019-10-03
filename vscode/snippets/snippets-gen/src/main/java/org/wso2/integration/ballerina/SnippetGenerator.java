@@ -48,10 +48,13 @@ class SnippetGenerator {
 
     private static List<File> readSnippetTextFiles() throws IOException {
 
-        File files = Paths.get("vscode","snippets","snippets-gen","src", "main", "resources", "snippet-files").toFile();
+        File files = Paths.get("vscode","snippets","snippets-gen","src", "main", "resources",
+                                "snippet-files").toFile();
 
-        if (files.listFiles().length != 0) {
-            return new ArrayList<>(Arrays.asList(files.listFiles()));
+        File[] fileList = files.listFiles();
+
+        if (fileList != null && fileList.length != 0) {
+            return new ArrayList<>(Arrays.asList(fileList));
         } else {
             log.debug("No files are found in the given location");
             throw new IOException("Error in reading files");
@@ -122,7 +125,6 @@ class SnippetGenerator {
         SnippetsContentGenerator.generateSnippetContent(snippetList);
         SnippetsDefinitionGenerator.generateSnippetDefinition(snippetList);
         TopLevelScopeGenerator.generateTopLevelScope(snippetList);
-        GlobalVariableDefinitionGenerator.generateGlobalVariableDefinition();
 
         log.info("Files generated successfully");
     }
