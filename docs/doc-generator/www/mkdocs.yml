@@ -59,7 +59,7 @@ nav:
             - 'Working with Amazon S3 Client': 'learn/tutorials/saas-integrations/amazons3/working-with-amazons3-client/working-with-amazons3-client.md'
           - 'SAP':
             - 'Interacting with SAP': 'learn/tutorials/saas-integrations/sap/interacting-with-sap/interacting-with-sap.md'
-          - 'sfdc46':
+          - 'Salesforce':
             - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
             - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
             - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/salesforce-to-mysql-db.md'
