@@ -28,7 +28,7 @@ public final class Constants {
     // Directory paths
     public static final String DOCS_DIR = ".." + File.separator + ".." + File.separator + "docs" + File.separator
             + "content" + File.separator + "src";
-    public static final String TARGET_DIR = "target";
+    private static final String TARGET_DIR = "target";
     public static final String TEMP_DIR = TARGET_DIR + File.separator + "tempDirectory";
     public static final String MKDOCS_CONTENT = TARGET_DIR + File.separator + "mkdocs-content";
     public static final String ASSETS_IMG_DIR = DOCS_DIR + File.separator + "assets" + File.separator + "img";
@@ -43,6 +43,7 @@ public final class Constants {
     // Special syntax
     public static final String INCLUDE_CODE_TAG = "INCLUDE_CODE:";
     public static final String INCLUDE_CODE_SEGMENT_TAG = "INCLUDE_CODE_SEGMENT:";
+    public static final String INCLUDE_MD_TAG = "INCLUDE_MD:";
     public static final String EMPTY_STRING = "";
     public static final String COMMENT_START = "<!--";
     public static final String COMMENT_END = "-->";
