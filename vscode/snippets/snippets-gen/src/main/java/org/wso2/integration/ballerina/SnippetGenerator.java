@@ -122,6 +122,7 @@ class SnippetGenerator {
         SnippetsContentGenerator.generateSnippetContent(snippetList);
         SnippetsDefinitionGenerator.generateSnippetDefinition(snippetList);
         TopLevelScopeGenerator.generateTopLevelScope(snippetList);
+        GlobalVariableDefinitionGenerator.generateGlobalVariableDefinition();
 
         log.info("Files generated successfully");
     }
