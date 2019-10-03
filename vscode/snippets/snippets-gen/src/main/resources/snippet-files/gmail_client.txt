@@ -14,4 +14,4 @@ gmail:GmailConfiguration ${1:gmailConfig} = {
     }
 };
 
-gmail:Client ${6:gmailClient} = new (${7:gmailConfig});
+gmail:Client ${6:gmailClient} = new (${1:gmailConfig});

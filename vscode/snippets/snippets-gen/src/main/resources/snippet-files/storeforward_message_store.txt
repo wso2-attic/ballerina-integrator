@@ -8,4 +8,4 @@ storeforward:MessageStoreConfiguration ${1:storeConfig} = {
     queueName: "${4:queue_name}"
 };
 
-storeforward:Client ${5:storeClient} = check new storeforward:Client(${6:storeConfig});
+storeforward:Client ${5:storeClient} = check new storeforward:Client(${1:storeConfig});

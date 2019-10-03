@@ -1,15 +1,15 @@
 Name : FTP_Service
 Trigger : service/ftp
-Imports : wso2/ftp
+Imports : wso2/ftp, ballerina/log
 
 service ${1:ftpServerConnector} on ${2:ftpListener} {
     resource function onFileChange(ftp:WatchEvent ${3:fileEvent}) {
 
-        foreach ftp:FileInfo ${4:addedFile} in ${5:fileEvent}.addedFiles {
-            log:printInfo("Added file path: " + ${6:addedFile}.path);
+        foreach ftp:FileInfo ${4:addedFile} in ${3:fileEvent}.addedFiles {
+            log:printInfo("Added file path: " + ${4:addedFile}.path);
         }
-        foreach string ${7:deletedFile} in ${8:fileEvent}.deletedFiles {
-            log:printInfo("Deleted file path: " + ${9:deletedFile});
+        foreach string ${5:deletedFile} in ${3:fileEvent}.deletedFiles {
+            log:printInfo("Deleted file path: "${5:deletedFile});
         }
     }
 }

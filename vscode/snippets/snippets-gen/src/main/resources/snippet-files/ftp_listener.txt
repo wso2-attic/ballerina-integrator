@@ -11,8 +11,8 @@ listener ftp:Listener ${1:ftpListener} = new({
             password: "${4:ftp_password}"
         }
     },
-    port: ${5:ftp_port},
+    port: ${5:21},
     path: "${6:remote_ftp_directory_location}",
-    pollingInterval: ${7:polling_interval},
+    pollingInterval: ${7:1000},
     fileNamePattern: "${8:file_type}"
 });

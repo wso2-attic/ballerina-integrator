@@ -4,16 +4,16 @@ Imports : wso2/jms
 
 jms:Connection ${1:connection} = check jms:createConnection({
     initialContextFactory: "${org.apache.activemq.jndi.ActiveMQInitialContextFactory}",
-    providerUrl: "${tcp://localhost:61616}"
+    providerUrl: "${2:tcp://localhost:61616}"
 });
-jms:Session ${2:session} = check ${3:connection}->createSession({acknowledgementMode: "${4:AUTO_ACKNOWLEDGE}"});
-jms:Destination ${5:topic} = check ${6:session}->createTopic("${7:MyTopic}");
+jms:Session ${3:session} = check ${1:connection}->createSession({acknowledgementMode: "${AUTO_ACKNOWLEDGE}"});
+jms:Destination ${4:topic} = check ${3:session}->createTopic("${MyTopic}");
 
-listener jms:MessageConsumer ${8:jmsConsumer} = check ${9:session}->createConsumer(${10:topic});
+listener jms:MessageConsumer ${5:jmsConsumer} = check ${3:session}->createConsumer(${4:topic});
 
-service ${11:messageListener} on ${12:jmsConsumer} {
+service ${6:messageListener} on ${5:jmsConsumer} {
 
-    resource function onMessage(jms:Message message) {
+    resource function onMessage(jms:Message ${7:message}) {
 
     }
 }

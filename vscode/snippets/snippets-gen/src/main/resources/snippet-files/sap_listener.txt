@@ -2,23 +2,23 @@ Name : SAP_Listener
 Trigger : listener/sap
 Imports : wso2/sap
 
-sap:ConsumerServerConfig ${serverConfig} = {
-    transportName: <sap:Transport>"${1:transport_name}",
-    serverName: "${2:server_name}",
-    gwhost: "${3:gwhost}",
-    progid: "${4:progid}",
-    repositorydestination: "${5:repository_destination}",
-    gwserv: "${6:gwserv}",
-    unicode: <sap:Value>"${7:unicode}"
+sap:ConsumerServerConfig ${1:serverConfig} = {
+    transportName: <sap:Transport>"${2:transport_name}",
+    serverName: "${3:server_name}",
+    gwhost: "${4:gwhost}",
+    progid: "${5:progid}",
+    repositorydestination: "${6:repository_destination}",
+    gwserv: "${7:gwserv}",
+    unicode: <sap:Value>"${8:unicode}"
 };
 
-sap:ConsumerDestinationConfig ${8:destinationConfig} = {
-    sapclient: "${9:sap_client}",
-    username: "${10:username}",
-    password: "${11:password}",
-    ashost: "${12:ashost}",
-    sysnr: "${13:sysnr}",
-    language: "${14:language}"
+sap:ConsumerDestinationConfig ${9:destinationConfig} = {
+    sapclient: "${10:sap_client}",
+    username: "${11:username}",
+    password: "${12:password}",
+    ashost: "${13:ashost}",
+    sysnr: "${14:sysnr}",
+    language: "${15:language}"
 };
 
-listener sap:Listener ${15:sapListener} = new (${16:serverConfig}, ${17:destinationConfig});
+listener sap:Listener ${16:sapListener} = new (${1:serverConfig}, ${9:destinationConfig});

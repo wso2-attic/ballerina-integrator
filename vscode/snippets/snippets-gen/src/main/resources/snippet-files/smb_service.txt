@@ -1,15 +1,15 @@
 Name : SMB_Service
 Trigger : service/smb
-Imports : wso2/smb
+Imports : wso2/smb, ballerina/log
 
 service ${1:smbServerConnector} on ${2:smbListener} {
-    resource function onFileChange(3:smb:WatchEvent ${4:fileEvent}) {
+    resource function onFileChange(smb:WatchEvent ${3:fileEvent}) {
 
-        foreach smb:FileInfo ${5:addedFile} in ${6:fileEvent}.addedFiles {
-            log:printInfo("Added file path: " + ${7:addedFile}.path);
+        foreach smb:FileInfo ${4:addedFile} in ${3:fileEvent}.addedFiles {
+            log:printInfo("Added file path: " + ${4:addedFile}.path);
         }
-        foreach string ${8:deletedFile} in ${9:fileEvent}.deletedFiles {
-            log:printInfo("Deleted file path: " + ${10:deletedFile});
+        foreach string ${5:deletedFile} in ${3:fileEvent}.deletedFiles {
+            log:printInfo("Deleted file path: " + ${5:deletedFile});
         }
     }
 }

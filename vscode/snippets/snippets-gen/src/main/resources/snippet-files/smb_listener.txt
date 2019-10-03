@@ -11,8 +11,8 @@ listener smb:Listener ${1:smbListener} = new({
              password: "${4:smb_password}"
          }
      },
-     port: ${5:smb_port},
+     port: ${5:445},
      path: "${6:remote_smb_directory_location}",
-     pollingInterval: ${7:polling_interval},
+     pollingInterval: ${7:1000},
      fileNamePattern: "${8:file_type}"
  });

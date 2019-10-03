@@ -12,4 +12,4 @@ sap:ProducerConfig ${1:sapProducerConfig} = {
     language: "${8:language}"
 };
 
-sap:Producer ${9:sapProducer} = new (${10:sapProducerConfig});
+sap:Producer ${9:sapProducer} = new (${1:sapProducerConfig});
