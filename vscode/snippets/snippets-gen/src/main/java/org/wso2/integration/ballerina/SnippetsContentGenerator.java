@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.util.Pair;
@@ -64,20 +65,31 @@ class SnippetsContentGenerator {
 
         String snippetContent = "";
 
-        for (Snippet snippetObject : snippetList) {
+        for (int i = 0; i < snippetList.size(); i++) {
             StringBuilder stringBuilder = new StringBuilder();
-            Pair<String, String> pair = getImportText(snippetObject);
+            Pair<String, List<String>> pair = getImportText(snippetList.get(i));
 
-            String[] namesParts = snippetObject.getName().split(":");
+            String[] namesParts = snippetList.get(i).getName().split(":");
 
             snippetLine = "\n public static SnippetBlock get" + namesParts[1].trim().
                     replaceAll("_", "") + "() { \n" + pair.getKey();
-            String generated = snippetObject.getCode().replaceAll("\"", "\\\\\"");
+            String generated = snippetList.get(i).getCode().replaceAll("\"", "\\\\\"");
 
             snippetBody = "\n \n String snippet =\"" + generated + "\" ;";
             snippetFooter = "\n \nreturn new SnippetBlock(ItemResolverConstants." + namesParts[1].trim().
                     toUpperCase() + ", snippet,ItemResolverConstants.SNIPPET_TYPE," +
-                    "SnippetBlock.SnippetType.SNIPPET," + pair.getValue() + "); \n }";
+                    "SnippetBlock.SnippetType.SNIPPET,";
+
+            for (int index = 0; index < pair.getValue().size(); index++) {
+                if (index < pair.getValue().size() - 1) {
+                    snippetFooter = snippetFooter + pair.getValue().get(index) + ",";
+                } else {
+                    snippetFooter += pair.getValue().get(index);
+                }
+            }
+
+            snippetFooter += "); \n }";
+
             snippetContent = stringBuilder.append(snippetContent).append(snippetLine).append(snippetBody).
                     append(snippetFooter).append("\n").toString();
         }
@@ -89,18 +101,18 @@ class SnippetsContentGenerator {
         writer.close();
     }
 
-    private static Pair<String, String> getImportText(Snippet snippet) {
+    private static Pair<String, List<String>> getImportText(Snippet snippet) {
 
         String[] splitImports;
         String immutablePairs = "";
-        String importsList = "";
+        List<String> importsList = new ArrayList<>();
 
         String imports = snippet.getImports();
         splitImports = imports.split(",");
 
         for (int i = 0; i < splitImports.length; i++) {
             StringBuilder stringBuilder = new StringBuilder();
-            String[] pair = splitImports[i].split("/");
+            String[] pair = splitImports[i].trim().split("/");
 
             if (pair[0].contains(":")) {
                 String[] keys = pair[0].split(":");
@@ -113,7 +125,7 @@ class SnippetsContentGenerator {
                     append("\"").append(",").append("\"".trim()).append(pair[1]).append("\"").
                     append(" )").append(";").toString();
 
-            importsList = "imports" + i;
+            importsList.add("imports" + i);
         }
         return new Pair<>(immutablePairs, importsList);
     }

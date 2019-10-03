@@ -9,7 +9,7 @@ service ${1:ftpServerConnector} on ${2:ftpListener} {
             log:printInfo("Added file path: " + ${4:addedFile}.path);
         }
         foreach string ${5:deletedFile} in ${3:fileEvent}.deletedFiles {
-            log:printInfo("Deleted file path: "${5:deletedFile});
+            log:printInfo("Deleted file path:" + ${5:deletedFile});
         }
     }
 }
