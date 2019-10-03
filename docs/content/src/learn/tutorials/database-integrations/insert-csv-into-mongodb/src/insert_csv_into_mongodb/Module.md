@@ -1,4 +1,4 @@
-Guide on Importing CSV Data to MongoDB using Ballerina.
+Guide on Importing CSV Data to MongoDB.
 
 # Guide Overview
 
@@ -15,49 +15,32 @@ to a remote location. You can find other integration modules from the [wso2-ball
 This application listens to a remote FTP location and when a CSV file is added to that FTP location, it will fetch the CSV file, read its contents and insert the content into Mongo DB. Then a
 success message is logged if the operation is successful.
 
-![inserting csv data to mongo db](resources/mongo_insert.png)
-
-## Prerequisites
-Link to download Ballerina integrator.
+![inserting csv data to mongo db](resources/mongo-insert.jpg)
 
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [documentation on creating a project and using modules](../../../../develop/using-modules/).
 
-1. Create a project.
+Create a project.
 ```bash
 $ ballerina new insert-csv-into-mongodb
 ```
 Navigate to the insert-csv-into-mongodb directory.
 
-2. Add a module.
+Add a module.
 ```bash
 $ ballerina add insert_csv_into_mongodb
 ```
 
-The project structure should look like below.
-```shell
-├── insert-csv-into-mongodb
-    ├── ballerina.conf
-    ├── Ballerina.toml
-    └── src
-        └── insert_csv_into_mongodb
-            ├── main.bal
-            ├── Module.md
-            ├── resources
-            └── tests
-                └── resources
-```
-
-3. Set up remote FTP server and obtain the following credentials.
+Set up remote FTP server and obtain the following credentials.
    - FTP Host
    - FTP Port
    - FTP Username
    - FTP Password
    - Path in the FTP server to which the CSV files are added
 
-    Add the `insert-csv-into-mongodb/src/insert_csv_into_mongodb/resources/contacts.csv` file to the FTP path you mentioned above.
+Add the `insert-csv-into-mongodb/src/insert_csv_into_mongodb/resources/contacts.csv` file to the FTP path you mentioned above.
 
-4. Add project configuration file by creating `ballerina.conf` file under the root path of the project structure. <br/>
+Add project configuration file by creating `ballerina.conf` file under the root path of the project structure. <br/>
 This file should have following Mongo DB and FTP configurations.
 
 ```
@@ -72,17 +55,15 @@ FTP_PASSWORD="<FTP_Password>"
 FTP_PATH="<FTP_Location>""
 ```
 
-3. Write your integration.
+Write your integration.
 You can open the project with VS Code. The implementation will be written in the `main.bal` file.
 
-  **main.bal**
-    <!-- INCLUDE_CODE: src/insert_csv_into_mongodb/main.bal -->
-
- Here `ftpServerConnector` service is running on `remoteServer`, which listens to the configured FTP server location.
- When a CSV file is added to the FTP server, the file content will be retrieved and inserted into Mongo DB.
+Here `ftpServerConnector` service is running on `remoteServer`, which listens to the configured FTP server location.
+When a CSV file is added to the FTP server, the file content will be retrieved and inserted into Mongo DB.
 
 
 ## Run the integration
+
 First, let’s build the module. While being in the insert-csv-into-mongodb directory, execute the following command.
 
 ```bash

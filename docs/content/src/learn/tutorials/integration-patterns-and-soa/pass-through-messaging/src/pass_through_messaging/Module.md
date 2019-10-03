@@ -41,29 +41,17 @@ So, messaging between 'OnlineShopping' and 'LocalShop' services act as pass-thro
 
 > If you are well aware of the implementation, you can directly clone the GitHub repository to your own device. Using that, you can skip the "Implementation" section and move straight to the "Testing" section.
 
-1. Create a project.
+Create a project.
 ```bash
-ballerina new pass-through-messaging
+$ ballerina new pass-through-messaging
 ```
 
- 2. Navigate into the project directory and add a new module.
+Navigate into the project directory and add a new module.
 ```bash
-ballerina add pass_through_messaging
+$ ballerina add pass_through_messaging
 ```
 
-3. Add .bal files with meaningful names as shown in the project structure given below.
-```
-pass-through-messaging
- ├── Ballerina.toml
- └── src
-     └── pass_through_messaging
-         ├── resources
-         ├── Module.md
-         ├── pass_through.bal
-         └── tests
-             ├── resources
-             └── pass_through_test.bal
-```
+Add .bal files with meaningful names as required.
 
 ### Developing the service
 
@@ -142,17 +130,17 @@ var clientResponse = clientEP->forward("/", req);
 
 Let’s build the module. Navigate to the project directory and execute the following command.
 ```
-ballerina build pass_through_messaging
+$ ballerina build pass_through_messaging
 ```
 
 The build command would create an executable .jar file. Now run the .jar file created in the above step using the following command.
 ```
-java -jar target/bin/pass_through_messaging.jar
+$ java -jar target/bin/pass_through_messaging.jar
 ```
 
 **Send a request to the online shopping service**
 ```bash
-curl -v http://localhost:9090/OnlineShopping
+$ curl -v http://localhost:9090/OnlineShopping
 ```
 **Output**
 
@@ -170,24 +158,6 @@ Welcome to Local Shop! Please put your order here.....
 To identify the message flow inside the services, there will be INFO in the notification channel.
 
 ```bash
-2018-06-23 05:45:27,849 INFO  [passthrough] - Request will be forwarded to Local Shop  .......
-2018-06-23 05:45:27,864 INFO  [passthrough] - You have been successfully connected to local shop  .......
-```
-
-### Writing unit tests
-
-In Ballerina, the unit test cases should be inside the module's `tests` directory. Test functions should be annotated with `@test:Config {}`. See the below example.
-
-```ballerina
-@test:Config {}
-function testFunc() {
-
-}
-```
-
-This guide contains unit test case for 'LKSubOffice' service and 'UKSubOffice' service in `pass_through_test.bal` file.
-
-To run the unit tests, navigate to the project directory and run the following command.
-```bash
-   $ ballerina test
+2018-06-23 05:45:27,849 INFO  [pass_through_messaging] - Request will be forwarded to Local Shop  .......
+2018-06-23 05:45:27,864 INFO  [pass_through_messaging] - You have been successfully connected to local shop  .......
 ```

@@ -1,4 +1,4 @@
-Guide on Managing Database Transactions using Ballerina.
+Guide on Database Transactions using Ballerina.
 
 # Guide Overview
 
@@ -48,33 +48,18 @@ The first scenario shows a successful transaction whereas the other two fail due
 
 Create a project.
 ```bash
-ballerina new managing-database-transactions
+$ ballerina new managing-database-transactions
 ```
 
 Navigate into the project directory and add a new module.
 ```bash
-ballerina add managing_database_transactions
+$ ballerina add managing_database_transactions
 ```
 
 Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
 
-Add a `ballerina.conf` file and create .bal files with meaningful names as shown in the project structure given below.
-```shell
-managing-database-transactions
-├── Ballerina.toml
-├── ballerina.conf
-├── lib
-│    └── mysql-connector-java-x.x.x.jar
-└── src
-    └── managing_database_transactions
-        ├── resources
-        ├── Module.md
-        ├── account_manager.bal
-        ├── application.bal
-        └── tests
-            ├── account_manager_test.bal
-            └── resources
-```
+Add a `ballerina.conf` file and create .bal files with meaningful names as required.
+
 Open the project with VS Code and write the integration implementation and tests in the `account_manager.bal`, `application.bal`, and `account_manager_test.bal` files respectively.
 
 The `transferMoney` function of `account_manager.bal` demonstrates how we can use transactions in Ballerina. It comprises of two different operations; withdrawal and deposit. To ensure that the transferring operation happens as a whole, it needs to reside in a database transaction block.
@@ -86,7 +71,7 @@ The transaction will be successful only when both withdrawal from the transferor
 ### Before you begin
 - Run the SQL script `database_initializer.sql` provided in the resources folder, to initialize the database and to create the required table.
 ```bash
-   $mysql -u username -p <database_initializer.sql
+$ mysql -u username -p <database_initializer.sql
 ```
 
 - Add database configurations to the `ballerina.conf` file.
@@ -106,7 +91,7 @@ $ ballerina build --experimental managing_database_transactions
 The build command would create an executable .jar file. Now run the .jar file created in the above step. Path to the `ballerina.conf` could be provided using the `--b7a.config.file` option.
 
 ```bash
-java -jar target/bin/managing_database_transactions.jar --b7a.config.file=path/to/ballerina.conf/file
+$ java -jar target/bin/managing_database_transactions.jar --b7a.config.file=path/to/ballerina.conf/file
 ```
 
 ### Response you'll get
@@ -172,24 +157,3 @@ was withdrawn from Bob's account. But then the deposit operation failed due to a
 recipient account ID; Hence, the transaction failed and withdraw operation rollbacked as
 it is in the same transaction
 ```
-
-### Writing unit tests
-
-In Ballerina, the unit test cases should be in the same package inside a folder named 'tests'.  When writing the test functions the below convention should be followed.
-- Test functions should be annotated with `@test:Config {}`. See the below example.
-```ballerina
-   @test:Config {}
-   function testCreateAccount() {
-
-   }
-```
-
-This guide contains unit tests for each method available in `account_manager.bal`.
-
-To run the unit tests, navigate to the project directory and run the following command.
-```bash
-   $ ballerina test --experimental
-```
-> **Note**: The `--b7a.config.file=path/to/ballerina.conf/file` option is required if it is needed to read configurations from a Ballerina configuration file.
-
-To check the implementation of the test file, refer the `account_manager_test.bal` file.

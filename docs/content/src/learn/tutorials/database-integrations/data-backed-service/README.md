@@ -61,17 +61,7 @@ Open the project with VS Code and write the integration implementation and tests
 
 ### Developing the SQL Data-Backed Web Service
 Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource function inside the service. You can implement the business logic inside a resource function using Ballerina language syntax.
-We can use the following database schema to store employee data.
-```
-+------------+-------------+------+-----+---------+-------+
-| Field      | Type        | Null | Key | Default | Extra |
-+------------+-------------+------+-----+---------+-------+
-| EmployeeID | int(11)     | NO   | PRI | NULL    |       |
-| Name       | varchar(50) | YES  |     | NULL    |       |
-| Age        | int(11)     | YES  |     | NULL    |       |
-| SSN        | int(11)     | YES  |     | NULL    |       |
-+------------+-------------+------+-----+---------+-------+
-```
+
 The Ballerina code for the employee data service with resource functions to add, retrieve, update, and delete employee data can be found in the `employee_db_service.bal` file.
 
 A remote function in Ballerina indicates that it communicates with some remote service through the network. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the MySQL client object that encapsulates the aforementioned set of remote functions. The rest of the code is for preparing SQL queries and executing them by calling these remote functions of the Ballerina MySQL client.
@@ -88,7 +78,7 @@ You can implement custom functions in Ballerina that perform specific tasks. For
 ### Before you begin
 * Download & run the SQL script `initializeDataBase.sql` provided inside the `resources` directory, to initialize the database and to create the required table.
 ```
-   $mysql -u username -p <initializeDataBase.sql 
+$ mysql -u username -p <initializeDataBase.sql 
 ``` 
 
 - Add database configurations to the `ballerina.conf` file

@@ -94,7 +94,7 @@ To begin with invoking the service, start the FTP server.
 Navigate to `file-integration-using-ftp` directory and run the following command to build the listener service in `ftp_listener.bal`.
 
 ```bash
-   $ ballerina build -a 
+$ ballerina build file_integration_using_ftp
 ```
 
 The successful build of a service will show us something similar to the following output.
@@ -112,7 +112,7 @@ This will create the Ballerina executables inside the `/target` directory.
 Then run the jar file created in the above step.
 
 ```bash
-   $ java -jar target/bin/file_integration_using_ftp.jar --b7a.config.file=src/file_integration_using_ftp/resources/ballerina.conf
+$ java -jar target/bin/file_integration_using_ftp.jar --b7a.config.file=src/file_integration_using_ftp/resources/ballerina.conf
 ```
 
 Add and delete files in the FTP server, and check the logs to verify whether the service is working as expected.

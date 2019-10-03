@@ -1,4 +1,4 @@
-Guide on File Integration using Ballerina SMB Connector.
+Guide on File Integration using SMB Connector.
 
 # Guide Overview
 
@@ -33,22 +33,12 @@ the file name and size to a map, and when the file is deleted from the server, i
 ## Implementation
 > If you want to skip the basics, you can download the GitHub repo and directly move to the "Testing" section by skipping the "Implementation" section.
 
-### Create the project structure
-
-Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
-```
-file-integration-using-smb
-    └── src
-       └── file_integration_using_smb
-           └── smb_listener.bal
-```
-
 Create the Ballerina project `file-integration-using-smb` and add the `file_integration_using_smb` module using the below commands.
 
 ```bash
-    $ ballerina new file-integration-using-smb
-    $ cd file-integration-using-smb
-    $ ballerina add file_integration_using_smb
+$ ballerina new file-integration-using-smb
+$ cd file-integration-using-smb
+$ ballerina add file_integration_using_smb
 ```
 
 The above package structure will be created for you. Create the `smb_listener.bal` file inside the Ballerina module.
@@ -71,16 +61,10 @@ should be invoked for text files, the config for `SMB_FILE_NAME_PATTERN` should 
 the directory or location in Samba share to poll for files and how frequently the listener should poll for files, using the values
 `SMB_LISTENER_PATH` and `SMB_POLLING_INTERVAL`respectively.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_smb/smb_listener.bal, segment: segment_1 } -->
-
 Create the service to listen to the Samba server using the above listener. When files are added or deleted on the server,
 this service will be invoked, and the files will be processed.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_smb/smb_listener.bal, segment: segment_2 } -->
-
 Then implement the Samba Client, which will connect to the Samba server and get the details of new files to process.
-
-<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_smb/smb_listener.bal, segment: segment_3 } -->
 
 Declare a map to store the details of processed files.
 
@@ -92,8 +76,6 @@ Now, implement the processing of added and deleted files. When files are added t
 retrieve the file size from the server, and the file name and its size will be added to the `fileMap`. When a file is
 removed from the server, the file will be removed from the map.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_smb/smb_listener.bal, segment: segment_4 } -->
-
 ## Testing
 
 ### Invoking the service
@@ -103,7 +85,7 @@ To begin with invoking the service, start the Samba server.
 Navigate to `file-integration-using-smb` directory and run the following command to build the listener service in `smb_listener.bal`.
 
 ```bash
-   $ ballerina build -a
+$ ballerina build file_integration_using_smb
 ```
 
 The successful build of a service will show us something similar to the following output.
@@ -121,7 +103,7 @@ This will create the Ballerina executables inside the `/target` directory.
 Then run the jar file created in the above step.
 
 ```bash
-   $ java -jar target/bin/file_integration_using_smb.jar --b7a.config.file=src/file_integration_using_smb/resources/ballerina.conf
+$ java -jar target/bin/file_integration_using_smb.jar --b7a.config.file=src/file_integration_using_smb/resources/ballerina.conf
 ```
 
 Add and delete files in the Samba server, and check the logs to verify whether the service is working as expected.

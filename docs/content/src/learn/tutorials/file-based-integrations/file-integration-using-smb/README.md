@@ -37,9 +37,9 @@ file-integration-using-smb
 Create the Ballerina project `file-integration-using-smb` and add the `file_integration_using_smb` module using the below commands.
 
 ```bash
-    $ ballerina new file-integration-using-smb
-    $ cd file-integration-using-smb
-    $ ballerina add file_integration_using_smb
+$ ballerina new file-integration-using-smb
+$ cd file-integration-using-smb
+$ ballerina add file_integration_using_smb
 ```
 
 The above package structure will be created for you. Create the `smb_listener.bal` file inside the Ballerina module.
@@ -94,7 +94,7 @@ To begin with invoking the service, start the Samba server.
 Navigate to `file-integration-using-smb` directory and run the following command to build the listener service in `smb_listener.bal`.
 
 ```bash
-   $ ballerina build -a 
+$ ballerina build file_integration_using_smb
 ```
 
 The successful build of a service will show us something similar to the following output.
@@ -112,7 +112,7 @@ This will create the Ballerina executables inside the `/target` directory.
 Then run the jar file created in the above step.
 
 ```bash
-   $ java -jar target/bin/file_integration_using_smb.jar --b7a.config.file=src/file_integration_using_smb/resources/ballerina.conf
+$ java -jar target/bin/file_integration_using_smb.jar --b7a.config.file=src/file_integration_using_smb/resources/ballerina.conf
 ```
 
 Add and delete files in the Samba server, and check the logs to verify whether the service is working as expected.

@@ -41,12 +41,12 @@ The first scenario shows a successful transaction whereas the other two fail due
 
 Create a project.
 ```bash
-ballerina new managing-database-transactions
+$ ballerina new managing-database-transactions
 ```
 
 Navigate into the project directory and add a new module.
 ```bash
-ballerina add managing_database_transactions
+$ ballerina add managing_database_transactions
 ```
 
 Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
@@ -80,7 +80,7 @@ The transaction will be successful only when both withdrawal from the transferor
 ### Before you begin
 - Run the SQL script `database_initializer.sql` provided in the resources directory, to initialize the database and to create the required table.
 ```bash
-   $mysql -u username -p <database_initializer.sql 
+$ mysql -u username -p <database_initializer.sql 
 ```
 
 - Add database configurations to the `ballerina.conf` file.
@@ -100,7 +100,7 @@ $ ballerina build --experimental managing_database_transactions
 The build command would create an executable .jar file. Now run the .jar file created in the above step. Path to the `ballerina.conf` could be provided using the `--b7a.config.file` option.
 
 ```bash
-java -jar target/bin/managing_database_transactions.jar --b7a.config.file=path/to/ballerina.conf/file
+$ java -jar target/bin/managing_database_transactions.jar --b7a.config.file=path/to/ballerina.conf/file
 ```
 
 ### Response you'll get

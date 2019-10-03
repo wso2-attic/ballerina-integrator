@@ -1,4 +1,4 @@
-Guide on Database-backed Services using Ballerina.
+Guide on Database-Backed Services using Ballerina.
 
 # Guide Overview
 
@@ -51,22 +51,8 @@ Navigate into the project directory and add a new module.
 
 Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
 
-Add a ballerina.conf file and rename the .bal files with meaningful names as shown in the project structure given below.
- ```shell
-data-backed-service
-├── Ballerina.toml
-├── ballerina.conf
-├── lib
-│    └── mysql-connector-java-x.x.x.jar
-└── src
-    └── data_backed_service
-        ├── resources
-        ├── Module.md
-        ├── employee_db_service.bal
-        └── tests
-            ├── resources
-            └── employee_db_service_test.bal
-```
+Add a ballerina.conf file and rename the .bal files with meaningful names as required.
+
 Open the project with VS Code and write the integration implementation and tests in the `employee_db_service.bal` and `employee_db_service_test.bal` files respectively.
 
 ### Developing the SQL Data-Backed Web Service
