@@ -121,7 +121,15 @@ function handleResponse(http:Response | error response) returns http:Response {
 }
 ```
 
-### 3. Include images
+### 3. Include markdown content
+
+Use below syntax to add markdown files. So when pre-processing `README.md` files this tag will be replaced with the 
+actual markdown file content given in `INCLUDE_MD` tag.
+```
+<!-- INCLUDE_MD: path/to/file/prerequisites.md -->
+```
+
+### 4. Include images
 
 If you want to add images and add image attachments to your `README.md` file add all the images to `docs/assets/img`
 and add the image attachment in the `README.md` file.
