@@ -15,4 +15,4 @@ sfdc46:SalesforceConfiguration ${1:salesforceConfig} = {
     }
 };
 
-sfdc46:Client ${8:salesforceClient} = new(${9:salesforceConfig});
+sfdc46:Client ${8:salesforceClient} = new(${1:salesforceConfig});
