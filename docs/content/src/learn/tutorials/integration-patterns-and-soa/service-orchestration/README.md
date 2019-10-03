@@ -47,7 +47,7 @@ We will build a service called `doctorAppointment` that accepts a client's reque
                 └── resources
     ```
 
-We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
+    We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
 
 First let's create the services that we will use as backend endpoints.
 
@@ -97,17 +97,17 @@ Now we can see three service have started on ports 8081, 8082, and 9090.
     $ curl -H 'Content-Type:application/json' http://localhost:9090/doctorAppoinment/reservation --data '{"name":"Thomas Colins", "doctor":"John Doe", "date":"30-09-2019", "cardNum":"1234567"}'
     ```
 
-We receive a JSON response similar to the following.
+    We receive a JSON response similar to the following.
 
-```json
-{
-            "payment_status": "settled",
-            "payment_id": "b7981676-c1ca-4380-bc31-1725eb121d1a",
-            "appointmentId": "1001",
-            "patient_name": "Thomas Colins",
-            "date": "30-09-2019",
-            "time": "3.00pm",
-            "doctor_name": "John Doe",
-            "fee": "1000.00"
- }
-```
+    ```json
+    {
+                "payment_status": "settled",
+                "payment_id": "b7981676-c1ca-4380-bc31-1725eb121d1a",
+                "appointmentId": "1001",
+                "patient_name": "Thomas Colins",
+                "date": "30-09-2019",
+                "time": "3.00pm",
+                "doctor_name": "John Doe",
+                "fee": "1000.00"
+    }
+    ```
