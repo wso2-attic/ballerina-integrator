@@ -66,7 +66,7 @@ This service checks the SOAPAction header in the request, calls the relevant met
 
 Here we create a SOAP client with the mock SOAP service we created earlier. There are two resources in the service - `getQuote` and `placeOrder`. In the `getQuote` resource, we construct an XML payload with the path parameter `company` and pass the payload to the SOAP client. Then we receive the response, convert it to JSON and respond back to the client. The resource `placeOrder` also has a similar logic except the XML payload is constructed from the values in the request payload.
 
-## Run the Integration
+## Testing
 
 * First let’s build the module. While being in the exposing-soap-service directory, execute the following command.
 
