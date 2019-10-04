@@ -73,7 +73,7 @@ Here we are calling the two services we created earlier using the endpoints `abc
 
 In the stockQuote service, the `company` is retrieved as a query parameter. Then the value of the `company` is checked. If it is `abc`, the `abcEP` is called and its response is saved. If it is `xyz`, the `xyzEP` is called. If there is no value set, we’re simply setting a 400-Bad Request response. Finally the response is sent back to the client.
 
-## Run the Integration
+## Testing
 
 * First let’s build the module. While being in the content-based-routing directory, execute the following command.
 
