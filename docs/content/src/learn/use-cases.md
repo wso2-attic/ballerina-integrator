@@ -120,8 +120,7 @@ Service-oriented architecture (SOA) patterns provide structure and clarity, enab
     Accept a REST request and convert it to a SOAP request</td>
     <td><b><a href="../tutorials/integration-patterns-and-soa/backend-for-frontend/backend-for-frontend/">Backend for Frontend</a></b></br>
     Apply the BFF design pattern</td>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/converting-json-to-xml-and-upload-to-ftp/">Converting JSON to XML and Upload to FTP</a></b></br>
-    Convert a JSON message to XML and upload it to FTP</td>
+    <td></td>
   </tr>
 </table>
 
