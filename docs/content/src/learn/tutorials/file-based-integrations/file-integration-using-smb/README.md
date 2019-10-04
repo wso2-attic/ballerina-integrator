@@ -14,7 +14,7 @@ To understand how to build a service to listen to a Samba server, let's consider
 a Samba server to store data files. When a new file is added to the server, the Samba listener will read the file and add 
 the file name and size to a map, and when the file is deleted from the server, it will remove the entry from the map. 
 
-![File integration using Samba](/src/smb_listener/resources/file-integration-using-smb.png)
+![File integration using Samba](../../../../../assets/img/file-integration-using-smb.png)
 
 <!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 * A Samba Server (See [here](https://linuxize.com/post/how-to-install-and-configure-samba-on-ubuntu-18-04) on how to setup a Samba server)

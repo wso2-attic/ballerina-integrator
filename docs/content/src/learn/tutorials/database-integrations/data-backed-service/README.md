@@ -17,7 +17,7 @@ You'll build an employee data management REST service that performs CRUD Operati
 
 This service will deal with a MySQL database and expose the data operations as a web service. Refer to the following diagram to understand the complete end-to-end scenario.
 
-![alt text](resources/data-backed-service.svg)
+![alt text](../../../../../assets/img/data-backed-service.svg)
 
 <!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 * [MySQL version 5.6 or later](https://www.mysql.com/downloads/)
