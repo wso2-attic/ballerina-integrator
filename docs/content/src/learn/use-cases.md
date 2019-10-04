@@ -39,19 +39,12 @@ The messaging system supports loosely coupled asynchronous data to move from one
 
 <table>
 <tr>
-    <td><b><a href="../tutorials/messaging-integrations/messaging-with-activemq/messaging-with-activemq/">Messaging with ActiveMQ</a></b></br>
-    Use ActiveMQ as the broker for messaging</td>
-    <td><b><a href="../tutorials/messaging-integrations/messaging-with-kafka/messaging-with-kafka/">Messaging with Kafka</a></b></br>
-    Publish messages to Apache Kafka</td>
     <td><b><a href="../tutorials/messaging-integrations/sending-json-data-to-a-jms-queue/sending-json-data-to-a-jms-queue/">Sending JSON to a JMS Queue</a></b></br>
     Send JSON Data to a JMS Queue</td>
-</tr>
-
-<tr>
+    <td><b><a href="../tutorials/messaging-integrations/messaging-with-kafka/messaging-with-kafka/">Messaging with Kafka</a></b></br>
+    Publish messages to Apache Kafka</td>
     <td><b><a href="../tutorials/messaging-integrations/reliable-delivery/reliable-delivery	/">Reliable Delivery</a></b></br>
-    Send messages</td>
-    <td></td>
-    <td></td>
+    Send messages in a reliable way</td>
 </tr>
 
 </table>
