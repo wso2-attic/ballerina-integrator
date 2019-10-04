@@ -1,6 +1,10 @@
 # Sending a Simple Message to a Datasource
 
-In this tutorial, let’s try a simple scenario where a user can execute operations related to doctors in a Health Care System. Information about doctors is stored in a MySql database. We will configure a RESTful service using Ballerina to receive the client request, and to expose the information in the database, thereby decoupling the client and the back-end database.
+## About
+
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on configuring a RESTful service using Ballerina to receive the client request and to expose the information in the database. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
+
+In this tutorial, let’s try a simple scenario where a user can execute operations related to doctors in a Health Care System. Information about doctors is stored in a MySQL database. We will configure a RESTful service using Ballerina to receive the client request, and to expose the information in the database, thereby decoupling the client and the back-end database.
 
 #### What you will build
 
@@ -11,30 +15,12 @@ The RESTful service we are going to create contains resources to carry out the f
 - Delete records of a particular doctor
 - Retrieve a list of doctors given the doctor's speciality (category)
 
-#### Prerequisites
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+* Download and install MySQL <!--version-->
+* Download the JDBC Driver .jar file and copy it into the <BALLERINA_HOME>/bre/lib folder.
+* Download and run the **Doctors.sql** script file from [here](https://github.com/wso2/ballerina-integrator/raw/master/examples/integration-tutorials/sending-a-simple-message-to-a-datasource/sql-data-service/resources/Doctors.sql) to create the backend database.
 
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS. From this point on, we refer to this installed directory as <BALLERINA_HOME>.
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
-- Download and install MySQL <!--version-->
-- Download the JDBC Driver .jar file and copy it into the <BALLERINA_HOME>/bre/lib folder.
-- Download and run the **Doctors.sql** script file from [here](https://github.com/wso2/ballerina-integrator/raw/master/examples/integration-tutorials/sending-a-simple-message-to-a-datasource/sql-data-service/resources/Doctors.sql) to create the backend database.
-
-### Let's Get Started!
-
-This tutorial includes the following sections.
-
-- [Implementation](#implementation)
-  - [Creating the Project Structure](#creating-the-project-structure)
-  - [Creating the Client to access the Backend Database](#creating-the-client-to-access-the-backend-database)
-  - [Creating the RESTful service to perform database transactions](#creating-the-restful-service-to-perform-database-transactions)
-  - [Creating the resources for accessing the database](#creating-the-resources-for-accessing-the-database)
-- [Deployment](#deployment)
-  - [Deploying Locally](#deploying-locally)
-  - [Deploying on Docker](#deploying-on-docker)
-- [Testing](#testing)
-  - [Starting the Database Service](#starting-the-database-service)
-  - [Invoking the Database Service](#invoking-the-database-service)
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ### Implementation
 
@@ -212,12 +198,6 @@ You can run them with the command:
 ```
 $ ballerina run <Executable_File_Name>
 ```
-
-#### Deploying on Docker
-
-If necessary you can run the service that you developed above as a Docker container. Ballerina language includes a `Ballerina_Docker_Extension`, which offers native support to run Ballerina programs on containers.
-
-To run a service as a Docker container, add the corresponding Docker annotations to your service code.
 
 ### Testing
 
