@@ -49,6 +49,7 @@ import static org.wso2.integration.ballerina.constants.Constants.LICENCE_LAST_LI
 import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
 import static org.wso2.integration.ballerina.constants.Constants.NOTE;
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
+import static org.wso2.integration.ballerina.constants.Constants.TEMP_ASSETS_ZIP_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TITLE;
 
@@ -281,7 +282,7 @@ public class Utils {
      */
     public static String getZipFileName(File tomlFile) {
         File parent = tomlFile.getParentFile();
-        return parent.getPath() + File.separator + parent.getName() + ".zip";
+        return TEMP_ASSETS_ZIP_DIR + File.separator + parent.getName() + ".zip";
     }
 
     /**

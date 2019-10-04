@@ -31,8 +31,10 @@ public final class Constants {
     private static final String TARGET_DIR = "target";
     public static final String TEMP_DIR = TARGET_DIR + File.separator + "tempDirectory";
     public static final String MKDOCS_CONTENT = TARGET_DIR + File.separator + "mkdocs-content";
-    public static final String ASSETS_IMG_DIR = DOCS_DIR + File.separator + "assets" + File.separator + "img";
+    private static final String ASSETS_DIR = DOCS_DIR + File.separator + "assets";
+    public static final String ASSETS_IMG_DIR = ASSETS_DIR + File.separator + "img";
     public static final String WEBSITE_DIR = TARGET_DIR + File.separator + "www";
+    public static final String TEMP_ASSETS_ZIP_DIR = TEMP_DIR + File.separator + "assets" + File.separator + "zip";
 
     // Files
     public static final String README_MD = "README.md";
