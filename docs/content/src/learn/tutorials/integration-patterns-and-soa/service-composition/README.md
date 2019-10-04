@@ -1,14 +1,5 @@
 # Service Composition
 
-The following are the sections available in this guide.
-
-- [About](#about)
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Get the code](#get-the-code)
-- [Implementation](#implementation)
-- [Testing](#testing)
-
 ## About
 
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are focusing on aggregating services collectively composed to automate a particular task or business process. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
@@ -16,23 +7,16 @@ Ballerina is an open-source programming language that empowers developers to int
 This guide walks you through the process of implementing a service composition using Ballerina language.
 
 ## What you’ll build
+
 To understand how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation and hotel room reservation. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
 
 ![alt text](/docs/content/resources/service-composition.svg)
 
 Travel agency is the service that acts as the composition initiator. The other two services are external services that the travel agency service calls to do airline ticket booking and hotel reservation. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
-## Prerequisites
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
-- Link to download Ballerina Integrator
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 
-## Get the code
-
-Download the ZIP file and extract the contents to get the code.
-
-<a href="https://github.com/wso2/docs-ei/blob/master/en/ballerina-integrator/docs/learn/guides/"><img src="../../../../../assets/img/download-zip.png" width="200" alt="Download ZIP"></a>
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
