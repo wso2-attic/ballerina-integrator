@@ -116,7 +116,7 @@ Service-oriented architecture (SOA) patterns provide structure and clarity, enab
   </tr>
 
   <tr>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/rest-to-soap/rest-to-soap/">REST to SOAP</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/exposing-soap-service/exposing-soap-service/">REST to SOAP</a></b></br>
     Accept a REST request and convert it to a SOAP request</td>
     <td><b><a href="../tutorials/integration-patterns-and-soa/backend-for-frontend/backend-for-frontend/">Backend for Frontend</a></b></br>
     Apply the BFF design pattern</td>
