@@ -10,12 +10,10 @@ We create a service called `stockQuote` that accepts an HTTP request from a clie
 
 ![cbr](../../../../assets/img/content_based_routing.jpg)
 
-## Prerequisites
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina IDE plugin for [VS Code](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina)
-	
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
+
 ## Implementation
 
 * Create a new Ballerina project named `content-based-routing`.
