@@ -298,4 +298,33 @@ public class Utils {
             return false;
         }
     }
+
+    /**
+     * Get string between two strings of a given string.
+     *
+     * @param original original string
+     * @param subStr1  substring one
+     * @param subStr2  substring two
+     * @return string between substring one and substring two of string original
+     */
+    public static String getStringBetweenTwoStrings(String original, String subStr1, String subStr2) {
+        original = original.substring(original.indexOf(subStr1) + subStr1.length());
+        original = original.substring(0, original.indexOf(subStr2));
+        return original;
+    }
+
+    /**
+     * Add previous directory syntax `../` for a given string.
+     *
+     * @param path        directory path
+     * @param occurrences no of occurrences want to add `../`
+     * @return directory path after adding `../` occurrences.
+     */
+    public static String addPrevDirectorySyntax(String path, int occurrences) {
+        StringBuilder pathBuilder = new StringBuilder(path);
+        for (int i = 0; i < occurrences; i++) {
+            pathBuilder.insert(0, "../");
+        }
+        return pathBuilder.toString();
+    }
 }

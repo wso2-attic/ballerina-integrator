@@ -53,18 +53,13 @@ nav:
       - 'Integration Use Cases': 'learn/use-cases.md'
       - Tutorials:
         - Saas Integration:
-          - 'Amazon SQS':
-            - 'Notifying fire alarm using SQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/notifying-fire-alarm-using-sqs.md'
-          - 'Amazon S3':
-            - 'Working with Amazon S3 Client': 'learn/tutorials/saas-integrations/amazons3/working-with-amazons3-client/working-with-amazons3-client.md'
-          - 'SAP':
-            - 'Interacting with SAP': 'learn/tutorials/saas-integrations/sap/interacting-with-sap/interacting-with-sap.md'
-          - 'Salesforce':
-            - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
-            - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
-            - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/salesforce-to-mysql-db.md'
-          - 'Gmail':
-            - 'Using the Gmail Connector': 'learn/tutorials/saas-integrations/gmail/using-the-gmail-connector/using-the-gmail-connector.md' 
+          - 'Notifying fire alarm using SQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/notifying-fire-alarm-using-sqs.md'
+          - 'Working with Amazon S3 Client': 'learn/tutorials/saas-integrations/amazons3/working-with-amazons3-client/working-with-amazons3-client.md'
+          - 'Interacting with SAP': 'learn/tutorials/saas-integrations/sap/interacting-with-sap/interacting-with-sap.md'
+          - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
+          - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
+          - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/salesforce-to-mysql-db.md'
+          - 'Using the Gmail Connector': 'learn/tutorials/saas-integrations/gmail/using-the-gmail-connector/using-the-gmail-connector.md'
         - Messaging Integration:
           - 'Messaging with ActiveMQ' : 'learn/tutorials/messaging-integrations/messaging-with-activemq/messaging-with-activemq.md'
           - 'Messaging with Kafka' : 'learn/tutorials/messaging-integrations/messaging-with-kafka/messaging-with-kafka.md'
