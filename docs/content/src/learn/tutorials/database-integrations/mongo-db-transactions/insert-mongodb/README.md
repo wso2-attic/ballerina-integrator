@@ -12,11 +12,12 @@ to a remote location. You can find other integration modules from the [wso2-ball
 This application listens to a remote FTP location and when a CSV file is added to that FTP location, it will fetch the CSV file, read its contents and insert the content into Mongo DB. Then a 
 success message is logged if the operation is successful.
 
-![inserting csv data to mongo db](../../../../../assets/img/mongo_insert.png)
+![inserting csv data to mongo db](../../../../assets/img/mongo_insert.png)
 
-<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 
-<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
+
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [documentation on creating a project and using modules](../../../../develop/using-modules/).
@@ -34,7 +35,7 @@ $ ballerina add import_csv
 
 The project structure should look like below.
 ```shell
-├── insert_data
+└── insert_data
     ├── ballerina.conf    
     ├── Ballerina.toml
     └── src
