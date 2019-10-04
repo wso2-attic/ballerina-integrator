@@ -1,17 +1,12 @@
 # File Integration using FTP
 
+## About
+
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on how to use the WSO2 FTP Connector to create an FTP listener service using Ballerina. You can find other integration modules from the wso2-ballerina GitHub repository.
+
 The WSO2 FTP Connector enables you to connect to an FTP server and perform operations on files and folders stored on the 
 server. These operations include basic file operations such as reading, updating, and deleting files, and listening to 
 the server to invoke operations when a file is created or deleted.
-
-> In this guide you will learn how to use the WSO2 FTP Connector to create an FTP listener service using Ballerina.
-
-The following are the sections available in this guide.
-
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
 
 ## What you'll Build
 
@@ -21,12 +16,10 @@ the file name and size to a map, and when the file is deleted from the server, i
 
 ![File integration using FTP](/src/ftp_listener/resources/file-integration-using-ftp.png)
 
-## Prerequisites
- 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina IDE plugin for [VS Code](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina)
-- An FTP Server (See [here](https://www.digitalocean.com/community/tutorials/how-to-set-up-vsftpd-for-a-user-s-directory-on-ubuntu-16-04) on how to setup an FTP server)
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+* An FTP Server (See [here](https://www.digitalocean.com/community/tutorials/how-to-set-up-vsftpd-for-a-user-s-directory-on-ubuntu-16-04) on how to setup an FTP server)
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 > If you want to skip the basics, you can download the GitHub repo and directly move to the "Testing" section by skipping the "Implementation" section.

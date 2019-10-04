@@ -10,12 +10,10 @@ We create a service called `stockQuote` that accepts an HTTP request from a clie
 
 ![cbr](../../../../assets/img/content_based_routing.jpg)
 
-## Prerequisites
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina IDE plugin for [VS Code](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina)
-	
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
+
 ## Implementation
 
 * Create a new Ballerina project named `content-based-routing`.
@@ -75,7 +73,7 @@ Here we are calling the two services we created earlier using the endpoints `abc
 
 In the stockQuote service, the `company` is retrieved as a query parameter. Then the value of the `company` is checked. If it is `abc`, the `abcEP` is called and its response is saved. If it is `xyz`, the `xyzEP` is called. If there is no value set, we’re simply setting a 400-Bad Request response. Finally the response is sent back to the client.
 
-## Run the Integration
+## Testing
 
 * First let’s build the module. While being in the content-based-routing directory, execute the following command.
 

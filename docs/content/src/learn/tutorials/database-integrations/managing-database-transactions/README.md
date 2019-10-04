@@ -1,21 +1,16 @@
 # Database Transactions
 
+## About
+
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on managing database transactions using Ballerina. Please note that Ballerina transactions is an experimental feature. Please use `--experimental` flag when compiling Ballerina modules that contain transaction-related constructs. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
+
 A transaction is a small unit of a program that must maintain Atomicity, Consistency, Isolation, and Durability − 
 commonly known as ACID properties − in order to ensure accuracy, completeness, and data integrity.
 
-> In this guide, you will learn about managing database transactions using Ballerina. Please note that Ballerina
-> transactions is an experimental feature. Please use `--experimental` flag when compiling Ballerina modules that
-> contain transaction-related constructs.
-
-Following are the sections available in this guide.
-
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
-
 ## What you’ll build 
+
 To understand how you can manage database transactions using Ballerina, let’s consider a real-world use case of a simple banking application.
+
 This banking application allows users to,
 
 - **Create Accounts** : Create a new account by providing the username.
@@ -31,14 +26,14 @@ Let's assume the transaction fails during the deposit operation. Now the withdra
 Therefore, to ensure the atomicity (all or nothing property), we need to perform the money transfer operation as a transaction. 
 
 This example explains three different scenarios where one user tries to transfer money from his/her account to another user's account.
+
 The first scenario shows a successful transaction whereas the other two fail due to different reasons.
 
-## Prerequisites
-- Ballerina Integrator
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VSCode](https://code.visualstudio.com).
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 - [MySQL](https://dev.mysql.com/downloads/)
 - [JDBC driver](https://dev.mysql.com/downloads/connector/j/)
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
@@ -76,6 +71,7 @@ managing-database-transactions
 5. Open the project with VS Code and write the integration implementation and tests in the `account_manager.bal`, `application.bal`, and `account_manager_test.bal` files respectively.
 
 6. The `transferMoney` function of `account_manager.bal` demonstrates how we can use transactions in Ballerina. It comprises of two different operations; withdrawal and deposit. To ensure that the transferring operation happens as a whole, it needs to reside in a database transaction block.
+
 Transactions guarantee the 'ACID' properties. So if any of the withdrawal or deposit operations fail, the transaction will be aborted and all the operations carried out in the same transaction will be rolled back.
 The transaction will be successful only when both withdrawal from the transferor and deposit to the transferee are successful. 
 
@@ -172,24 +168,3 @@ was withdrawn from Bob's account. But then the deposit operation failed due to a
 recipient account ID; Hence, the transaction failed and withdraw operation rollbacked as 
 it is in the same transaction
 ```
-
-### Writing unit tests 
-
-In Ballerina, the unit test cases should be in the same package inside a folder named 'tests'.  When writing the test functions the below convention should be followed.
-- Test functions should be annotated with `@test:Config {}`. See the below example.
-```ballerina
-   @test:Config {}
-   function testCreateAccount() {
-
-   }
-```
-  
-This guide contains unit tests for each method available in `account_manager.bal`.
-
-To run the unit tests, navigate to the project directory and run the following command. 
-```bash
-   $ ballerina test --experimental
-```
-> **Note**: The `--b7a.config.file=path/to/ballerina.conf/file` option is required if it is needed to read configurations from a Ballerina configuration file.
-
-To check the implementation of the test file, refer the `account_manager_test.bal` file.

@@ -1,16 +1,10 @@
 # Database Interaction
 
 ## About
+
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on building a database-backed RESTful web service with Ballerina. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
+
 Data inside a database can be exposed to the outside world by using a database-backed RESTful web service. RESTful API calls enable you to add, view, update, and remove data stored in a database from the outside world.
-
-> This guide walks you through building a database-backed RESTful web service with Ballerina.
-
-Following are the sections available in this guide.
-
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
 
 ## What you'll build
 
@@ -28,6 +22,8 @@ This service will deal with a MySQL database and expose the data operations as a
 <!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 * [MySQL version 5.6 or later](https://www.mysql.com/downloads/)
 * [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL   
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
@@ -151,23 +147,4 @@ curl -v -X DELETE "http://localhost:9090/records/employee/1"
 
 Output: 
 {"Status":"Data Deleted Successfully"}
-```
-
-### Writing unit tests 
-
-In Ballerina, the unit test cases should be in the same module inside the folder named as `tests`.  When writing the test functions the below convention should be followed.
-- Test functions should be annotated with `@test:Config {}`. See the below example.
-```ballerina
-   @test:Config {}
-   function testAddEmployeeResource() {
-   
-   }
-```
-You can refer the [employee_db_service_test.bal](src/data_backed_service_module/tests/employee_db_service_test.bal) sample, which contains unit test cases to test the resources available in the `employee data service` we implemented above.
-
-To run the unit tests, go to the project directory and run the following command.
-> **Note**: The `--b7a.config.file=path/to/ballerina.conf/file` option is required to read configurations from a Ballerina configuration file.
-
-```bash
-$ ballerina test --b7a.config.file=path/to/ballerina.conf/file
 ```

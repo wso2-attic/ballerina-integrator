@@ -80,7 +80,8 @@ nav:
           - 'Service Orchestration': 'learn/tutorials/integration-patterns-and-soa/service-orchestration/service-orchestration.md'
           - 'Service Composition': 'learn/tutorials/integration-patterns-and-soa/service-composition/service-composition.md'
           - 'Backend for Frontend' : 'learn/tutorials/integration-patterns-and-soa/backend-for-frontend/backend-for-frontend.md'
-          - 'Exposing a SOAP Service' : 'learn/tutorials/integration-patterns-and-soa/exposing-soap-service/exposing-soap-service.md'
+          - 'REST to SOAP' : 'learn/tutorials/integration-patterns-and-soa/exposing-soap-service/exposing-soap-service.md'
+          - 'JSON to XML and Upload to FTP' : 'learn/tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/converting-json-to-xml-and-upload-to-ftp.md'
       - 'Examples': 'learn/examples.md'
     - Develop:
       - 'Re-introducing Ballerina Programming Language' : 'develop/reintroducing-ballerina.md'

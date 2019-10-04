@@ -2,6 +2,8 @@
 
 ## About
 
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors.
+
 Scatter-Gather is an integration pattern where a request is sent to multiple recipients and each of the responses are aggregated and returned back to the client as a single response. This guide demonstrates a simple scatter-gather scenario where two files in an FTP location are read simultaneously, their contents aggregated and sent back to the client.
 
 ## What you'll build
@@ -10,12 +12,10 @@ We create service `employeeDetails` which accepts a client request and reads two
 
 ![scatter-gather](../../../../assets/img/scatter_gather.jpg)
 
-## Prerequisites
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+* An FTP Server
 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina IDE plugin for [VS Code](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina)
-- An FTP Server
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
@@ -115,7 +115,7 @@ FTP_PASSWORD = "@encrypted:{aoIlSvOPeBEZ0COma+Wz2uWznlNn1IWz4StiWQCO6g4=}"
 <!-- INCLUDE_CODE: src/employee_details_service/main.bal -->
 
 
-## Run the Integration
+## Testing
 
 * First let’s build the module. While being in the scatter-gather-flow directory, execute the following command.
 

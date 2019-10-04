@@ -2,16 +2,9 @@
 
 ## About
 
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors.
+
 There are different messaging methods in SOA (Service Oriented Architecture). In this guide, we are focusing on pass-through messaging between services using an example scenario.
-
-> This guide describes implementing pass-through messaging using Ballerina programming language as simple steps.
-
-The following are the sections available in this guide.
-
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
 
 ## What you’ll build
 
@@ -29,11 +22,9 @@ The two shops are implemented as two separate services named as 'OnlineShopping'
 
 So, messaging between 'OnlineShopping' and 'LocalShop' services act as pass-through messaging. The 'LocalShop' service processes the incoming request method such as 'GET' and 'POST'. Then it calls the back-end service, which will give the "Welcome to Local Shop! Please put your order here....." message. So messaging in the 'LocalShop' service is not a pass-through messaging service.
 
-## Prerequisites
- 
-- Ballerina Integrator
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VS Code](https://code.visualstudio.com).
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
@@ -170,22 +161,4 @@ To identify the message flow inside the services, there will be INFO in the noti
 ```bash
 2018-06-23 05:45:27,849 INFO  [passthrough] - Request will be forwarded to Local Shop  ....... 
 2018-06-23 05:45:27,864 INFO  [passthrough] - You have been successfully connected to local shop  ....... 
-```
-
-### Writing unit tests 
-
-In Ballerina, the unit test cases should be inside the module's `tests` directory. Test functions should be annotated with `@test:Config {}`. See the below example.
-
-```ballerina
-@test:Config {}
-function testFunc() {
-   
-}
-```
-
-This guide contains unit test case for 'LKSubOffice' service and 'UKSubOffice' service in `pass_through_test.bal` file.
-
-To run the unit tests, navigate to the project directory and run the following command.
-```bash
-   $ ballerina test
 ```

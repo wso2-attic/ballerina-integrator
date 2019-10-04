@@ -1,17 +1,12 @@
 # File Integration using Samba
 
+## About
+
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on how to use the WSO2 SMB Connector to create a Samba listener service using Ballerina. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
+
 The WSO2 SMB Connector enables you to connect to a Samba server and perform operations on files and folders stored on the 
 server. These operations include basic file operations such as reading, updating, and deleting files, and listening to 
 the server to invoke operations when a file is created or deleted.
-
-> In this guide you will learn how to use the WSO2 SMB Connector to create a Samba listener service using Ballerina.
-
-The following are the sections available in this guide.
-
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
 
 ## What you'll Build
 
@@ -21,12 +16,10 @@ the file name and size to a map, and when the file is deleted from the server, i
 
 ![File integration using Samba](/src/smb_listener/resources/file-integration-using-smb.png)
 
-## Prerequisites
- 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina IDE plugin for [VS Code](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina)
-- A Samba Server (See [here](https://linuxize.com/post/how-to-install-and-configure-samba-on-ubuntu-18-04) on how to setup a Samba server)
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+* A Samba Server (See [here](https://linuxize.com/post/how-to-install-and-configure-samba-on-ubuntu-18-04) on how to setup a Samba server)
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 > If you want to skip the basics, you can download the GitHub repo and directly move to the "Testing" section by skipping the "Implementation" section.

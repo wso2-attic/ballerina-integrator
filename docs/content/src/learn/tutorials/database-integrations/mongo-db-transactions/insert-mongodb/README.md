@@ -14,8 +14,9 @@ success message is logged if the operation is successful.
 
 ![inserting csv data to mongo db](../../../../../assets/img/mongo_insert.png)
 
-## Prerequisites
-Link to download Ballerina integrator.
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [documentation on creating a project and using modules](../../../../develop/using-modules/).
@@ -79,7 +80,8 @@ You can open the project with VS Code. The implementation will be written in the
  When a CSV file is added to the FTP server, the file content will be retrieved and inserted into Mongo DB.
 
 
-## Run the integration
+## Testing
+
 First, let’s build the module. While being in the insert_data directory, execute the following command.
 
 ```bash
