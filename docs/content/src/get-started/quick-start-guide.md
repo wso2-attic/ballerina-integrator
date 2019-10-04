@@ -29,7 +29,7 @@ You can select one of the available templates or run it using the CLI as indicat
 Create a new project by navigating to a directory of your choice and running the following command. 
 
 ```bash
-$ ballerina new MyProject
+$ ballerina new healthcare-service
 ```
 
 You see a response confirming that your project is created.
@@ -41,13 +41,13 @@ In this project, you will be creating a service that transforms an XML message t
 First let's pull the module from Ballerina Central, which is a public directory that allows you to host templates and modules. In this case, we use the `xml_to_json_transformation` template.
 
 ```
-$ ballerina pull wso2/xml_to_json_transformation
+$ ballerina pull wso2/healthcare_service
 ```
 
 Navigate into the project directory you created and run the following command. This command enables you to create a module using the predefined template you pulled.
 
 ```bash
-$ ballerina add -t wso2/xml_to_json_transformation MyModule
+$ ballerina add -t wso2/healthcare_service doctors
 ```
 
 This automatically creates an XML to JSON transformation service for you inside an `src` directory. A Ballerina service represents a collection of network accessible entry points in Ballerina. A resource within a service represents one such entry point. The generated sample service exposes a network entry point on port 9090.
@@ -55,31 +55,31 @@ This automatically creates an XML to JSON transformation service for you inside 
 Build the service using the `ballerina build` command.
 
 ```bash
-$ ballerina build MyModule
+$ ballerina build doctors
 ```
 
 You get the following output.
 
 ```bash
 Compiling source
-	sam/MyModule:0.1.0
+	wso2/doctors:0.1.0
 
 Creating balos
-	target/balo/MyModule-2019r3-any-0.1.0.balo
+	target/balo/doctors-2019r3-any-0.1.0.balo
 
 Running tests
-    sam/MyModule:0.1.0
+    wso2/doctors:0.1.0
 	No tests found
 
 
 Generating executables
-	target/bin/MyModule.jar
+	target/bin/doctors.jar
 ```
 
 Run the following Java command to run the executable .jar file that is created once you build your module.
 
-```
-java -jar target/bin/MyModule.jar --b7a.config.file=src/MyModule/resources/ballerina.conf
+```bash
+$ java -jar target/bin/doctors.jar
 ```
 
 Your service is now up and running. You can invoke the service using an HTTP client. In this case, we use cURL.
@@ -87,94 +87,103 @@ Your service is now up and running. You can invoke the service using an HTTP cli
 > **Tip**: If you do not have cURL installed, you can download it from [https://curl.haxx.se/download.html](https://curl.haxx.se/download.html).
 
 ```bash
-$ curl -X POST -d '<user><name>Sam</name><job>Scientist</job></user>'  http://localhost:9092/laboratory/user  -H "Content-Type: text/xml"
+$ curl http://localhost:9090/healthcare/doctor/physician
 ```
 
 You get the following response.
 
-```xml
-<response>
-    <status>successful</status>
-    <id>987</id>
-    <name>Sam</name>
-    <job>Scientist</job>
-    <createdAt>2019-09-10T11:47:38.387Z</createdAt>
-</response>
-
+```json
+[
+   {
+      "name":"Shane Martin",
+      "time":"07:30 AM",
+      "hospital":"Grand Oak"
+   },
+   {
+      "name":"Geln Ivan",
+      "time":"08:30 AM",
+      "hospital":"Grand Oak"
+   },
+   {
+      "name":"Geln Ivan",
+      "time":"05:30 PM",
+      "hospital":"pineValley"
+   },
+   {
+      "name":"Daniel Lewis",
+      "time":"05:30 PM",
+      "hospital":"pineValley"
+   }
+]
 ```
 
 You just started Ballerina, created a project, started a service, invoked the service you created, and received a response.
 
-To have a look at the code, navigate to the `main.bal` file found inside your module.
+To have a look at the code, navigate to the `hospital_service.bal` file found inside your module.
 
 ```
-// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-//
-// WSO2 Inc. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-import ballerina/config;
 import ballerina/http;
 import ballerina/log;
-import ballerina/jsonutils;
-import ballerina/xmlutils;
 
-// This is the endpoint of the backend service that is being called.
-http:Client healthcareEndpoint = new("https://reqres.in");
-// "/api/users" is a constant for the request path of the backend service.
-const BACKEND_EP_PATH = "/api/users";
+http:Client grandOakHospital = new("http://localhost:9091/grandOak");
+http:Client pineValleyHospital = new("http://localhost:9092/pineValley");
 
-// This is the base path of the service you are creating.
 @http:ServiceConfig {
-    basePath: "/laboratory"
+    basePath: "/healthcare"
 }
-service scienceLabService on new http:Listener(config:getAsInt("LISTENER_PORT")) {
-    // Schedule an appointment. "/user" is the resource path of your service.
+service healthcare on new http:Listener(9090) {
+
     @http:ResourceConfig {
-        methods: ["POST"],
-        path: "/user"
+        path: "/doctor/{doctorType}"
     }
-    resource function addUser(http:Caller caller, http:Request request) returns error? {
-        json user = {};
-        // Extract user from the request and convert it from XML to JSON. 
-        // If malformed, respond back with HTTP 400 error.
-        xml|error req = request.getXmlPayload();
-        if (req is xml) {
-            user = check jsonutils:fromXML(req);
+    resource function getDoctors(http:Caller caller, http:Request request, string doctorType) returns error? {
+        json grandOakDoctors = {};
+        json pineValleyDoctors = {};
+        var grandOakResponse = grandOakHospital->get("/doctors/" + doctorType);
+        var pineValleyResponse = pineValleyHospital->post("/doctors", {doctorType: doctorType});
+        // Extract doctors array from grand oak hospital response
+        if (grandOakResponse is http:Response) {
+            json result = check grandOakResponse.getJsonPayload();
+            grandOakDoctors = check result.doctors.doctor;
         } else {
-            http:Response res = new();
-            res.statusCode = http:STATUS_BAD_REQUEST;
-            var result = caller->respond(res);
-            if (result is error) {
-                log:printError("Error occurred while responding", err = result);
+            handleError(caller, <@untained> grandOakResponse.reason());
+        }
+        // Extract doctors array from pine valley hospital response
+        if (pineValleyResponse is http:Response) {
+            json result = check pineValleyResponse.getJsonPayload();
+            pineValleyDoctors = check result.doctors.doctor;
+        } else {
+            handleError(caller, <@untained> pineValleyResponse.reason());
+        }
+        // Aggregate grand oak hospital's doctors with pine valley hospital's doctors
+        if (grandOakDoctors is json[] && pineValleyDoctors is json[]) {
+            foreach var item in pineValleyDoctors {
+                grandOakDoctors.push(item);
             }
         }
-        // Create request and send to the backend
-        http:Request backendReq = new();
-        backendReq.setPayload(user);
-        http:Response backendRes = check healthcareEndpoint->post(BACKEND_EP_PATH, backendReq);
-        // Get the JSON payload, convert it back to XML, and respond back to the client
-        var result = caller->respond(check xmlutils:fromJSON(check backendRes.getJsonPayload()));
+        // Respond back to the caller with aggregated json response
+        http:Response response = new();
+        response.setJsonPayload(<@untained> grandOakDoctors);
+        var result = caller->respond(response);
+
         if (result is error) {
-            log:printError("Error occurred while responding", err = result);
+            log:printError("Error sending response", err = result);
         }
     }
 }
 
-function handleResult(error? result) {
+function handleError(http:Caller caller, string errorMsg) {
+    http:Response response = new;
+
+    json responsePayload = {
+        "error": {
+            "message": errorMsg
+        }
+    };
+    response.setJsonPayload(responsePayload, "application/json");
+    var result = caller->respond(response);
     if (result is error) {
-        log:printError("Error occurred while responding", err = result);
+        log:printError("Error sending response", err = result);
     }
 }
 ```
