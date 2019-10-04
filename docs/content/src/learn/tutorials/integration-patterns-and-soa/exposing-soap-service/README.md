@@ -8,7 +8,7 @@ This guide demonstrates a scenario where Ballerina is used to call a SOAP backen
 
 We create a service `stockQuote` that fronts a SOAP backend. The service has two resources `getQuote` and `placeOrder`, which calls respectively the relevant services from the SOAP backend. The response received from the backend is finally sent back to the client.
 
-![rest_to_soap](../../../../assets/img/rest_to_soap.png)
+![rest_to_soap](../../../../assets/img/RESTtoSOAP.svg)
 
 ## Prerequisites
 
@@ -18,12 +18,12 @@ We create a service `stockQuote` that fronts a SOAP backend. The service has two
 
 ## Implementation
 
-* Create a new Ballerina project named `rest-to-soap`.
+* Create a new Ballerina project named `exposing-soap-service`.
     ```bash
-    $ ballerina new rest-to-soap
+    $ ballerina new exposing-soap-service
     ```
 
-* Navigate to the rest-to-soap directory.
+* Navigate to the exposing-soap-service directory.
 
 * Add a new module named `stockquote_service` to the project.
 
@@ -46,7 +46,7 @@ We create a service `stockQuote` that fronts a SOAP backend. The service has two
                 └── resources
     ```
 
-We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
+    We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
 
 First let's create a mock SOAP service. Please note that Ballerina does not support writing SOAP services. Therefore, we're creating mock service that would mimic SOAP responses.
 
@@ -58,7 +58,7 @@ First let's create a mock SOAP service. Please note that Ballerina does not supp
 
 This service checks the SOAPAction header in the request, calls the relevant method, and responds with a SOAP envelope.
 
-Now let's open the `main.bal` file and add the following content. This is going to be our integration logic.
+* Now let's open the `main.bal` file and add the following content. This is going to be our integration logic.
 
 **main.bal**
 
@@ -68,7 +68,7 @@ Here we create a SOAP client with the mock SOAP service we created earlier. Ther
 
 ## Run the Integration
 
-First let’s build the module. While being in the rest-to-soap directory, execute the following command.
+* First let’s build the module. While being in the exposing-soap-service directory, execute the following command.
 
     ```bash
     $ ballerina build stockquote_service
@@ -90,30 +90,40 @@ Now we can see that two services have started on ports 9000 and 9090.
     $ curl http://localhost:9090/stockQuote/quote/xyz
     ```
 
-We receive a JSON payload similar to the following.
+    We receive a JSON payload similar to the following.
 
-```json
-{  
-   "getQuoteResponse":{  
-      "change":"-2.86843917118114",
-      "earnings":"-8.540305401672558",
-      "high":"-176.67958828498735",
-      "last":"177.66987465262923",
-      "low":"-176.30898912339075",
-      "marketCap":"5.649557998178506E7",
-      "name":"xyz Company",
-      "open":"185.62740369461244",
-      "peRatio":"24.341353665128693",
-      "percentageChange":"-1.4930577008849097",
-      "prevClose":"192.11844053187397",
-      "symbol":"xyz",
-      "volume":"7791"
-   }
-}
-```
+    ```json
+    {  
+    "getQuoteResponse":{  
+        "change":"-2.86843917118114",
+        "earnings":"-8.540305401672558",
+        "high":"-176.67958828498735",
+        "last":"177.66987465262923",
+        "low":"-176.30898912339075",
+        "marketCap":"5.649557998178506E7",
+        "name":"xyz Company",
+        "open":"185.62740369461244",
+        "peRatio":"24.341353665128693",
+        "percentageChange":"-1.4930577008849097",
+        "prevClose":"192.11844053187397",
+        "symbol":"xyz",
+        "volume":"7791"
+    }
+    }
+    ```
 
 * Now let's access the `placeOrder` resource by executing the following curl command.
 
     ```bash
     $ curl http://localhost:9090/stockQuote/order -H 'Content-Type:application/json' --data '{"price":"1000.00", "quantity":"2", "symbol":"abc"}'
+    ```
+
+    We receive a JSON payload similar to the following.
+
+    ```json
+    {
+        "placeOrderResponse":{
+            "status":"created"
+        }
+    }
     ```

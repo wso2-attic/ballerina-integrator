@@ -9,4 +9,4 @@ amazonsqs:Configuration ${1:sqsConfig} = {
     accountNumber: "${5:account_number}"
 };
 
-amazonsqs:Client ${6:sqsClient} = new(${7:sqsConfig});
+amazonsqs:Client ${6:sqsClient} = new(${1:sqsConfig});

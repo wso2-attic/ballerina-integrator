@@ -1,6 +1,6 @@
 Name : StoreForward_Message_Processor
 Trigger : storeforward/message_processor
-Imports : wso2/storeforward
+Imports : wso2/storeforward, ballerina/http, ballerina/log
 
 storeforward:MessageStoreConfiguration ${1:storeConfig} = {
     messageBroker: "${2:ACTIVE_MQ}",
@@ -9,20 +9,20 @@ storeforward:MessageStoreConfiguration ${1:storeConfig} = {
 };
 
 storeforward:ForwardingProcessorConfiguration ${5:processorConfig} = {
-    storeConfig: ${6:storeConfig},
-    HttpEndpointUrl: "${7:http://localhost:9000/services/SimpleStockQuoteService}",
+    storeConfig: ${1:storeConfig},
+    HttpEndpointUrl: "${6:http://localhost:9000/services/SimpleStockQuoteService}",
     pollTimeConfig: 1000,
     retryInterval: 3000,
     maxRedeliveryAttempts: 5
 };
 
-storeforward:MessageForwardingProcessor ${8:forwardingProcessor} = check new storeforward:MessageForwardingProcessor(${9:processorConfig}, ${10:handleResponse});
+storeforward:MessageForwardingProcessor ${7:forwardingProcessor} = check new storeforward:MessageForwardingProcessor(${5:processorConfig}, ${8:handleResponse});
 
-function ${11:handleResponse}(http:Response ${12:response}) {
-    int ${13:statusCode} = ${14:response}.statusCode;
-    if (${15:statusCode} == http:STATUS_OK) {
+function ${8:handleResponse}(http:Response ${9:response}) {
+    int ${10:statusCode} = ${9:response}.statusCode;
+    if (${10:statusCode} == http:STATUS_OK) {
         log:printInfo("Successful");
     } else {
-        log:printError("Error: " + ${16:statusCode}.toString());
+        log:printError("Error: " + ${10:statusCode}.toString());
     }
 }

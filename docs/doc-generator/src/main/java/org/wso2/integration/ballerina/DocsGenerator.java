@@ -54,6 +54,7 @@ import static org.wso2.integration.ballerina.constants.Constants.GIT_PROPERTIES_
 import static org.wso2.integration.ballerina.constants.Constants.HASH;
 import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_SEGMENT_TAG;
 import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_TAG;
+import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_MD_TAG;
 import static org.wso2.integration.ballerina.constants.Constants.MARKDOWN_FILE_EXT;
 import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
 import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
@@ -179,6 +180,8 @@ public class DocsGenerator {
                     readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line, commitHash));
                 } else if (isImageAttachmentLine(line)) {
                     readMeFileContent = readMeFileContent.replace(line, getWebsiteImageAttachment(line));
+                } else if (line.contains(INCLUDE_MD_TAG)) {
+                    readMeFileContent = readMeFileContent.replace(line, getIncludeMarkdownFile(file.getParent(), line));
                 }
             }
             IOUtils.write(readMeFileContent, new FileOutputStream(file), String.valueOf(StandardCharsets.UTF_8));
@@ -210,7 +213,7 @@ public class DocsGenerator {
      * @return code content of the code file should be included
      */
     private static String getIncludeCodeFile(String readMeParentPath, String line) {
-        String fullPathOfIncludeCodeFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line);
+        String fullPathOfIncludeCodeFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line, INCLUDE_CODE_TAG);
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
         String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath), readMeParentPath).trim();
         return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
@@ -272,14 +275,14 @@ public class DocsGenerator {
     }
 
     /**
-     * get file path of the INCLUDE_CODE_TAG line.
+     * get file path of the INCLUDE_TAG line.
      *
-     * @param line line having INCLUDE_CODE_TAG
-     * @return file path of the code file should be included
+     * @param line line having INCLUDE_TAG
+     * @return file path of the file should be included
      */
-    private static String getIncludeFilePathFromIncludeCodeLine(String line) {
+    private static String getIncludeFilePathFromIncludeCodeLine(String line, String includeTag) {
         return "/" + line.replace(COMMENT_START, EMPTY_STRING).replace(COMMENT_END, EMPTY_STRING)
-                .replace(INCLUDE_CODE_TAG, EMPTY_STRING).trim();
+                .replace(includeTag, EMPTY_STRING).trim();
     }
 
     /**
@@ -464,5 +467,18 @@ public class DocsGenerator {
     private static String getWebsiteImageAttachment(String line) {
         String imageUrl = line.trim().split("]\\(")[1].replace(")", EMPTY_STRING);
         return line.replace(imageUrl, "../" + imageUrl);
+    }
+
+    /**
+     * Get markdown file content should be included in the README.md file.
+     *
+     * @param readMeParentPath parent path of the README.md file
+     * @param line             line having INCLUDE_MD_TAG
+     * @return content of the markdown file should be included
+     */
+    private static String getIncludeMarkdownFile(String readMeParentPath, String line) {
+        String fullPathOfIncludeMdFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line, INCLUDE_MD_TAG);
+        File includeMdFile = new File(fullPathOfIncludeMdFile);
+        return getCodeFile(includeMdFile, readMeParentPath).trim();
     }
 }

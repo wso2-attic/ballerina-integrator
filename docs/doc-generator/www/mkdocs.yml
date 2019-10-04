@@ -59,7 +59,7 @@ nav:
             - 'Working with Amazon S3 Client': 'learn/tutorials/saas-integrations/amazons3/working-with-amazons3-client/working-with-amazons3-client.md'
           - 'SAP':
             - 'Interacting with SAP': 'learn/tutorials/saas-integrations/sap/interacting-with-sap/interacting-with-sap.md'
-          - 'sfdc46':
+          - 'Salesforce':
             - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/working-with-salesforce-client.md'
             - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp.md'
             - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/salesforce-to-mysql-db.md'
@@ -85,7 +85,7 @@ nav:
           - 'Service Orchestration': 'learn/tutorials/integration-patterns-and-soa/service-orchestration/service-orchestration.md'
           - 'Service Composition': 'learn/tutorials/integration-patterns-and-soa/service-composition/service-composition.md'
           - 'Backend for Frontend' : 'learn/tutorials/integration-patterns-and-soa/backend-for-frontend/backend-for-frontend.md'
-          - 'REST to SOAP' : 'learn/tutorials/integration-patterns-and-soa/rest-to-soap/rest-to-soap.md'
+          - 'Exposing a SOAP Service' : 'learn/tutorials/integration-patterns-and-soa/exposing-soap-service/exposing-soap-service.md'
       - 'Examples': 'learn/examples.md'
     - Develop:
       - 'Re-introducing Ballerina Programming Language' : 'develop/reintroducing-ballerina.md'

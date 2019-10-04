@@ -20,7 +20,6 @@
 # ----------------------------------------------------------------------------
 
 BI_CONTENT_HOME=`pwd`
-source ${BI_CONTENT_HOME}/resources/config.properties
 
 clear_directory() {
     if [[ ! -e $1 ]]
@@ -54,8 +53,9 @@ execute_tests() {
     for k in $(jq '.tutorials | keys | .[]' $config_file); do
         tutorial=$(jq -r ".tutorials[$k]" $config_file)
         path=$(jq '.path' <<< "$tutorial")
+        skipTests=$(jq '.skipTests' <<< "$tutorial")
 
-        echo "Executing $path"
+        echo "Executing $path..."
 
         # Remove quotes from path
         temp="${path%\"}"
@@ -66,15 +66,30 @@ execute_tests() {
 
         for l in $(jq '.modules | keys | .[]' <<< "$tutorial"); do
             module=$(jq -r ".modules[$l]" <<< "$tutorial")
-            ballerina build $module > output/testResults
 
-            if (grep -q "[1-9][0-9]* failing" output/testResults) || ! (grep -q "Running tests" output/testResults)
-            then
-                echo -e "failure in $path: $module \n"
-                exit 1
+            if $skipTests ; then
+                echo "Skipping tests..."
+                ballerina build --skip-tests $module > output/testResults
+
+                if (grep -q "[1-9][0-9]* failing" output/testResults)
+                then
+                    echo -e "failure in $path: $module \n"
+                    exit 1
+                else
+                    echo "No failures in $path: $module tests"
+                fi
             else
-                echo "No failures in $path: $module tests"
+                ballerina build $module > output/testResults
+
+                if (grep -q "[1-9][0-9]* failing" output/testResults) || ! (grep -q "Running tests" output/testResults)
+                then
+                    echo -e "failure in $path: $module \n"
+                    exit 1
+                else
+                    echo "No failures in $path: $module tests"
+                fi
             fi
+
         done
 
         echo -e "------End of executing $path tests----- \n"

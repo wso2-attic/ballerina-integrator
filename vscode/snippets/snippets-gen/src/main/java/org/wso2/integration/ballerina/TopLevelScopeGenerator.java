@@ -24,8 +24,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Contains methods required to display the Top Level Scope snippets  .
@@ -44,6 +47,13 @@ class TopLevelScopeGenerator {
         File sourceFile = Paths.get("vscode","snippets","ei-snippets", "src", "main", "java", "org",
                 "wso2", "integration", "ballerina", "autogen", "TopLevelScope.java").toFile();
 
+        File globalVarDefFileSource = Paths.get("vscode","snippets","snippets-gen","src", "main",
+                                       "resources", "GlobalVariableDefinition.java").toFile();
+
+        File globalVarDefFileDestination = Paths.get("vscode","snippets","ei-snippets", "src", "main",
+                "java", "org", "wso2", "integration", "ballerina", "autogen", "GlobalVariableDefinition.java").toFile();
+
+
         try {
             if (sourceFile.createNewFile()) {
                 log.info("Successfully created TopLevelScop.java file");
@@ -54,19 +64,15 @@ class TopLevelScopeGenerator {
         }
 
         String scopeHeader = "package org.wso2.integration.ballerina.autogen;\n\n" +
-                "import org.antlr.v4.runtime.CommonToken;\n" +
-                "import org.ballerinalang.annotation.JavaSPIService;\n" +
-                "import org.ballerinalang.langserver.common.CommonKeys;\n" +
-                "import org.ballerinalang.langserver.compiler.LSContext;\n" +
-                "import org.ballerinalang.langserver.completions.SymbolInfo;\n" +
-                "import org.ballerinalang.langserver.completions.providers.scopeproviders." +
-                "TopLevelScopeProvider;\n" +
-                "import org.ballerinalang.langserver.completions.spi.LSCompletionProvider;\n" +
+                "import org.antlr.v4.runtime.CommonToken;\n"+
+                "import org.ballerinalang.annotation.JavaSPIService;\n"+
+                "import org.ballerinalang.langserver.compiler.LSContext;\n"+
+                "import org.ballerinalang.langserver.completions.CompletionKeys;\n"+
+                "import org.ballerinalang.langserver.completions.providers.scopeproviders.TopLevelScopeProvider;\n"+
                 "import org.eclipse.lsp4j.CompletionItem;\n" +
-                "import org.wso2.ballerinalang.compiler.parser.antlr4.BallerinaParser;\n" +
                 "import org.wso2.ballerinalang.compiler.tree.BLangPackage;\n" +
-                "\n import java.util.ArrayList; import java.util.Collection;\n" +
-                "import java.util.List;\n import java.util.Optional;\n\n" +
+                "import java.util.ArrayList;\n" +
+                "import java.util.List;\n"+
                 "@JavaSPIService(\"org.ballerinalang.langserver.completions.spi.LSCompletionProvider\")\n" +
                 "public class TopLevelScope extends TopLevelScopeProvider {\n\n  public Precedence precedence;" +
                 "    public TopLevelScope() {\n this.attachmentPoints.add(BLangPackage.class); \n" +
@@ -74,29 +80,18 @@ class TopLevelScopeGenerator {
                 "     * Get a static completion Item for the given snippet.\n *\n" +
                 "     * @param snippet Snippet to generate the static completion item\n" +
                 "     * @return {@link CompletionItem} Generated static completion Item\n */\n\n" +
-                "    protected CompletionItem getStaticItem(LSContext ctx, Snippets snippet) {\n" +
+                "    protected static CompletionItem getStaticItem(LSContext ctx, Snippets snippet) {\n" +
                 "        return snippet.get().build(ctx);\n      }\n\n" +
                 "    public static final LSContext.Key<List<CommonToken>> LHS_DEFAULT_TOKENS_KEY = " +
                 "new LSContext.Key<>();\n" +
-                "\n\n //Override the getCompletions method in LSCompletion Provider\n  @Override\n" +
-                "    public List<CompletionItem> getCompletions(LSContext ctx) {\n" +
-                "         ArrayList<CompletionItem> completionItm = new ArrayList<>();\n" +
-                "        Optional<LSCompletionProvider> contextProvdr = this.getContextProvider(ctx);\n" +
-                "        List<CommonToken> lhsDefaultTokens = ctx.get(LHS_DEFAULT_TOKENS_KEY);\n \n" +
-                "        if (contextProvdr.isPresent()) {\n" +
-                "            return contextProvdr.get().getCompletions(ctx);\n  }\n\n" +
-                "        if (!(lhsDefaultTokens != null && lhsDefaultTokens.size() >= 2 && " +
-                "BallerinaParser.LT == lhsDefaultTokens\n" +
-                " .get(lhsDefaultTokens.size() - 1).getType())) {\n" +
-                "  completionItm.addAll(addTopLevelItem(ctx));\n }\n" +
-                "        List<SymbolInfo> visibleSymbols = new ArrayList<>" +
-                "(ctx.get(CommonKeys.VISIBLE_SYMBOLS_KEY));\n" +
-                "        completionItm.addAll((Collection<? extends CompletionItem>) " +
-                "getBasicTypes(visibleSymbols));\n" +
-                "        completionItm.addAll((Collection<? extends CompletionItem>) " +
-                "this.getPackagesCompletionItems(ctx));\n" +
-                "\n return completionItm;\n }\n \n \n" +
-                "  protected List<CompletionItem> addTopLevelItem(LSContext context) {\n" +
+                " //Override the getCompletions method in LSCompletion Provider\n " +
+                "@Override public List<CompletionItem> getCompletions(LSContext ctx) {\n" +
+                " List<CompletionItem> completions = super.getCompletions(ctx);\n \n" +
+                " if(CompletionKeys.LHS_DEFAULT_TOKENS_KEY != null) {\n \n" +
+                " List<CommonToken> lhsDefaultTokens = ctx.get(CompletionKeys.LHS_DEFAULT_TOKENS_KEY);\n" +
+                " if (lhsDefaultTokens == null || lhsDefaultTokens.size() == 0) {\n" +
+                "  completions.addAll(addTopLevelItem(ctx));\n }\n }\n return completions;\n }"+
+                "  protected static List<CompletionItem> addTopLevelItem(LSContext context) {\n" +
                 "        ArrayList<CompletionItem> completionItemsArr = new ArrayList<>(); \t \n \n";
 
         for (Snippet snippet : snippetList) {
@@ -108,8 +103,11 @@ class TopLevelScopeGenerator {
         }
         String topLevelScope = scopeHeader + scopeBody + "\n \n return completionItemsArr;} \n @Override\n" +
                 "   public Precedence getPrecedence() {\n \n  return this.precedence;\n  }\n }";
+
         FileWriter writer = new FileWriter(sourceFile);
         writer.write(topLevelScope);
         writer.close();
+
+        FileUtils.copyFile(globalVarDefFileSource, globalVarDefFileDestination);
     }
 }

@@ -121,7 +121,15 @@ function handleResponse(http:Response | error response) returns http:Response {
 }
 ```
 
-### 3. Include images
+### 3. Include markdown content
+
+Use below syntax to add markdown files. So when pre-processing `README.md` files this tag will be replaced with the 
+actual markdown file content given in `INCLUDE_MD` tag.
+```
+<!-- INCLUDE_MD: path/to/file/prerequisites.md -->
+```
+
+### 4. Include images
 
 If you want to add images and add image attachments to your `README.md` file add all the images to `docs/assets/img`
 and add the image attachment in the `README.md` file.
@@ -141,16 +149,9 @@ When you are mentioning the resource file please mention the valid path to the f
 
 #### Prerequisites
 
-- Install python
-- Install pip
-- Install mkdocs
-    ```bash
-    $ pip install mkdocs
-    ```
-- Install pymdown-extensions
-    ```bash
-    $ pip install pymdown-extensions
-    ```
+ - Install [Docker](https://docs.docker.com/install/)
+ - Install [Apache Maven](https://maven.apache.org/install.html)
+
 #### Generate website content
 
 Navigate to `docs/doc-generator` and run below command.
@@ -164,15 +165,14 @@ This will generate website content inside `docs/doc-generator/target/www`.
 
 #### Testing the website
 
-Navigate to `docs/doc-generator/target/www` directory and run below command.
+Navigate to `docs/doc-generator` directory and run below command.
 
 ```bash
-$ cd target/www
-$ mkdocs serve
+docker run --rm -it -p 8000:8000 -v ${PWD}/target/www:/docs squidfunk/mkdocs-material
 ```
 
 You will see following log in the terminal. You can go to the serving Url and check your guide.
 
 ```
-Serving on http://127.0.0.1:8000
+Serving on http://0.0.0.0:8000
 ```

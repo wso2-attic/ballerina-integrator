@@ -7,11 +7,11 @@ gsheets4:SpreadsheetConfiguration ${1:spreadsheetConfig} = {
         accessToken: "${2:access_token}",
         refreshConfig: {
             clientId: "${3:client_id}",
-            clientSecret: "${4:client_secret}"
+            clientSecret: "${4:client_secret}",
             refreshUrl: "${5:refresh_url}",
             refreshToken: "${6:refresh_token}"
         }
     }
 };
 
-gsheets4:Client ${7:spreadsheetClient} = new (${8:spreadsheetConfig});
+gsheets4:Client ${7:spreadsheetClient} = new (${1:spreadsheetConfig});

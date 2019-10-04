@@ -25,11 +25,7 @@ This service will deal with a MySQL database and expose the data operations as a
 
 ![alt text](resources/data-backed-service.svg)
 
-## Prerequisites
- 
-* Ballerina Integrator
-* A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VS Code](https://code.visualstudio.com).
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 * [MySQL version 5.6 or later](https://www.mysql.com/downloads/)
 * [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL   
 
