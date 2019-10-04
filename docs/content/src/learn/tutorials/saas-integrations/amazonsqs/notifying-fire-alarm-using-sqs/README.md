@@ -1,16 +1,10 @@
 # Notifying a Fire Alarm using Amazon SQS
 
-This guide demonstrates how to use Amazon SQS Connector to notify alerts.
+## About
 
-The high level sections of this guide are as follows:
-
-- [What you'll build](#What-youll-build)
-- [Prerequisites](#Prerequisites)
-- [Implementation](#Implementation)
-  - [Creating the project structure](#Creating-the-project-structure)
-  - [Developing the scenario](#Developing-the-scenario)
-- [Deployment](#Deployment)
-  - [Deploying locally](#Deploying-locally)
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
+support of connectors. In this guide, we are mainly focusing on how to use Amazon SQS Connector to notify alerts. 
+You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
 
 ## What you'll build
 
@@ -24,12 +18,10 @@ Here, the fire alarm is sending fire alerts periodically from a Ballerina worker
 
 As there can be multiple alert messages available in the queue, the listener is configured to consume more than one message at a time.
 
-## Prerequisites
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 - [Amazon SQS Account](https://aws.amazon.com/sqs/)
 
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
