@@ -398,6 +398,8 @@ public class DocsGenerator {
                     // Zip parent folder since this is a Ballerina project.
                     try {
                         new ZipFile(getZipFileName(file)).addFolder(new File(file.getParentFile().getPath()));
+                        // Move this zip file to `assets/zip`.
+
                     } catch (ZipException e) {
                         throw new ServiceException("Error when zipping the directory: "
                                 + file.getParentFile().getPath(), e);
@@ -479,6 +481,17 @@ public class DocsGenerator {
     private static String getIncludeMarkdownFile(String readMeParentPath, String line) {
         String fullPathOfIncludeMdFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line, INCLUDE_MD_TAG);
         File includeMdFile = new File(fullPathOfIncludeMdFile);
-        return getCodeFile(includeMdFile, readMeParentPath).trim();
+        String includeMdContent = getCodeFile(includeMdFile, readMeParentPath).trim();
+        // Check fullPathOfIncludeMdFile is `get-the-code.md`.
+        if (fullPathOfIncludeMdFile.contains("tutorial-get-the-code.md")) {
+            return addZipFileNameToMdFile(includeMdContent, readMeParentPath);
+        } else {
+            return includeMdContent;
+        }
+    }
+
+    private static String addZipFileNameToMdFile(String includeMdContent, String readMeParentPath) {
+        String zipName = readMeParentPath.substring(readMeParentPath.lastIndexOf('/') + 1).trim();
+        return includeMdContent.replace("<<<MD_FILE_NAME>>>", zipName);
     }
 }
