@@ -1,16 +1,10 @@
 # Messaging with Kafka
 
+## About
+
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on the process of messaging with Apache Kafka using Ballerina language. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
+
 Kafka is a distributed, partitioned, replicated commit log service. It provides the functionality of a publish-subscribe messaging system with a unique design. Kafka mainly operates based on a topic model. A topic is a category or feed name to which records get published. Topics in Kafka are always multi-subscriber.
-
-> This guide walks you through the process of messaging with Apache Kafka using Ballerina language. 
-
-The following are the sections available in this guide.
-
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
-- [Deployment](#deployment)
 
 ## What you’ll build
 To understanding how you can use Kafka for publish-subscribe messaging, let's consider a real-world use case of a product management system. This product management system consists of a product admin portal using which the product administrator can update the price for a product. 
@@ -23,15 +17,13 @@ In this particular use case, once the admin updates the price of a product, the 
 
 In this example, the Ballerina Kafka Connector is used to connect Ballerina to Apache Kafka. With this Kafka Connector, Ballerina can act as both message publisher and subscriber.
 
-## Prerequisites
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
-- [Apache Kafka](https://kafka.apache.org/downloads)
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+* [Apache Kafka](https://kafka.apache.org/downloads)
   * Download the binary distribution and extract the contents
-- [Ballerina Kafka Connector](https://github.com/wso2-ballerina/package-kafka/releases)
+* [Ballerina Kafka Connector](https://github.com/wso2-ballerina/package-kafka/releases)
   * Extract `wso2-kafka-<version>.zip`. Run the install.{sh/bat} script to install the package.
 
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ### Optional Requirements
 
@@ -431,32 +423,6 @@ Franchisee 2:
   [INFO] Acknowledgement from Franchisee 2 
 ```
 
-### Writing unit tests 
-
-In Ballerina, the unit test cases should be in the same package inside a folder named as `tests`.  When writing the test functions the below convention should be followed.
-- Test functions should be annotated with `@test:Config`. 
-- Test function name should start with the word `test`.
-
-See the below example:
-```ballerina
-   @test:Config
-   function testProductAdminPortal() {
-       // test logic
-   }
-```
-  
-This guide contains unit test for the `product_admin_portal` service implemented above. 
-
-To run the unit tests, navigate to `messaging-with-kafka/guide` and run the following command. 
-```bash
-   $ ballerina test
-```
-
-> When running the unit tests, make sure that `Kafka Cluster` is up and running.
-
-To check the implementation of the test file, refer to the [product_admin_portal_test.bal](https://github.com/ballerina-guides/messaging-with-kafka/blob/master/guide/product_admin_portal/tests/product_admin_portal_test.bal).
-
-
 ## Deployment
 
 Once you are done with the development, you can deploy the services using any of the methods that we listed below. 
@@ -477,187 +443,4 @@ As the first step, you can build Ballerina executable archives (.balx) of the se
 ```
    ballerina: initiating service(s) in 'target/product_admin_portal.balx'
    ballerina: started HTTP/WS endpoint 0.0.0.0:9090
-```
-
-### Deploying on Docker
-
-You can run the service that we developed above as a docker container.
-As Ballerina platform includes [Ballerina_Docker_Extension](https://github.com/ballerinax/docker), which offers native support for running ballerina programs on containers,
-you just need to put the corresponding docker annotations on your service code.
-Since this guide requires `Kafka` as a prerequisite, you need a couple of more steps to configure it in docker container.   
-
-- Run the below command to start both `Zookeeper` and `Kafka` with default configurations in the same docker container. 
-```bash
-   $ docker run -p 2181:2181 -p 9092:9092 --env \
-   ADVERTISED_HOST=`docker-machine ip \`docker-machine active\`` \
-   --env ADVERTISED_PORT=9092 spotify/kafka
-```
-
-- Check whether the `Kafka` container is up and running using the following command.
-```bash
-   $ docker ps
-```
-
-Now let's see how we can deploy the `product_admin_portal` we developed above on docker. We need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
-
-##### product_admin_portal.bal
-```ballerina
-import ballerinax/docker;
-// Other imports
-
-// Constants to store admin credentials
-
-// Kafka producer initialization
-
-@docker:Config {
-    registry:"ballerina.guides.io",
-    name:"product_admin_portal",
-    tag:"v1.0"
-}
-
-@docker:CopyFiles {
-    files:[{source:<path_to_Kafka_connector_jars>,
-            target:"/ballerina/runtime/bre/lib"}]
-}
-
-@docker:Expose{}
-http:Listener httpListener = new("9090");
-
-@http:ServiceConfig {basePath:"/product"}
-service productAdminService on httpListener {
-``` 
-
-- `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:CopyFiles` is used to copy the Kafka connector jar files into the ballerina bre/lib folder. You can provide multiple files as an array to field `files` of CopyFiles docker annotation. `@docker:Expose {}` is used to expose the port. 
-
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `messaging-with-kafka/guide` and run the following command.  
-  
-```bash
-   $ ballerina build product_admin_portal
-
-   ...
-
-   Run following command to start docker container:
-   $ docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
-```
-
-- Once you successfully build the docker image, you can run it with the `docker run` command that is shown in the previous step.  
-
-```bash
-   $ docker run -d -p 9090:9090 ballerina.guides.io/product_admin_portal:v1.0
-```
-
-   Here we run the docker image with flag `-p <host_port>:<container_port>` so that we use the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
-
-- Verify docker container is running with the use of `$ docker ps`. The status of the docker container should be shown as 'Up'. 
-
-- You can access the service using the same curl commands that we've used above.
-```bash
-   curl -v POST -d \
-   '{"Username":"Admin", "Password":"Admin", "Product":"ABC", "Price":100.00}' \
-   "http://localhost:9090/product/updatePrice" -H "Content-Type:application/json"
-```
-
-
-### Deploying on Kubernetes
-
-- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. So you don't need to explicitly create docker images prior to deploying it on Kubernetes. Refer to [Ballerina_Kubernetes_Extension](https://github.com/ballerinax/kubernetes) for more details and samples on Kubernetes deployment with Ballerina. You can also find details on using Minikube to deploy Ballerina programs. 
-
-- Since this guide requires `Kafka` as a prerequisite, you need an additional step to create a pod for `Kafka` and use it with our sample.  
-
-- Navigate to `messaging-with-kafka/resources` directory and run the below command to create the Kafka pod by creating a deployment and service for Kafka. You can find the deployment descriptor and service descriptor in the `./resources/kubernetes` folder.
-```bash
-   $ kubectl create -f ./kubernetes/
-```
-
-- Now let's see how we can deploy the `product_admin_portal` on Kubernetes. We need to import `ballerinax/kubernetes;` and use ` @kubernetes` annotations as shown below to enable kubernetes deployment.
-
-##### product_admin_portal.bal
-
-```ballerina
-import ballerinax/kubernetes;
-// Other imports
-
-// Constants to store admin credentials
-
-// Kafka producer endpoint
-
-@kubernetes:Ingress {
-  hostname:"ballerina.guides.io",
-  name:"ballerina-guides-product-admin-portal",
-  path:"/"
-}
-
-@kubernetes:Service {
-  serviceType:"NodePort",
-  name:"ballerina-guides-product-admin-portal"
-}
-
-@kubernetes:Deployment {
-  image:"ballerina.guides.io/product_admin_portal:v1.0",
-  name:"ballerina-guides-product-admin-portal",
-  copyFiles:[{target:"/ballerina/runtime/bre/lib",
-                  source:<path_to_Kafka_connector_jars>}]
-}
-
-http:Listener httpListener = new(9090);
-
-@http:ServiceConfig {basePath:"/product"}
-service productAdminService on httpListener {
-``` 
-
-- Here we have used `@kubernetes:Deployment` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy the Kafka connector jar files into the ballerina bre/lib folder. You can provide multiple files as an array to this field.
-- We have also specified `@kubernetes:Service` so that it will create a Kubernetes service, which will expose the Ballerina service that is running on a Pod.  
-- In addition we have used `@kubernetes:Ingress`, which is the external interface to access your service (with path `/` and host name `ballerina.guides.io`)
-
-- Now you can build a Ballerina executable archive (`.balx`) of the service that we developed above, using the following command. This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
-  
-```bash
-   $ ballerina build product_admin_portal
-  
-   Run following command to deploy kubernetes artifacts:  
-   kubectl apply -f ./target/product_admin_portal/kubernetes
-```
-
-- You can verify that the docker image that we specified in `@kubernetes:Deployment` is created, by using `docker images`. 
-- Also the Kubernetes artifacts related our service, will be generated under `./target/product_admin_portal/kubernetes`. 
-- Now you can create the Kubernetes deployment using:
-
-```bash
-   $ kubectl apply -f ./target/product_admin_portal/kubernetes 
- 
-   deployment.extensions "ballerina-guides-product-admin-portal" created
-   ingress.extensions "ballerina-guides-product-admin-portal" created
-   service "ballerina-guides-product-admin-portal" created
-```
-
-- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
-
-```bash
-   $ kubectl get service
-   $ kubectl get deploy
-   $ kubectl get pods
-   $ kubectl get ingress
-```
-
-- If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
-
-Node Port:
-```bash
-  curl -v -X POST -d \
-  '{"Username":"Admin", "Password":"Admin", "Product":"ABC", "Price":100.00}' \
-  "http://localhost:<Node_Port>/product/updatePrice" -H "Content-Type:application/json"
-```
-
-Ingress:
-
-Add `/etc/hosts` entry to match hostname. 
-``` 
-   127.0.0.1 ballerina.guides.io
-```
-
-Access the service 
-```bash
-   curl -v -X POST -d \
-   '{"Username":"Admin", "Password":"Admin", "Product":"ABC", "Price":100.00}' \
-   "http://ballerina.guides.io/product/updatePrice" -H "Content-Type:application/json" 
 ```
