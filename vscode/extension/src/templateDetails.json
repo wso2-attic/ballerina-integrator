@@ -3,43 +3,37 @@
         "id": "gsheets_salesforce_integration",
         "name": "GSheet & Salesforce API Integration",
         "description": "This template demonstrates some of the capabilities of Google SpreadSheet and Salesforce modules.",
-        "tags": ["#connector"]
+        "tags": ["#saas"]
     },
     {
         "id": "kafka_service",
         "name": "Asynchronous Messaging with Kafka",
         "description": "This template demonstrates how to perform asynchronous messaging using the Ballerina Kafka connector.",
-        "tags": ["#connector"]
+        "tags": ["#saas", "messaging"]
     },
     {
         "id": "using_gmail_connector",
         "name": "Working with Gmail Connector",
         "description": "This template demonstrates how emails could be sent, read and deleted using the Ballerina Gmail connector.",
-        "tags": ["#connector"]
+        "tags": ["#saas"]
     },
     {
         "id": "googlespreadsheet_service",
         "name": "Working with SpreadSheet Connector",
         "description": "This template demonstrates handling spreadsheets using the Ballerina Goodle SpreadSheet connector.",
-        "tags": ["#connector"]
+        "tags": ["#saas"]
     },
     {
         "id": "ftp_listener",
         "name": "Handling Files using FTP Connector",
         "description": "This template will implement the FTP listener which can poll a remote directory and periodically notify the addition of a file that complies with the specified file pattern.",
-        "tags": ["#connector"]
+        "tags": ["#file"]
     },
     {
         "id": "smb_listener",
         "name": "Handling Files using SMB Connector",
         "description": "This template we'll implement SMB listener which will listen to a remote directory and periodically notify the addition of a file that complies with the specified file pattern.",
-        "tags": ["#connector"]
-    },
-    {
-        "id": "salesforce_client",
-        "name": "Working with Salesforce Client",
-        "description": "This template demonstrates how the Salesforce client performs CRUD operations for SObjects, query using SOQL, search using SOSL and describe SObjects and organizational data through the Salesforce REST API.",
-        "tags": ["#connector"]
+        "tags": ["#file"]
     },
     {
         "id": "amazons3_service",
@@ -84,12 +78,6 @@
         "tags": ["#eip"]
     },
     {
-        "id": "backend_for_frontend",
-        "name": "Backend for Frontend",
-        "description": "This template demonstrates on how to apply the Backend for Frontend design pattern when working with Ballerina.",
-        "tags": ["#eip"]
-    },
-    {
         "id": "hello_world_service",
         "name": "Hello World Service",
         "description": "This template demonstrates a simple Hello World Service.",
@@ -112,35 +100,5 @@
         "name": "Restful Service",
         "description": "This template demonstrates on how Restful services could be implemented.",
         "tags": ["#service"]
-    },
-    {
-        "id": "service_composition",
-        "name": "Service Composition",
-        "description": "This template demonstrates on handling service compositions.",
-        "tags": ["#service"]
-    },
-    {
-        "id": "http_to_jms",
-        "name": "Protocol Switching HTTP to JMS",
-        "description": "This template demonstrates how protocol wwitching from HTTP to JMS could be done.",
-        "tags": ["#messaging"]
-    },
-    {
-        "id": "message_broadcasting",
-        "name": "Message Broadcasting",
-        "description": "This template demonstrates how message broadcasting could be achieved using Ballerina.",
-        "tags": ["#messaging"]
-    },
-    {
-        "id": "messaging_with_activemq",
-        "name": "Messaging with ActiveMQ",
-        "description": "This template demonstrates how messaging could be done using the Apache ActiveMQ message broker.",
-        "tags": ["#messaging"]
-    },
-    {
-        "id": "asynchronous_messaging",
-        "name": "Asynchronous Messaging",
-        "description": "This template demonstrates how asynchronous messaging could be achieved using Ballerina.",
-        "tags": ["#messaging"]
     }
 ]
