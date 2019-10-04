@@ -1,5 +1,7 @@
 # Database Transactions
 
+## About
+
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on managing database transactions using Ballerina. Please note that Ballerina transactions is an experimental feature. Please use `--experimental` flag when compiling Ballerina modules that contain transaction-related constructs. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
 
 A transaction is a small unit of a program that must maintain Atomicity, Consistency, Isolation, and Durability − 
