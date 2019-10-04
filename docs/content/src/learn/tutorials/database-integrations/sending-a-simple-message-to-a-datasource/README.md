@@ -6,7 +6,7 @@ Ballerina is an open-source programming language that empowers developers to int
 
 In this tutorial, let’s try a simple scenario where a user can execute operations related to doctors in a Health Care System. Information about doctors is stored in a MySQL database. We will configure a RESTful service using Ballerina to receive the client request, and to expose the information in the database, thereby decoupling the client and the back-end database.
 
-#### What you will build
+## What you will build
 
 The RESTful service we are going to create contains resources to carry out the following actions.
 
@@ -22,7 +22,7 @@ The RESTful service we are going to create contains resources to carry out the f
 
 <!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
-### Implementation
+## Implementation
 
 #### Creating the Project Structure
 
@@ -180,30 +180,17 @@ final string QUERY_DELETE_DOCTOR_INFORMATION =
 
 ```
 
-### Deployment
+## Testing
 
-Once you are done with the development, you can deploy the services using any of the methods listed below.
-
-#### Deploying Locally
+#### Starting the Database Service
 
 To deploy locally, navigate to `routing-requests-based-on-message-content/src/tutorial`, and execute the following command.
 
 ```
 $ ballerina build
-```
+``
 
-This builds a Ballerina executable archive (.balx) of the services that you developed in the target folder.
-You can run them with the command:
-
-```
-$ ballerina run <Executable_File_Name>
-```
-
-### Testing
-
-#### Starting the Database Service
-
-After adding the implementation, we can start the RESTful service as below.
+After adding the implementation and building the project, we can start the RESTful service as below.
 
 ```
 $ ballerina run data_service.bal
