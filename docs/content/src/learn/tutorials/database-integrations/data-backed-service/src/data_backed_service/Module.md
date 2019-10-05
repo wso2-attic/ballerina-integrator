@@ -1,10 +1,18 @@
-# Database Interaction
+Guide on Database-Backed Services using Ballerina.
+
+# Guide Overview
 
 ## About
-
-Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on building a database-backed RESTful web service with Ballerina. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
-
 Data inside a database can be exposed to the outside world by using a database-backed RESTful web service. RESTful API calls enable you to add, view, update, and remove data stored in a database from the outside world.
+
+> This guide walks you through building a database-backed RESTful web service with Ballerina.
+
+Following are the sections available in this guide.
+
+- [What you'll build](#what-youll-build)
+- [Prerequisites](#prerequisites)
+- [Implementation](#implementation)
+- [Testing](#testing)
 
 ## What you'll build
 
@@ -17,13 +25,15 @@ You'll build an employee data management REST service that performs CRUD Operati
 
 This service will deal with a MySQL database and expose the data operations as a web service. Refer to the following diagram to understand the complete end-to-end scenario.
 
-![database-backed RESTful web service](../../../../assets/img/data-backed-service.svg)
+![database-backed RESTful web service](resources/data-backed-service.svg)
 
-<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+## Prerequisites
+
+* Ballerina Integrator
+* A Text Editor or an IDE
+> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VS Code](https://code.visualstudio.com).
 * [MySQL version 5.6 or later](https://www.mysql.com/downloads/)
-* [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL   
-
-<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
+* [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL
 
 ## Implementation
 
@@ -41,27 +51,23 @@ Navigate into the project directory and add a new module.
 
 Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
 
-Add a ballerina.conf file and rename the .bal files with meaningful names as shown in the project structure given below.
- ```shell
-data-backed-service
-├── Ballerina.toml
-├── ballerina.conf
-├── lib
-│    └── mysql-connector-java-x.x.x.jar
-└── src
-    └── data_backed_service
-        ├── resources
-        ├── Module.md
-        ├── employee_db_service.bal
-        └── tests
-            ├── resources
-            └── employee_db_service_test.bal
-```
+Add a ballerina.conf file and rename the .bal files with meaningful names as required.
+
 Open the project with VS Code and write the integration implementation and tests in the `employee_db_service.bal` and `employee_db_service_test.bal` files respectively.
 
 ### Developing the SQL Data-Backed Web Service
 Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource function inside the service. You can implement the business logic inside a resource function using Ballerina language syntax.
-
+We can use the following database schema to store employee data.
+```
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| EmployeeID | int(11)     | NO   | PRI | NULL    |       |
+| Name       | varchar(50) | YES  |     | NULL    |       |
+| Age        | int(11)     | YES  |     | NULL    |       |
+| SSN        | int(11)     | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+```
 The Ballerina code for the employee data service with resource functions to add, retrieve, update, and delete employee data can be found in the `employee_db_service.bal` file.
 
 A remote function in Ballerina indicates that it communicates with some remote service through the network. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the MySQL client object that encapsulates the aforementioned set of remote functions. The rest of the code is for preparing SQL queries and executing them by calling these remote functions of the Ballerina MySQL client.
@@ -73,13 +79,13 @@ You can implement custom functions in Ballerina that perform specific tasks. For
 - updateData
 - deleteData
 
-## Testing 
+## Testing
 
 ### Before you begin
 * Download & run the SQL script `initializeDataBase.sql` provided inside the `resources` directory, to initialize the database and to create the required table.
 ```
-$ mysql -u username -p <initializeDataBase.sql 
-``` 
+   $mysql -u username -p <initializeDataBase.sql
+```
 
 - Add database configurations to the `ballerina.conf` file
    - `ballerina.conf` file can be used to provide external configurations to Ballerina programs. Since this guide needs MySQL database integration, a Ballerina configuration file is used to provide the database connection properties to our Ballerina program.
@@ -106,35 +112,35 @@ $ java -jar target/bin/data_backed_service.jar --b7a.config.file=path/to/balleri
 
 - Now you can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of the `employeeService` as follows.
 
-**Add new employee** 
+**Add new employee**
 ```bash
 curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
 "http://localhost:9090/records/employee" -H "Content-Type:application/json"
 
-Output:  
+Output:
 {"Status":"Data Inserted Successfully"}
 ```
 
-**Retrieve employee data** 
+**Retrieve employee data**
 ```bash
 curl -v "http://localhost:9090/records/employee/1"
 
-Output: 
+Output:
 [{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
 ```
-**Update an existing employee data** 
+**Update an existing employee data**
 ```bash
 curl -v -X PUT -d '{"name":"Alice Updated", "age":30,"ssn":123456789,"employeeId":1}' \
 "http://localhost:9090/records/employee" -H "Content-Type:application/json"
 
-Output: 
+Output:
 {"Status":"Data Updated Successfully"}
 ```
 
-**Delete employee data** 
+**Delete employee data**
 ```bash
 curl -v -X DELETE "http://localhost:9090/records/employee/1"
 
-Output: 
+Output:
 {"Status":"Data Deleted Successfully"}
 ```
