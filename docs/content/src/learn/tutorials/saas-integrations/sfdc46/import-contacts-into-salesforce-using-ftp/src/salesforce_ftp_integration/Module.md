@@ -1,38 +1,44 @@
-# Import Contacts Into Salesforce using FTP connector
+Guide on Integrating Salesforce with FTP.
+
+# Guide Overview
 
 ## About
 
-Ballerina is an open-source programming language that supports developers to integrate their system easily with the 
+Ballerina is an open-source programming language that supports developers to integrate their system easily with the
 support of connectors. In this guide, we are mainly focusing on importing CSV file having contacts into Salesforce
-using FTP connector. 
+using FTP connector.
 
-The `wso2/sfdc46` module allows you to perform CRUD operations for SObjects, query using SOQL, search using SOSL, and 
-describe SObjects and organizational data through the Salesforce REST API. Also it supports insert, upsert, update, 
-query and delete operations for CSV, JSON and XML data types which provides in Salesforce bulk API. It handles OAuth 
+The `wso2/sfdc46` module allows you to perform CRUD operations for SObjects, query using SOQL, search using SOSL, and
+describe SObjects and organizational data through the Salesforce REST API. Also it supports insert, upsert, update,
+query and delete operations for CSV, JSON and XML data types which provides in Salesforce bulk API. It handles OAuth
 2.0 authentication.
 
-The `wso2/ftp` module provides an FTP client and an FTP server listener implementation to facilitate an FTP connection 
+The `wso2/ftp` module provides an FTP client and an FTP server listener implementation to facilitate an FTP connection
 to a remote location.
 
 You can find other integrations modules from [wso2-ballerina](https://github.com/wso2-ballerina) Github organization.
 
 ## What you'll build
 
-This application listens to a remote FTP location and when the CSV file appears (this CSV file contains contacts that 
-should be added to salesforce) it will fetch the CSV file content and insert all the contacts in the CSV file into 
-Salesforce using `salesforceBulkClient` as a single batch. Then it will get the insertion result using 
+This application listens to a remote FTP location and when the CSV file appears (this CSV file contains contacts that
+should be added to salesforce) it will fetch the CSV file content and insert all the contacts in the CSV file into
+Salesforce using `salesforceBulkClient` as a single batch. Then it will get the insertion result using
 `salesforceBulkClient` and if the operation is successful, a success message is logged.
 
-![import contacts to sfdc using ftp](../../../../../assets/img/import-contacts-into-salesforce-using-ftp.jpg)
+![import contacts to sfdc using ftp](resources/import-contacts-into-salesforce-using-ftp.jpg)
 
-<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
+## Prerequisites
 
-<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
+- [Java](https://www.oracle.com/technetwork/java/index.html)
+- Ballerina Integrator
+- A Text Editor or an IDE
+> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VS Code](https://code.visualstudio.com).
+- Link to download Ballerina Integrator
 
 ## Implementation
 
-A Ballerina project needs to be created for the integration use case explained above. Please follow the steps given 
-below to create the project and modules. You can learn about the Ballerina project and modules in this 
+A Ballerina project needs to be created for the integration use case explained above. Please follow the steps given
+below to create the project and modules. You can learn about the Ballerina project and modules in this
 [guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
 
 #### 1. Create a new project.
@@ -47,25 +53,11 @@ $ ballerina new import-contacts-into-salesforce-using-ftp
 $ ballerina add salesforce_ftp_integration
 ```
 
-The project structure is created as indicated below.
-
-```
-import-contacts-into-salesforce-using-ftp
-    ├── Ballerina.toml
-    └── src
-        └── salesforce_ftp_integration
-            ├── Module.md
-            ├── main.bal
-            ├── resources
-            └── tests
-                └── resources
-```
-
 #### 3. Set up credentials for accessing Salesforce
-   
+
 - Visit [Salesforce](https://www.salesforce.com) and create a Salesforce Account.
 
-- Create a connected app and obtain the following credentials: 
+- Create a connected app and obtain the following credentials:
     - Base URL (Endpoint)
     - Access Token
     - Client ID
@@ -78,8 +70,8 @@ import-contacts-into-salesforce-using-ftp
     - Perform requests on your behalf at any time (refresh_token, offline_access)
     - Provide access to your data via the Web (web)
 
-- Provide the client ID and client secret to obtain the refresh token and access token. For more information on 
-obtaining OAuth2 credentials, see the 
+- Provide the client ID and client secret to obtain the refresh token and access token. For more information on
+obtaining OAuth2 credentials, see the
 [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
 
 #### 4. Set up remote FTP server
@@ -96,7 +88,7 @@ Add the `src/salesforce_ftp_integration/resources/contacts.csv` file to the FTP 
 
 #### 5. Add project configurations file
 
-Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
+Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure.
 This file should have following configurations. Add the obtained Salesforce configurations and FTP configurations
 to the file.
 
@@ -120,10 +112,8 @@ FTP_POLLING_INTERVAL=<FTP listner polling interval (eg: 600000)>
 
 Open the project with VS Code. The integration implementation is written in the `src/salesforce_ftp_integration/main.bal` file.
 
-<!-- INCLUDE_CODE: src/salesforce_ftp_integration/main.bal -->
-
-Here the `ftpServerConnector` service is running on `remoteServer`, which listens to the configured FTP server 
-location. When a CSV file is added to the FTP server, the file content will be retrieved and inserted into the 
+Here the `ftpServerConnector` service is running on `remoteServer`, which listens to the configured FTP server
+location. When a CSV file is added to the FTP server, the file content will be retrieved and inserted into the
 Salesforce using `sfBulkClient`.
 
 ## Testing

@@ -19,21 +19,21 @@ The Ballerina project is created for the integration use case explained above. P
 
 ####1. Create a project.
 ```bash
-$ ballerina new sending-json-data-to-a-jms-queue
+$ ballerina new json-data-to-activemq-queue
 ```
-Change directory to the sending-json-data-to-a-jms-queue.
+Change directory to `json-data-to-activemq-queue`.
 
 ####2. Add a module.
 ```bash
-$ ballerina add jsontojms
+$ ballerina add json_data_to_activemq
 ```
 
 The project structure should look like below.
 ```shell
-sending-json-data-to-a-jms-queue
+json-data-to-activemq-queue
 ├── Ballerina.toml
 └── src
-    └── jsontojms
+    └── json_data_to_activemq
         ├── main.bal
         ├── Module.md
         ├── resources
@@ -44,7 +44,7 @@ sending-json-data-to-a-jms-queue
 ####3. Write the integration.
 You can open the project with VS Code. The integration implementation is written in the `main.bal` file. 
 
-<!-- INCLUDE_CODE: src/jsontojms/main.bal -->
+<!-- INCLUDE_CODE: src/json_data_to_activemq/main.bal -->
 
 Same as JMS API, create `jms:Connection` then `jms:Session` and finally create `jms:Destination` and `jms:MessageProducer`. In the HTTP resource, build `jms:TextMessage` getting the payload as a `string`. Next, send the message to the sales queue in ActiveMQ. Once the message is sent, verify if the return result is an error. If it is an error, build `http:Response` as the JSON payload. If it is a success, do the same. As the last step, respond to the caller with build `http:Response`.
 
@@ -67,7 +67,7 @@ Let's create a folder called `lib` under project root path. Then copy above thre
 │   ├── geronimo-j2ee-management_1.1_spec-1.0.1.jar
 │   └── hawtbuf-1.11.jar
 └── src
-    └── jsontojms
+    └── json_data_to_activemq
         ├── main.bal
         ├── Module.md
         ├── resources
@@ -82,28 +82,28 @@ Next, open the Ballerina.toml file and add the following below `[dependencies]` 
 target = "java8"
 
   [[platform.libraries]]
-  module = "jsontojmsflow"
+  module = "json_data_to_activemq"
   path = "./lib/activemq-client-5.15.5.jar"
 
   [[platform.libraries]]
-  module = "jsontojmsflow"
+  module = "json_data_to_activemq"
   path = "./lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar"
 
   [[platform.libraries]]
-  module = "jsontojmsflow"
+  module = "json_data_to_activemq"
   path = "./lib/hawtbuf-1.11.jar"
 ```
 
-Let’s build the module. While being in the sending-json-data-to-a-jms-queue directory, execute the following command.
+Let’s build the module. While being in the `json-data-to-activemq-queue` directory, execute the following command.
 
 ```bash
-$ ballerina build jsontojms
+$ ballerina build json_data_to_activemq
 ```
 
 The build command would create an executable jar file. Now run the jar file created in the above step.
 
 ```bash
-$ java -jar target/bin/jsontojms.jar
+$ java -jar target/bin/json_data_to_activemq.jar
 ```
 
 Now we can see that the service has started on port 8080. Let’s access this service by executing the following curl command. Make sure to start the ActiveMQ server before running the service. Otherwise, it will throw an error.
