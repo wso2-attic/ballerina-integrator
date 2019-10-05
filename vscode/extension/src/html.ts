@@ -96,7 +96,7 @@ export let begin: string = `<!DOCTYPE html>
                     </a>
                 </div>
                 <div class="col-md-4 button-section">
-                    <a href="https://ei.docs.wso2.com/en/next/ballerina-integrator/learn/about-learn/">
+                    <a href="https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/use-cases/">
                         <div class="create">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612">
                                 <path class="cls-1" d="M230.72,181.21l-5.12,5.51ZM337,200.88q11.94,14.69,11.91,
