@@ -14,7 +14,7 @@ To understand how to build a service to listen to an FTP server, let's consider 
 an FTP server to store data files. When a new file is added to the server, the FTP listener will read the file and add 
 the file name and size to a map, and when the file is deleted from the server, it will remove the entry from the map. 
 
-![File integration using FTP](/src/ftp_listener/resources/file-integration-using-ftp.png)
+![File integration using FTP](../../../../../assets/img/file-integration-using-ftp.png)
 
 <!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 * An FTP Server (See [here](https://www.digitalocean.com/community/tutorials/how-to-set-up-vsftpd-for-a-user-s-directory-on-ubuntu-16-04) on how to setup an FTP server)
