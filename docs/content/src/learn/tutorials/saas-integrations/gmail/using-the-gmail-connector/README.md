@@ -88,6 +88,6 @@ $ java -jar target/bin/gmail_client_application.jar
 ```
 Now we can see that the service has started on port 9090. Let’s invoke this service by executing the following cURL command.
 ```
-curl -X GET http://localhost:9090/gmail/reviews
+$ curl -X GET http://localhost:9090/gmail/reviews
 ```
 You will see the list of email body contents during a successful invocation.

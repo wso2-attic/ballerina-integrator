@@ -50,7 +50,6 @@ To implement the scenario in this guide, you can use the following package struc
           ├── notify_fire.bal
           ├── listen_to_fire_alarm.bal
           └── main.bal
-
 ```
 
 Now that you have created the project structure, the next step is to develop the integration scenario.

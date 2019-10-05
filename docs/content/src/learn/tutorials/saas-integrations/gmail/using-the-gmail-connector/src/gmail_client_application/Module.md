@@ -41,23 +41,11 @@ First, we need to obtain AuthTokens to access Google APIs. Follow the steps belo
 
 Create a project.
 ```bash
-ballerina new using-the-gmail-connector
+$ ballerina new using-the-gmail-connector
 ```
 Navigate to the project directory and add a module using the following command.
 ```bash
-ballerina add gmail_client_application
-```
-Project structure is created as indicated below.
-```
-using-the-gmail-connector
-├── Ballerina.toml
-└── src
-    └── gmail_client_application
-        ├── Module.md
-        ├── gmail_client.bal
-        ├── resources
-        └── tests
-            └── resources
+$ ballerina add gmail_client_application
 ```
 
 #### 3. Add project configurations file
@@ -90,6 +78,6 @@ $ java -jar target/bin/gmail_client_application.jar
 ```
 Now we can see that the service has started on port 9090. Let’s invoke this service by executing the following cURL command.
 ```
-curl -X GET http://localhost:9090/gmail/reviews
+$ curl -X GET http://localhost:9090/gmail/reviews
 ```
 You will see the list of email body contents during a successful invocation.

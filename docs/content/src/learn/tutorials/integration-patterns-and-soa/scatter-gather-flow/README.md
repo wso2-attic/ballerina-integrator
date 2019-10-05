@@ -118,17 +118,17 @@ FTP_PASSWORD = "@encrypted:{aoIlSvOPeBEZ0COma+Wz2uWznlNn1IWz4StiWQCO6g4=}"
 
 * First let’s build the module. While being in the scatter-gather-flow directory, execute the following command.
 
-   ```bash
-   $ ballerina build scatter_gather_flow
-   ```
+```bash
+$ ballerina build scatter_gather_flow
+```
 
 This would create the executables. 
 
 * Now run the .jar file created in the above step.
 
-   ```bash
-   $ java -jar target/bin/scatter_gather_flow.jar
-   ```
+```bash
+$ java -jar target/bin/scatter_gather_flow.jar
+```
 You will be prompted to enter the secret you used for encrypting the FTP username and password.
 
 ```bash

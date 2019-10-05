@@ -12,44 +12,21 @@ We create a service called `stockQuote` that accepts an HTTP request from a clie
 
 ![cbr](resources/content-based-routing.png)
 
-## Prerequisites
-
-- Ballerina Integrator
-- A Text Editor or an IDE
-> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VS Code](https://code.visualstudio.com).
-
 ## Implementation
 
 * Create a new Ballerina project named `content-based-routing`.
 
-    ```bash
-    $ ballerina new content-based-routing
-    ```
+```bash
+$ ballerina new content-based-routing
+```
 
 * Navigate to the content-based-routing directory.
 
 * Add a new module named `content_based_routing` to the project.
 
-    ```bash
-    $ ballerina add content_based_routing
-    ```
-
-* Open the project with VS Code. The project structure will be similar to the following.
-
-    ```shell
-    .
-    ├── Ballerina.toml
-    └── src
-        └── content_based_routing
-            ├── main.bal
-            ├── Module.md
-            ├── resources
-            └── tests
-                ├── main_test.bal
-                └── resources
-    ```
-
-We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
+```bash
+$ ballerina add content_based_routing
+```
 
 First let's create the services that we will use as backend endpoints.
 
@@ -146,24 +123,24 @@ In the stockQuote service, the `company` is retrieved as a query parameter. Then
 
 * First let’s build the module. While being in the content-based-routing directory, execute the following command.
 
-    ```bash
-    $ ballerina build content_based_routing
-    ```
+```bash
+$ ballerina build content_based_routing
+```
 
 This would create the executables.
 
 * Now run the .jar file created in the above step.
 
-    ```bash
-    $ java -jar target/bin/content_based_routing.jar
-    ```
+```bash
+$ java -jar target/bin/content_based_routing.jar
+```
 
 Now we can see that three service have started on ports 8081, 8082, and 9090.
 
 * Let’s access the stockQuote service by executing the following curl command.
 
-    ```bash
-    $ curl http://localhost:9090/stocktrading/stockquote?company=abc
-    ```
+```bash
+$ curl http://localhost:9090/stocktrading/stockquote?company=abc
+```
 
 We will get a text value 10000.00 as the response.

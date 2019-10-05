@@ -54,20 +54,6 @@ $ ballerina new salesforce-to-mysql-db
 $ ballerina add salesforce_to_mysql
 ```
 
-The project structure is created as indicated below.
-
-```
-salesforce-to-mysql-db
-├── Ballerina.toml
-└── src
-    └── salesforce_to_mysql
-        ├── Module.md
-        ├── main.bal
-        ├── resources
-        └── tests
-            └── resources
-```
-
 #### 3. Set up credentials for accessing Salesforce.
 
 - Visit [Salesforce](https://www.salesforce.com) and create a Salesforce account.

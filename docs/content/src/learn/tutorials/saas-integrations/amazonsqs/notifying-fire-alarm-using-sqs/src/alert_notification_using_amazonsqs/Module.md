@@ -51,32 +51,15 @@ Take a look at the code samples below to understand how to implement the scenari
 
 1. Create a new project.
 
-    ```bash
-    $ ballerina new notifying-fire-alarm-using-sqs
-    ```
+```bash
+$ ballerina new notifying-fire-alarm-using-sqs
+```
 
 2. Create a module.
 
-    ```bash
-    $ ballerina add alert_notification_using_amazonsqs
-    ```
-
-To implement the scenario in this guide, you can use the following package structure:
-
+```bash
+$ ballerina add alert_notification_using_amazonsqs
 ```
-  notifying-fire-alarm-using-sqs
-  ├── Ballerina.toml
-  └── src
-      └── alert_notification_using_amazonsqs
-          ├── Module.md
-          ├── create_notification_queue.bal
-          ├── notify_fire.bal
-          ├── listen_to_fire_alarm.bal
-          └── main.bal
-
-```
-
-Now that you have created the project structure, the next step is to develop the scenario.
 
 ### Developing the scenario
 
@@ -97,12 +80,12 @@ Once you are done with the development, you can deploy the scenario using any of
 To deploy locally, navigate to `notifying-fire-alarm-using-sqs` directory, and execute the following command.
 
 ```bash
-  $ ballerina build alert_notification_using_amazonsqs
+$ ballerina build alert_notification_using_amazonsqs
 ```
 This builds a JAR file (.jar) in the target folder. You can run this by using the `java -jar` command.
 
 ```bash
-  $ java -jar target/bin/alert_notification_using_amazonsqs.jar
+$ java -jar target/bin/alert_notification_using_amazonsqs.jar
 ```
 
 You see the SQS queue creation, sending fire alerts to the queue, consuming process of queues and subsequent deletion process on console.

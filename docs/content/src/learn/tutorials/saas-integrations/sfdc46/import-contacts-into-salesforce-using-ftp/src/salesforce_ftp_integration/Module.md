@@ -53,20 +53,6 @@ $ ballerina new import-contacts-into-salesforce-using-ftp
 $ ballerina add salesforce_ftp_integration
 ```
 
-The project structure is created as indicated below.
-
-```
-import-contacts-into-salesforce-using-ftp
-    ├── Ballerina.toml
-    └── src
-        └── salesforce_ftp_integration
-            ├── Module.md
-            ├── main.bal
-            ├── resources
-            └── tests
-                └── resources
-```
-
 #### 3. Set up credentials for accessing Salesforce
 
 - Visit [Salesforce](https://www.salesforce.com) and create a Salesforce Account.
