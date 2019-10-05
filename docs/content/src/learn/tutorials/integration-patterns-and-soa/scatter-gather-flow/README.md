@@ -27,19 +27,19 @@ We create service `employeeDetails` which accepts a client request and reads two
 
 * Navigate to the scatter-gather-flow directory.
 
-* Add a new module named `employee_details_service` to the project.
+* Add a new module named `scatter_gather_flow` to the project.
 
    ```bash
-   $ ballerina add employee_details_service
+   $ ballerina add scatter_gather_flow
    ```
 
 * Open the project with VS Code. The project structure will be similar to the following.
 
    ```shell
-   .
+   scatter-gather-flow
    ├── Ballerina.toml
    └── src
-      └── employee_details_service
+      └── scatter_gather_flow
          ├── main.bal
          ├── Module.md
          ├── resources
@@ -112,24 +112,23 @@ FTP_PASSWORD = "@encrypted:{aoIlSvOPeBEZ0COma+Wz2uWznlNn1IWz4StiWQCO6g4=}"
 
 **main.bal**
 
-<!-- INCLUDE_CODE: src/employee_details_service/main.bal -->
-
+<!-- INCLUDE_CODE: src/scatter_gather_flow/main.bal -->
 
 ## Testing
 
 * First let’s build the module. While being in the scatter-gather-flow directory, execute the following command.
 
-   ```bash
-   $ ballerina build employee_details_service
-   ```
+```bash
+$ ballerina build scatter_gather_flow
+```
 
 This would create the executables. 
 
 * Now run the .jar file created in the above step.
 
-   ```bash
-   $ java -jar target/bin/employee_details_service.jar
-   ```
+```bash
+$ java -jar target/bin/scatter_gather_flow.jar
+```
 You will be prompted to enter the secret you used for encrypting the FTP username and password.
 
 ```bash
