@@ -8,7 +8,7 @@ We appreciate your help!
 
 ## Getting started with contribution
 
-* Get started with the Ballerina Integrator by following the [Quick Start Guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/getting-started/quick-start-guide/). Start trying out our guides and tutorials available in the [Learn](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/about-learn/) section.
+* Get started with the Ballerina Integrator by following the [Quick Start Guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/get-started/quick-start-guide/). Start trying out our guides and tutorials available in the [Learn](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/about-learn/) section.
 * Submit issues and contribute code. Go to the **Issues** tab of the GitHub repo and click the New Issue button to file a bug report.
 * Fix issues:
    * Browse issues labeled easyfix,

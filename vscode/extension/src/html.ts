@@ -56,7 +56,7 @@ export let begin: string = `<!DOCTYPE html>
                     </a>
                 </div>
                 <div class="col-md-4 button-section">
-                    <a href="https://ei.docs.wso2.com/en/next/ballerina-integrator/getting-started/quick-start-guide/">
+                    <a href="https://ei.docs.wso2.com/en/latest/ballerina-integrator/get-started/quick-start-guide/">
                         <div class="create">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                 <path d="M268.66,243.35a10,10,0,1,0,0,14.14A10,10,0,0,0,268.66,243.35ZM395.93,116.07a50,
