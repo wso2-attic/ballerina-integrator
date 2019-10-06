@@ -36,7 +36,6 @@ The expected payload should be in the following JSON format.
 {
         "doctorType": "<DOCTOR_TYPE>"
 }
-
 ```
 
 Let’s implement a simple service that can be used to query for availability of doctors for a particular category from all the available healthcare centers.
