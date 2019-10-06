@@ -8,4 +8,11 @@ The following image is an illustration of what Ballerina Integrator consists of 
 
 ![Ballerina Interator components](../../assets/img/ballerina-integrator-architecture.svg)
 
-
+<table>
+  <tr>
+    <td><b>Ballerina Core</b></td>
+    <td>The underlying core of the Ballerina Integrator is the [Ballerina language](http://ballerina.io/), which allows you to build projects and modules with smaller functionality and natively deploy these as microservices in Docker and Kubernetes.</td>
+  </tr>
+  <tr>
+    <td><b>Standard Library</b></td>
+    <td>The [Ballerina standard library]()
