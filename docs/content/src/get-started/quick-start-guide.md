@@ -74,7 +74,6 @@ You will see following printed in the command line.
 ```bash
 [ballerina/http] started HTTP/WS listener 0.0.0.0:9090
 [ballerina/http] started HTTP/WS listener 0.0.0.0:9091
-
 ```
 
 ## Create a Project, Add a Template, and Invoke the Service
