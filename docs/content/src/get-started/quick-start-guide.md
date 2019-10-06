@@ -28,7 +28,6 @@ Grand Oak Hospital service accepts a GET request in following service endpoint u
 
 ```bash
 http://<HOST_NAME>:<PORT>/grandOak/doctors/<DOCTOR_TYPE>
-
 ```
 
 The expected payload should be in the following JSON format.
