@@ -47,6 +47,8 @@ Let’s implement a simple service that can be used to query for availability of
 
 1. [Download Ballerina Integrator](https://www.wso2.com/integration/ballerina-integrator) for your Operating System. 
 
+2. Download the sample files from [here](https://github.com/wso2/docs-ei/tree/7.0.0/en/micro-integrator/docs/assets/attach/quick-start-guide). From this point onwards, let's refer to this folder as `<BI_QSG_HOME>`.
+
 2. Download [curl](https://curl.haxx.se/) or a similar tool that can call an endpoint.
 
 3. Start up VS Code, which is the recommended IDE to use in Ballerina Integrator integration scenarios.
@@ -59,6 +61,24 @@ Once you have installed the extension, press `Command + Shift + P` in Mac or `Ct
 ![alt text](../../assets/img/vs-code-landing.png)
 
 You can select one of the available templates or run it using the CLI as indicated in the following section.
+
+## Start backend mock services
+
+Two mock hospital information services are available in the `DoctorInfo.jar` file located at `<BI_QSG_HOME>/BackendService/` directory. 
+
+Open a command line window, navigate to `<BI_QSG_HOME>/BackendService/`, and use the following command to start the services.
+
+```java
+java -jar DoctorInfo.jar
+```
+
+You will see following printed in the command line.
+
+```bash
+[ballerina/http] started HTTP/WS listener 0.0.0.0:9090
+[ballerina/http] started HTTP/WS listener 0.0.0.0:9091
+
+```
 
 ## Create a Project, Add a Template, and Invoke the Service
 
