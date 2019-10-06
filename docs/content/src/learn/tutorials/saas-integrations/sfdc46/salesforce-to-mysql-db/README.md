@@ -26,14 +26,9 @@ message is logged.
 
 ![sfdc to mysql database](../../../../../assets/img/salesforce-to-mysql-database.jpg)
 
-## Prerequisites
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
-- [Java](https://www.oracle.com/technetwork/java/index.html)
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: 
-[VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), 
-[IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
-- Link to download Ballerina Integrator.
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
@@ -50,7 +45,7 @@ $ ballerina new salesforce-to-mysql-db
 #### 2. Create a module.
 
 ```bash
-$ ballerina add guide
+$ ballerina add salesforce_to_mysql
 ```
 
 The project structure is created as indicated below.
@@ -59,7 +54,7 @@ The project structure is created as indicated below.
 salesforce-to-mysql-db
 ├── Ballerina.toml
 └── src
-    └── guide
+    └── salesforce_to_mysql
         ├── Module.md
         ├── main.bal
         ├── resources
@@ -126,7 +121,7 @@ version= "0.1.0"
 target = "java8"
 
   [[platform.libraries]]
-  module = "guide"
+  module = "salesforce_to_mysql"
   path = "./lib/mysql-connector-java.jar"
 ```
 
@@ -154,7 +149,7 @@ SCHEDULER_INTERVAL_IN_MILLIS=<Scheduler interval in milli-seconds (eg: 60000)>
 Open the project with VS Code. The integration implementation is written in the `src/sfdc_to_mysql_db/main.bal` 
 file.
 
-<!-- INCLUDE_CODE: src/guide/main.bal -->
+<!-- INCLUDE_CODE: src/salesforce_to_mysql/main.bal -->
 
 Here we are running `sfdcToMysqlService` using a task scheduler. You can set the Scheduler interval in the 
 `ballerina.conf` file. When the `sfdcToMysqlService` service's `onTrigger` function is triggered, it will retrieve 
@@ -165,18 +160,18 @@ newly modified Salesforce contacts and update the database using them.
 First let’s build the module. Navigate to the project root directory and execute the following command.
 
 ```bash
-$ ballerina build guide
+$ ballerina build salesforce_to_mysql
 ```
 
-This creates the executables. Now run the `guide.jar` file created in the above step.
+This creates the executables. Now run the `salesforce_to_mysql.jar` file created in the above step.
 
 ```bash
-$ java -jar target/bin/guide.jar
+$ java -jar target/bin/salesforce_to_mysql.jar
 ```
 
 You will see the following log after successfully updating the database.
 
 ```
-2019-09-26 17:41:27,708 INFO  [wso2/sfdc_to_mysql_db] - service started... 
+2019-09-26 17:41:27,708 INFO  [wso2/sfdc_to_mysql_db] - service started...
 2019-09-26 17:41:32,094 INFO  [wso2/sfdc_to_mysql_db] - Batch job SFDC -> MySQL has been completed.
 ```

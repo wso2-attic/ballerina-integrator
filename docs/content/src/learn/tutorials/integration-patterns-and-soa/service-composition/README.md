@@ -10,7 +10,7 @@ This guide walks you through the process of implementing a service composition u
 
 To understand how you can build a service composition using Ballerina, let's consider a real-world use case of a Travel agency that arranges complete tours for users. A tour package includes airline ticket reservation and hotel room reservation. Therefore, the Travel agency service requires communicating with other necessary back-ends. The following diagram illustrates this use case clearly.
 
-![alt text](/docs/content/resources/service-composition.svg)
+![alt text](../../../../assets/img/service-composition.svg)
 
 Travel agency is the service that acts as the composition initiator. The other two services are external services that the travel agency service calls to do airline ticket booking and hotel reservation. These are not necessarily Ballerina services and can theoretically be third-party services that the travel agency service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
@@ -27,13 +27,13 @@ Travel agency is the service that acts as the composition initiator. The other t
 1. Create a new project `service-composition`.
 
     ```bash
-    $ ballerina new  service-composition
+    $ ballerina new service-composition
     ```
 
-2. Create a module named `guide` inside the project directory.
+2. Create a module named `service_composition` inside the project directory.
 
     ```bash
-    $ ballerina add guide
+    $ ballerina add service_composition
     ```
 
 Use the following module structure for this guide.
@@ -42,7 +42,7 @@ Use the following module structure for this guide.
 service-composition
 ├── Ballerina.toml
 └── src
-   └── guide
+   └── service_composition
       ├── airline_reservation_service.bal
       ├── hotel_reservation_service.bal
       ├── travel_agency_service.bal
@@ -79,23 +79,23 @@ If all services work successfully, the travel agency service confirms and arrang
 
 
 **travel_agency_service.bal**
-<!-- INCLUDE_CODE: src/guide/travel_agency_service.bal -->
+<!-- INCLUDE_CODE: src/service_composition/travel_agency_service.bal -->
 
 Let's now look at the code segment that is responsible for validating the JSON payload from the user request.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/guide/travel_agency_service.bal, segment: segment_1 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/service_composition/travel_agency_service.bal, segment: segment_1 } -->
 
 The above code shows how the request JSON payload is parsed to create JSON literals required for further processing.
 
 Let's now look at the code segment that is responsible for communicating with the airline reservation service.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/guide/travel_agency_service.bal, segment: segment_2 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/service_composition/travel_agency_service.bal, segment: segment_2 } -->
 
 The above code shows how the travel agency service initiates a request to the airline reservation service to book a flight ticket. `airlineReservationEP` is the client endpoint you defined through which the Ballerina service communicates with the external airline reservation service.
 
 Let's now look at the code segment that is responsible for communicating with the hotel reservation service.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/guide/travel_agency_service.bal, segment: segment_3 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/service_composition/travel_agency_service.bal, segment: segment_3 } -->
 
 The travel agency service communicates with the hotel reservation service to book a room for the client as shown above. The client endpoint defined for this external service call is `hotelReservationEP`.
 
@@ -108,12 +108,12 @@ Once you are done with the development, you can start the services as follows.
 
 - To deploy locally, navigate to `service-composition` directory, and execute the following command.
 ```bash
-   $ ballerina build guide
+   $ ballerina build service_composition
 ```
 
 - This builds a JAR file (.jar) in the target folder. You can run this by using the `java -jar` command.
 ```bash
-  $ java -jar target/bin/guide.jar
+  $ java -jar target/bin/service_composition.jar
 ```
 
 - You can see the travel agency service and related backend services are up and running. The successful startup of services will display the following output. 

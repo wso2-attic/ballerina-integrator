@@ -1,10 +1,15 @@
 [project]
-org-name= "wso2"
-version= "0.1.0"
+org-name = "wso2"
+version = "1.1.0"
+license= ["Apache-2.0"]
+authors= ["WSO2"]
+keywords= ["ballerina", "integrator", "database", "mysql"]
+repository= "https://github.com/wso2/ballerina-integrator"
+templates= ["querying_mysql_database"]
 
 [platform]
 target = "java8"
 
 [[platform.libraries]]
-module = "querying_mysql"
+module = "querying_mysql_database"
 path = "./lib/mysql-connector-java-8.0.17.jar"
