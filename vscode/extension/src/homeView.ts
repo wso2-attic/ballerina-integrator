@@ -74,9 +74,10 @@ export function getHomeView(): string {
                     var boxes = document.getElementsByClassName("col-md-3 col-xs-4 col-lg-3");
 
                     for (var i = 0; i < boxes.length; i++) {
+                        var select = true;
                         var tags = boxes[i].getElementsByClassName("tag-mark");
                         for (var j = 0; j < tags.length; j++) {
-                            var txtValue = tags[0].textContent || tags[0].innerText;
+                            var txtValue = tags[j].textContent || tags[j].innerText;
                             if (category == "#all") {
                                 // Processing for 'all' category
                                 boxes[i].hidden = false;
@@ -94,10 +95,11 @@ export function getHomeView(): string {
                                 var headingValue = heading[0].textContent || heading[0].innerText;
                                 if (headingValue.toUpperCase().indexOf(filter) > -1) {
                                     boxes[i].hidden = false;
+                                    select = false;
                                 } else {
                                     boxes[i].hidden = true;
                                 }
-                            } else {
+                            } else if (select) {
                                 // Hiding unselected categories
                                 boxes[i].hidden = true;
                             }
