@@ -22,7 +22,6 @@ Pine Valley Hospital service accepts a GET request in following service endpoint
 
 ```bash
 http://<HOST_NAME>:<PORT>/pineValley/doctors
-
 ```
 
 Grand Oak Hospital service accepts a GET request in following service endpoint url.
