@@ -132,8 +132,10 @@ export let begin: string = `<!DOCTYPE html>
                 <div class="col-md-4 custom-select">
                     <select id="templateCategory" onchange="searchFunction()">
                         <option value="#all">Search Category</option>
-                        <option value="#connector">Connectors</option>
-                        <option value="#eip">EI Patterns</option>
+                        <option value="#saas">SaaS</option>
+                        <option value="#file-based">File-Based</option>
+                        <option value="#database">Database</option>
+                        <option value="#eip">EI Patterns & SOA</option>
                         <option value="#messaging">Messaging</option>
                         <option value="#service">Services</option>
                     </select>

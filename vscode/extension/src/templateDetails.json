@@ -1,15 +1,21 @@
 [
     {
-        "id": "gsheets_salesforce_integration",
-        "name": "GSheet & Salesforce API Integration",
-        "description": "This template demonstrates some of the capabilities of Google SpreadSheet and Salesforce modules.",
-        "tags": ["#saas"]
+        "id": "salesforce_ftp_integration",
+        "name": "Salesforce & FTP Integration",
+        "description": "This template demonstrates on listening to a remote FTP location and inserting data into Salesforce.",
+        "tags": ["#saas", "#file-based"]
     },
     {
-        "id": "kafka_service",
-        "name": "Asynchronous Messaging with Kafka",
-        "description": "This template demonstrates how to perform asynchronous messaging using the Ballerina Kafka connector.",
-        "tags": ["#saas", "messaging"]
+        "id": "salesforce_to_mysql",
+        "name": "Salesforce to MySQL Integration",
+        "description": "This template focuses on using batch processing to synchronize Salesforce data with a MySQL Database.",
+        "tags": ["#saas", "#database"]
+    },
+    {
+        "id": "alert_notification_using_amazonsqs",
+        "name": "Alert Notification Using AmazonSQS",
+        "description": "This template demonstrates a scenario where a listener is polling for messages in the AmazonSQS queue.",
+        "tags": ["#saas"]
     },
     {
         "id": "using_gmail_connector",
@@ -20,26 +26,80 @@
     {
         "id": "googlespreadsheet_service",
         "name": "Working with SpreadSheet Connector",
-        "description": "This template demonstrates handling spreadsheets using the Ballerina Goodle SpreadSheet connector.",
+        "description": "This template demonstrates on handling spreadsheets using the Ballerina Google SpreadSheet connector.",
         "tags": ["#saas"]
     },
     {
-        "id": "ftp_listener",
-        "name": "Handling Files using FTP Connector",
-        "description": "This template will implement the FTP listener which can poll a remote directory and periodically notify the addition of a file that complies with the specified file pattern.",
-        "tags": ["#file"]
-    },
-    {
-        "id": "smb_listener",
-        "name": "Handling Files using SMB Connector",
-        "description": "This template we'll implement SMB listener which will listen to a remote directory and periodically notify the addition of a file that complies with the specified file pattern.",
-        "tags": ["#file"]
-    },
-    {
         "id": "amazons3_service",
-        "name": "Amazon S3 Connector",
-        "description": "This template demonstrates on how to use the Amazon S3 connector.",
-        "tags": ["connector"]
+        "name": "Working with AmazonS3 Connector",
+        "description": "This template demonstrates on connecting to AmazonS3.",
+        "tags": ["#saas"]
+    },
+    {
+        "id": "gsheets_salesforce_integration",
+        "name": "GSheets & Salesforce Integration",
+        "description": "This template demonstrates some of the capabilities of Google SpreadSheet and Salesforce modules.",
+        "tags": ["#saas"]
+    },
+    {
+        "id": "file_integration_using_ftp",
+        "name": "File-Based Integration using FTP",
+        "description": "This template implements an FTP listener which polls a remote directory and periodically notifies the addition of a file that complies with a specified file pattern.",
+        "tags": ["#file-based"]
+    },
+    {
+        "id": "file_integration_using_smb",
+        "name": "File-Based Integration using SMB",
+        "description": "This template implements an SMB listener which listens to a remote directory and periodically notifies the addition of a file that complies with a specified file pattern.",
+        "tags": ["#file-based"]
+    },
+    {
+        "id": "json_data_to_activemq",
+        "name": "Sending JSON data into ActiveMQ Queues",
+        "description": "This template demonstrates on sending JSON data into an ActiveMQ queue using the JMS connector.",
+        "tags": ["#messaging"]
+    },
+    {
+        "id": "kafka_service",
+        "name": "Asynchronous Messaging with Kafka",
+        "description": "This template demonstrates how to perform asynchronous messaging using the Ballerina Kafka connector.",
+        "tags": ["#messaging"]
+    },
+    {
+        "id": "asynchronous_invocation",
+        "name": "Asynchronous Invocations",
+        "description": "This template demonstrates how asynchronous invocations could be done using Ballerina.",
+        "tags": ["#messaging"]
+    },
+    {
+        "id": "data_backed_service",
+        "name": "Data-Backed Service",
+        "description": "This template demonstrates on building a database-backed RESTful web service using Ballerina.",
+        "tags": ["#database"]
+    },
+    {
+        "id": "querying_mysql_database",
+        "name": "Querying a MySQL Database",
+        "description": "This template focuses on exposing a MySQL database as a service using Ballerina.",
+        "tags": ["#database"]
+    },
+    {
+        "id": "sending_a_message_to_datasource",
+        "name": "Sending a Message to a Datasource",
+        "description": "This template demonstrates on exposing information in the database through a RESTful service.",
+        "tags": ["#database"]
+    },
+    {
+        "id": "insert_csv_into_mongodb",
+        "name": "Insert CSV into MongoDB",
+        "description": "This template demonstrates on listening to a remote FTP location and inserting CSV file content into a MongoDB database.",
+        "tags": ["#database", "#file-based"]
+    },
+    {
+        "id": "pass_through_messaging",
+        "name": "Pass Through Messaging",
+        "description": "This template demonstrates a simple pass-through messaging scenario.",
+        "tags": ["#eip"]
     },
     {
         "id": "content_based_routing",
@@ -48,15 +108,21 @@
         "tags": ["#eip"]
     },
     {
-        "id": "header_based_routing",
-        "name": "Header Based Routing",
-        "description": "This template demonstrates an instance where a header based router is used to route requests to different endpoints based on the header of each request.",
+        "id": "scatter_gather_flow",
+        "name": "Scatter Gather Flow",
+        "description": "This template demonstrates the scatter-gather enterprise integration pattern using Ballerina.",
         "tags": ["#eip"]
     },
     {
-        "id": "scatter_gather_service",
-        "name": "Scatter-Gather Service",
-        "description": "This template demonstrates the scatter-gather enterprise integration pattern where we call multiple backends, aggregated the responses from all the backends and repond then to the client as a single response.",
+        "id": "service_composition",
+        "name": "Service Composition",
+        "description": "This template demonstrates on implementing a service composition using Ballerina.",
+        "tags": ["#eip"]
+    },
+    {
+        "id": "header_based_routing",
+        "name": "Header Based Routing",
+        "description": "This template demonstrates an instance where a header based router is used to route requests to different endpoints based on the header content of each request.",
         "tags": ["#eip"]
     },
     {
@@ -72,27 +138,15 @@
         "tags": ["#eip"]
     },
     {
-        "id": "pass_through_messaging",
-        "name": "Pass Through Messaging",
-        "description": "This template demonstrates a simple pass-through messaging scenario.",
+        "id": "parallel_service_orchestration",
+        "name": "Parallel Service Orchestration",
+        "description": "This template demonstrates on how parallel service orchestration could be achieved.",
         "tags": ["#eip"]
     },
     {
         "id": "hello_world_service",
         "name": "Hello World Service",
         "description": "This template demonstrates a simple Hello World Service.",
-        "tags": ["#service"]
-    },
-    {
-        "id": "asynchronous_invocation",
-        "name": "Asynchronous Invocation",
-        "description": "This template demonstrates how asynchronous invocations could be done using Ballerina.",
-        "tags": ["#service"]
-    },
-    {
-        "id": "parallel_service_orchestration",
-        "name": "Parallel Service Orchestration",
-        "description": "This template demonstrates on how parallel service orchestration could be achieved.",
         "tags": ["#service"]
     },
     {

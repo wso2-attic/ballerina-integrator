@@ -20,15 +20,13 @@ Travel agency is the service that acts as the composition initiator. The other t
 
 > If you want to skip the basics, you can download the git repo and directly move to the `Testing` section by skipping `Implementation` section.
 
-### Create the project structure
-
-1. Create a new project `service-composition`.
+Create a new project `service-composition`.
 
 ```bash
 $ ballerina new service-composition
 ```
 
-2. Create a module named `service_composition` inside the project directory.
+Create a module named `service_composition` inside the project directory.
 
 ```bash
 $ ballerina add service_composition
