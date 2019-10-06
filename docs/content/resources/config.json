@@ -61,7 +61,7 @@
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/pass-through-messaging",
       "modules": [
-        "pass_through-messaging"
+        "pass_through_messaging"
       ],
       "skipTests": false
     },
