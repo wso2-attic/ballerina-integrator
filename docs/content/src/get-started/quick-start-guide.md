@@ -49,12 +49,12 @@ Let’s implement a simple service that can be used to query for availability of
 
 2. Download the sample files from [here](https://github.com/wso2/docs-ei/tree/7.0.0/en/micro-integrator/docs/assets/attach/quick-start-guide). From this point onwards, let's refer to this folder as `<BI_QSG_HOME>`.
 
-2. Download [curl](https://curl.haxx.se/) or a similar tool that can call an endpoint.
+3. Download [curl](https://curl.haxx.se/) or a similar tool that can call an endpoint.
 
-3. Start up VS Code, which is the recommended IDE to use in Ballerina Integrator integration scenarios.
+4. Start up VS Code, which is the recommended IDE to use in Ballerina Integrator integration scenarios.
    > **Tip**: Download and install [VS Code](https://code.visualstudio.com/Download) if you do not have it already.
 
-4. Find the extension for Ballerina in the VS Code marketplace. For instructions on installing and using it, see [The Visual Studio Code Extension](https://ballerina.io/learn/tools-ides/vscode-plugin/).
+5. Find the extension for Ballerina in the VS Code marketplace. For instructions on installing and using it, see [The Visual Studio Code Extension](https://ballerina.io/learn/tools-ides/vscode-plugin/).
 
 Once you have installed the extension, press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Linux and the following page appears.
 
