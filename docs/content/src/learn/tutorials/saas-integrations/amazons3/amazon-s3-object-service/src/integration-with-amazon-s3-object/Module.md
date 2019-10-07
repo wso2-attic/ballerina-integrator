@@ -4,7 +4,7 @@ Guide on Amazon S3 Object Service
 
 ## About
 
-Ballerina is an open-source programming language that supports developers to integrate their system easily with the 
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
 support of connectors. In this guide, we are mainly focusing on connecting to the Amazon Simple Storage Service API to create, store,download, and use data with other services.  
 
 The `wso2/amazons3` module allows you to perform the following operations.
@@ -15,7 +15,7 @@ You can find other integrations modules from [wso2-ballerina](https://github.com
 
 ## What you'll build
 
-This example explains how to use the Amazon S3 connector to connect with the Amazon S3 API and how to create a new object in a previously created Amazon S3 bucket, list the available objects in the bucket and delete an object in the bucket.
+This application connects with the Amazon S3 API and create a new object in an Amazon S3 bucket, list the available objects in the bucket, display the object content and delete a specified object in the bucket.
 
 ![exposing Amazon S3 as a service](../../../../../assets/img/amazon-s3-object-service.jpg)
 
@@ -31,7 +31,7 @@ This example explains how to use the Amazon S3 connector to connect with the Ama
 
 A Ballerina project is created for the integration use case explained above. Please follow the steps given 
 below to create the project and modules. You can learn about the Ballerina project and modules in this 
-[guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
+[guide](../../../../../develop/managing-ballerina-code/).
 
 #### 1. Create a new project.
 
@@ -52,7 +52,7 @@ $ ballerina add integration-with-amazon-s3-object
 - Create a new access key, which includes a new secret access key.
         - To create a new secret access key for your root account, use the [security credentials](https://console.aws.amazon.com/iam/home?#security_credential) page. Expand the Access Keys section, and then click Create New Root Key.
 
--  To create a new secret access key for an IAM user, open the [IAM console](https://console.aws.amazon.com/iam/home?region=us-east-1#home). Click Users in the Details pane, click the appropriate IAM user, and then click Create Access Key on the Security Credentials tab.
+-  To create a new secret access key for an IAM user, open the [IAM console](https://console.aws.amazon.com/iam/home?region=us-east-1#home). Click **Users** in the **Details** pane, click the appropriate IAM user, and then click **Create Access Key** on the **Security Credentials** tab.
    
 - Download the newly created credentials, when prompted to do so in the key creation wizard.
 
@@ -64,14 +64,16 @@ See the ![Amazon S3 Guide Implementation](resources/s3_connector_guide_implement
 Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
 This file should have following configurations. Add the obtained SAmazon S3 configurations to the file.
 
-ACCESS_KEY_ID="<Amazon S3 key ID>"
-SECRET_ACCESS_KEY="<Amazon S3 secret key>"
-REGION="Amazon S3 region"
-BUCKET_NAME="<Amazon S3 bucket name>"
-TRUST_STORE_PATH="<Truststore file location>"
-TRUST_STORE_PASSWORD="<Truststore password>"
+```
+ACCESS_KEY_ID="<Amazon S3 key ID>"<br/>
+SECRET_ACCESS_KEY="<Amazon S3 secret key>"<br/>
+REGION="<Amazon S3 region>"<br/>
+BUCKET_NAME="<Amazon S3 bucket name>"<br/>
+TRUST_STORE_PATH="<Truststore file location>"<br/>
+TRUST_STORE_PASSWORD="<Truststore password>"<br/>
+```
 
-#### 6. Write the integration
+#### 5. Write the integration
 Open the project with VS Code. The integration implementation is written in the `src/integration-with-amazon-s3-object/main.bal` file.
 
 <!-- INCLUDE_CODE: src/integration-with-amazon-s3-object/main.bal -->

@@ -2,7 +2,8 @@
 
 ## About
 
-Ballerina is an open-source programming language that supports developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on importing CSV file having contacts into Salesforce
+Ballerina is an open-source programming language that supports developers to integrate their system easily with the 
+support of connectors. In this guide, we are mainly focusing on importing CSV file having contacts into Salesforce
 using FTP connector. 
 
 The `wso2/sfdc46` module allows you to perform CRUD operations for SObjects, query using SOQL, search using SOSL, and 
