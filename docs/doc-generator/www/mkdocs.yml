@@ -93,6 +93,7 @@ nav:
     - Observability:
       - 'Observing a Service with Prometheus' : 'observability/observing-a-service.md'
       - 'Logging using Logstash and Kibana' : 'observability/logstash-kibana.md'
+      - 'Distributed Tracing using Jaeger' : 'observability/tracing-with-jaeger.md'
     - References:
       - 'References' : 'references/references.md'
     - '': page-not-found.md
