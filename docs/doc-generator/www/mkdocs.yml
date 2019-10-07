@@ -53,23 +53,23 @@ nav:
       - 'Integration Use Cases': 'learn/use-cases.md'
       - Tutorials:
         - Saas Integration:
+          - 'Using the Gmail Connector': 'learn/tutorials/saas-integrations/gmail/using-the-gmail-connector/1.md'
           - 'Notifying fire alarm using SQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/1.md'
           - 'Working with Amazon S3 Client': 'learn/tutorials/saas-integrations/amazons3/working-with-amazons3-client/1.md'
           - 'Interacting with SAP': 'learn/tutorials/saas-integrations/sap/interacting-with-sap/1.md'
           - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/1.md'
           - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1.md'
           - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1.md'
-          - 'Using the Gmail Connector': 'learn/tutorials/saas-integrations/gmail/using-the-gmail-connector/1.md'
-        - Messaging Integration:
-          - 'Messaging with ActiveMQ' : 'learn/tutorials/messaging-integrations/messaging-with-activemq/1.md'
-          - 'Messaging with Kafka' : 'learn/tutorials/messaging-integrations/messaging-with-kafka/1.md'
-          - 'Sending JSON Data to a JMS Queue' : 'learn/tutorials/messaging-integrations/sending-json-data-to-a-jms-queue/1.md'
-          - 'Reliable Delivery' : 'learn/tutorials/messaging-integrations/reliable-delivery/1.md'
         - Database Integration:
           - 'Data-backed Service' : 'learn/tutorials/database-integrations/data-backed-service/1.md'
           - 'Managing Database Transactions' : 'learn/tutorials/database-integrations/managing-database-transactions/1.md'
           - 'Integration with MongoDB' : 'learn/tutorials/database-integrations/mongo-db-transactions/insert-mongodb/1.md'
           - 'Querying a MySQL Database' : 'learn/tutorials/database-integrations/querying-mysql-database/1.md'
+        - Messaging Integration:
+          - 'Messaging with ActiveMQ' : 'learn/tutorials/messaging-integrations/messaging-with-activemq/1.md'
+          - 'Messaging with Kafka' : 'learn/tutorials/messaging-integrations/messaging-with-kafka/1.md'
+          - 'Sending JSON Data to a JMS Queue' : 'learn/tutorials/messaging-integrations/sending-json-data-to-a-jms-queue/1.md'
+          - 'Reliable Delivery' : 'learn/tutorials/messaging-integrations/reliable-delivery/1.md'
         - File-based Integration:
           - 'File Integration Using FTP' : 'learn/tutorials/file-based-integrations/file-integration-using-ftp/1.md'
           - 'File Integration Using Samba' : 'learn/tutorials/file-based-integrations/file-integration-using-smb/1.md'
