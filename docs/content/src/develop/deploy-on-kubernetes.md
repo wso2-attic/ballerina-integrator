@@ -15,7 +15,6 @@ The following Kubernetes configurations are supported:
 - Kubernetes persistent volume claim support
 
 The following Ballerina code section explains how you can use some of these Kubernetes capabilities by using Kubernetes annotation support in Ballerina. 
-Full example can be found at [Database Interaction Guide](https://ballerina.io/learn/by-guide/data-backed-service/)
 
 ```ballerina
 import ballerina/http;
