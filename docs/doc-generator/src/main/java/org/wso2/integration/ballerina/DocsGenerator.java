@@ -91,7 +91,7 @@ public class DocsGenerator {
     // Current commit hash.
     private static String commitHash = null;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ServiceException {
         try {
             BasicConfigurator.configure();
             logger.info("Docs generating process started...");
@@ -119,8 +119,6 @@ public class DocsGenerator {
             // Create `target/www` website directory.
             createWebsiteDirectory();
             logger.info("Docs generating process finished...");
-        } catch (ServiceException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             deleteDirectory(TEMP_DIR);
         }

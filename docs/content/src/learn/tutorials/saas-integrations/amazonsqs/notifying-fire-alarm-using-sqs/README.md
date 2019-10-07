@@ -61,22 +61,22 @@ Take a look at the code samples below to understand how to implement the integra
 The following code creates a new queue in Amazon SQS with the configuration provided in a file.
 
 **create_notification_queue.bal**
-<!-- INCLUDE_CODE: src/guide/create_notification_queue.bal -->
+<!-- INCLUDE_CODE: src/alert_notification_using_amazonsqs/create_notification_queue.bal -->
 
 The following code generates fire alert notifications periodically and these are sent to the above created SQS queue.
 
 **notify_fire.bal**
-<!-- INCLUDE_CODE: src/guide/notify_fire.bal -->
+<!-- INCLUDE_CODE: src/alert_notification_using_amazonsqs/notify_fire.bal -->
 
 The following code listens to the SQS queue and if there are any notifications, it would receive from the queue and delete the existing messages in the queue.
 
 **listen_to_fire_alarm.bal**
-<!-- INCLUDE_CODE: src/guide/listen_to_fire_alarm.bal -->
+<!-- INCLUDE_CODE: src/alert_notification_using_amazonsqs/listen_to_fire_alarm.bal -->
 
 In the following code, the `main` method would implement the workers related to creating a queue, sending a message to the queue, and consuming and receiving/deleting messages from the queue.
 
 **main.bal**
-<!-- INCLUDE_CODE: src/guide/main.bal -->
+<!-- INCLUDE_CODE: src/alert_notification_using_amazonsqs/main.bal -->
 
 #### Developing the scenario
 
