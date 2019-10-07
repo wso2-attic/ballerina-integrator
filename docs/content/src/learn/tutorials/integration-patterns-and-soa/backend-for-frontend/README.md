@@ -2,17 +2,17 @@
 
 ## About
 
-Backend for frontend(BFF) is a service design pattern that provides the core idea to create separate back-end services for specific front-end applications. This pattern allows you to have separate back-end service layers(shim) depending on the user experience you expect to have in the front-end application. The BFF design pattern has its own advantages and disadvantages. The usage of the pattern depends on your use case and requirements. For more information on the BFF design pattern, see [(https://samnewman.io/patterns/architectural/bff/)] and [(http://philcalcado.com/2015/09/18/the_back_end_for_front_end_pattern_bff.html)]. 
+Backend for frontend(BFF) is a service design pattern that provides the core idea to create separate back-end services for specific front-end applications. This pattern allows you to have separate back-end service layers(shim) depending on the user experience you expect to have in the front-end application. The BFF design pattern has its own advantages and disadvantages. The usage of the pattern depends on your use case and requirements. For more information on the BFF design pattern, see [Pattern: Backends For Frontends by Sam Newman](https://samnewman.io/patterns/architectural/bff/) and [The Back-end for Front-end Pattern (BFF) by Phil Calçado](http://philcalcado.com/2015/09/18/the_back_end_for_front_end_pattern_bff.html). 
 
 ## What you’ll build
 
-Let’s take a real world use case of an online healthcare management system to understand how BFF works. Assume that the healthcare provider needs to have a desktop application as well as a mobile application to provide users a quality online experience. The manner in which information is displayed to a user can vary depending on whether the user signs in to the desktop application or mobile application. This is because the resource limitations such as screen size, battery life and data usage in mobile device can cause the mobile application to show minimal viable information to an end user, whereas when it comes to desktop applications, it is possible to display more information and allow multiple network calls to get the required information. The difference in requirements when it comes to each application leads to the need to have a separate BFF for each application. Here, the BFF layer consumes existing downstream services and act as a shim to translate the required information depending on the user experience.  
+Let’s take a real world use case of an online healthcare management system to understand how BFF works. Assume that the healthcare provider needs to have a desktop application as well as a mobile application to provide users a quality online experience. The manner in which information is displayed to a user can vary depending on whether the user signs in to the desktop application or mobile application. This is because the resource limitations such as screen size, battery life, and data usage in mobile devices can cause the mobile application to show minimal viable information to an end user, whereas when it comes to desktop applications, it is possible to display more information and allow multiple network calls to get the required information. The difference in requirements when it comes to each application leads to the need to have a separate BFF for each application. Here, the BFF layer consumes existing downstream services and acts as a shim to translate the required information depending on the user experience.  
 
 The following diagram illustrates the scenario:
 
 ![BFF Design](../../../../assets/img/backend-for-frontend.svg)
 
-For this scenario, lets assume we have two applications called desktop application and mobile application. For each application, there is a specific back-end service (BFF) called desktop BFF and mobile BFF respectively. These BFFs consume a set of downstream services called appointment management service, medical record management service, notification management service and message management service. In this guide, Ballerina is used to build both the BFF layer and the downstream service layer.
+For this scenario, lets assume we have two applications called desktop application and mobile application. For each application, there is a specific back-end service (BFF) called desktop BFF and mobile BFF respectively. These BFFs consume a set of downstream services called appointment management service, medical record management service, notification management service, and message management service. In this guide, Ballerina is used to build both the BFF layer and the downstream service layer.
 
 ## Prerequisites
 
@@ -88,13 +88,13 @@ For this scenario, lets assume we have two applications called desktop applicati
 
 * Now let’s move to the key implementation of BFF services under `backends_for_frontends` directory. 
 
-The first BFF is the `mobile_bff_service` which is a shim used to support Mobile user experience in this use case. When loading mobile application's home page, it calls a single resource in Mobile BFF and retrieves appointments, medical records and messages. This will reduce the number of backend calls and will help to load the home pages in much efficient way. Since different mobile apps have different methods of sending notifications, we are not using the notification management service.
+The first BFF is the `mobile_bff_service`, which is a shim used to support Mobile user experience in this use case. When loading mobile application's home page, it calls a single resource in Mobile BFF and retrieves appointments, medical records, and messages. This will reduce the number of backend calls and will help to load the home pages in a more efficient way. Since different mobile apps have different methods of sending notifications, we are not using the notification management service.
 
 **mobile_bff_service.bal**
 
 <!-- INCLUDE_CODE: src/healthcare_service/backends_for_frontends/mobile_bff_service.bal -->
 
-The second BFF is the `desktop_bff_service` which is a shim used to support desktop application user experience. When a user loads the desktop application home page, there can be multiple calls to the `desktop_bff_service` to retrieve comparatively large amounts of data based on the desktop application requirement.  The desktop application can call desktop BFF separately to retrieve appointments and medical records. The desktop application can also call desktop BFF to retrieve messages and notifications in a single call. 
+The second BFF is the `desktop_bff_service`, which is a shim used to support desktop application user experience. When a user loads the desktop application home page, there can be multiple calls to the `desktop_bff_service` to retrieve comparatively large amounts of data based on the desktop application requirement. The desktop application can call the desktop BFF separately to retrieve appointments and medical records. The desktop application can also call desktop BFF to retrieve messages and notifications in a single call. 
 
    **desktop_bff_service.bal**
 
