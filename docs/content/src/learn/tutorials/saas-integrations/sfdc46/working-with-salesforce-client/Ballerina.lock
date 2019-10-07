@@ -1,24 +1,24 @@
 org_name = "wso2"
-version = "0.1.0"
+version = "1.1.0"
 lockfile_version = "1.0.0"
-ballerina_version = "1.0.0"
-
-[[imports."wso2/sfdc46:0.2.0"]]
-org_name = "ballerinax"
-name = "java"
-version = "0.0.0"
-
-[[imports."wso2/sfdc46:0.2.0"]]
-org_name = "ballerinax"
-name = "java.arrays"
-version = "0.0.0"
-
-[[imports."wso2/guide:0.1.0"]]
-org_name = "wso2"
-name = "sfdc46"
-version = "0.2.0"
+ballerina_version = "1.0.1"
 
 [[imports."ballerinax/java.arrays:0.0.0"]]
 org_name = "ballerinax"
 name = "java"
 version = "0.0.0"
+
+[[imports."wso2/sfdc46:0.10.1"]]
+org_name = "ballerinax"
+name = "java"
+version = "0.0.0"
+
+[[imports."wso2/sfdc46:0.10.1"]]
+org_name = "ballerinax"
+name = "java.arrays"
+version = "0.0.0"
+
+[[imports."wso2/working_with_salesforce_client:1.1.0"]]
+org_name = "wso2"
+name = "sfdc46"
+version = "0.10.1"
