@@ -10,13 +10,7 @@
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/backend-for-frontend",
       "modules": [
-        "appointment_mgt",
-        "desktop_bff",
-        "medical_record_mgt",
-        "message_mgt",
-        "mobile_bff",
-        "notification_mgt",
-        "sample_data_publisher"
+        "healthcare_service"
       ],
       "skipTests": false
     },
