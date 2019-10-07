@@ -60,6 +60,7 @@ import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
 import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
 import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
+import static org.wso2.integration.ballerina.constants.Constants.SOURCE_WWW_DIR_PATH;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR_MD;
 import static org.wso2.integration.ballerina.constants.Constants.WEBSITE_DIR;
@@ -197,7 +198,7 @@ public class DocsGenerator {
      */
     private static void renameReadmeFile(File file) {
         if (file.getName().equals(README_MD)) {
-            String mdFileName = file.getParent() + File.separator + getCurrentDirectoryName(file.getParent()) + ".md";
+            String mdFileName = file.getParent() + File.separator + "1.md";
             // If directory name is "tempDirectory", not renaming the file.
             if (!mdFileName.contains(TEMP_DIR_MD) && !file.renameTo(new File(mdFileName))) {
                 throw new ServiceException("Renaming README.md failed. file:" + file.getPath());
@@ -455,7 +456,7 @@ public class DocsGenerator {
      */
     private static void createWebsiteDirectory() {
         // Copy `www` directory inside `target` directory.
-        copyDirectoryContent("www", WEBSITE_DIR);
+        copyDirectoryContent(SOURCE_WWW_DIR_PATH, WEBSITE_DIR);
         // Copy `target/mkdocs-content` directory content to `target/www/docs`.
         copyDirectoryContent(MKDOCS_CONTENT, WEBSITE_DIR + File.separator + "docs");
     }
