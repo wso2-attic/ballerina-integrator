@@ -96,7 +96,7 @@ The following code is the completed sample which exposes the following services:
 - createAccount: Creates a new Account and related Contacts & Opportunities using the given JSON.
 - executeQuery: Execute a given SOQL query and return results as a JSON.
 
-<!-- INCLUDE_CODE: src/guide/main.bal -->
+<!-- INCLUDE_CODE: src/working_with_salesforce_client/main.bal -->
 
 ### Testing
 

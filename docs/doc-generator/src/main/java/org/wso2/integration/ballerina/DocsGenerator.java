@@ -40,30 +40,24 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.wso2.integration.ballerina.constants.Constants.ASSETS_IMG_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.BALLERINA_TOML;
-import static org.wso2.integration.ballerina.constants.Constants.CLOSE_CURLY_BRACKET;
-import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_BEGIN;
-import static org.wso2.integration.ballerina.constants.Constants.CODE_SEGMENT_END;
-import static org.wso2.integration.ballerina.constants.Constants.COMMA;
-import static org.wso2.integration.ballerina.constants.Constants.COMMENT_END;
-import static org.wso2.integration.ballerina.constants.Constants.COMMENT_START;
-import static org.wso2.integration.ballerina.constants.Constants.DOCS_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.EMPTY_STRING;
-import static org.wso2.integration.ballerina.constants.Constants.GIT_PROPERTIES_FILE;
-import static org.wso2.integration.ballerina.constants.Constants.HASH;
-import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_SEGMENT_TAG;
-import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_CODE_TAG;
-import static org.wso2.integration.ballerina.constants.Constants.INCLUDE_MD_TAG;
-import static org.wso2.integration.ballerina.constants.Constants.MARKDOWN_FILE_EXT;
-import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
-import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
-import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRACKET;
-import static org.wso2.integration.ballerina.constants.Constants.README_MD;
-import static org.wso2.integration.ballerina.constants.Constants.SOURCE_WWW_DIR_PATH;
-import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR_MD;
-import static org.wso2.integration.ballerina.constants.Constants.WEBSITE_DIR;
+import static org.wso2.integration.ballerina.Constants.BALLERINA_TOML;
+import static org.wso2.integration.ballerina.Constants.CLOSE_CURLY_BRACKET;
+import static org.wso2.integration.ballerina.Constants.CODE_SEGMENT_BEGIN;
+import static org.wso2.integration.ballerina.Constants.CODE_SEGMENT_END;
+import static org.wso2.integration.ballerina.Constants.COMMA;
+import static org.wso2.integration.ballerina.Constants.COMMENT_END;
+import static org.wso2.integration.ballerina.Constants.COMMENT_START;
+import static org.wso2.integration.ballerina.Constants.EMPTY_STRING;
+import static org.wso2.integration.ballerina.Constants.GIT_PROPERTIES_FILE;
+import static org.wso2.integration.ballerina.Constants.HASH;
+import static org.wso2.integration.ballerina.Constants.INCLUDE_CODE_SEGMENT_TAG;
+import static org.wso2.integration.ballerina.Constants.INCLUDE_CODE_TAG;
+import static org.wso2.integration.ballerina.Constants.INCLUDE_MD_TAG;
+import static org.wso2.integration.ballerina.Constants.MARKDOWN_FILE_EXT;
+import static org.wso2.integration.ballerina.Constants.NEW_LINE;
+import static org.wso2.integration.ballerina.Constants.OPEN_CURLY_BRACKET;
+import static org.wso2.integration.ballerina.Constants.README_MD;
+import static org.wso2.integration.ballerina.Constants.TEMP_DIR_MD;
 import static org.wso2.integration.ballerina.utils.Utils.addPrevDirectorySyntax;
 import static org.wso2.integration.ballerina.utils.Utils.copyDirectoryContent;
 import static org.wso2.integration.ballerina.utils.Utils.createDirectory;
@@ -72,7 +66,6 @@ import static org.wso2.integration.ballerina.utils.Utils.deleteDirectory;
 import static org.wso2.integration.ballerina.utils.Utils.deleteFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCodeFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCommitHash;
-import static org.wso2.integration.ballerina.utils.Utils.getCurrentDirectoryName;
 import static org.wso2.integration.ballerina.utils.Utils.getLeadingWhitespaces;
 import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWithCodeType;
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
@@ -92,37 +85,41 @@ public class DocsGenerator {
     // Current commit hash.
     private static String commitHash = null;
 
-    public static void main(String[] args) throws ServiceException {
-        try {
-            BasicConfigurator.configure();
-            logger.info("Docs generating process started...");
-            DocsGenerator docsGenerator = new DocsGenerator();
-            // Get current commit hash.
-            commitHash = docsGenerator.getCommitHashByReadingGitProperties();
-            // First delete already created mkdocs-content directory.
-            deleteDirectory(MKDOCS_CONTENT);
-            // Create needed directory structure.
-            createDirectory(TEMP_DIR);
-            createFile(TEMP_DIR + File.separator + "temp.txt");
-            createDirectory(MKDOCS_CONTENT);
-            // Get a copy of examples directory.
-            copyDirectoryContent(DOCS_DIR, TEMP_DIR);
-            // Process repository to generate guide templates.
-            processDirectory(TEMP_DIR);
-            // Zip Ballerina projects.
-            zipBallerinaProjects(TEMP_DIR);
-            // Delete non markdown files.
-            deleteUnwantedFiles(TEMP_DIR);
-            // Delete empty directories.
-            deleteEmptyDirs(TEMP_DIR);
-            // Copy tempDirectory content to mkdocs content directory.
-            copyDirectoryContent(TEMP_DIR, MKDOCS_CONTENT);
-            // Create `target/www` website directory.
-            createWebsiteDirectory();
-            logger.info("Docs generating process finished...");
-        } finally {
-            deleteDirectory(TEMP_DIR);
-        }
+    public static void main(String[] args) {
+        // Directory paths
+        final String DOCS_DIR = Paths.get(args[0], "..", "content", "src").toString();
+        final String TARGET_DIR = Paths.get(args[0], "target").toString();
+
+        final String TEMP_DIR = Paths.get(TARGET_DIR, "tempDirectory").toString();
+        final String MKDOCS_CONTENT = Paths.get(TARGET_DIR, "mkdocs-content").toString();
+
+        BasicConfigurator.configure();
+        logger.info("Docs generating process started...");
+        DocsGenerator docsGenerator = new DocsGenerator();
+        // Get current commit hash.
+        commitHash = docsGenerator.getCommitHashByReadingGitProperties();
+        // First delete already created mkdocs-content directory.
+        deleteDirectory(MKDOCS_CONTENT);
+        // Create needed directory structure.
+        createDirectory(TEMP_DIR);
+        createFile(TEMP_DIR + File.separator + "temp.txt");
+        createDirectory(MKDOCS_CONTENT);
+        // Get a copy of examples directory.
+        copyDirectoryContent(DOCS_DIR, TEMP_DIR);
+        // Process repository to generate guide templates.
+        processDirectory(TEMP_DIR);
+        // Zip Ballerina projects.
+        zipBallerinaProjects(TEMP_DIR, TEMP_DIR);
+        // Delete non markdown files.
+        deleteUnwantedFiles(TEMP_DIR, DOCS_DIR);
+        // Delete empty directories.
+        deleteEmptyDirs(TEMP_DIR);
+        // Copy tempDirectory content to mkdocs content directory.
+        copyDirectoryContent(TEMP_DIR, MKDOCS_CONTENT);
+        // Create `target/www` website directory.
+        createWebsiteDirectory(Paths.get(TARGET_DIR, "..", "www").toString(), Paths.get(TARGET_DIR, "www").toString(),
+                MKDOCS_CONTENT);
+        logger.info("Docs generating process finished...");
     }
 
     /**
@@ -132,7 +129,7 @@ public class DocsGenerator {
      */
     private static void processDirectory(String directoryPath) {
         // Delete doc-generator directory.
-        deleteDirectory(TEMP_DIR + File.separator + "doc-generator");
+        deleteDirectory(directoryPath + File.separator + "doc-generator");
 
         File folder = new File(directoryPath);
         File[] listOfFiles = folder.listFiles();
@@ -142,10 +139,10 @@ public class DocsGenerator {
                 String fileExtension = FilenameUtils.getExtension(file.getName());
                 if (file.isFile()) {
                     if ((file.getName().equals(README_MD))) {
-                        processReadmeFile(file);
+                        processReadmeFile(file, directoryPath);
                         renameReadmeFile(file);
                     } else if ((fileExtension.equals("bal") || fileExtension.equals("java"))
-                            && !processCodeFile(file)) {
+                            && !processCodeFile(file, directoryPath)) {
                         throw new ServiceException("Processing code file failed, file:" + file.getPath());
                     }
                 } else if (file.isDirectory()) {
@@ -160,7 +157,7 @@ public class DocsGenerator {
      *
      * @param file README.md file
      */
-    private static void processReadmeFile(File file) {
+    private static void processReadmeFile(File file, String tempDir) {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String readMeFileContent = IOUtils
                     .toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
@@ -172,17 +169,20 @@ public class DocsGenerator {
                 lineNumber++;
                 if (line.contains(INCLUDE_CODE_TAG)) {
                     // Replace INCLUDE_CODE line with include code file.
-                    readMeFileContent = readMeFileContent.replace(line, getIncludeCodeFile(file.getParent(), line));
+                    readMeFileContent = readMeFileContent
+                            .replace(line, getIncludeCodeFile(file.getParent(), line, tempDir));
                 } else if (line.contains(INCLUDE_CODE_SEGMENT_TAG)) {
                     // Replace INCLUDE_CODE_SEGMENT line with include code segment.
-                    readMeFileContent = readMeFileContent.replace(line, getIncludeCodeSegment(file.getParent(), line));
+                    readMeFileContent = readMeFileContent
+                            .replace(line, getIncludeCodeSegment(file.getParent(), line, tempDir));
                 } else if (lineNumber == 1 && line.contains(HASH)) {
                     // Adding front matter to posts.
                     readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line, commitHash));
                 } else if (isImageAttachmentLine(line)) {
                     readMeFileContent = readMeFileContent.replace(line, getWebsiteImageAttachment(line));
                 } else if (line.contains(INCLUDE_MD_TAG)) {
-                    readMeFileContent = readMeFileContent.replace(line, getIncludeMarkdownFile(file.getParent(), line));
+                    readMeFileContent = readMeFileContent
+                            .replace(line, getIncludeMarkdownFile(file.getParent(), line, tempDir));
                 }
             }
             IOUtils.write(readMeFileContent, new FileOutputStream(file), String.valueOf(StandardCharsets.UTF_8));
@@ -213,10 +213,10 @@ public class DocsGenerator {
      * @param line             line having INCLUDE_CODE_TAG
      * @return code content of the code file should be included
      */
-    private static String getIncludeCodeFile(String readMeParentPath, String line) {
+    private static String getIncludeCodeFile(String readMeParentPath, String line, String tempDir) {
         String fullPathOfIncludeCodeFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line, INCLUDE_CODE_TAG);
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath), readMeParentPath).trim();
+        String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath, tempDir), readMeParentPath).trim();
         return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
     }
 
@@ -227,7 +227,7 @@ public class DocsGenerator {
      * @param line             line having INCLUDE_CODE_SEGMENT_TAG
      * @return code segment content should be included
      */
-    private static String getIncludeCodeSegment(String readMeParentPath, String line) {
+    private static String getIncludeCodeSegment(String readMeParentPath, String line, String tempDir) {
         String includeLineData = line.replace(COMMENT_START, EMPTY_STRING).replace(COMMENT_END, EMPTY_STRING)
                 .replace(INCLUDE_CODE_SEGMENT_TAG, EMPTY_STRING)
                 .trim();
@@ -240,7 +240,8 @@ public class DocsGenerator {
         String segment = tempDataArr[1].replace("segment:", EMPTY_STRING).trim();
 
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath), readMeParentPath);
+        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath, tempDir),
+                readMeParentPath);
 
         String code = getCodeSegment(codeFileContent, segment).trim();
         return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
@@ -291,18 +292,18 @@ public class DocsGenerator {
      *
      * @param directoryPath directory want to delete files
      */
-    private static void deleteUnwantedFiles(String directoryPath) {
+    private static void deleteUnwantedFiles(String directoryPath, String docsDir) {
         File folder = new File(directoryPath);
         File[] listOfFiles = folder.listFiles();
 
         if (listOfFiles != null) {
             for (File file : listOfFiles) {
                 if (file.isFile()) {
-                    if (isUnwanted(file)) {
+                    if (isUnwanted(file, docsDir)) {
                         deleteFile(file);
                     }
                 } else if (file.isDirectory()) {
-                    deleteUnwantedFiles(file.getPath());
+                    deleteUnwantedFiles(file.getPath(), docsDir);
                 }
             }
         }
@@ -315,11 +316,11 @@ public class DocsGenerator {
      * @param file file
      * @return is a unwanted file
      */
-    private static boolean isUnwanted(File file) {
+    private static boolean isUnwanted(File file, String docsDir) {
         boolean mdFile = FilenameUtils.getExtension(file.getName()).equals(MARKDOWN_FILE_EXT);
         boolean moduleMdFile = file.getName().equals("Module.md");
         boolean zipFile = FilenameUtils.getExtension(file.getName()).equals("zip");
-        boolean imgFile = new File(ASSETS_IMG_DIR, file.getName()).exists();
+        boolean imgFile = new File(Paths.get(docsDir, "assets", "img").toString(), file.getName()).exists();
 
         return !((mdFile && !moduleMdFile) || zipFile || imgFile);
     }
@@ -389,7 +390,7 @@ public class DocsGenerator {
      *
      * @param directoryPath path of the directory
      */
-    private static void zipBallerinaProjects(String directoryPath) {
+    private static void zipBallerinaProjects(String directoryPath, String tempDir) {
         File folder = new File(directoryPath);
         File[] listOfFiles = folder.listFiles();
 
@@ -398,15 +399,14 @@ public class DocsGenerator {
                 if (file.isFile() && (file.getName().equals(BALLERINA_TOML))) {
                     // Zip parent folder since this is a Ballerina project.
                     try {
-                        new ZipFile(getZipFileName(file)).addFolder(new File(file.getParentFile().getPath()));
-                        // Move this zip file to `assets/zip`.
-
+                        new ZipFile(getZipFileName(tempDir, file))
+                                .addFolder(new File(file.getParentFile().getPath()));
                     } catch (ZipException e) {
                         throw new ServiceException("Error when zipping the directory: "
                                 + file.getParentFile().getPath(), e);
                     }
                 } else if (file.isDirectory()) {
-                    zipBallerinaProjects(file.getPath());
+                    zipBallerinaProjects(file.getPath(), tempDir);
                 }
             }
         }
@@ -418,8 +418,8 @@ public class DocsGenerator {
      * @param file code file
      * @return processing result
      */
-    private static boolean processCodeFile(File file) {
-        File tempFile = new File(TEMP_DIR + File.separator + "temp.txt");
+    private static boolean processCodeFile(File file, String tempDir) {
+        File tempFile = new File(tempDir + File.separator + "temp.txt");
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
             ignoreCodeSegmentLine(file, writer);
@@ -454,11 +454,11 @@ public class DocsGenerator {
     /**
      * Create `target/www` website directory.
      */
-    private static void createWebsiteDirectory() {
+    private static void createWebsiteDirectory(String srcWwwDirPath, String websiteDir, String mkdocsContent) {
         // Copy `www` directory inside `target` directory.
-        copyDirectoryContent(SOURCE_WWW_DIR_PATH, WEBSITE_DIR);
+        copyDirectoryContent(srcWwwDirPath, websiteDir);
         // Copy `target/mkdocs-content` directory content to `target/www/docs`.
-        copyDirectoryContent(MKDOCS_CONTENT, WEBSITE_DIR + File.separator + "docs");
+        copyDirectoryContent(mkdocsContent, websiteDir + File.separator + "docs");
     }
 
     /**
@@ -479,15 +479,14 @@ public class DocsGenerator {
      * @param line             line having INCLUDE_MD_TAG
      * @return content of the markdown file should be included
      */
-    private static String getIncludeMarkdownFile(String readMeParentPath, String line) {
+    private static String getIncludeMarkdownFile(String readMeParentPath, String line, String tempDir) {
         String fullPathOfIncludeMdFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line, INCLUDE_MD_TAG);
         File includeMdFile = new File(fullPathOfIncludeMdFile);
-        String includeMdContent = getCodeFile(includeMdFile, readMeParentPath).trim();
+        String includeMdContent = getCodeFile(includeMdFile, readMeParentPath, tempDir).trim();
         // Check fullPathOfIncludeMdFile is `get-the-code.md`.
         if (fullPathOfIncludeMdFile.contains("tutorial-get-the-code.md")) {
             String markdownWithZipName = setZipFileName(includeMdContent, readMeParentPath);
-            return setGetTheCodeMdPaths(fullPathOfIncludeMdFile, markdownWithZipName);
-
+            return setModuleName(setGetTheCodeMdPaths(fullPathOfIncludeMdFile, markdownWithZipName), readMeParentPath);
         } else {
             return includeMdContent;
         }
@@ -529,5 +528,52 @@ public class DocsGenerator {
             String correctZipAnchorPath = addPrevDirectorySyntax(zipAnchorPath, occurrences + 1);
             return replacedImgContent.replace(zipAnchorPath, correctZipAnchorPath);
         }
+    }
+
+    /**
+     * Set module name by replacing `<<<MODULE_NAME>>>` by module name of the project.
+     *
+     * @param includeMdContent include markdown file content
+     * @param readMeParentPath README.md parent path
+     * @return include markdown file content after replacing `<<<MODULE_NAME>>>`
+     */
+    private static String setModuleName(String includeMdContent, String readMeParentPath) {
+        String moduleName = findModuleName(readMeParentPath);
+        if (moduleName.isEmpty()) {
+            throw new ServiceException("Module name not found. projectPath: " + readMeParentPath);
+        } else {
+            return includeMdContent.replace("<<<MODULE_NAME>>>", moduleName);
+        }
+    }
+
+    /**
+     * Find module name to set module name.
+     *
+     * @param readMeParentPath README.md parent path
+     * @return module name
+     */
+    private static String findModuleName(String readMeParentPath) {
+        boolean moduleFound = false;
+        String moduleName = "";
+        File moduleParent = new File(readMeParentPath + File.separator + "src");
+        File[] listOfFiles = moduleParent.listFiles();
+
+        if (listOfFiles == null) {
+            throw new ServiceException("Cannot find module name. projectPath: " + moduleParent.getPath());
+        } else {
+            for (File child : listOfFiles) {
+                if (child.isDirectory()) {
+                    if (!moduleFound) {
+                        moduleName = child.getName();
+                        moduleFound = true;
+                    } else {
+                        throw new ServiceException(
+                                "Module name already found, Please confirm this project contains only "
+                                        + "one module. projectPath: " + moduleParent.getPath());
+                    }
+                }
+            }
+        }
+        return moduleName;
     }
 }

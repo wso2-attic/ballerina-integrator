@@ -16,56 +16,41 @@
  * under the License.
  */
 
-package org.wso2.integration.ballerina.constants;
-
-import java.io.File;
-import java.nio.file.Paths;
+package org.wso2.integration.ballerina;
 
 /**
  * Constants used in site builder.
  */
 public final class Constants {
 
-    // Directory paths
-    private static final String DOC_GEN_DIR_PATH = Paths.get("docs", "doc-generator").toString();
-    public static final String DOCS_DIR = Paths.get(DOC_GEN_DIR_PATH, "..", "content","src").toString();
-    private static final String TARGET_DIR = Paths.get(DOC_GEN_DIR_PATH,"target").toString();
-    public static final String TEMP_DIR = TARGET_DIR + File.separator + "tempDirectory";
-    public static final String MKDOCS_CONTENT = TARGET_DIR + File.separator + "mkdocs-content";
-    private static final String ASSETS_DIR = DOCS_DIR + File.separator + "assets";
-    public static final String ASSETS_IMG_DIR = ASSETS_DIR + File.separator + "img";
-    public static final String SOURCE_WWW_DIR_PATH = Paths.get(DOC_GEN_DIR_PATH, "www").toString();
-    public static final String WEBSITE_DIR = TARGET_DIR + File.separator + "www";
-    public static final String TEMP_ASSETS_ZIP_DIR = TEMP_DIR + File.separator + "assets" + File.separator + "zip";
-
     // Files
     public static final String README_MD = "README.md";
-    public static final String TEMP_DIR_MD = "tempDirectory.md";
-    public static final String GIT_PROPERTIES_FILE = "git.properties";
-    public static final String BALLERINA_TOML = "Ballerina.toml";
+    static final String TEMP_DIR_MD = "tempDirectory.md";
+    static final String GIT_PROPERTIES_FILE = "git.properties";
+    static final String BALLERINA_TOML = "Ballerina.toml";
 
     // Special syntax
-    public static final String INCLUDE_CODE_TAG = "INCLUDE_CODE:";
-    public static final String INCLUDE_CODE_SEGMENT_TAG = "INCLUDE_CODE_SEGMENT:";
-    public static final String INCLUDE_MD_TAG = "INCLUDE_MD:";
+    static final String INCLUDE_CODE_TAG = "INCLUDE_CODE:";
+    static final String INCLUDE_CODE_SEGMENT_TAG = "INCLUDE_CODE_SEGMENT:";
+    static final String INCLUDE_MD_TAG = "INCLUDE_MD:";
     public static final String EMPTY_STRING = "";
-    public static final String COMMENT_START = "<!--";
-    public static final String COMMENT_END = "-->";
+    static final String COMMENT_START = "<!--";
+    static final String COMMENT_END = "-->";
     public static final String CODE = "{CODE}";
     public static final String NEW_LINE = "\n";
     private static final String THREE_BACK_TICKS = "```";
     public static final String FRONT_MATTER_SIGN = "---";
     public static final String LICENCE_LAST_LINE = "// under the License.";
-    public static final String OPEN_CURLY_BRACKET = "{";
-    public static final String CLOSE_CURLY_BRACKET = "}";
-    public static final String CODE_SEGMENT_BEGIN = "// CODE-SEGMENT-BEGIN: ";
-    public static final String CODE_SEGMENT_END = "// CODE-SEGMENT-END: ";
+    static final String OPEN_CURLY_BRACKET = "{";
+    static final String CLOSE_CURLY_BRACKET = "}";
+    static final String CODE_SEGMENT_BEGIN = "// CODE-SEGMENT-BEGIN: ";
+    static final String CODE_SEGMENT_END = "// CODE-SEGMENT-END: ";
     public static final String CODE_MD_SYNTAX = THREE_BACK_TICKS + NEW_LINE + CODE + NEW_LINE + THREE_BACK_TICKS;
     public static final String FORWARD_SLASH = "/";
-    public static final String COMMA = ",";
+    static final String COMMA = ",";
     public static final String HASH = "#";
     public static final String EQUAL = "=";
-    public static final String MARKDOWN_FILE_EXT = "md";
+    static final String MARKDOWN_FILE_EXT = "md";
     public static final String GIT_COMMIT_ID = "git.commit.id";
     public static final String COMMIT_HASH = "commitHash: ";
     public static final String TITLE = "title: ";
