@@ -1,7 +1,7 @@
 # Managing Ballerina Code
 
 When you write large programs often you would want to organize your code into shareable units. 
-In Ballerina, you can divide your program into such units which are called Ballerina modules. 
+In Ballerina, you can divide your program into such units, which are called Ballerina modules. 
 Ballerina modules reside within a Ballerina project. You can have multiple modules within a 
 Ballerina project. 
 
@@ -28,7 +28,7 @@ $ tree .
 
 ```
 
-If we take a look at the `Ballerina.toml` file
+Let's take a look at the `Ballerina.toml` file
 
 ```toml
 [project]
@@ -39,7 +39,7 @@ version= "0.1.0"
 
 ```
 
-This is a manifest file. This file is used by the compiler to identify a ballerina project directory. 
+This is a manifest file. This file is used by the compiler to identify a Ballerina project directory. 
 Please note that the `B` is capital in Ballerina.toml file.
 
 We will get into more details about `Ballerina.toml` file as we progress through this guide.
@@ -58,7 +58,7 @@ push the module into a repository like Ballerina Central.
 > have no meaning other than the last segment after the final dot being used as a default alias within 
 > your source code.
 
-To create a Ballerina Module you can simply,
+To create a Ballerina Module you can simply do either one of the following,
 
 - create a directory within the src directory 
 - use the WSO2 Ballerina Integrator VS Code plugin with predefined templates or
@@ -70,7 +70,7 @@ To create a Ballerina Module using the Ballerina CLI tool use `ballerina add` co
 $ ballerina add hello-service -t service # ballerina add <module-name> -t <template-name>[:<version>]
 ```
 
-> Note that you have to run this command within a ballerina project directory. Here we are creating 
+> Note that you have to run this command within a Ballerina project directory. Here we are creating 
 > a Ballerina module using a template called `service`. Optionally you can provide the template version.
 
 Let's see what Ballerina CLI tool has generated with this command.
@@ -91,7 +91,7 @@ tree .
 5 directories, 4 files
 ```
 
-if you open up the hello_service.bal file you can see that the module was created with a `service`
+If you open up the `hello_service.bal` file you can see that the module was created with a `service`
 template that responds to requests coming into `http://localhost:9090/hello/sayHello.
 
 ```ballerina
@@ -124,7 +124,7 @@ service hello on new http:Listener(9090) {
 
 ## Building the Project
 
-To build the project we can use the `ballerina build`:
+To build the project we can use the `ballerina build` command:
 
 ```bash
 $ ballerina build hello_service # ballerina build <module-name>
@@ -155,7 +155,7 @@ If you look at the code there are four phases in the build process. Namely,
 - Running the tests
 - Generating executables
 
-If you are writing a module that does not have a `main` or a `service` entry point you wouldn't need to create the
+If you are writing a module that does not have a `main` or a `service` entry point, you wouldn't need to create the
 executable since the module you created can only be used by another module. 
 
 In that case, you can instruct the Ballerina CLI tool to ignore the executable creation phase by 
@@ -167,7 +167,7 @@ $ ballerina build hello_service -c
 
 ## Ballerina Central: Public Module Repository
 
-Once you have build your Ballerina project you can store your modules in a public directory called 
+Once you have built your Ballerina project you can store your modules in a public directory called 
 [Ballerina Central](#https://central.ballerina.io/). Users can share their module with others using Ballerina central
 
 You can retrieve modules, and store modules in Ballerina Central using Ballerina CLI tool. 
@@ -227,7 +227,7 @@ accesstoken="<your_accesstoken>"
 > password = ""
 > ```
 
-Once Settings.toml and the Ballerina.toml is updated you are ready to push your module into Ballerina Central.
+Once `Settings.toml` and the `Ballerina.toml` are updated, you are ready to push your module into Ballerina Central.
 
 Let's use the `ballerina push` command to store the module in Ballerina Central.
 
@@ -251,7 +251,7 @@ For example, `<identifier>:<module-object>`.
 Identifiers are either derived or explicit. The default identifier is either the module name, or if the module name 
 has dots `.` included, then the last word after the last dot. 
 
-For example, `import ballerina/http;` will have `http:` be the derived identifier. 
+For example, `import ballerina/http;` will have `http:` as the derived identifier. 
 The module `import wso2/net.http.exception` would have `exception:` as the default identifier.
 
 You can have an explicit identifier by using the `as <identifier>` syntax.
@@ -309,7 +309,7 @@ public function main() {
 
 ### Path Dependencies
 
-When you want to depend on a module that you haven't uploaded to a remote repository you can use 
+When you want to depend on a module that you have not uploaded to a remote repository you can use 
 path dependencies in a `Ballerina.toml` file.
 
 ```toml
@@ -324,8 +324,8 @@ path dependencies in a `Ballerina.toml` file.
 
 ### Platform Dependencies
 
-With jBallerina you can depend on java libraries and interoperate with them. To do that and to make the 
-compiler aware of the java libraries we have to update the `Ballerina.toml` file.
+With jBallerina you can depend on Java libraries and interoperate with them. To do that and to make the 
+compiler aware of the Java libraries we have to update the `Ballerina.toml` file.
 
 ```toml
 [platform]
@@ -348,5 +348,6 @@ target = "java8"
 
 ## Further Reading
 
-You can read more about structuring your Ballerina code on Ballerina Documentation, 
+You can read more about structuring your Ballerina code in the 
 [How to Structure Ballerina Code](https://v1-0.ballerina.io/learn/how-to-structure-ballerina-code/) 
+topic in the Ballerina documentation.

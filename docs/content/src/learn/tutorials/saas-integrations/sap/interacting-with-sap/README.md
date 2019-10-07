@@ -10,24 +10,14 @@ The Ballerina SAP Connector provides an integration layer that allows interactin
 
 You can find other integration modules from [wso2-ballerina](https://github.com/wso2-ballerina) GitHub organization.
 
-Following are the sections available in this guide.
-
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
-
 ## What you'll build
 
 This application demonstrates a scenario where a client application interacts with a SAP endpoint using BAPI and IDoc. The BAPI request would provide the response from the backend and if an error happens during the message flow, it would be returned to the user. A successful IDoc message send would return the associated transaction id.
 
-## Prerequisites
-
-- [Java](https://www.oracle.com/technetwork/java/index.html)
-- Ballerina Integrator
-- A Text Editor or an IDE
-    > **Tip**: For a better development experience, install the `Ballerina Integrator` extension in [VSCode](https://code.visualstudio.com/).
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 - SAP R/3 instance with `sapidoc3.jar`, `sapjco3.jar` and the native SAP JCo library.
+
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 

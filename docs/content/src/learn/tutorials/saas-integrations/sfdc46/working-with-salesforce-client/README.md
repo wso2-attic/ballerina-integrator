@@ -20,14 +20,9 @@ following operations:
 * Create Account with Contacts & Opportunities
 * Execute a SOQL query
 
-## Prerequisites
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
-- [Java](https://www.oracle.com/technetwork/java/index.html)
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: 
-[VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), 
-[IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
-- Link to download Ballerina Integrator.
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ### Implementation
 
@@ -66,7 +61,7 @@ $ ballerina new working-with-salesforce-client
 - Create a module.
 
 ```bash
-$ ballerina add guide
+$ ballerina add working_with_salesforce_client
 ```
 
 - The project structure is created as indicated below.
@@ -75,7 +70,7 @@ $ ballerina add guide
 working-with-salesforce-client
     ├── Ballerina.toml
     └── src
-        └── guide
+        └── working_with_salesforce_client
             ├── Module.md
             ├── main.bal
             ├── resources
@@ -108,13 +103,13 @@ The following code is the completed sample which exposes the following services:
 First let’s build the module. Navigate to the project root directory and execute the following command.
 
 ```bash
-$ ballerina build guide
+$ ballerina build working_with_salesforce_client
 ```
 
 This creates the executables. Now run the `guide.jar` file created in the above step.
 
 ```bash
-$ java -jar target/bin/guide.jar
+$ java -jar target/bin/working_with_salesforce_client.jar
 ```
 
 You will see service the following log.

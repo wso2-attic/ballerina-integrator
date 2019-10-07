@@ -39,19 +39,12 @@ The messaging system supports loosely coupled asynchronous data to move from one
 
 <table>
 <tr>
-    <td><b><a href="../tutorials/messaging-integrations/messaging-with-activemq/messaging-with-activemq/">Messaging with ActiveMQ</a></b></br>
-    Use ActiveMQ as the broker for messaging</td>
-    <td><b><a href="../tutorials/messaging-integrations/messaging-with-kafka/messaging-with-kafka/">Messaging with Kafka</a></b></br>
-    Publish messages to Apache Kafka</td>
     <td><b><a href="../tutorials/messaging-integrations/sending-json-data-to-a-jms-queue/sending-json-data-to-a-jms-queue/">Sending JSON to a JMS Queue</a></b></br>
     Send JSON Data to a JMS Queue</td>
-</tr>
-
-<tr>
+    <td><b><a href="../tutorials/messaging-integrations/messaging-with-kafka/messaging-with-kafka/">Messaging with Kafka</a></b></br>
+    Publish messages to Apache Kafka</td>
     <td><b><a href="../tutorials/messaging-integrations/reliable-delivery/reliable-delivery	/">Reliable Delivery</a></b></br>
-    Send messages</td>
-    <td></td>
-    <td></td>
+    Send messages in a reliable way</td>
 </tr>
 
 </table>
@@ -116,12 +109,11 @@ Service-oriented architecture (SOA) patterns provide structure and clarity, enab
   </tr>
 
   <tr>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/rest-to-soap/rest-to-soap/">REST to SOAP</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/exposing-soap-service/exposing-soap-service/">REST to SOAP</a></b></br>
     Accept a REST request and convert it to a SOAP request</td>
     <td><b><a href="../tutorials/integration-patterns-and-soa/backend-for-frontend/backend-for-frontend/">Backend for Frontend</a></b></br>
     Apply the BFF design pattern</td>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/converting-json-to-xml-and-upload-to-ftp/">Converting JSON to XML and Upload to FTP</a></b></br>
-    Convert a JSON message to XML and upload it to FTP</td>
+    <td></td>
   </tr>
 </table>
 

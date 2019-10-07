@@ -2,6 +2,8 @@
 
 ## About
 
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors.
+
 Service orchestration is a common integration scenario where, upon a request from a client, a service calls multiple other services/endpoints. This guide demonstrates a simple service orchestration scenario where a client makes a doctor's appointment and the service invokes the other two services to make a reservation and to do the payment for the reservation fee respectively.
 
 ## What you'll build
@@ -10,11 +12,9 @@ We will build a service called `doctorAppointment` that accepts a client's reque
 
 ![service-orchestration](../../../../assets/img/service_orchestration.jpg)
 
-## Prerequisites
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina IDE plugin for [VS Code](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina)
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 	
 ## Implementation
 
@@ -73,7 +73,7 @@ This is a simple service that would run on port 8081 and respond a JSON payload.
 
 Here we are calling the two services we created earlier, using the endpoints ‘reservationEP’ and ‘paymentEP’.
 
-## Run the Integration
+## Testing
 
 * First let’s build the module. While being in the service-orchestration directory, execute the following command.
 

@@ -60,9 +60,11 @@ import static org.wso2.integration.ballerina.constants.Constants.MKDOCS_CONTENT;
 import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
 import static org.wso2.integration.ballerina.constants.Constants.OPEN_CURLY_BRACKET;
 import static org.wso2.integration.ballerina.constants.Constants.README_MD;
+import static org.wso2.integration.ballerina.constants.Constants.SOURCE_WWW_DIR_PATH;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
 import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR_MD;
 import static org.wso2.integration.ballerina.constants.Constants.WEBSITE_DIR;
+import static org.wso2.integration.ballerina.utils.Utils.addPrevDirectorySyntax;
 import static org.wso2.integration.ballerina.utils.Utils.copyDirectoryContent;
 import static org.wso2.integration.ballerina.utils.Utils.createDirectory;
 import static org.wso2.integration.ballerina.utils.Utils.createFile;
@@ -74,6 +76,7 @@ import static org.wso2.integration.ballerina.utils.Utils.getCurrentDirectoryName
 import static org.wso2.integration.ballerina.utils.Utils.getLeadingWhitespaces;
 import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWithCodeType;
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
+import static org.wso2.integration.ballerina.utils.Utils.getStringBetweenTwoStrings;
 import static org.wso2.integration.ballerina.utils.Utils.getZipFileName;
 import static org.wso2.integration.ballerina.utils.Utils.isDirEmpty;
 import static org.wso2.integration.ballerina.utils.Utils.isImageAttachmentLine;
@@ -89,7 +92,7 @@ public class DocsGenerator {
     // Current commit hash.
     private static String commitHash = null;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ServiceException {
         try {
             BasicConfigurator.configure();
             logger.info("Docs generating process started...");
@@ -117,8 +120,6 @@ public class DocsGenerator {
             // Create `target/www` website directory.
             createWebsiteDirectory();
             logger.info("Docs generating process finished...");
-        } catch (ServiceException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             deleteDirectory(TEMP_DIR);
         }
@@ -197,7 +198,7 @@ public class DocsGenerator {
      */
     private static void renameReadmeFile(File file) {
         if (file.getName().equals(README_MD)) {
-            String mdFileName = file.getParent() + File.separator + getCurrentDirectoryName(file.getParent()) + ".md";
+            String mdFileName = file.getParent() + File.separator + "1.md";
             // If directory name is "tempDirectory", not renaming the file.
             if (!mdFileName.contains(TEMP_DIR_MD) && !file.renameTo(new File(mdFileName))) {
                 throw new ServiceException("Renaming README.md failed. file:" + file.getPath());
@@ -455,7 +456,7 @@ public class DocsGenerator {
      */
     private static void createWebsiteDirectory() {
         // Copy `www` directory inside `target` directory.
-        copyDirectoryContent("www", WEBSITE_DIR);
+        copyDirectoryContent(SOURCE_WWW_DIR_PATH, WEBSITE_DIR);
         // Copy `target/mkdocs-content` directory content to `target/www/docs`.
         copyDirectoryContent(MKDOCS_CONTENT, WEBSITE_DIR + File.separator + "docs");
     }
@@ -484,14 +485,49 @@ public class DocsGenerator {
         String includeMdContent = getCodeFile(includeMdFile, readMeParentPath).trim();
         // Check fullPathOfIncludeMdFile is `get-the-code.md`.
         if (fullPathOfIncludeMdFile.contains("tutorial-get-the-code.md")) {
-            return addZipFileNameToMdFile(includeMdContent, readMeParentPath);
+            String markdownWithZipName = setZipFileName(includeMdContent, readMeParentPath);
+            return setGetTheCodeMdPaths(fullPathOfIncludeMdFile, markdownWithZipName);
+
         } else {
             return includeMdContent;
         }
     }
 
-    private static String addZipFileNameToMdFile(String includeMdContent, String readMeParentPath) {
+    /**
+     * Set zip file name by replacing `<<<MD_FILE_NAME>>>` with zip file name.
+     *
+     * @param includeMdContent include markdown file content
+     * @param readMeParentPath README.md parent path
+     * @return include markdown file content after replacing `<<<MD_FILE_NAME>>>`
+     */
+    private static String setZipFileName(String includeMdContent, String readMeParentPath) {
         String zipName = readMeParentPath.substring(readMeParentPath.lastIndexOf('/') + 1).trim();
         return includeMdContent.replace("<<<MD_FILE_NAME>>>", zipName);
+    }
+
+    /**
+     * Set paths in `tutorial-get-the-code.md` for non default cases.
+     *
+     * @param fullPathOfIncludeMdFile full path of include md file
+     * @param includeMdContent        include md file content
+     * @return `tutorial-get-the-code.md` content after changing `download-zip` path.
+     */
+    private static String setGetTheCodeMdPaths(String fullPathOfIncludeMdFile, String includeMdContent) {
+        // Get the no of occurrences of `../`
+        int occurrences = fullPathOfIncludeMdFile.split("\\../", -1).length - 1;
+        if (occurrences == 4) { // Default case: `tutorial-get-the-code.md` has 4 `../`s.
+            return includeMdContent;
+        } else { // Need to set the `download-zip` path.
+            // Set the `download-zip` image path.
+            String mdImgPath = getStringBetweenTwoStrings(includeMdContent, "<img src=\"../../../../../",
+                    "\" width=\"200\" alt=\"Download ZIP\">");
+            String correctImgPath = addPrevDirectorySyntax(mdImgPath, occurrences + 1);
+            String replacedImgContent = includeMdContent.replace(mdImgPath, correctImgPath);
+            // Set the `download-zip` anchor path.
+            String zipAnchorPath = getStringBetweenTwoStrings(replacedImgContent, "<a href=\"../../../../../",
+                    "\">\n" + "    <img src=\"");
+            String correctZipAnchorPath = addPrevDirectorySyntax(zipAnchorPath, occurrences + 1);
+            return replacedImgContent.replace(zipAnchorPath, correctZipAnchorPath);
+        }
     }
 }

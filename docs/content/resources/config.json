@@ -10,20 +10,14 @@
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/backend-for-frontend",
       "modules": [
-        "appointment_mgt",
-        "desktop_bff",
-        "medical_record_mgt",
-        "message_mgt",
-        "mobile_bff",
-        "notification_mgt",
-        "sample_data_publisher"
+        "healthcare_service"
       ],
       "skipTests": false
     },
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/content-based-routing",
       "modules": [
-        "stockquote_service"
+        "content_based_routing"
       ],
       "skipTests": false
     },
@@ -61,7 +55,7 @@
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/pass-through-messaging",
       "modules": [
-        "pass_through"
+        "pass_through_messaging"
       ],
       "skipTests": false
     },
@@ -82,7 +76,7 @@
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/scatter-gather-flow",
       "modules": [
-        "employee_details_service"
+        "scatter_gather_flow"
       ],
       "skipTests": false
     },
@@ -103,7 +97,7 @@
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/service-composition",
       "modules": [
-        "guide"
+        "service_composition"
       ],
       "skipTests": false
     },

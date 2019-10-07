@@ -1,17 +1,12 @@
 # File Integration using Samba
 
+## About
+
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on how to use the WSO2 SMB Connector to create a Samba listener service using Ballerina. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
+
 The WSO2 SMB Connector enables you to connect to a Samba server and perform operations on files and folders stored on the 
 server. These operations include basic file operations such as reading, updating, and deleting files, and listening to 
 the server to invoke operations when a file is created or deleted.
-
-> In this guide you will learn how to use the WSO2 SMB Connector to create a Samba listener service using Ballerina.
-
-The following are the sections available in this guide.
-
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
 
 ## What you'll Build
 
@@ -19,14 +14,12 @@ To understand how to build a service to listen to a Samba server, let's consider
 a Samba server to store data files. When a new file is added to the server, the Samba listener will read the file and add 
 the file name and size to a map, and when the file is deleted from the server, it will remove the entry from the map. 
 
-![File integration using Samba](/src/smb_listener/resources/file-integration-using-smb.png)
+![File integration using Samba](../../../../assets/img/file-integration-using-smb.png)
 
-## Prerequisites
- 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina IDE plugin for [VS Code](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina)
-- A Samba Server (See [here](https://linuxize.com/post/how-to-install-and-configure-samba-on-ubuntu-18-04) on how to setup a Samba server)
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+* A Samba Server (See [here](https://linuxize.com/post/how-to-install-and-configure-samba-on-ubuntu-18-04) on how to setup a Samba server)
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 > If you want to skip the basics, you can download the GitHub repo and directly move to the "Testing" section by skipping the "Implementation" section.
@@ -37,16 +30,16 @@ Ballerina is a complete programming language that supports custom project struct
 ```
 file-integration-using-smb
     └── src
-       └── smb_listener
+       └── file_integration_using_smb
            └── smb_listener.bal
 ```
 
-Create the Ballerina project `file-integration-using-smb` and add the `smb_listener` module using the below commands. 
+Create the Ballerina project `file-integration-using-smb` and add the `file_integration_using_smb` module using the below commands.
 
 ```bash
-    $ ballerina new file-integration-using-smb
-    $ cd file-integration-using-smb
-    $ ballerina add smb_listener
+$ ballerina new file-integration-using-smb
+$ cd file-integration-using-smb
+$ ballerina add file_integration_using_smb
 ```
 
 The above package structure will be created for you. Create the `smb_listener.bal` file inside the Ballerina module.
@@ -69,16 +62,16 @@ should be invoked for text files, the config for `SMB_FILE_NAME_PATTERN` should 
 the directory or location in Samba share to poll for files and how frequently the listener should poll for files, using the values 
 `SMB_LISTENER_PATH` and `SMB_POLLING_INTERVAL`respectively.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/smb_listener/smb_listener.bal, segment: segment_1 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_smb/smb_listener.bal, segment: segment_1 } -->
 
 Create the service to listen to the Samba server using the above listener. When files are added or deleted on the server, 
 this service will be invoked, and the files will be processed.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/smb_listener/smb_listener.bal, segment: segment_2 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_smb/smb_listener.bal, segment: segment_2 } -->
 
 Then implement the Samba Client, which will connect to the Samba server and get the details of new files to process. 
      
-<!-- INCLUDE_CODE_SEGMENT: { file: src/smb_listener/smb_listener.bal, segment: segment_3 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_smb/smb_listener.bal, segment: segment_3 } -->
 
 Declare a map to store the details of processed files.
 
@@ -90,7 +83,7 @@ Now, implement the processing of added and deleted files. When files are added t
 retrieve the file size from the server, and the file name and its size will be added to the `fileMap`. When a file is 
 removed from the server, the file will be removed from the map.
 
-<!-- INCLUDE_CODE_SEGMENT: { file: src/smb_listener/smb_listener.bal, segment: segment_4 } -->
+<!-- INCLUDE_CODE_SEGMENT: { file: src/file_integration_using_smb/smb_listener.bal, segment: segment_4 } -->
 
 ## Testing
 
@@ -101,17 +94,17 @@ To begin with invoking the service, start the Samba server.
 Navigate to `file-integration-using-smb` directory and run the following command to build the listener service in `smb_listener.bal`.
 
 ```bash
-   $ ballerina build -a 
+$ ballerina build file_integration_using_smb
 ```
 
 The successful build of a service will show us something similar to the following output.
 
 ```
 Compiling source
-        wso2/smb_listener:0.1.0
+        wso2/file_integration_using_smb:0.1.0
 
 Creating balos
-        target/balo/smb_listener-2019r3-java8-0.1.0.balo
+        target/balo/file_integration_using_smb-2019r3-java8-0.1.0.balo
 ```
 
 This will create the Ballerina executables inside the `/target` directory.
@@ -119,7 +112,7 @@ This will create the Ballerina executables inside the `/target` directory.
 Then run the jar file created in the above step.
 
 ```bash
-   $ java -jar target/bin/smb_listener.jar --b7a.config.file=src/smb_listener/resources/ballerina.conf 
+$ java -jar target/bin/file_integration_using_smb.jar --b7a.config.file=src/file_integration_using_smb/resources/ballerina.conf
 ```
 
 Add and delete files in the Samba server, and check the logs to verify whether the service is working as expected.

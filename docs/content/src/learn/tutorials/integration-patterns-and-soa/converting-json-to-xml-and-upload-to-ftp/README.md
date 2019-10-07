@@ -1,4 +1,4 @@
-# Convert JSON to XML and upload to FTP
+# Convert JSON to XML and Upload to FTP
 
 ## About 
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on connecting to a file server with the FTP connector. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
@@ -10,10 +10,9 @@ Ballerina has first-class support for HTTP and implementing an HTTP service is s
 
 ![Transform JSON to XML and upload to FTP](../../../../assets/img/Transform-JSON-to-XML-and-upload-to-FTP.jpg)
 
-## Prerequisites
-- [Java](https://www.oracle.com/technetwork/java/index.html)
-- A Text Editor or an IDE
-- Link to download Ballerina Integrator
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module in this link.

@@ -10,11 +10,9 @@ You can find other integration modules from the [wso2-ballerina](https://github.
 ## What you'll build
 This tutorial demonstrates a scenario where a customer feedback Gmail account of a company can be easily managed using the Ballerina Gmail Connector. This application contains a service that can be invoked through an HTTP GET request. Once the service is invoked, it returns the contents of unread emails in the `Inbox`, while sending an automated response to the customer, thanking them for their feedback. The number of emails that can be handled in a single invocation is specified in the application.
 
-## Prerequisites
-- [Java](https://www.oracle.com/technetwork/java/index.html)
-- Ballerina Integrator
-- A Text Editor or an IDE
-> **Tip**: For a better development experience, install the `Ballerina Integrator` extension in [VS Code](https://code.visualstudio.com/).
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
+
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
@@ -90,6 +88,6 @@ $ java -jar target/bin/gmail_client_application.jar
 ```
 Now we can see that the service has started on port 9090. Let’s invoke this service by executing the following cURL command.
 ```
-curl -X GET http://localhost:9090/gmail/reviews
+$ curl -X GET http://localhost:9090/gmail/reviews
 ```
 You will see the list of email body contents during a successful invocation.

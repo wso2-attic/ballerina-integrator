@@ -2,7 +2,9 @@
 
 ## About
 
-This guide demonstrates a scenario where Ballerina is used to call a SOAP backend. Here, a SOAP backend is fronted by a Ballerina service that accepts a REST request and converts it to a SOAP request. The SOAP connector is used to call the SOAP backend.
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors.
+
+This tutorial demonstrates a scenario where Ballerina is used to call a SOAP backend. Here, a SOAP backend is fronted by a Ballerina service that accepts a REST request and converts it to a SOAP request. The SOAP connector is used to call the SOAP backend.
 
 ## What you'll build
 
@@ -10,11 +12,9 @@ We create a service `stockQuote` that fronts a SOAP backend. The service has two
 
 ![rest_to_soap](../../../../assets/img/RESTtoSOAP.svg)
 
-## Prerequisites
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install the Ballerina IDE plugin for [VS Code](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina)
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
@@ -66,7 +66,7 @@ This service checks the SOAPAction header in the request, calls the relevant met
 
 Here we create a SOAP client with the mock SOAP service we created earlier. There are two resources in the service - `getQuote` and `placeOrder`. In the `getQuote` resource, we construct an XML payload with the path parameter `company` and pass the payload to the SOAP client. Then we receive the response, convert it to JSON and respond back to the client. The resource `placeOrder` also has a similar logic except the XML payload is constructed from the values in the request payload.
 
-## Run the Integration
+## Testing
 
 * First let’s build the module. While being in the exposing-soap-service directory, execute the following command.
 
