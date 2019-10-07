@@ -18,13 +18,13 @@ In the above scenario, the following takes place:
 
 Both Grand Oak Hospital and Pine Valley Hospital have services exposed over HTTP protocol.
 
-Pine Valley Hospital service accepts a GET request in following service endpoint url.
+Pine Valley Hospital service accepts a GET request in following service endpoint URL.
 
 ```bash
 http://<HOST_NAME>:<PORT>/pineValley/doctors
 ```
 
-Grand Oak Hospital service accepts a GET request in following service endpoint url.
+Grand Oak Hospital service accepts a GET request in following service endpoint URL.
 
 ```bash
 http://<HOST_NAME>:<PORT>/grandOak/doctors/<DOCTOR_TYPE>
@@ -168,73 +168,75 @@ You get the following response.
 You just started Ballerina Integrator, created a project, started a service, invoked the service you created, and received a response.
 
 To have a look at the code, navigate to the `hospital_service.bal` file found inside your module.
+<details>
+            <summary>Ballerina code</summary>
+	    ```ballerina
+            import ballerina/http;
+            import ballerina/log;
 
-```
-import ballerina/http;
-import ballerina/log;
+            http:Client grandOakHospital = new("http://localhost:9091/grandOak");
+            http:Client pineValleyHospital = new("http://localhost:9092/pineValley");
 
-http:Client grandOakHospital = new("http://localhost:9091/grandOak");
-http:Client pineValleyHospital = new("http://localhost:9092/pineValley");
-
-@http:ServiceConfig {
-    basePath: "/healthcare"
-}
-service healthcare on new http:Listener(9090) {
-
-    @http:ResourceConfig {
-        path: "/doctor/{doctorType}"
-    }
-    resource function getDoctors(http:Caller caller, http:Request request, string doctorType) returns error? {
-        json grandOakDoctors = {};
-        json pineValleyDoctors = {};
-        var grandOakResponse = grandOakHospital->get("/doctors/" + doctorType);
-        var pineValleyResponse = pineValleyHospital->post("/doctors", {doctorType: doctorType});
-        // Extract doctors array from grand oak hospital response
-        if (grandOakResponse is http:Response) {
-            json result = check grandOakResponse.getJsonPayload();
-            grandOakDoctors = check result.doctors.doctor;
-        } else {
-            handleError(caller, <@untained> grandOakResponse.reason());
-        }
-        // Extract doctors array from pine valley hospital response
-        if (pineValleyResponse is http:Response) {
-            json result = check pineValleyResponse.getJsonPayload();
-            pineValleyDoctors = check result.doctors.doctor;
-        } else {
-            handleError(caller, <@untained> pineValleyResponse.reason());
-        }
-        // Aggregate grand oak hospital's doctors with pine valley hospital's doctors
-        if (grandOakDoctors is json[] && pineValleyDoctors is json[]) {
-            foreach var item in pineValleyDoctors {
-                grandOakDoctors.push(item);
+            @http:ServiceConfig {
+                basePath: "/healthcare"
             }
-        }
-        // Respond back to the caller with aggregated json response
-        http:Response response = new();
-        response.setJsonPayload(<@untained> grandOakDoctors);
-        var result = caller->respond(response);
+            service healthcare on new http:Listener(9090) {
 
-        if (result is error) {
-            log:printError("Error sending response", err = result);
-        }
-    }
-}
+                @http:ResourceConfig {
+                    path: "/doctor/{doctorType}"
+                }
+                resource function getDoctors(http:Caller caller, http:Request request, string doctorType) returns error? {
+                    json grandOakDoctors = {};
+                    json pineValleyDoctors = {};
+                    var grandOakResponse = grandOakHospital->get("/doctors/" + doctorType);
+                    var pineValleyResponse = pineValleyHospital->post("/doctors", {doctorType: doctorType});
+                    // Extract doctors array from grand oak hospital response
+                    if (grandOakResponse is http:Response) {
+                        json result = check grandOakResponse.getJsonPayload();
+                        grandOakDoctors = check result.doctors.doctor;
+                    } else {
+                        handleError(caller, <@untained> grandOakResponse.reason());
+                    }
+                    // Extract doctors array from pine valley hospital response
+                    if (pineValleyResponse is http:Response) {
+                        json result = check pineValleyResponse.getJsonPayload();
+                        pineValleyDoctors = check result.doctors.doctor;
+                    } else {
+                        handleError(caller, <@untained> pineValleyResponse.reason());
+                    }
+                    // Aggregate grand oak hospital's doctors with pine valley hospital's doctors
+                    if (grandOakDoctors is json[] && pineValleyDoctors is json[]) {
+                        foreach var item in pineValleyDoctors {
+                            grandOakDoctors.push(item);
+                        }
+                    }
+                    // Respond back to the caller with aggregated json response
+                    http:Response response = new();
+                    response.setJsonPayload(<@untained> grandOakDoctors);
+                    var result = caller->respond(response);
 
-function handleError(http:Caller caller, string errorMsg) {
-    http:Response response = new;
+                    if (result is error) {
+                        log:printError("Error sending response", err = result);
+                    }
+                }
+            }
 
-    json responsePayload = {
-        "error": {
-            "message": errorMsg
-        }
-    };
-    response.setJsonPayload(responsePayload, "application/json");
-    var result = caller->respond(response);
-    if (result is error) {
-        log:printError("Error sending response", err = result);
-    }
-}
-```
+            function handleError(http:Caller caller, string errorMsg) {
+                http:Response response = new;
+
+                json responsePayload = {
+                    "error": {
+                        "message": errorMsg
+                    }
+                };
+                response.setJsonPayload(responsePayload, "application/json");
+                var result = caller->respond(response);
+                if (result is error) {
+                    log:printError("Error sending response", err = result);
+                }
+            }
+            ```
+</details>
 
 ## What's Next
 
