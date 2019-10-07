@@ -6,7 +6,7 @@ A module is a directory that contains Ballerina source code files and is part of
 
 ## Storing modules in a public directory
 
-You can store your modules in a public directory called [Ballerina Central](#https://central.ballerina.io/). The following are the steps you follow when working with modules.
+You can store your modules in a public directory called [Ballerina Central](https://central.ballerina.io). The following are the steps you follow when working with modules.
 
 ![alt text](../../assets/img/module-to-central.png)
 

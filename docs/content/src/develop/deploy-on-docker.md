@@ -6,7 +6,7 @@ Deploying a Ballerina integration service is the process of creating assets that
 
 This topic provides instructions on how to deploy your project on [Docker](https://www.docker.com/). The project in this case, is the same one you used in the [Quick Start Guide](../../getting-started/quick-start-guide/).
 
-> **Tip**: The `docker` command line tool needs to be installed and working. Try: `docker ps` to verify this. Go to the [install page](#https://get.docker.io/) if you need to install Docker.
+> **Tip**: The `docker` command line tool needs to be installed and working. Try: `docker ps` to verify this. Go to the [install page](https://get.docker.com/) if you need to install Docker.
 
 ## Set up the project 
 
