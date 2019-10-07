@@ -6,7 +6,7 @@ For developers, the Ballerina-based integration component marks a new phase of i
 
 The following image is an illustration of what Ballerina Integrator consists of and the various components that work together to solve an integration problem.
 
-![Ballerina Interator components](../assets/img/ballerina-integrator-architecture.svg)
+![Ballerina Interator components](../../assets/img/ballerina-integrator-architecture.svg)
 
 <table>
   <tr>
