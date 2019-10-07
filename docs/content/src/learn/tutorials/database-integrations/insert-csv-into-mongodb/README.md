@@ -14,9 +14,9 @@ success message is logged if the operation is successful.
 
 ![inserting csv data to mongo db](../../../../assets/img/mongo-insert.jpg)
 
-<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 
-<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module by following the [documentation on creating a project and using modules](../../../../develop/using-modules/).
