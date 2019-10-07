@@ -1,10 +1,15 @@
 [project]
-org-name= "wso2"
-version= "0.1.0"
+org-name = "wso2"
+version = "1.1.0"
+license= ["Apache-2.0"]
+authors= ["WSO2"]
+keywords= ["ballerina", "integrator", "database", "transactions"]
+repository= "https://github.com/wso2/ballerina-integrator"
+templates= ["managing_database_transactions"]
 
 [platform]
 target = "java8"
 
     [[platform.libraries]]
-    module = "data_backed_service_module"
+    module = "managing_database_transactions"
     path = "./lib/mysql-connector-java-8.0.11.jar"

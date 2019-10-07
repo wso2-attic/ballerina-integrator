@@ -7,8 +7,8 @@ Ballerina Integrator VS Code Extension is a tool that is used alongside the Ball
 
 ### Requirements
   - Visual Studio Code
-  - Ballerina (v1.0.0)
-  - Ballerina VS Code Extension (v1.0.0)
+  - Ballerina (v1.0.1)
+  - Ballerina VS Code Extension (v1.0.1)
 
 ### Installation
 * **Using the VS Code Marketplace**

@@ -3,18 +3,18 @@
 [![Build Status](https://wso2.org/jenkins/buildStatus/icon?job=products/ballerina-integrator)](https://wso2.org/jenkins/view/products/job/products/job/ballerina-integrator/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-A powerful, simple-to-learn, code-driven approach to programming integrations - based on the [Ballerina programming language](ballerina.io). It includes first-class cloud-native functions as well as a graphical sequence diagram tool. 
+A powerful, simple-to-learn, code-driven approach to programming integrations - based on the [Ballerina programming language](https://ballerina.io). It includes first-class cloud-native functions as well as a graphical sequence diagram tool.
 
-The Ballerina Integrator appeals to those using decentralized integration architectures, Microservices, and cloud-native apps.
+The Ballerina Integrator appeals to those using decentralized integration architectures, microservices, and cloud-native apps.
 
-Developers can now efficiently code integrations directly into their work, merging the worlds of development 
+Developers can now efficiently write code for their integration scenarios, merging the worlds of development
 and integration.
 
 ## Ballerina 
 
 Ballerina is a new general-purpose programming language that makes it easy to write cloud-native applications.
 
-Please visit [ballerina.io](ballerina.io) to read more about Ballerina. 
+Please visit [ballerina.io](https://ballerina.io) to read more about Ballerina.
 
 ## Key Highlights
 
@@ -31,12 +31,11 @@ across network endpoints.
 
 ### Cloud-native, microservices ready
 
-The Ballerina integrator container-friendly super lightweight runtime seamlessly works with Docker, Kubernetes, 
+The container-friendly super lightweight Ballerina Integrator runtime seamlessly works with Docker, Kubernetes,
 Prometheus, and other cloud technologies. 
 
 ### Enables a true agile approach to API-centric integration
-With the use of Ballerina language, the Ballerina Integrator marking a revolutionary new phase of A
-PI-centric integration. As a programming language, integration developers can apply agile methodologies, 
+With the use of Ballerina language, the Ballerina Integrator marks a revolutionary new phase of API-centric integration. Using this programming language, integration developers can apply agile methodologies,
 bringing a new degree of speed and agility to integration projects. 
 
 
@@ -56,8 +55,8 @@ Mainly consists of below-stated components.
 ## Key features
 - Protocol Connectors: HTTP, File, gRPC, AMQP, NATS, Kafka, JMS   
 - Connectors: Salesforce, Amazon S3, Amazon SQS, SAP
-- Integration Templates:   projects with all key integration scenarios using pre-built templates. 
-(EIPs, Samples, scenarios..) 
+- Integration Templates: projects with all key integration scenarios using pre-built templates
+(EIPs, Samples, scenarios..).
 - Sequence diagram visualization of your integration scenario. 
 - Connected design, development, test and deployment experience.
 
@@ -65,15 +64,18 @@ Mainly consists of below-stated components.
 
 You can use the following options to try out Ballerina Integrator and get started.
 
-* [Quick Start Guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/getting-started/quick-start-guide/)
+* [Quick Start Guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/get-started/quick-start-guide/)
 * [Learn Documentation](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/use-cases/)
+* [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=WSO2.ballerina-integrator)
 
 ## Contributing to Ballerina
 
 As an open source project, the Ballerina Integrator team welcomes contributions from the community. To start contributing, read these [contribution guidelines](https://github.com/wso2/ballerina-integrator/blob/master/CONTRIBUTING.md) for information on how you should go about contributing to our project.
 
-Check the issue tracker for open issues that interest you. We look forward to receiving your contributions.
+Reference to the list of Ballerina Integrator connectors can be found [here](https://github.com/wso2/ballerina-integrator/blob/master/docs/content/src/references/references.md).
+
+Check the [issue tracker](https://github.com/wso2/ballerina-integrator/issues) for open issues that interest you. We look forward to receiving your contributions.
 
 ## License
 
-Ballerina Integrator code is distributed under [Apache license 2.0](https://github.com/wso2/ballerina-integrator/blob/master/LICENSE).
+Ballerina Integrator code is distributed under [Apache License 2.0](https://github.com/wso2/ballerina-integrator/blob/master/LICENSE).

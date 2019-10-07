@@ -1,22 +1,57 @@
 # Quick Start Guide
 
-This section helps you to quickly set up and run Ballerina Integrator so that you can use it for various integration solutions.
+Let's get started with WSO2 Ballerina Integrator by running a simple use case in your local environment. This is a simple service orchestration scenario. The scenario is about a basic health care system where Ballerina Integrator is used to integrate two backend hospital services to provide information to the client.
 
-## Install Ballerina
+Most healthcare centers have a system that is used to make doctor appointments. To check the availability of the doctors for a particular time, users need to visit the hospitals or use each and every online system that is dedicated for a particular healthcare center. Here we are making it easier for patients by orchestrating those isolated systems for each healthcare provider and exposing a single interface to the users.
 
-1. [Download](https://ballerina.io/downloads) Ballerina for your Operating System. 
-1. Follow the instructions given in the [Ballerina Getting Started page](https://ballerina.io/learn/getting-started/) to set it up. 
+![alt text](../../assets/img/BI-quick-start-guide.png)
 
-> **Note**: Throughout this documentation, `<ballerina_home>` refers to the directory in which you just installed Ballerina.
+In the above scenario, the following takes place:
 
-## Set up the IDE
+1. The client makes a call to the Healthcare service created using Ballerina Integrator.
 
-Let's try this on VS Code, which is the recommended IDE to use in Ballerina Integrator integration scenarios.
+2. The Healthcare service calls the Pine Valley Hospital backend service and gets the queried information.
 
-1. Open VS Code.
+3. The Healthcare service calls the Grand Oak Hospital backend service and gets the queried information.
+
+4. The response is returned to the client with the required information.
+
+Both Grand Oak Hospital and Pine Valley Hospital have services exposed over HTTP protocol.
+
+Pine Valley Hospital service accepts a GET request in following service endpoint URL.
+
+```bash
+http://<HOST_NAME>:<PORT>/pineValley/doctors
+```
+
+Grand Oak Hospital service accepts a GET request in following service endpoint URL.
+
+```bash
+http://<HOST_NAME>:<PORT>/grandOak/doctors/<DOCTOR_TYPE>
+```
+
+The expected payload should be in the following JSON format.
+
+```bash
+{
+        "doctorType": "<DOCTOR_TYPE>"
+}
+```
+
+Let’s implement a simple service that can be used to query for availability of doctors for a particular category from all the available healthcare centers.
+
+## Before you begin
+
+1. [Download Ballerina Integrator](https://www.wso2.com/integration/ballerina-integrator) for your Operating System. 
+
+2. Download the sample files from [here](https://github.com/wso2/docs-ei/tree/7.0.0/en/micro-integrator/docs/assets/attach/quick-start-guide). From this point onwards, let's refer to this folder as `<BI_QSG_HOME>`.
+
+3. Download [curl](https://curl.haxx.se/) or a similar tool that can call an endpoint.
+
+4. Start up VS Code, which is the recommended IDE to use in Ballerina Integrator integration scenarios.
    > **Tip**: Download and install [VS Code](https://code.visualstudio.com/Download) if you do not have it already.
 
-2. Find the extension for Ballerina in the VS Code marketplace. For instructions on installing and using it, see [The Visual Studio Code Extension](https://ballerina.io/learn/tools-ides/vscode-plugin/).
+5. Find the extension for Ballerina in the VS Code marketplace. For instructions on installing and using it, see [The Visual Studio Code Extension](https://ballerina.io/learn/tools-ides/vscode-plugin/).
 
 Once you have installed the extension, press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Linux and the following page appears.
 
@@ -24,62 +59,75 @@ Once you have installed the extension, press `Command + Shift + P` in Mac or `Ct
 
 You can select one of the available templates or run it using the CLI as indicated in the following section.
 
+## Start backend mock services
+
+Two mock hospital information services are available in the `DoctorInfo.jar` file located at `<BI_QSG_HOME>/BackendService/` directory. 
+
+Open a command line window, navigate to `<BI_QSG_HOME>/BackendService/`, and use the following command to start the services.
+
+```java
+java -jar DoctorInfo.jar
+```
+
+You will see following printed in the command line.
+
+```bash
+[ballerina/http] started HTTP/WS listener 0.0.0.0:9090
+[ballerina/http] started HTTP/WS listener 0.0.0.0:9091
+```
+
 ## Create a Project, Add a Template, and Invoke the Service
 
 Create a new project by navigating to a directory of your choice and running the following command. 
 
 ```bash
-$ ballerina new MyProject
+$ ballerina new healthcare-service
 ```
 
 You see a response confirming that your project is created.
 
-In this project, you will be creating a service that transforms an XML message to JSON.
-
-![alt text](../../assets/img/xml-json.png)
-
-First let's pull the module from Ballerina Central, which is a public directory that allows you to host templates and modules. In this case, we use the `xml_to_json_transformation` template.
+Let's use a predefined module from Ballerina Central, which is a public directory that allows you to host templates and modules. A module is a directory that contains Ballerina source code files, while a template is a predefined code that solves a particular integration scenario. In this case, we use the `healthcare_service` module. Navigate into the project directory you created and run the following command.
 
 ```
-$ ballerina pull wso2/xml_to_json_transformation
+$ ballerina pull wso2/healthcare_service
 ```
 
-Navigate into the project directory you created and run the following command. This command enables you to create a module using the predefined template you pulled.
+Now navigate into the above module directory you created. The following command enables you to apply a predefined template you pulled.
 
 ```bash
-$ ballerina add -t wso2/xml_to_json_transformation MyModule
+$ ballerina add -t wso2/healthcare_service doctors
 ```
 
-This automatically creates an XML to JSON transformation service for you inside an `src` directory. A Ballerina service represents a collection of network accessible entry points in Ballerina. A resource within a service represents one such entry point. The generated sample service exposes a network entry point on port 9090.
+This automatically creates a healthcare service for you inside an `src` directory. A Ballerina service represents a collection of network accessible entry points in Ballerina. A resource within a service represents one such entry point. The generated sample service exposes a network entry point on port 9090.
 
 Build the service using the `ballerina build` command.
 
 ```bash
-$ ballerina build MyModule
+$ ballerina build doctors
 ```
 
 You get the following output.
 
 ```bash
 Compiling source
-	sam/MyModule:0.1.0
+	wso2/doctors:0.1.0
 
 Creating balos
-	target/balo/MyModule-2019r3-any-0.1.0.balo
+	target/balo/doctors-2019r3-any-0.1.0.balo
 
 Running tests
-    sam/MyModule:0.1.0
+    wso2/doctors:0.1.0
 	No tests found
 
 
 Generating executables
-	target/bin/MyModule.jar
+	target/bin/doctors.jar
 ```
 
 Run the following Java command to run the executable .jar file that is created once you build your module.
 
-```
-java -jar target/bin/MyModule.jar --b7a.config.file=src/MyModule/resources/ballerina.conf
+```bash
+$ java -jar target/bin/doctors.jar
 ```
 
 Your service is now up and running. You can invoke the service using an HTTP client. In this case, we use cURL.
@@ -87,94 +135,110 @@ Your service is now up and running. You can invoke the service using an HTTP cli
 > **Tip**: If you do not have cURL installed, you can download it from [https://curl.haxx.se/download.html](https://curl.haxx.se/download.html).
 
 ```bash
-$ curl -X POST -d '<user><name>Sam</name><job>Scientist</job></user>'  http://localhost:9092/laboratory/user  -H "Content-Type: text/xml"
+$ curl http://localhost:9090/healthcare/doctor/physician
 ```
 
 You get the following response.
 
-```xml
-<response>
-    <status>successful</status>
-    <id>987</id>
-    <name>Sam</name>
-    <job>Scientist</job>
-    <createdAt>2019-09-10T11:47:38.387Z</createdAt>
-</response>
-
+```json
+[
+   {
+      "name":"Shane Martin",
+      "time":"07:30 AM",
+      "hospital":"Grand Oak"
+   },
+   {
+      "name":"Geln Ivan",
+      "time":"08:30 AM",
+      "hospital":"Grand Oak"
+   },
+   {
+      "name":"Geln Ivan",
+      "time":"05:30 PM",
+      "hospital":"pineValley"
+   },
+   {
+      "name":"Daniel Lewis",
+      "time":"05:30 PM",
+      "hospital":"pineValley"
+   }
+]
 ```
 
-You just started Ballerina, created a project, started a service, invoked the service you created, and received a response.
+You just started Ballerina Integrator, created a project, started a service, invoked the service you created, and received a response.
 
-To have a look at the code, navigate to the `main.bal` file found inside your module.
+To have a look at the code, navigate to the `hospital_service.bal` file found inside your module.
+<details>
+            <summary>Ballerina code</summary>
+	    ```ballerina
+            import ballerina/http;
+            import ballerina/log;
 
-```
-// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-//
-// WSO2 Inc. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
+            http:Client grandOakHospital = new("http://localhost:9091/grandOak");
+            http:Client pineValleyHospital = new("http://localhost:9092/pineValley");
 
-import ballerina/config;
-import ballerina/http;
-import ballerina/log;
-import ballerina/jsonutils;
-import ballerina/xmlutils;
-
-// This is the endpoint of the backend service that is being called.
-http:Client healthcareEndpoint = new("https://reqres.in");
-// "/api/users" is a constant for the request path of the backend service.
-const BACKEND_EP_PATH = "/api/users";
-
-// This is the base path of the service you are creating.
-@http:ServiceConfig {
-    basePath: "/laboratory"
-}
-service scienceLabService on new http:Listener(config:getAsInt("LISTENER_PORT")) {
-    // Schedule an appointment. "/user" is the resource path of your service.
-    @http:ResourceConfig {
-        methods: ["POST"],
-        path: "/user"
-    }
-    resource function addUser(http:Caller caller, http:Request request) returns error? {
-        json user = {};
-        // Extract user from the request and convert it from XML to JSON. 
-        // If malformed, respond back with HTTP 400 error.
-        xml|error req = request.getXmlPayload();
-        if (req is xml) {
-            user = check jsonutils:fromXML(req);
-        } else {
-            http:Response res = new();
-            res.statusCode = http:STATUS_BAD_REQUEST;
-            var result = caller->respond(res);
-            if (result is error) {
-                log:printError("Error occurred while responding", err = result);
+            @http:ServiceConfig {
+                basePath: "/healthcare"
             }
-        }
-        // Create request and send to the backend
-        http:Request backendReq = new();
-        backendReq.setPayload(user);
-        http:Response backendRes = check healthcareEndpoint->post(BACKEND_EP_PATH, backendReq);
-        // Get the JSON payload, convert it back to XML, and respond back to the client
-        var result = caller->respond(check xmlutils:fromJSON(check backendRes.getJsonPayload()));
-        if (result is error) {
-            log:printError("Error occurred while responding", err = result);
-        }
-    }
-}
+            service healthcare on new http:Listener(9090) {
 
-function handleResult(error? result) {
-    if (result is error) {
-        log:printError("Error occurred while responding", err = result);
-    }
-}
-```
+                @http:ResourceConfig {
+                    path: "/doctor/{doctorType}"
+                }
+                resource function getDoctors(http:Caller caller, http:Request request, string doctorType) returns error? {
+                    json grandOakDoctors = {};
+                    json pineValleyDoctors = {};
+                    var grandOakResponse = grandOakHospital->get("/doctors/" + doctorType);
+                    var pineValleyResponse = pineValleyHospital->post("/doctors", {doctorType: doctorType});
+                    // Extract doctors array from grand oak hospital response
+                    if (grandOakResponse is http:Response) {
+                        json result = check grandOakResponse.getJsonPayload();
+                        grandOakDoctors = check result.doctors.doctor;
+                    } else {
+                        handleError(caller, <@untained> grandOakResponse.reason());
+                    }
+                    // Extract doctors array from pine valley hospital response
+                    if (pineValleyResponse is http:Response) {
+                        json result = check pineValleyResponse.getJsonPayload();
+                        pineValleyDoctors = check result.doctors.doctor;
+                    } else {
+                        handleError(caller, <@untained> pineValleyResponse.reason());
+                    }
+                    // Aggregate grand oak hospital's doctors with pine valley hospital's doctors
+                    if (grandOakDoctors is json[] && pineValleyDoctors is json[]) {
+                        foreach var item in pineValleyDoctors {
+                            grandOakDoctors.push(item);
+                        }
+                    }
+                    // Respond back to the caller with aggregated json response
+                    http:Response response = new();
+                    response.setJsonPayload(<@untained> grandOakDoctors);
+                    var result = caller->respond(response);
+
+                    if (result is error) {
+                        log:printError("Error sending response", err = result);
+                    }
+                }
+            }
+
+            function handleError(http:Caller caller, string errorMsg) {
+                http:Response response = new;
+
+                json responsePayload = {
+                    "error": {
+                        "message": errorMsg
+                    }
+                };
+                response.setJsonPayload(responsePayload, "application/json");
+                var result = caller->respond(response);
+                if (result is error) {
+                    log:printError("Error sending response", err = result);
+                }
+            }
+            ```
+</details>
+
+## What's Next
+
+- Try out the tutorials available in the [Learn section of our documentation](../../learn/use-cases/).
+- You can easily deploy the projects you create by following our documentation on [Docker](../../learn/deploy-on-docker/) and [Kubernetes](../../learn/deploy-on-kubernetes/).

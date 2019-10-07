@@ -5,7 +5,7 @@ the Ballerina programming language, or you have tried it in the past and now you
 jBallerina 1.0 release with WSO2 Ballerina Integrator. 
 
 In either case, we are going to skim through the most important parts of the language that you need to know 
-before you write Ballerina programs. If you want in depth learning material you can always refer 
+before you write Ballerina programs. If you want in-depth learning material you can always refer 
 [the Ballerina language documentation](https://v1-0.ballerina.io/learn/)
 
 ## Table of Contents
@@ -23,7 +23,7 @@ before you write Ballerina programs. If you want in depth learning material you 
 
 ## Introduction to Ballerina Platform
 
-Overall Ballerina platform consists of following key components
+Overall Ballerina platform consists of following key components.
 
 - [Re-introducing Ballerina Programming Language](#re-introducing-ballerina-programming-language)
   - [Table of Contents](#table-of-contents)
@@ -75,7 +75,7 @@ specification.
 
 #### Ballerina Platform Library
 
-All the other modules in the standard library are versioned and released under independent of 
+All the other modules in the standard library are versioned and released independent of 
 the language specification.
 
 Following are some example platform modules.
@@ -94,9 +94,9 @@ WSO2 Ballerina Integrator related connectors are written as Ballerina modules an
 ### Ballerina CLI Tool
 
 Ballerina CLI tool is independent from all the other components mentioned earlier. You can think of this as a
-CLI interface to interact with afore mentioned components of the Ballerina echo system. 
+CLI interface to interact with afore mentioned components of the Ballerina echosystem. 
 
-FOr instance, you can use this tool to 
+For instance, you can use this tool to:
 
 - create Ballerina projects and modules
 - compile your Ballerina programs
@@ -108,6 +108,6 @@ FOr instance, you can use this tool to
 
 ### LSP Implementation
 
-Ballerina language support different IDE like VS code and IntelliJ Idea through its language server 
-Implementation.
+Ballerina language supports different IDEs like VS Code and IntelliJ Idea through its language server 
+implementation.
 

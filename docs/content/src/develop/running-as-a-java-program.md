@@ -8,7 +8,7 @@ To run Ballerina code as a Java program, you need to have Oracle JDK 1.8.* insta
 
 ## Running the simple Java command
 
-The following is an example of a `java -jar` command. This is used to run the project built in the [Quick Start Guide](../../getting-started/quick-start-guide).
+The following is an example of a `java -jar` command. This is used to run the project built in the [Quick Start Guide](../../get-started/quick-start-guide).
 
 ```java
 

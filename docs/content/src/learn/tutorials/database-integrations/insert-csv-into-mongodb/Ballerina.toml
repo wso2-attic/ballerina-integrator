@@ -1,0 +1,10 @@
+[project]
+org-name = "wso2"
+version = "1.1.0"
+license= ["Apache-2.0"]
+authors= ["WSO2"]
+keywords= ["ballerina", "integrator", "mongodb", "csv"]
+repository= "https://github.com/wso2/ballerina-integrator"
+templates= ["insert_csv_into_mongodb"]
+
+[dependencies]
