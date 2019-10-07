@@ -66,26 +66,25 @@ Minikube users please see the [Kubernetes Extension samples](https://github.com/
 Now you can use the following command to build the Ballerina service that we developed above. This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
 
 ```bash
-$ ballerina build doctors
-
+$ ballerina build healthcare_service
 ```
 
 You get the following output.
 
 ```bash
 Compiling source
-	wso2/doctors:0.1.0
+	wso2/healthcare_service:0.1.0
 
 Creating balos
-	target/balo/doctors-2019r3-any-0.1.0.balo
+	target/balo/healthcare_service-2019r3-any-0.1.0.balo
 
 Running tests
-    wso2/doctors:0.1.0
+    wso2/healthcare_service:0.1.0
 	No tests found
 
 
 Generating executables
-	target/bin/doctors.jar
+	target/bin/healthcare_service.jar
 
 Generating artifacts...
 
@@ -96,10 +95,10 @@ Generating artifacts...
 	@kubernetes:Helm 			 - complete 1/1
 
 	Run the following command to deploy the Kubernetes artifacts: 
-	kubectl apply -f /home/user/ballerina/healthcare-service/target/kubernetes/doctors
+	kubectl apply -f /home/user/ballerina/quick-start-guide/target/kubernetes/healthcare_service
 
 	Run the following command to install the application using Helm: 
-	helm install --name healthcare-service /home/user/ballerina/healthcare-service/target/kubernetes/doctors/healthcare-service
+	helm install --name healthcare-service /home/user/ballerina/quick-start-guide/target/kubernetes/healthcare_service/healthcare-service
 ```
 You can use the `docker images` command to verify that the Docker image that we specified in `@kubernetes:Deployment` was created. The Kubernetes artifacts related to your service will be generated in addition to the `.jar` file.
 
@@ -109,7 +108,7 @@ $ tree
 ├── Ballerina.lock
 ├── Ballerina.toml
 ├── src
-│   └── doctors
+│   └── healthcare_service
 │       ├── grandOak.bal
 │       ├── healthcare_service.bal
 │       ├── Module.md
@@ -120,36 +119,36 @@ $ tree
 │       └── utils.bal
 └── target
     ├── balo
-    │   └── doctors-2019r3-any-0.1.0.balo
+    │   └── healthcare_service-2019r3-any-0.1.0.balo
     ├── bin
-    │   └── doctors.jar
+    │   └── healthcare_service.jar
     ├── caches
     │   ├── bir_cache
     │   │   └── wso2
-    │   │       └── doctors
+    │   │       └── healthcare_service
     │   │           └── 0.1.0
-    │   │               └── doctors.bir
+    │   │               └── healthcare_service.bir
     │   └── jar_cache
     │       └── wso2
-    │           └── doctors
+    │           └── healthcare_service
     │               └── 0.1.0
-    │                   └── wso2-doctors-0.1.0.jar
+    │                   └── wso2-healthcare_service-0.1.0.jar
     ├── docker
-    │   └── doctors
+    │   └── healthcare_service
     │       └── Dockerfile
-    ├── kubernetes
-    │   └── doctors
-    │       ├── doctors.yaml
-    │       └── healthcare-service
-    │           ├── Chart.yaml
-    │           └── templates
-    │               └── doctors.yaml
+    └── kubernetes
+        └── healthcare_service
+            ├── healthcare_service.yaml
+            └── healthcare-service
+                ├── Chart.yaml
+                └── templates
+                    └── healthcare_service.yaml
 ```
 
 Now you can create the Kubernetes deployment using:
 
 ```bash
-$ kubectl apply -f /home/user/ballerina/healthcare-service/target/kubernetes/doctors
+$ kubectl apply -f /home/user/ballerina/quick-start-guide/target/kubernetes/healthcare_service
 
 service/healthcare-service created
 ingress.extensions/healthcare-service created

@@ -50,26 +50,25 @@ service healthcare on new http:Listener(9090) {
 Now your code is ready to generate deployment artifacts. In this case it is a Docker image. Navigate to the directory of your porject and run the following command to build the module and generate the Docker artifacts.
   
 ```bash
-$ ballerina build doctors
-
+$ ballerina build healthcare_service
 ```
 
 You get the following output.
 
 ```bash
 Compiling source
-	wso2/doctors:0.1.0
+	wso2/healthcare_service:0.1.0
 
 Creating balos
-	target/balo/doctors-2019r3-any-0.1.0.balo
+	target/balo/healthcare_service-2019r3-any-0.1.0.balo
 
 Running tests
-    wso2/doctors:0.1.0
+    wso2/healthcare_service:0.1.0
 	No tests found
 
 
 Generating executables
-	target/bin/doctors.jar
+	target/bin/healthcare_service.jar
 
 Generating docker artifacts...
 	@docker 		 - complete 3/3 

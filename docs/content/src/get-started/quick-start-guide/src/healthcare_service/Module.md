@@ -1,10 +1,12 @@
-# Quick Start Guide
+Quick Start Guide for Ballerina Integrator.
+
+# Guide Overview
 
 Let's get started with WSO2 Ballerina Integrator by running a simple use case in your local environment. This is a simple service orchestration scenario. The scenario is about a basic health care system where Ballerina Integrator is used to integrate two backend hospital services to provide information to the client.
 
 Most healthcare centers have a system that is used to make doctor appointments. To check the availability of the doctors for a particular time, users need to visit the hospitals or use each and every online system that is dedicated for a particular healthcare center. Here we are making it easier for patients by orchestrating those isolated systems for each healthcare provider and exposing a single interface to the users.
 
-![alt text](../../assets/img/BI-quick-start-guide.png)
+![alt text](resources/BI-quick-start-guide.png)
 
 In the above scenario, the following takes place:
 
@@ -55,18 +57,18 @@ Let’s implement a simple service that can be used to query for availability of
 
 Once you have installed the extension, press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Linux and the following page appears.
 
-![alt text](../../assets/img/vs-code-landing.png)
+![alt text](resources/vs-code-landing.png)
 
 You can select one of the available templates or run it using the CLI as indicated in the following section.
 
 ## Start backend mock services
 
-Two mock hospital information services are available in the `DoctorInfo.jar` file located at `<BI_QSG_HOME>/BackendService/` directory. 
+Two mock hospital information services are available in the `DoctorInfo.jar` file located at `<BI_QSG_HOME>/BackendService/` directory.
 
 Open a command line window, navigate to `<BI_QSG_HOME>/BackendService/`, and use the following command to start the services.
 
 ```java
-java -jar DoctorInfo.jar
+$ java -jar DoctorInfo.jar
 ```
 
 You will see following printed in the command line.
@@ -78,7 +80,7 @@ You will see following printed in the command line.
 
 ## Create a Project, Add a Template, and Invoke the Service
 
-Create a new project by navigating to a directory of your choice and running the following command. 
+Create a new project by navigating to a directory of your choice and running the following command.
 
 ```bash
 $ ballerina new quick-start-guide
@@ -168,9 +170,6 @@ You get the following response.
 You just started Ballerina Integrator, created a project, started a service, invoked the service you created, and received a response.
 
 To have a look at the code, navigate to the `hospital_service.bal` file found inside your module.
-<details>
-    <summary>Ballerina code</summary>
-
 ```ballerina
 import ballerina/http;
 import ballerina/log;
@@ -237,9 +236,8 @@ function handleError(http:Caller caller, string errorMsg) {
     }
 }
 ```
-</details>
 
 ## What's Next
 
-- Try out the tutorials available in the [Learn section of our documentation](../../learn/use-cases/).
-- You can easily deploy the projects you create by following our documentation on [Docker](../../learn/deploy-on-docker/) and [Kubernetes](../../learn/deploy-on-kubernetes/).
+- Try out the tutorials available in the [Learn section of our documentation](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/use-cases/).
+- You can easily deploy the projects you create by following our documentation on [Docker](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/deploy-on-docker/) and [Kubernetes](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/deploy-on-kubernetes/).
