@@ -34,24 +34,22 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import static org.wso2.integration.ballerina.constants.Constants.BALLERINA_CODE_MD_SYNTAX;
-import static org.wso2.integration.ballerina.constants.Constants.CODE;
-import static org.wso2.integration.ballerina.constants.Constants.CODE_MD_SYNTAX;
-import static org.wso2.integration.ballerina.constants.Constants.COMMIT_HASH;
-import static org.wso2.integration.ballerina.constants.Constants.EMPTY_STRING;
-import static org.wso2.integration.ballerina.constants.Constants.EQUAL;
-import static org.wso2.integration.ballerina.constants.Constants.FORWARD_SLASH;
-import static org.wso2.integration.ballerina.constants.Constants.FRONT_MATTER_SIGN;
-import static org.wso2.integration.ballerina.constants.Constants.GIT_COMMIT_ID;
-import static org.wso2.integration.ballerina.constants.Constants.HASH;
-import static org.wso2.integration.ballerina.constants.Constants.JAVA_CODE_MD_SYNTAX;
-import static org.wso2.integration.ballerina.constants.Constants.LICENCE_LAST_LINE;
-import static org.wso2.integration.ballerina.constants.Constants.NEW_LINE;
-import static org.wso2.integration.ballerina.constants.Constants.NOTE;
-import static org.wso2.integration.ballerina.constants.Constants.README_MD;
-import static org.wso2.integration.ballerina.constants.Constants.TEMP_ASSETS_ZIP_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.TEMP_DIR;
-import static org.wso2.integration.ballerina.constants.Constants.TITLE;
+import static org.wso2.integration.ballerina.Constants.BALLERINA_CODE_MD_SYNTAX;
+import static org.wso2.integration.ballerina.Constants.CODE;
+import static org.wso2.integration.ballerina.Constants.CODE_MD_SYNTAX;
+import static org.wso2.integration.ballerina.Constants.COMMIT_HASH;
+import static org.wso2.integration.ballerina.Constants.EMPTY_STRING;
+import static org.wso2.integration.ballerina.Constants.EQUAL;
+import static org.wso2.integration.ballerina.Constants.FORWARD_SLASH;
+import static org.wso2.integration.ballerina.Constants.FRONT_MATTER_SIGN;
+import static org.wso2.integration.ballerina.Constants.GIT_COMMIT_ID;
+import static org.wso2.integration.ballerina.Constants.HASH;
+import static org.wso2.integration.ballerina.Constants.JAVA_CODE_MD_SYNTAX;
+import static org.wso2.integration.ballerina.Constants.LICENCE_LAST_LINE;
+import static org.wso2.integration.ballerina.Constants.NEW_LINE;
+import static org.wso2.integration.ballerina.Constants.NOTE;
+import static org.wso2.integration.ballerina.Constants.README_MD;
+import static org.wso2.integration.ballerina.Constants.TITLE;
 
 /**
  * Util functions used for site builder.
@@ -66,12 +64,13 @@ public class Utils {
      * @param directoryPath path of the directory
      */
     public static void createDirectory(String directoryPath) {
-        if (!new File(directoryPath).exists()) {
-            if (!new File(directoryPath).mkdir()) {
+        File file = new File(directoryPath);
+        if (!file.exists()) {
+            if (!file.mkdir()) {
                 throw new ServiceException("Error occurred when creating directory: " + directoryPath);
             }
         } else {
-            if(logger.isInfoEnabled()) {
+            if (logger.isInfoEnabled()) {
                 logger.info("Directory already exists: {}", directoryPath);
             }
         }
@@ -83,8 +82,8 @@ public class Utils {
      * @param filePath path of the file
      */
     public static void createFile(String filePath) {
-        if (!new File(filePath).exists()) {
-            File file = new File(filePath);
+        File file = new File(filePath);
+        if (!file.exists()) {
             try {
                 if (!file.createNewFile()) {
                     throw new ServiceException("Could not create the file: " + filePath);
@@ -93,7 +92,7 @@ public class Utils {
                 throw new ServiceException("Error when creating the file: " + filePath, e);
             }
         } else {
-            if(logger.isInfoEnabled()) {
+            if (logger.isInfoEnabled()) {
                 logger.info("File already exists: {}", filePath);
             }
         }
@@ -140,30 +139,19 @@ public class Utils {
     }
 
     /**
-     * Get current directory name of a file.
-     *
-     * @param path file path
-     * @return path of the current directory
-     */
-    public static String getCurrentDirectoryName(String path) {
-        return path.substring(path.lastIndexOf(File.separator) + 1);
-    }
-
-    /**
      * Get file content as a string.
      *
      * @param file file which want to content as string
      * @return file content as a string
      */
-    public static String getCodeFile(File file, String readMeParentPath) {
+    public static String getCodeFile(File file, String readMeParentPath, String tempDir) {
         try {
             if (file.exists()) {
                 return IOUtils.toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
             } else {
                 throw new ServiceException("Invalid file path in INCLUDE_CODE tag. Mentioned file does not exists in "
                         + "the project. Please mention the correct file path and try again.\n\tInclude file path\t:"
-                        + file.getPath().replace(TEMP_DIR, "docs/") + "\n\tREADME file path\t:"
-                        + readMeParentPath.replace(TEMP_DIR, "docs/") + FORWARD_SLASH + README_MD);
+                        + file.getPath() + "\n\tREADME file path\t:" + readMeParentPath + FORWARD_SLASH + README_MD);
             }
         } catch (IOException e) {
             throw new ServiceException("Error occurred when converting file content to string. file: " + file.getPath(),
@@ -280,9 +268,8 @@ public class Utils {
      * @param tomlFile toml file
      * @return zip file name
      */
-    public static String getZipFileName(File tomlFile) {
-        File parent = tomlFile.getParentFile();
-        return TEMP_ASSETS_ZIP_DIR + File.separator + parent.getName() + ".zip";
+    public static String getZipFileName(String tempDir, File tomlFile) {
+        return Paths.get(tempDir, "assets", "zip", tomlFile.getParentFile().getName()) + ".zip";
     }
 
     /**

@@ -36,8 +36,6 @@ The following diagram illustrates the scenario in high level:
   * After you install ActiveMQ, copy the .jar files from the *<AMQ_HOME>/lib* directory to the *<BALLERINA_HOME>/bre/lib* directory.
   * If you use ActiveMQ version 5.12.0, you only have to copy *activemq-client-5.12.0.jar*, *geronimo-j2ee-management_1.1_spec-1.0.1.jar*, and *hawtbuf-1.11.jar* from the *<AMQ_HOME>/lib* directory to the *<BALLERINA_HOME>/bre/lib* directory.
   
-<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
-
 ## Implementation
 
 > If you want to skip the basics and move directly to the [Testing](#testing) section, you can download the project from
