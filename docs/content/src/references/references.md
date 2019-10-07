@@ -11,4 +11,3 @@ The [API Documentation](https://v1-0.ballerina.io/learn/api-docs/ballerina/index
 
 ## Language Specification
 The [Language Specification](https://v1-0.ballerina.io/spec/) is the document that defines Ballerina programming language and will be useful to those who wish to understand, evaluate, or start using the language.
-
