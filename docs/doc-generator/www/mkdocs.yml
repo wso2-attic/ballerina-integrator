@@ -86,7 +86,7 @@ nav:
     - Develop:
       - 'Re-introducing Ballerina Programming Language' : 'develop/reintroducing-ballerina.md'
       - 'Setting up the Developer Environment' : 'develop/setup-dev.md'
-      - 'Creating a Project' : 'develop/using-modules.md'
+      - 'Managing Ballerina Code' : 'develop/managing-ballerina-code.md'
       - 'Deploying on Docker': 'develop/deploy-on-docker.md'
       - 'Deploying on Kubernetes': 'develop/deploy-on-kubernetes.md'
       - 'Running as a Java Program': 'develop/running-as-a-java-program.md'
