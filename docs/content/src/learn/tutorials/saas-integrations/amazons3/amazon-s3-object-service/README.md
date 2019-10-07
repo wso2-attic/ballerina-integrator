@@ -16,11 +16,11 @@ The `wso2/amazons3` module allows you to perform the following operations.
 
 This example explains how to use the S3 client to connect with the Amazon S3 instance and to create an Amazon S3 bucket.
 
-You can find other integrations modules from [wso2-ballerina](https://github.com/wso2-ballerina) Github organization.
+You can find other integrations modules from [wso2-ballerina](https://github.com/wso2-ballerina) GitHub organization.
 
 ## What you'll build
 
-This application connects with the Amazon S3 API and create a new object in an Amazon S3 bucket, list the available objects in the bucket, display the object content and delete a specified object in the bucket.
+This application connects with the Amazon S3 API and creates a new object in an Amazon S3 bucket, list the available objects in the bucket, display the object content and delete a specified object in the bucket.
 
 ![exposing Amazon S3 as a service](../../../../../assets/img/amazon-s3-object-service.jpg)
 
@@ -132,7 +132,7 @@ Create a file called `content.json` with following JSON content:
 ```
 - Invoke the following curl request to create a new object in the newly created bucket.
 ```
-curl -v -X POST --data @content.json http://localhost:9090/amazons3/firstbalbucket/firstObject.json --header "Content-Type:application/json"
+curl -v -X POST --data @content.json http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json --header "Content-Type:application/json"
 ```
 You see the response as follows:
 ```
@@ -143,7 +143,7 @@ firstObject.json created on Amazon S3 bucket : firstbalbucket.
 Let's upload an image (sample.jpg) to the s3 bucket we created above. 
 - Invoke the following curl request to create a new object in the newly created bucket.
 ```
-curl -v -X POST http://localhost:9090/amazons3/firstbalbucket/image.jpg -H 'Content-Type: image/jpg' -T sample.jpg
+curl -v -X POST http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg -H 'Content-Type: image/jpg' -T sample.jpg -H "Expect:"
 ```
 You see the response as follows:
 ```
@@ -155,14 +155,14 @@ image.jpg created on Amazon S3 bucket : firstbalbucket.
 - Invoke the following curl request to list objects in a bucket.
 
 ```
-curl -X GET http://localhost:9090/amazons3/firstbalbucket
+curl -X GET http://localhost:9090/amazons3/imageStore/firstbalbucket
 ```
 
 #### Test get Object service
 ##### (I) JSON Content
 - Set the `responseContentType` as `application/json` to retrieve a JSON object and invoke the following curl request to get the newly created object.
 ```
-curl -v -X GET http://localhost:9090/amazons3/firstbalbucket/firstObject.json?responseContentType=application/json
+curl -v -X GET http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json?responseContentType=application/json
 ```
 You see the response as follows:
 ```json
@@ -183,19 +183,19 @@ You see the response as follows:
 ##### (II) Binary Content
 - Set the `responseContentType` as image/jpg and use following URL to open newly created image on browser.
 ```
-http://localhost:9090/amazons3/firstbalbucket/image.jpg?responseContentType=image/jpg
+http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg?responseContentType=image/jpg
 ```
 
 - Set the `responseContentType` as application/octet-stream and use the following URL to download newly created image.
 ```
-http://localhost:9090/amazons3/firstbalbucket/image.jpg?responseContentType=application/octet-stream
+http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg?responseContentType=application/octet-stream
 ```
 
 #### Test delete Object service
 
 - Invoke the following curl request to delete the above object.
 ```
-curl -v -X DELETE http://localhost:9090/amazons3/firstbalbucket/firstObject.json
+curl -v -X DELETE http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json
 ```
 You see the response as follows:
 ```

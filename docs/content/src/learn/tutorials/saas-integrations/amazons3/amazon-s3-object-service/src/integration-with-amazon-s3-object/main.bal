@@ -52,7 +52,7 @@ amazons3:AmazonS3Client|amazons3:ConnectorError amazonS3Client = new(amazonS3Con
 service amazonS3Service on new http:Listener(9090) {
     @http:ResourceConfig {
         methods: ["POST"],
-        path: "/{bucketName}/{objectName}"
+        path: "/imageStore/{bucketName}/{objectName}"
     }
     // Function to create a new object into an existing bucket.
     resource function createObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
@@ -90,7 +90,7 @@ service amazonS3Service on new http:Listener(9090) {
 
     @http:ResourceConfig {
         methods: ["GET"],
-        path: "/{bucketName}/{objectName}"
+        path: "/imageStore/{bucketName}/{objectName}"
     }
     // Function to get object.
     resource function getObject(http:Caller caller, http:Request request, string bucketName, string objectName) {
@@ -123,7 +123,7 @@ service amazonS3Service on new http:Listener(9090) {
     
     @http:ResourceConfig {
         methods: ["GET"],
-        path: "/{bucketName}"
+        path: "/imageStore/{bucketName}"
     }
     // Function to list objects.
     resource function listObjects(http:Caller caller, http:Request request, string bucketName) {
@@ -157,7 +157,7 @@ service amazonS3Service on new http:Listener(9090) {
 
     @http:ResourceConfig {
         methods: ["DELETE"],
-        path: "/{bucketName}/{objectName}"
+        path: "/imageStore/{bucketName}/{objectName}"
     }
     // Function to delete object.
     resource function deleteObject(http:Caller caller, http:Request request, string bucketName, string objectName) {

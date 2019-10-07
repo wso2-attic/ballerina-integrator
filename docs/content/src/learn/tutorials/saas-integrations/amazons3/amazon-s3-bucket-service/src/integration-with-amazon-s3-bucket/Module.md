@@ -11,7 +11,7 @@ The `wso2/amazons3` module allows you to perform the following operations.
 
 This example explains how to use the S3 client to connect with the Amazon S3 instance and to create a Amazon S3 bucket.
 
-You can find other integrations modules from [wso2-ballerina](https://github.com/wso2-ballerina) Github organization.
+You can find other integrations modules from [wso2-ballerina](https://github.com/wso2-ballerina) GitHub organization.
 
 ## What you'll build
 
@@ -109,14 +109,14 @@ $ java -jar target/bin/integration-with-amazon-s3-bucket.jar
 You will see the following service log after successfully invoking the service.
 
 ```log
-[ballerina/http] started HTTP/WS listener 0.0.0.0:9090
+[ballerina/http] started HTTP/WS listener 0.0.0.0:9091
 ```
 
 ### Testing the create bucket service 
 
 - Invoke the following curl request to create a new bucket.
 ```bash
-curl -v -X POST http://localhost:9090/amazons3/firstbalbucket
+curl -v -X POST http://localhost:9091/amazons3/imageStore/firstbalbucket
 ```
 You see the response as follows after successfully creating the Amazon S3 bucket.
 ```
@@ -127,7 +127,8 @@ firstbalbucket created on Amazon S3.
 
 - Invoke the following curl request to list buckets.
 ```
-curl -X GET http://localhost:9090/amazons3
+curl -X GET http://localhost:9091/amazons3/imageStore
+
 ```
 
 ```json
@@ -138,7 +139,7 @@ curl -X GET http://localhost:9090/amazons3
 
 - Invoke the following curl request to delete the above bucket.
 ```
-curl -v -X DELETE http://localhost:9090/amazons3/firstbalbucket
+curl -v -X DELETE http://localhost:9091/amazons3/imageStore/firstbalbucket
 ```
 You see the response as follows:
 ```

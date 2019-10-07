@@ -47,7 +47,7 @@ amazons3:AmazonS3Client|amazons3:ConnectorError amazonS3Client = new(amazonS3Con
 service amazonS3Service on new http:Listener(9091) {
     @http:ResourceConfig {
         methods: ["POST"],
-        path: "/{bucketName}"
+        path: "/imageStore/{bucketName}"
     }
     // Function to create a new bucket.
     resource function createBucket(http:Caller caller, http:Request request, string bucketName) {
@@ -76,7 +76,7 @@ service amazonS3Service on new http:Listener(9091) {
 
     @http:ResourceConfig {
         methods: ["GET"],
-        path: "/"
+        path: "/imageStore"
     }
     // Function to list buckets.
     resource function listBuckets(http:Caller caller, http:Request request) {
@@ -110,7 +110,7 @@ service amazonS3Service on new http:Listener(9091) {
 
     @http:ResourceConfig {
         methods: ["DELETE"],
-        path: "/{bucketName}"
+        path: "/imageStore/{bucketName}"
     }
 
 // Function to delete bucket.
