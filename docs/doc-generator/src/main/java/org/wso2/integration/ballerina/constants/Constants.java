@@ -19,6 +19,7 @@
 package org.wso2.integration.ballerina.constants;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 /**
  * Constants used in site builder.
@@ -26,13 +27,14 @@ import java.io.File;
 public final class Constants {
 
     // Directory paths
-    public static final String DOCS_DIR = ".." + File.separator + ".." + File.separator + "docs" + File.separator
-            + "content" + File.separator + "src";
-    private static final String TARGET_DIR = "target";
+    private static final String DOC_GEN_DIR_PATH = Paths.get("docs", "doc-generator").toString();
+    public static final String DOCS_DIR = Paths.get(DOC_GEN_DIR_PATH, "..", "content","src").toString();
+    private static final String TARGET_DIR = Paths.get(DOC_GEN_DIR_PATH,"target").toString();
     public static final String TEMP_DIR = TARGET_DIR + File.separator + "tempDirectory";
     public static final String MKDOCS_CONTENT = TARGET_DIR + File.separator + "mkdocs-content";
     private static final String ASSETS_DIR = DOCS_DIR + File.separator + "assets";
     public static final String ASSETS_IMG_DIR = ASSETS_DIR + File.separator + "img";
+    public static final String SOURCE_WWW_DIR_PATH = Paths.get(DOC_GEN_DIR_PATH, "www").toString();
     public static final String WEBSITE_DIR = TARGET_DIR + File.separator + "www";
     public static final String TEMP_ASSETS_ZIP_DIR = TEMP_DIR + File.separator + "assets" + File.separator + "zip";
 
