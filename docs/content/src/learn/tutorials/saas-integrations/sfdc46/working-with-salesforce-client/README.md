@@ -28,7 +28,7 @@ following operations:
 
 The following diagram illustrates all the required functionality of the Salesforce Service that you are going to build.
 
-![Salesforce Guide Implementation](../../../../../assets/img/working-with-sfdc-slient.png)
+![Salesforce Guide Implementation](../../../../../assets/img/working-with-sf-client.png)
 
 ### Set up credentials for accessing Salesforce.
    
