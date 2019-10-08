@@ -1,3 +1,5 @@
+Implements the message store for reliable delivery tutorial.
+
 # Reliable Message Delivery
 
 ## About
@@ -24,9 +26,14 @@ for managing orders at an online shop. When an order is received at the `/orders
 as messages can fail to deliver to the backend order service due to various reasons such as difference of processing 
 speeds in services and endpoint failures. 
 
-![Reliable delivery](../../../../assets/img/reliable-delivery.png)
+![Reliable delivery](resources/reliable-delivery.png)
 
-<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+## Prerequisites
+ 
+* Ballerina Integrator
+* Oracle JDK 1.8.*
+* A Text Editor or an IDE 
+> **Tip**: For a better development experience, install the [Ballerina Integrator Extension](https://marketplace.visualstudio.com/items?itemName=WSO2.ballerina-integrator) in VS Code.
 * A message broker to store messages in a queue. You can download and install Apache ActiveMQ from 
 [here](http://activemq.apache.org/getting-started.html).
 
@@ -39,27 +46,13 @@ ballerina pull wso2/message_store
 ballerina pull wso2/message_processor
 ```
 
-Alternately, you can download the ZIP files and extract the contents to get the code.
-
-<a href="../../../../../assets/zip/reliable-delivery.zip">
-<img src="../../../../../assets/img/download-zip.png" width="200" alt="Download ZIP">
-</a>
-
 ## Implementation
 
 Follow the steps given below to implement the above scenario.
 
 ####1. Create the project structure
 
-Ballerina is a complete programming language that supports custom project structures. Use the following package structure for this guide.
-```
-reliable-delivery
-    └── src
-       ├── message_store
-       |   └── msg_store.bal
-       └── message_processor
-           └── msg_processor.bal
-```
+Ballerina is a complete programming language that supports custom project structures. 
 
 Create the Ballerina project `reliable-delivery` and add the `message_store` and `message_processor` modules using the below commands.
 
@@ -70,7 +63,7 @@ $ ballerina add message_store
 $ ballerina add message_processor
 ```
 
-The above package structure will be created for you. Create the `msg_store.bal` and `msg_processor.bal` files inside each Ballerina module. 
+Create the `msg_store.bal` and `msg_processor.bal` files inside each Ballerina module. 
 
 ####2. Implement message store
 
@@ -136,17 +129,6 @@ files listed down below, which can be found in the `lib` folder of the ActiveMQ 
 This example uses ActiveMQ version 5.15.5. You can select the relevant jar files according to the ActiveMQ version you have installed.
 
 Let's create a folder called `lib` under project root path. Then copy above jar files into the lib folder.
-
-```shell
-.
-├── Ballerina.toml
-├── lib
-│   ├── activemq-client-5.15.5.jar
-│   ├── geronimo-j2ee-management_1.1_spec-1.0.1.jar
-│   └── hawtbuf-1.11.jar
-└── src
-    └── reliable-delivery
-```
 
 Next, open the `Ballerina.toml` file and add the following below `[dependencies]` section. During project build, 
 ActiveMQ jar files will be added to the executable jar.

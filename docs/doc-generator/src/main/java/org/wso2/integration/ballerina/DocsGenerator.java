@@ -518,14 +518,14 @@ public class DocsGenerator {
             return includeMdContent;
         } else { // Need to set the `download-zip` path.
             // Set the `download-zip` image path.
-            String mdImgPath = getStringBetweenTwoStrings(includeMdContent, "<img src=\"../../../../../",
+            String mdImgPath = getStringBetweenTwoStrings(includeMdContent, "<img src=\"",
                     "\" width=\"200\" alt=\"Download ZIP\">");
-            String correctImgPath = addPrevDirectorySyntax(mdImgPath, occurrences + 1);
+            String correctImgPath = addPrevDirectorySyntax(mdImgPath, occurrences + 1 - 5);
             String replacedImgContent = includeMdContent.replace(mdImgPath, correctImgPath);
             // Set the `download-zip` anchor path.
-            String zipAnchorPath = getStringBetweenTwoStrings(replacedImgContent, "<a href=\"../../../../../",
+            String zipAnchorPath = getStringBetweenTwoStrings(replacedImgContent, "<a href=\"",
                     "\">\n" + "    <img src=\"");
-            String correctZipAnchorPath = addPrevDirectorySyntax(zipAnchorPath, occurrences + 1);
+            String correctZipAnchorPath = addPrevDirectorySyntax(zipAnchorPath, occurrences + 1 - 5);
             return replacedImgContent.replace(zipAnchorPath, correctZipAnchorPath);
         }
     }
