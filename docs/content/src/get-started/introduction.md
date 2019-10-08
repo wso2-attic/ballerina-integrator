@@ -14,7 +14,8 @@ The following image is an illustration of what Ballerina Integrator consists of 
     <td>The underlying core of the Ballerina Integrator is the [Ballerina language](http://ballerina.io/), which allows you to build projects and modules with smaller functionality and natively deploy these as microservices in Docker and Kubernetes.</td>
   </tr>
   <tr>
-    <td>[Ballerina standard library](https://v1-0.ballerina.io/learn/api-docs/ballerina/?101) provides a rich set of in-built modules that help you build your integrations to support a variety of protocols, servers, and extensions.</td>
+    <td>Ballerina Standard Library</td>
+    <td>Ballerina standard library provides a rich set of in-built modules that help you build your integrations to support a variety of protocols, servers, and extensions.</td>
   </tr>
   <tr>
     <td><b>Connectors</b></td>

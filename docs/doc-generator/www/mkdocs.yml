@@ -63,12 +63,9 @@ nav:
         - Database Integration:
           - 'Data-backed Service' : 'learn/tutorials/database-integrations/data-backed-service/1.md'
           - 'Managing Database Transactions' : 'learn/tutorials/database-integrations/managing-database-transactions/1.md'
-          - 'Integration with MongoDB' : 'learn/tutorials/database-integrations/mongo-db-transactions/insert-mongodb/1.md'
           - 'Querying a MySQL Database' : 'learn/tutorials/database-integrations/querying-mysql-database/1.md'
         - Messaging Integration:
-          - 'Messaging with ActiveMQ' : 'learn/tutorials/messaging-integrations/messaging-with-activemq/1.md'
-          - 'Messaging with Kafka' : 'learn/tutorials/messaging-integrations/messaging-with-kafka/1.md'
-          - 'Sending JSON Data to a JMS Queue' : 'learn/tutorials/messaging-integrations/sending-json-data-to-a-jms-queue/1.md'
+          - 'Sending JSON Data to a JMS Queue' : 'learn/tutorials/messaging-integrations/json-data-to-activemq-queue/1.md.md'
           - 'Reliable Delivery' : 'learn/tutorials/messaging-integrations/reliable-delivery/1.md'
         - File-based Integration:
           - 'File Integration Using FTP' : 'learn/tutorials/file-based-integrations/file-integration-using-ftp/1.md'
@@ -84,7 +81,7 @@ nav:
           - 'JSON to XML and Upload to FTP' : 'learn/tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/1.md'
       - 'Examples': 'learn/examples.md'
     - Develop:
-      - 'Re-introducing Ballerina Programming Language' : 'develop/reintroducing-ballerina.md'
+      - 'Developing Integration Solutions' : 'develop/developing-integration-solution.md'
       - 'Setting up the Developer Environment' : 'develop/setup-dev.md'
       - 'Managing Ballerina Code' : 'develop/managing-ballerina-code.md'
       - 'Deploying on Docker': 'develop/deploy-on-docker.md'
@@ -96,6 +93,7 @@ nav:
       - 'Distributed Tracing using Jaeger' : 'observability/tracing-with-jaeger.md'
     - References:
       - 'References' : 'references/references.md'
+      - 'EI Connectors' : 'references/ei-connectors.md'
     - '': page-not-found.md
      
 # Extensions
