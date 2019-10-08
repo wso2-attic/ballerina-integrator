@@ -1,7 +1,5 @@
 # Reliable message delivery
 
-## About
-
 This guide describes how to use **MessageStore** module to achieve reliable message delivery. In asynchronous messaging
 scenarios, we accept the HTTP message and store it in a remote **message broker** for later processing. When the message forwarder picks the message from the **message broker** and try to forward it to the intended HTTP service, that service may not be available at that moment, or it may respond with *500 (internal server error)*. In that case, the service should retry to deliver the message.
 

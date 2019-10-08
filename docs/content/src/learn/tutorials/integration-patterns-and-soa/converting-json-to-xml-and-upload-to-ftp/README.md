@@ -1,6 +1,5 @@
 # Convert JSON to XML and Upload to FTP
 
-## About 
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on connecting to a file server with the FTP connector. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
 
 The FTP connector offers support as a listener, where it listens to the given remote location and is triggered when a file is added or deleted. Also, it supports connecting to a file server as the client and performing various operations such as get, put, delete, etc. The FTP connector can be used to connect to your remote file server with FTP, SFTP, FTPS protocols.
