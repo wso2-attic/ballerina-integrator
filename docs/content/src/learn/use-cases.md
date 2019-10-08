@@ -8,27 +8,28 @@ SaaS offering is a common software distribution model followed by many vendors t
 
 <table>
   <tr>
-    <td><b><a href="../tutorials/saas-integrations/amazons3/working-with-amazons3-client/working-with-amazons3-client/">Working with Amazon S3 Client</a></b></br>
-    Interact with the Amazon S3 API to integrate with other services</td>
-    <td><b><a href="../tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/notifying-fire-alarm-using-sqs/">Notifying Fire Alarm Using SQS/</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/gmail/using-the-gmail-connector/1/">Using the Gmail connector</a></b></br>
+    Use the Gmail connector to interact with the Gmail REST API</td>
+    <td><b><a href="../tutorials/saas-integrations/amazons3/working-with-bucket-service/1/">Working with Amazon S3 Bucket Service</a></b></br>
+    Use Amazon S3 connector to interact with Amazon S3 bucket service</td>
+    <td><b><a href="../tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/1/">Notifying Fire Alarm Using SQS</a></b></br>
     Use Amazon SQS Connector to notify alerts</td>
-    <td><b><a href="../tutorials/saas-integrations/gmail/using-the-gmail-connector/using-the-gmail-connector/">Using the Gmail Connector</a></b></br>
-    Use the Gmail Connector to interact with the Gmail REST API</td>
   </tr>
   
   <tr>
-    <td><b><a href="../tutorials/saas-integrations/sap/interacting-with-sap/interacting-with-sap/">Interacting with SAP</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/sap/interacting-with-sap/1/">Interacting with SAP</a></b></br>
     Interact with a SAP R/3 backend using BAPI requests and IDoc messages</td>
-    <td><b><a href="../tutorials/saas-integrations/sfdc46/working-with-salesforce-client/working-with-salesforce-client/">Working with Salesforce Client</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/sfdc46/working-with-salesforce-client/1/">Working with Salesforce Client</a></b></br>
     Use Salesforce client to performa a variety of CRUD operations</td>
-    <td><b><a href="../tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/salesforce-to-mysql-db/">Salesforce to MySQL Database</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1/">Salesforce to MySQL Database</a></b></br>
     Use batch processing to synchronize Salesforce data with a MySQL database</td>
   </tr>
   
   <tr>
-    <td><b><a href="../tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/import-contacts-into-salesforce-using-ftp/">Import Contacts into Salesforce Using FTP</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1/">Import Contacts into Salesforce Using FTP</a></b></br>
     Import contacts from a CSV file into Salesforce using FTP</td>
-    <td></td>
+    <td><b><a href="../tutorials/saas-integrations/amazons3/working-with-object-service/1/">Working with Amazon S3 Object Service</a></b></br>
+    Use Amazon S3 connector to interact with Amazon S3 object service</td>
     <td></td>
   </tr>
 </table>
@@ -39,12 +40,11 @@ The messaging system supports loosely coupled asynchronous data to move from one
 
 <table>
 <tr>
-    <td><b><a href="../tutorials/messaging-integrations/sending-json-data-to-a-jms-queue/sending-json-data-to-a-jms-queue/">Sending JSON to a JMS Queue</a></b></br>
-    Send JSON Data to a JMS Queue</td>
-    <td><b><a href="../tutorials/messaging-integrations/messaging-with-kafka/messaging-with-kafka/">Messaging with Kafka</a></b></br>
-    Publish messages to Apache Kafka</td>
-    <td><b><a href="../tutorials/messaging-integrations/reliable-delivery/reliable-delivery	/">Reliable Delivery</a></b></br>
-    Send messages in a reliable way</td>
+    <td><b><a href="../tutorials/messaging-integrations/sending-json-data-to-a-jms-queue/1/">Sending JSON to an ActiveMQ Queue</a></b></br>
+    Tranform JSON message to a text message and send to an ActiveMQ queue</td>
+    <td ><b><a href="../tutorials/messaging-integrations/reliable-delivery/1/">Reliable Delivery</a></b></br>
+    Use store forward connector to achieve reliable message delivery</td>
+    <td></td>
 </tr>
 
 </table>
@@ -55,20 +55,19 @@ Data storing in the database is a common approach in many application designs. I
 
 <table>
   <tr>
-    <td><b><a href="../tutorials/database-integrations/data-backed-service/data-backed-service/">Data-backed Service</a></b></br>
+    <td><b><a href="../tutorials/database-integrations/data-backed-service/1/">Data-backed Service</a></b></br>
     Build a database-backed RESTful service</td>
-    <td><b><a href="../tutorials/database-integrations/managing-database-transactions/managing-database-transactions/">Managing Database Transactions</a></b></br>
+    <td><b><a href="../tutorials/database-integrations/managing-database-transactions/1/">Managing Database Transactions</a></b></br>
     Manage database transactions using Ballerina</td>
-    <td><b><a href="../tutorials/database-integrations/mongo-db-transactions/insert-mongodb/insert-mongodb/">Integration with MongoDB</a></b></br>
-    Integrate with MongoDB</td>
-  </tr>
-  
-  <tr>
-    <td><b><a href="../tutorials/database-integrations/querying-mysql-database/querying-mysql-database/">Querying MySQL Database</a></b></br>
+    <td><b><a href="../tutorials/database-integrations/querying-mysql-database/1/">Querying MySQL Database</a></b></br>
     Expose MySQL database as a service and do a select query</td>
-    <td></td>
-    <td></td>
   </tr>
+  <!-- <tr>
+    <td><b><a href="../tutorials/database-integrations/mongo-db-transactions/insert-mongodb/1/">Integration with MongoDB</a></b></br>
+    Integrate with MongoDB</td>
+    <td></td>
+    <td></td>
+  </tr> -->
 </table>
 
 ### File-based Integration
@@ -77,9 +76,9 @@ Most of the legacy systems use the file as a data transfer mechanism. It is a te
 
 <table>
   <tr>
-    <td><b><a href="../tutorials/file-based-integrations/file-integration-using-ftp/file-integration-using-ftp/">File Integration Using FTP</a></b></br>
+    <td><b><a href="../tutorials/file-based-integrations/file-integration-using-ftp/1/">File Integration Using FTP</a></b></br>
     Use the FTP Connector to create an FTP listener service</td>
-    <td><b><a href="../tutorials/file-based-integrations/file-integration-using-smb/file-integration-using-smb/">File Integration Using Samba</a></b></br>
+    <td><b><a href="../tutorials/file-based-integrations/file-integration-using-smb/1/">File Integration Using Samba</a></b></br>
     Use the SMB Connector to create a Samba listener service</td>
     <td></td>
   </tr>
@@ -91,27 +90,27 @@ Service-oriented architecture (SOA) patterns provide structure and clarity, enab
 
 <table>
   <tr>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/content-based-routing/content-based-routing/">Content-based Routing</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/content-based-routing/1/">Content-based Routing</a></b></br>
     Implement content-based routing</td>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/pass-through-messaging/pass-through-messaging/">Pass-through Messaging</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/pass-through-messaging/1/">Pass-through Messaging</a></b></br>
     Implement pass-through messaging</td>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/integration-patterns-and-soa/scatter-gather-flow/scatter-gather-flow/">Scatter-Gather Flow Control</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/integration-patterns-and-soa/scatter-gather-flow/1/">Scatter-Gather Flow Control</a></b></br>
     Implement scatter-gather flow where two files are read simultaneously and aggregated</td>
   </tr>
   
   <tr>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/service-composition/service-composition/">Service Composition</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/service-composition/1/">Service Composition</a></b></br>
     Implement a service composition</td>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/service-orchestration/service-orchestration/">Service Orchestration</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/service-orchestration/1/">Service Orchestration</a></b></br>
     A service invokes two other services to do some functions</td>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/converting-json-to-xml-and-upload-to-ftp/">Converting JSON to XML and Upload to FTP</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/1/">Converting JSON to XML and Upload to FTP</a></b></br>
     Convert a JSON message to XML and upload it to FTP</td>
   </tr>
 
   <tr>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/exposing-soap-service/exposing-soap-service/">REST to SOAP</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/exposing-soap-service/1/">REST to SOAP</a></b></br>
     Accept a REST request and convert it to a SOAP request</td>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/backend-for-frontend/backend-for-frontend/">Backend for Frontend</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/backend-for-frontend/1/">Backend for Frontend</a></b></br>
     Apply the BFF design pattern</td>
     <td></td>
   </tr>

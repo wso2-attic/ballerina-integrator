@@ -55,7 +55,8 @@ nav:
         - Saas Integration:
           - 'Using the Gmail Connector': 'learn/tutorials/saas-integrations/gmail/using-the-gmail-connector/1.md'
           - 'Notifying fire alarm using SQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/1.md'
-          - 'Working with Amazon S3 Client': 'learn/tutorials/saas-integrations/amazons3/working-with-amazons3-client/1.md'
+          - 'Working with Amazon S3 Bucket Service': 'learn/tutorials/saas-integrations/amazons3/working-with-bucket-service/1.md'
+          - 'Working with Amazon S3 Object Service': 'learn/tutorials/saas-integrations/amazons3/working-with-object-service/1.md'
           - 'Interacting with SAP': 'learn/tutorials/saas-integrations/sap/interacting-with-sap/1.md'
           - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/1.md'
           - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1.md'
@@ -65,7 +66,7 @@ nav:
           - 'Managing Database Transactions' : 'learn/tutorials/database-integrations/managing-database-transactions/1.md'
           - 'Querying a MySQL Database' : 'learn/tutorials/database-integrations/querying-mysql-database/1.md'
         - Messaging Integration:
-          - 'Sending JSON Data to a JMS Queue' : 'learn/tutorials/messaging-integrations/json-data-to-activemq-queue/1.md.md'
+          - 'Sending JSON Data to an ActiveMQ Queue' : 'learn/tutorials/messaging-integrations/json-data-to-activemq-queue/1.md'
           - 'Reliable Delivery' : 'learn/tutorials/messaging-integrations/reliable-delivery/1.md'
         - File-based Integration:
           - 'File Integration Using FTP' : 'learn/tutorials/file-based-integrations/file-integration-using-ftp/1.md'
