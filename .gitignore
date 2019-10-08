@@ -38,6 +38,7 @@ hs_err_pid*
 .vscode-test/
 *.vsix
 node_modules
+vscode/**/.factorypath
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files

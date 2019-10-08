@@ -4,13 +4,13 @@ Ballerina is an open-source programming language that empowers developers to int
 support of connectors. In this guide, we are mainly focusing on connecting to the Amazon Simple Storage Service API to create, store, download, and use data with other services.  
 
 The `wso2/amazons3` module allows you to perform the following operations.
-* Create Bucket
-* List Buckets
-* Create Object
-* List Objects
-* Get Object
-* Delete Object
-* Delete Bucket
+- Create Bucket
+- List Buckets
+- Create Object
+- List Objects
+- Get Object
+- Delete Object
+- Delete Bucket
 
 This example explains how to use the S3 client to connect with the Amazon S3 instance and to create an Amazon S3 bucket.
 
