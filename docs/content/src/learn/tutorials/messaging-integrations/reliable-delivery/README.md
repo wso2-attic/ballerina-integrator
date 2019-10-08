@@ -1,7 +1,5 @@
 # Reliable Message Delivery
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
 support of connectors. In this guide, we will look into using WSO2 Store Forward Connector to achieve reliable message delivery using Ballerina. 
 You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
