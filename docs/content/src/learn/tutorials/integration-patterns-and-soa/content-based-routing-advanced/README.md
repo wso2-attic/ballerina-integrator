@@ -22,17 +22,14 @@ To understand how you can build a content-based routing system using Ballerina, 
 ![alt text](../../../../assets/img/content-based-routing-advanced.svg)
 
 
-## Prerequisites
- 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina) 
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 
 ### Optional Requirements
 
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
 
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 

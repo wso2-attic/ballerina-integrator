@@ -25,15 +25,13 @@ The following diagram illustrates all the required functionality of the Order Ma
 - **Update Order** : To update an existing order, send an HTTP PUT request with content for the order update.
 - **Delete Order** : To delete an existing order, send an HTTP DELETE request to the http://xyz.retail.com/order/ endpoint.
 
-## Prerequisites
- 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
 ### Optional requirements
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
+
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 

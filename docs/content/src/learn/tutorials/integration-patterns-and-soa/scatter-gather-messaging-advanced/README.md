@@ -23,15 +23,14 @@ To understand how you can build scatter-gather messaging using Ballerina, let's 
 
 Auction service is the service that acts as the scatter-gather component. The other three endpoints are external services that the auction service calls to get bid values according to the request details. These are not necessarily Ballerina services and can theoretically be third-party services that the auction service calls to get things done. However, for the purposes of setting up this scenario and illustrating it in this guide, these third-party services are also written in Ballerina.
 
-## Prerequisites
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina) 
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 
 ### Optional requirements
 
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 

@@ -9,12 +9,11 @@ In this tutorial, we will build a service using Ballerina to connect with the ba
 
 #### Prerequisites
 
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
-  We will call the installed directory as BALLERINA_HOME.
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 - [cURL](https://curl.haxx.se) or any other REST client
 - Download the backend for Health Care System from [here](#).
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ### Let's Get Started!
 

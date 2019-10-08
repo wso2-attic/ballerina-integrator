@@ -8,14 +8,12 @@ In the [Transforming Message Content](../../transforming-message-content/transfo
 
 We will use the same Health Care service used in previous steps as the backend for this example. This Health Care Service exposes various services such as making a medical appointment, viewing appointment details and viewing the doctors' details. We will combine two of such services, making an appointment and settling the payment for the appointment, and expose them as a single service using Ballerina.
 
-#### Prerequisites
-
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 - [cURL](https://curl.haxx.se) or any other REST client
 - Download the backend for Health Care System from [here](#).
 - If you did not try the [Transforming Message Content](../../transforming-message-content/transforming-message-content/) tutorial yet, you can clone the project from GitHub and follow the steps as mentioned below.
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ### Let's Get Started!
 
