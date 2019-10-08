@@ -20,7 +20,7 @@ You can find other integrations modules from [wso2-ballerina](https://github.com
 
 This application connects with the Amazon S3 API and creates a new object in an Amazon S3 bucket, list the available objects in the bucket, display the object content and delete a specified object in the bucket.
 
-![exposing Amazon S3 as a service](../../../../../assets/img/amazon-s3-object-service.jpg)
+![working with Amazon S3 Object service](../../../../../assets/img/amazon-s3-object-service.png)
 
 <!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
@@ -30,12 +30,12 @@ This application connects with the Amazon S3 API and creates a new object in an 
 
 A Ballerina project is created for the integration use case explained above. Please follow the steps given 
 below to create the project and modules. You can learn about the Ballerina project and modules in this 
-[guide](../../../../../develop/managing-ballerina-code/Amazon S3 account).
+[guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
 
 #### 1. Create a new project.
 
 ```bash
-$ ballerina new amazon-s3-object-service
+$ ballerina new working-with-object-service
 ```
 
 #### 2. Create a module.
@@ -68,9 +68,6 @@ amazon-s3-object-service
 -  To create a new secret access key for an IAM user, open the [IAM console](https://console.aws.amazon.com/iam/home?region=us-east-1#home). Click **Users** in the **Details** pane, click the appropriate IAM user, and then click **Create Access Key** on the **Security Credentials** tab.
    
 - Download the newly created credentials, when prompted to do so in the key creation wizard.
-
-See the ![Amazon S3 Guide Implementation](resources/s3_connector_guide_implementation.svg "Amazon S3 Guide Implementation")
-
 
 #### 4. Add project configurations file
 
@@ -182,11 +179,6 @@ You see the response as follows:
 - Set the `responseContentType` as image/jpg and use following URL to open newly created image on browser.
 ```
 http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg?responseContentType=image/jpg
-```
-
-- Set the `responseContentType` as application/octet-stream and use the following URL to download newly created image.
-```
-http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg?responseContentType=application/octet-stream
 ```
 
 #### Test delete Object service
