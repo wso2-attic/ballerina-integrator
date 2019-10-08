@@ -3,7 +3,7 @@
 	"displayName": "WSO2 Ballerina Integrator",
 	"description": "VS Code extension for WSO2 Ballerina Integrator",
 	"icon": "resources/ballerina-vscode.png",
-	"version": "0.12.0",
+	"version": "0.12.1",
 	"publisher": "WSO2",
 	"license": "Apache-2.0",
 	"repository": {
@@ -15,6 +15,9 @@
 	},
 	"categories": [
 		"Other",
+		"Programming Languages",
+		"Formatters",
+		"Linters",
 		"Snippets"
 	],
 	"keywords": [

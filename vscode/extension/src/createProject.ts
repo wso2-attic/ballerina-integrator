@@ -66,9 +66,8 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                         await new Promise((resolve, reject) => {
                             childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve));
                         });
-                        const addCommandWithoutTemplate = 'cd ' + projectUri.path + '/' + projectName + ' && ballerina add ' + moduleName;
-                        uri = projectUri.path + "/" + projectName;
-                        let projectFolder = vscode.Uri.parse(uri);
+                        let projectFolder = appendPath(projectUri.path, projectName);
+                        const addCommandWithoutTemplate = 'cd ' + projectFolder.path + ' && ballerina add ' + moduleName;
                         // Execute the Ballerina add command to create a module inside the project created.
                         await new Promise((resolve, reject) => {
                             childProcess.exec(addCommandWithoutTemplate, (err, stderr, stdout) => {
@@ -81,7 +80,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                         window.showInformationMessage(stdout);
                                         vscode.commands.executeCommand('vscode.openFolder', projectFolder);
                                     } else {
-                                        window.showErrorMessage(stderr);
+                                        window.showErrorMessage(stdout + " " + stderr);
                                         reject();
                                     }
                                 }
@@ -119,8 +118,8 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                     // Get input on where the new module should be created.
                     const projectOption = await vscode.window.showQuickPick(['New Project', 'Existing Project'],
                         { placeHolder: 'Creating a new project or adding the module to an existing project?' });
-                    // If the module is to be created inside a new project.
                     if (projectOption != undefined) {
+                        // If the module is to be created inside a new project.
                         if (projectOption == "New Project") {
                             // Get project name from the user.
                             projectName = await window.showInputBox({
@@ -135,7 +134,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                     await new Promise((resolve, reject) => {
                                         childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve));
                                     });
-                                    uri = projectUri.path + "/" + projectName;
+                                    uri = appendPath(projectUri.path, projectName).path;
                                 }
                             }
                         // If the module is to be created inside an existing project.
@@ -176,7 +175,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                         } else if (stdout.search(message) !== -1) {
                                             window.showErrorMessage("Please select a Ballerina project!");
                                         } else {
-                                            window.showErrorMessage(stdout);
+                                            window.showErrorMessage(stdout + " " + stderr);
                                         }
                                         resolve();
                                     }
@@ -195,6 +194,11 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
     return;
 }
 
+function appendPath (path: string, appendString: string): Uri {
+    let completePath = path + "/" + appendString;
+    return vscode.Uri.file(completePath);
+}
+
 // Handles the new project creation command result.
 function newProjectCommand(reject: (reason?: any) => void, projectUri: vscode.Uri, resolve: (value?: unknown) => void): any {
     return (err, stderr, stdout) => {
@@ -209,7 +213,7 @@ function newProjectCommand(reject: (reason?: any) => void, projectUri: vscode.Ur
             resolve();
         }
         else {
-            window.showErrorMessage(stdout);
+            window.showErrorMessage(stdout + " " + stderr);
             reject();
         }
     };

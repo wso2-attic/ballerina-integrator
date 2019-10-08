@@ -22,12 +22,25 @@ Open the Command Palette ([Command] + [Shift] + [P] on macOS and [Ctrl] + [Shift
 | Ballerina: Show Network Logs  | Open the Ballerina HTTP trace logs view. |
 | Ballerina: Show API Designer   | Open the Ballerina API Designer view.  |
 | Ballerina: Show Documentation Preview  | Display the Ballerina Docs.  |
-| Ballerina: Show File Overview   | Display the Ballerina File Overview.  | |
+| Ballerina: Show File Overview   | Display the Ballerina File Overview.  |
 
 ## Features
-- Create a Ballerina Project
-- Create a Ballerina Module from Template
-- Search for Ballerina Templates
+
+#### Create a Ballerina Project
+![Create Ballerina Project](https://github.com/wso2/ballerina-integrator/raw/master/vscode/resources/create-project.gif "Create Project")
+
+#### Create a Ballerina Module from Template
+![Create Module from Template](https://github.com/wso2/ballerina-integrator/raw/master/vscode/resources/add-module.gif "Add Module")
+
+#### Search for Ballerina Templates
+![Search Templates](https://github.com/wso2/ballerina-integrator/raw/master/vscode/resources/search-template.gif "Search Template")
+
+#### Pull a Module from Ballerina Central
+![Pull Module from Ballerina Central](https://github.com/wso2/ballerina-integrator/raw/master/vscode/resources/pulling-modules.gif "Pull Module")
+
+#### Search for Ballerina Templates
+![View Sequence Diagram](https://github.com/wso2/ballerina-integrator/raw/master/vscode/resources/sequence-diagram.gif "Sequence Diagram")
 
 ## License
+
 WSO2 Ballerina Integrator VS Code extension is licensed under [Apache License 2.0](https://github.com/wso2/ballerina-integrator/blob/master/LICENSE).

@@ -26,6 +26,12 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Extension "ballerina-integrator" is now active!');
+	const compatibleBallerinaVersion = "1.0.";
+	let ballerinaVersion = vscode.extensions.getExtension('ballerina.ballerina').packageJSON.version;
+	if (!ballerinaVersion.startsWith(compatibleBallerinaVersion)) {
+		window.showWarningMessage("The dependent Ballerina extension found is not compatible! " +
+			"Please install the recommended version 1.0.x.");
+	}
 	let currentPanel: vscode.WebviewPanel | undefined;
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand

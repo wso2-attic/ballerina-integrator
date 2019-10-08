@@ -1,5 +1,11 @@
 [
     {
+        "id": "healthcare_service",
+        "name": "Quick Start Guide",
+        "description": "This template provides a Quick Start Guide based on a healthcare service for the Ballerina Integrator.",
+        "tags": ["#quick-start"]
+    },
+    {
         "id": "salesforce_ftp_integration",
         "name": "Salesforce & FTP Integration",
         "description": "This template demonstrates on listening to a remote FTP location and inserting data into Salesforce.",
