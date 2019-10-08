@@ -1,6 +1,5 @@
 # Using the Gmail Connector
 
-## About
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on how the Ballerina Gmail connector could be used for handling emails.
 
 The Ballerina Gmail connector allows you to send, read, and delete emails through the Gmail REST API. It also provides the ability to read, trash, untrash, and delete threads, get the Gmail profile, and access the mailbox history as well, while handling OAuth 2.0 authentication. More details on this module can be found in the [Gmail Module](https://github.com/wso2-ballerina/module-gmail/blob/master/Readme.md) repository.

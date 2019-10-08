@@ -1,7 +1,5 @@
 # Service Orchestration
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors.
 
 Service orchestration is a common integration scenario where, upon a request from a client, a service calls multiple other services/endpoints. This guide demonstrates a simple service orchestration scenario where a client makes a doctor's appointment and the service invokes the other two services to make a reservation and to do the payment for the reservation fee respectively.

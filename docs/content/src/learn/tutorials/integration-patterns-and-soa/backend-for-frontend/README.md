@@ -1,7 +1,5 @@
 # Backend for Frontend
 
-## About
-
 Backend for frontend(BFF) is a service design pattern that provides the core idea to create separate back-end services for specific front-end applications. This pattern allows you to have separate back-end service layers(shim) depending on the user experience you expect to have in the front-end application. The BFF design pattern has its own advantages and disadvantages. The usage of the pattern depends on your use case and requirements. For more information on the BFF design pattern, see [Pattern: Backends For Frontends by Sam Newman](https://samnewman.io/patterns/architectural/bff/) and [The Back-end for Front-end Pattern (BFF) by Phil Calçado](http://philcalcado.com/2015/09/18/the_back_end_for_front_end_pattern_bff.html). 
 
 ## What you’ll build
