@@ -5,13 +5,13 @@ support of connectors. In this guide, we are mainly focusing on connecting to th
 
 The `wso2/amazons3` module allows you to perform the following operations.
 
-* Create Bucket
-* List Buckets
-* Delete Bucket
-* Create Object
-* List Objects
-* Get Object
-* Delete Object
+- Create Bucket
+- List Buckets
+- Delete Bucket
+- Create Object
+- List Objects
+- Get Object
+- Delete Object
 
 This example explains how to use the S3 client to connect with the Amazon S3 instance and to create an Amazon S3 bucket, list buckets and delete buckets.
 
