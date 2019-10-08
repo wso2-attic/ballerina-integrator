@@ -70,7 +70,8 @@ service amazonS3Service on new http:Listener(9091) {
             }
         } else {
             // Send the error response.
-            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, CLIENT_CREATION_ERROR_MSG);
+            createAndSendErrorResponse(caller, <string>s3Client.detail()?.message, 
+                                       CLIENT_CREATION_ERROR_MSG);
         }
     }
 
@@ -99,7 +100,7 @@ service amazonS3Service on new http:Listener(9091) {
                     respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
                 } else {
                     createAndSendErrorResponse(caller, <@untainted> <string>list.detail()?.message,
-                                PAYLOAD_CONVERTION_ERROR_MSG);
+                                               PAYLOAD_CONVERTION_ERROR_MSG);
                 }
             }
         } else {
