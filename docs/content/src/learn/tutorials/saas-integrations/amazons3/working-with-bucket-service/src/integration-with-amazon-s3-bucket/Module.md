@@ -31,12 +31,12 @@ This application connects with the Amazon S3 API and create a new bucket on Amaz
 
 A Ballerina project is created for the integration use case explained above. Please follow the steps given 
 below to create the project and modules. You can learn about the Ballerina project and modules in this 
-[guide](../../../../../develop/managing-ballerina-code/).
+[guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
 
 #### 1. Create a new project.
 
 ```bash
-$ ballerina new amazon-s3-bucket-service
+$ ballerina new working-with-bucket-service
 ```
 
 #### 2. Create a module.
@@ -48,7 +48,7 @@ $ ballerina add integration-with-amazon-s3-bucket
 The project structure is created as indicated below.
 
 ```
-amazon-s3-bucket-service
+working-with-bucket-service
     ├── Ballerina.toml
     └── src
         └── integration-with-amazon-s3-bucket

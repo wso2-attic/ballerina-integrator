@@ -22,7 +22,7 @@ You can find other integrations modules from [wso2-ballerina](https://github.com
 
 This application connects with the Amazon S3 API and creates a new object in an Amazon S3 bucket, list the available objects in the bucket, display the object content and delete a specified object in the bucket.
 
-![exposing Amazon S3 as a service](../../../../../assets/img/amazon-s3-object-service.jpg)
+![working with Amazon S3 Object service](../../../../../assets/img/amazon-s3-object-service.png)
 
 <!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
@@ -32,12 +32,12 @@ This application connects with the Amazon S3 API and creates a new object in an 
 
 A Ballerina project is created for the integration use case explained above. Please follow the steps given 
 below to create the project and modules. You can learn about the Ballerina project and modules in this 
-[guide](../../../../../develop/managing-ballerina-code/Amazon S3 account).
+[guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
 
 #### 1. Create a new project.
 
 ```bash
-$ ballerina new amazon-s3-object-service
+$ ballerina new working-with-object-service
 ```
 
 #### 2. Create a module.
@@ -49,7 +49,7 @@ $ ballerina add integration-with-amazon-s3-object
 The project structure is created as indicated below.
 
 ```
-amazon-s3-object-service
+working-with-object-service
     ├── Ballerina.toml
     └── src
         └── integration-with-amazon-s3-object

@@ -31,12 +31,12 @@ This application connects with the Amazon S3 API and create a new object in an A
 
 A Ballerina project is created for the integration use case explained above. Please follow the steps given 
 below to create the project and modules. You can learn about the Ballerina project and modules in this 
-[guide](../../../../../develop/managing-ballerina-code/).
+[guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
 
 #### 1. Create a new project.
 
 ```bash
-$ ballerina new amazon-s3-object-service
+$ ballerina new working-with-object-service
 ```
 
 #### 2. Create a module.

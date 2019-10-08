@@ -22,7 +22,7 @@ You can find other integrations modules from [wso2-ballerina](https://github.com
 
 This application connects with the Amazon S3 API and creates a new bucket on Amazon S3 instance with the provided name, gets the available buckets and deletes the specified bucket.
 
-![exposing Amazon S3 as a service](../../../../../assets/img/amazon-s3-bucket-service)
+![working with Amazon S3 Bucket Service](../../../../../assets/img/amazon-s3-bucket-service.png)
 
 <!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
@@ -32,12 +32,12 @@ This application connects with the Amazon S3 API and creates a new bucket on Ama
 
 A Ballerina project is created for the integration use case explained above. Please follow the steps given 
 below to create the project and modules. You can learn about the Ballerina project and modules in this 
-[guide](../../../../../develop/managing-ballerina-code/).
+[guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
 
 #### 1. Create a new project.
 
 ```bash
-$ ballerina new amazon-s3-bucket-service
+$ ballerina new working-with-bucket-service
 ```
 
 #### 2. Create a module.
