@@ -1,7 +1,5 @@
 # Service Composition
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are focusing on aggregating services collectively composed to automate a particular task or business process. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
 
 This guide walks you through the process of implementing a service composition using Ballerina language.

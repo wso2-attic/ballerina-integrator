@@ -1,6 +1,5 @@
 # Importing CSV Data to Mongo DB
 
-## About 
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on importing CSV file having contacts into MongoDB using FTP connector.
 
 `wso2/mongodb` module allows you to perform CRUD operations on Mongo DB.<br/> 

@@ -1,7 +1,5 @@
 # Notifying a Fire Alarm using Amazon SQS
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
 support of connectors. In this guide, we are mainly focusing on how to use Amazon SQS Connector to notify alerts. 
 You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.

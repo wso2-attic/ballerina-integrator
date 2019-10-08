@@ -1,7 +1,5 @@
 # REST to SOAP
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors.
 
 This tutorial demonstrates a scenario where Ballerina is used to call a SOAP backend. Here, a SOAP backend is fronted by a Ballerina service that accepts a REST request and converts it to a SOAP request. The SOAP connector is used to call the SOAP backend.

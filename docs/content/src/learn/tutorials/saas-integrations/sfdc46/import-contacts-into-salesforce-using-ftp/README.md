@@ -1,7 +1,5 @@
 # Import Contacts Into Salesforce using FTP connector
 
-## About
-
 Ballerina is an open-source programming language that supports developers to integrate their system easily with the 
 support of connectors. In this guide, we are mainly focusing on importing CSV file having contacts into Salesforce
 using FTP connector. 

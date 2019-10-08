@@ -1,7 +1,5 @@
 # Amazon S3 Bucket Service
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
 support of connectors. In this guide, we are mainly focusing on connecting to the Amazon Simple Storage Service API to create, store, download, and use data with other services.  
 

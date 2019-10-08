@@ -56,8 +56,8 @@
 		"@types/mocha": "^2.2.42"
 	},
 	"dependencies": {
-		"generator-code": "^1.2.6",
-		"vsce": "^1.66.0",
+		"generator-code": "^1.2.7",
+		"vsce": "^1.67.1",
 		"yo": "^3.1.0"
 	}
 }
