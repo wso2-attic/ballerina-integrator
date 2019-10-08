@@ -1,7 +1,5 @@
 # Pass-Through Messaging
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors.
 
 There are different messaging methods in SOA (Service Oriented Architecture). In this guide, we are focusing on pass-through messaging between services using an example scenario.

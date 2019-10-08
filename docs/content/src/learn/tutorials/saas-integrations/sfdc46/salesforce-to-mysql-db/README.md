@@ -1,7 +1,5 @@
 # Salesforce to MySQL Database
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
 support of connectors. In this guide, we are mainly focusing on using batch processing to synchronize Salesforce data
 with a MySQL Database.

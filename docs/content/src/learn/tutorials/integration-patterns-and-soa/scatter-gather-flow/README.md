@@ -1,7 +1,5 @@
 # Scatter-Gather Flow Control
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors.
 
 Scatter-Gather is an integration pattern where a request is sent to multiple recipients and each of the responses are aggregated and returned back to the client as a single response. This guide demonstrates a simple scatter-gather scenario where two files in an FTP location are read simultaneously, their contents aggregated and sent back to the client.

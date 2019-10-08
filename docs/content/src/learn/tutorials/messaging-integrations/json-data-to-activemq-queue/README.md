@@ -1,6 +1,5 @@
 # Sending JSON data to ActiveMQ queue
 
-## About 
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on connecting to a ActiveMQ broker with the JMS connector. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
 
 The JMS connector is created with a minimum deviation of JMS API for developers who are working with integration messaging systems. It supports creating the consumer and producer in addition to the listeners. You can find out more about the JMS connector from [here](https://github.com/wso2-ballerina/module-jms).

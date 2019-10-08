@@ -1,7 +1,5 @@
 # Content-Based Routing
 
-## About
-
 Content-based routing is an integration pattern where the message received from a client is routed to different channels/paths/endpoints based on the content of the message. This guide demonstrates a simple content-based routing scenario where, based on the company name provided in the request, the relevant company’s service endpoint is called to get the stock quote.
 
 ## What you'll build

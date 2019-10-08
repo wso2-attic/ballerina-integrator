@@ -1,7 +1,5 @@
 # Interacting with SAP
 
-## About
-
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on interacting with a SAP R/3 backend using BAPI requests and IDoc messages.
 
 SAP is an industry leading enterprise software solution that is widely used among product and process oriented enterprises for finance, operations, HR and many other aspects of a business. SAP ERP solutions provide reliable and efficient platforms to build and integrate enterprise or business-wide data and information systems with ease. 
