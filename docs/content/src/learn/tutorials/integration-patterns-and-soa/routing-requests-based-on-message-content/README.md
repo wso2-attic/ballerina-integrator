@@ -10,13 +10,11 @@ Using the Health Care System backend we have, we can schedule appointments in di
 
 When a user sends the appointment scheduling request to the Ballerina service _hospitalMgtService_, the message payload contains the name of the hospital where the appointment should be confirmed. Based on the hospital name sent in the request message, our Ballerina service should route the appointment reservation to the relevant hospital's back-end service.
 
-#### Prerequisites
-
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 - [cURL](https://curl.haxx.se) or any other REST client
 - Download the backend for Health Care System from [here](#).
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ### Let's Get Started!
 

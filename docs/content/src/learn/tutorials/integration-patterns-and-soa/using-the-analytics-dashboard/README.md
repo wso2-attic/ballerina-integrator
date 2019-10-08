@@ -10,15 +10,13 @@ In the previous tutorials, we used the backend service of Health Care System to 
 
 We will write a set of functions to invoke the Health Care Service backend, so that several requests will be invoked when running the service. Then, we can use Prometheus to monitor this service, collect the metrics related to the request flow, and view the metrics using Grafana. Ballerina offers in-built support for monitoring Ballerina code using Prometheus as mentioned in this [Ballerina guide](https://ballerina.io/learn/how-to-observe-ballerina-code/).
 
-#### Prerequisites
-
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 - [cURL](https://curl.haxx.se) or any other REST client
 - Download the backend for Health Care System from [here](#)
 - Download [Prometheus](https://prometheus.io/download/) for your OS
 - Download and install [Grafana](https://grafana.com/grafana/download)
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ### Let's Get Started!
 

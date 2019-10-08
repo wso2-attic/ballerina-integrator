@@ -20,15 +20,13 @@ You can model this scenario as a RESTful service; 'stock_quote_service',  which 
 - **Create Order** : To place a new order, use an HTTP POST request that contains order details, and then send the request to the Stock Quote service. If the request is successful, the service will respond with a 201 Created HTTP response with the location header pointing to the newly created resource.
 - **Retrieve Order** : To retrieve sale price details of the stock, send an HTTP GET request with the stock symbol to the Stock Quote service.
 
-## Prerequisites
- 
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE 
-> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
 ### Optional requirements
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Kubernetes](https://kubernetes.io/docs/setup/)
+
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 

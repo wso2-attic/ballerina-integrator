@@ -44,14 +44,12 @@ However, the format of the message required by the backend service is as follows
 
 The request payload message format must be transformed to match the back-end service message format.
 
-#### Prerequisites
-
-- Download and install the [Ballerina Distribution](https://ballerina.io/learn/getting-started/) relevant to your OS.
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 - [cURL](https://curl.haxx.se) or any other REST client
 - Download the backend for Health Care System from [here](#).
 - If you did not try the [Routing Requests Based on Message Content](../../routing-requests-based-on-message-content/routing-requests-based-on-message-content/) tutorial yet, you can clone the project from GitHub and follow the steps as mentioned below.
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ### Let's Get Started!
 
