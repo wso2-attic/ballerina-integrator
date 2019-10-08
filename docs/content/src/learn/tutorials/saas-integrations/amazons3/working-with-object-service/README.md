@@ -4,15 +4,17 @@ Ballerina is an open-source programming language that empowers developers to int
 support of connectors. In this guide, we are mainly focusing on connecting to the Amazon Simple Storage Service API to create, store, download, and use data with other services.  
 
 The `wso2/amazons3` module allows you to perform the following operations.
+
 * Create Bucket
 * List Buckets
+* Delete Bucket
 * Create Object
 * List Objects
 * Get Object
 * Delete Object
-* Delete Bucket
 
-This example explains how to use the S3 client to connect with the Amazon S3 instance and to create an Amazon S3 bucket.
+
+This example explains how to use the S3 client to connect with the Amazon S3 instance and to create a Amazon S3 object, get objects in a bucket, get object data and delete an object.
 
 You can find other integrations modules from [wso2-ballerina](https://github.com/wso2-ballerina) GitHub organization.
 
@@ -47,7 +49,7 @@ $ ballerina add integration-with-amazon-s3-object
 The project structure is created as indicated below.
 
 ```
-amazon-s3-object-service
+working-with-object-service
     ├── Ballerina.toml
     └── src
         └── integration-with-amazon-s3-object
@@ -75,12 +77,12 @@ Add the project configuration file by creating a `ballerina.conf` file under the
 This file should have following configurations. Add the obtained SAmazon S3 configurations to the file.
 
 ```
-ACCESS_KEY_ID="<Amazon S3 key ID>"<br/>
-SECRET_ACCESS_KEY="<Amazon S3 secret key>"<br/>
-REGION="<Amazon S3 region>"<br/>
-BUCKET_NAME="<Amazon S3 bucket name>"<br/>
-TRUST_STORE_PATH="<Truststore file location>"<br/>
-TRUST_STORE_PASSWORD="<Truststore password>"<br/>
+ACCESS_KEY_ID="<Amazon S3 key ID>"
+SECRET_ACCESS_KEY="<Amazon S3 secret key>"
+REGION="<Amazon S3 region>"
+BUCKET_NAME="<Amazon S3 bucket name>"
+TRUST_STORE_PATH="<Truststore file location>"
+TRUST_STORE_PASSWORD="<Truststore password>"
 ```
 
 #### 5. Write the integration
@@ -107,9 +109,9 @@ You will see the following log upon the successful invocation of the service.
 [ballerina/http] started HTTP/WS listener 0.0.0.0:9090
 ```
 
-### Testing the create Object service 
+### 1. Testing the create Object service 
 
-##### (I) JSON Content
+#### (I) JSON Content
 Create a file called `content.json` with following JSON content:
 ```json
 {
@@ -134,7 +136,7 @@ You see the response as follows:
 firstObject.json created on Amazon S3 bucket : firstbalbucket.
 ```
 
-##### (II) Binary Content
+#### (II) Binary Content
 Let's upload an image (sample.jpg) to the s3 bucket we created above. 
 - Invoke the following curl request to create a new object in the newly created bucket.
 ```
@@ -145,7 +147,7 @@ You see the response as follows:
 image.jpg created on Amazon S3 bucket : firstbalbucket.
 ```
 
-### Testing the list Object service 
+### 2. Testing the list Object service 
 
 - Invoke the following curl request to list objects in a bucket.
 
@@ -153,8 +155,8 @@ image.jpg created on Amazon S3 bucket : firstbalbucket.
 curl -X GET http://localhost:9090/amazons3/imageStore/firstbalbucket
 ```
 
-#### Test get Object service
-##### (I) JSON Content
+### 3. Testing get Object service
+#### (I) JSON Content
 - Set the `responseContentType` as `application/json` to retrieve a JSON object and invoke the following curl request to get the newly created object.
 ```
 curl -v -X GET http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json?responseContentType=application/json
@@ -175,13 +177,13 @@ You see the response as follows:
 }
 ```
 
-##### (II) Binary Content
+#### (II) Binary Content
 - Set the `responseContentType` as image/jpg and use following URL to open newly created image on browser.
 ```
 http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg?responseContentType=image/jpg
 ```
 
-#### Test delete Object service
+### 4. Testing delete Object service
 
 - Invoke the following curl request to delete the above object.
 ```
