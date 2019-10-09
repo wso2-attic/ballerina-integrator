@@ -4,8 +4,8 @@ WSO2 Ballerina Integrator VS Code extension is a tool that is used alongside the
 
 ## Requirements
   - Visual Studio Code
-  - Ballerina Language (v1.0.0)
-  - Ballerina VS Code Extension (v1.0.0)
+  - Ballerina Language (v1.0.x)
+  - Ballerina VS Code Extension (v1.0.x)
 
 ## Quick Start
 - **Step 1:** Install the WSO2 Ballerina Integrator extension for Visual Studio Code.
@@ -38,7 +38,7 @@ Open the Command Palette ([Command] + [Shift] + [P] on macOS and [Ctrl] + [Shift
 #### Pull a Module from Ballerina Central
 ![Pull Module from Ballerina Central](https://github.com/wso2/ballerina-integrator/raw/master/vscode/resources/pulling-modules.gif "Pull Module")
 
-#### Search for Ballerina Templates
+#### View Sequence Diagram for Ballerina Code
 ![View Sequence Diagram](https://github.com/wso2/ballerina-integrator/raw/master/vscode/resources/sequence-diagram.gif "Sequence Diagram")
 
 ## License
