@@ -61,13 +61,13 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                     projectPath = await openDialogForFolder("Create");
                     let projectUri = vscode.Uri.parse(projectPath);
                     if (projectPath != undefined) {
-                        const newCommand = 'cd ' + projectUri.path + ' && ballerina new ' + projectName;
+                        const newCommand = 'cd ' + projectUri.fsPath + ' && ballerina new ' + projectName;
                         // Execute the Ballerina new command to create a project.
                         await new Promise((resolve, reject) => {
                             childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve));
                         });
-                        let projectFolder = appendPath(projectUri.path, projectName);
-                        const addCommandWithoutTemplate = 'cd ' + projectFolder.path + ' && ballerina add ' + moduleName;
+                        let projectFolder = appendPath(projectUri.fsPath, projectName);
+                        const addCommandWithoutTemplate = 'cd ' + projectFolder.fsPath + ' && ballerina add ' + moduleName;
                         // Execute the Ballerina add command to create a module inside the project created.
                         await new Promise((resolve, reject) => {
                             childProcess.exec(addCommandWithoutTemplate, (err, stderr, stdout) => {
@@ -130,11 +130,11 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                 folderPath = await openDialogForFolder("Create");
                                 let projectUri = vscode.Uri.parse(folderPath);
                                 if (folderPath != undefined) {
-                                    const newCommand = 'cd ' + projectUri.path + ' && ballerina new ' + projectName;
+                                    const newCommand = 'cd ' + projectUri.fsPath + ' && ballerina new ' + projectName;
                                     await new Promise((resolve, reject) => {
                                         childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve));
                                     });
-                                    uri = appendPath(projectUri.path, projectName).path;
+                                    uri = appendPath(projectUri.fsPath, projectName).fsPath;
                                 }
                             }
                         // If the module is to be created inside an existing project.
@@ -142,7 +142,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                             // Select the existing Ballerina project.
                             folderPath = await openDialogForFolder("Select Ballerina Project");
                             projectUri = vscode.Uri.parse(folderPath);
-                            uri = projectUri.path;
+                            uri = projectUri.fsPath;
                         }
                         if (folderPath != undefined) {
                             const addCommand = 'cd ' + uri + ' && ballerina add ' + moduleName + ' -t wso2/'
@@ -209,7 +209,7 @@ function newProjectCommand(reject: (reason?: any) => void, projectUri: vscode.Ur
         }
         else if (stdout.search(message) !== -1) {
             window.showInformationMessage("Successfully created a new Ballerina project at "
-                + projectUri.path);
+                + projectUri.fsPath);
             resolve();
         }
         else {
