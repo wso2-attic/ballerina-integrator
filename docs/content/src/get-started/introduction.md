@@ -11,7 +11,7 @@ The following image is an illustration of what Ballerina Integrator consists of 
 <table>
   <tr>
     <td><b>Ballerina Core</b></td>
-    <td>The underlying core of the Ballerina Integrator is the [Ballerina language](http://ballerina.io/), which allows you to build projects and modules with smaller functionality and natively deploy these as microservices in Docker and Kubernetes.</td>
+    <td>The underlying core of the Ballerina Integrator is the <a href="http://ballerina.io/">Ballerina language</a>, which allows you to build projects and modules with smaller functionality and natively deploy these as microservices in Docker and Kubernetes.</td>
   </tr>
   <tr>
     <td><b>Ballerina Standard Library</b></td>
