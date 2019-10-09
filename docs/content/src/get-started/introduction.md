@@ -6,7 +6,7 @@ For developers, the Ballerina-based integration component marks a new phase of i
 
 The following image is an illustration of what Ballerina Integrator consists of and the various components that work together to solve an integration problem.
 
-![Ballerina Interator components](../../assets/img/ballerina-integrator-architecture.svg)
+![Ballerina Integrator components](../../assets/img/ballerina-integrator-architecture.svg)
 
 <table>
   <tr>
@@ -14,7 +14,7 @@ The following image is an illustration of what Ballerina Integrator consists of 
     <td>The underlying core of the Ballerina Integrator is the [Ballerina language](http://ballerina.io/), which allows you to build projects and modules with smaller functionality and natively deploy these as microservices in Docker and Kubernetes.</td>
   </tr>
   <tr>
-    <td>Ballerina Standard Library</td>
+    <td><b>Ballerina Standard Library</b></td>
     <td>Ballerina standard library provides a rich set of in-built modules that help you build your integrations to support a variety of protocols, servers, and extensions.</td>
   </tr>
   <tr>

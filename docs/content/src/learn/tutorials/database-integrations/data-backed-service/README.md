@@ -40,7 +40,8 @@ Navigate into the project directory and add a new module.
 Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
 
 Add a ballerina.conf file and rename the .bal files with meaningful names as shown in the project structure given below.
- ```shell
+
+```bash
 data-backed-service
 ├── Ballerina.toml
 ├── ballerina.conf
@@ -74,31 +75,31 @@ You can implement custom functions in Ballerina that perform specific tasks. For
 ## Testing 
 
 ### Before you begin
-* Download & run the SQL script `initializeDataBase.sql` provided inside the `resources` directory, to initialize the database and to create the required table.
-```
-$ mysql -u username -p <initializeDataBase.sql 
-``` 
+- Download & run the SQL script `initializeDataBase.sql` provided inside the `resources` directory, to initialize the database and to create the required table.
+    ```bash
+    $ mysql -u username -p <initializeDataBase.sql 
+    ``` 
 
 - Add database configurations to the `ballerina.conf` file
-   - `ballerina.conf` file can be used to provide external configurations to Ballerina programs. Since this guide needs MySQL database integration, a Ballerina configuration file is used to provide the database connection properties to our Ballerina program.
-   This configuration file has the following fields. Change these configurations with your connection properties accordingly.
-      ```
-      DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/EMPLOYEE_RECORDS"
-      DATABASE_USERNAME = "root"
-      DATABASE_PASSWORD = "root"
-      ```
+- `ballerina.conf` file can be used to provide external configurations to Ballerina programs. Since this guide needs MySQL database integration, a Ballerina configuration file is used to provide the database connection properties to our Ballerina program.
+This configuration file has the following fields. Change these configurations with your connection properties accordingly.
+  ```
+  DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/EMPLOYEE_RECORDS"
+  DATABASE_USERNAME = "root"
+  DATABASE_PASSWORD = "root"
+  ```
 
 ### Invoking the employee database service
 
 Let’s build the module. Navigate to the project directory and execute the following command.
 
-```
+```bash
 $ ballerina build data_backed_service
 ```
 
 The build command would create an executable .jar file. Now run the .jar file created in the above step. Path to the ballerina.conf could be provided using the `--b7a.config.file` option.
 
-```
+```bash
 $ java -jar target/bin/data_backed_service.jar --b7a.config.file=path/to/ballerina.conf/file
 ```
 
@@ -108,31 +109,35 @@ $ java -jar target/bin/data_backed_service.jar --b7a.config.file=path/to/balleri
 ```bash
 curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
 "http://localhost:9090/records/employee" -H "Content-Type:application/json"
-
-Output:  
-{"Status":"Data Inserted Successfully"}
 ```
+Output:
+```json
+{"Status": "Data Inserted Successfully"}
+```  
 
 **Retrieve employee data** 
 ```bash
 curl -v "http://localhost:9090/records/employee/1"
-
+```
 Output: 
-[{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
+```json
+[{"EmployeeID": 1, "Name": "Alice", "Age": 20, "SSN": 123456789}]
 ```
 **Update an existing employee data** 
 ```bash
 curl -v -X PUT -d '{"name":"Alice Updated", "age":30,"ssn":123456789,"employeeId":1}' \
 "http://localhost:9090/records/employee" -H "Content-Type:application/json"
-
+```
 Output: 
-{"Status":"Data Updated Successfully"}
+```json
+{"Status": "Data Updated Successfully"}
 ```
 
 **Delete employee data** 
 ```bash
 curl -v -X DELETE "http://localhost:9090/records/employee/1"
-
+```
 Output: 
-{"Status":"Data Deleted Successfully"}
+```json
+{"Status": "Data Deleted Successfully"}
 ```
