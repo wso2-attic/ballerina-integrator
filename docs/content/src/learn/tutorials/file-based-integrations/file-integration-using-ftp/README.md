@@ -1,6 +1,6 @@
 # File Integration using FTP
 
-Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on how to use the WSO2 FTP Connector to create an FTP listener service using Ballerina. You can find other integration modules from the wso2-ballerina GitHub repository.
+Ballerina is an open-source programming language that empowers developers to integrate their system easily with the support of connectors. In this guide, we are mainly focusing on how to use the WSO2 FTP Connector to create an FTP listener service using Ballerina. You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
 
 The WSO2 FTP Connector enables you to connect to an FTP server and perform operations on files and folders stored on the 
 server. These operations include basic file operations such as reading, updating, and deleting files, and listening to 
