@@ -183,6 +183,11 @@ You see the response as follows:
 http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg?responseContentType=image/jpg
 ```
 
+- You can use the following URL to download the newly created image.
+```
+http://localhost:9090/amazons3/firstbalbucket/image.jpg?responseContentType=application/octet-stream
+```
+
 ### 4. Testing delete Object service
 
 - Invoke the following curl request to delete the above object.
