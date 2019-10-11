@@ -40,7 +40,7 @@ http://<HOST_NAME>:<PORT>/grandOak/doctors/<DOCTOR_TYPE>
 
 Let’s implement a simple service that can be used to query for availability of doctors for a particular category from all the available healthcare centers.
 
-<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+<!-- INCLUDE_MD: ../tutorial-prerequisites.md -->
 * Download [curl](https://curl.haxx.se/) or a similar tool that can call an endpoint.
 
 Once you have installed the VS Code extension, you could press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Windows/Linux and search for the command `Ballerina Integrator: Dashboard` to find the Ballerina Integrator dashboard shown below. Please refer the extension's [home page](https://marketplace.visualstudio.com/items?itemName=WSO2.ballerina-integrator) for more details on how to use the provided features.
