@@ -40,20 +40,10 @@ http://<HOST_NAME>:<PORT>/grandOak/doctors/<DOCTOR_TYPE>
 
 Let’s implement a simple service that can be used to query for availability of doctors for a particular category from all the available healthcare centers.
 
-## Before you begin
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+* Download [curl](https://curl.haxx.se/) or a similar tool that can call an endpoint.
 
-1. [Download Ballerina Integrator](https://www.wso2.com/integration/ballerina-integrator) for your Operating System. 
-
-2. Download the sample files from [here](https://github.com/wso2/docs-ei/tree/7.0.0/en/micro-integrator/docs/assets/attach/quick-start-guide). From this point onwards, let's refer to this folder as `<BI_QSG_HOME>`.
-
-3. Download [curl](https://curl.haxx.se/) or a similar tool that can call an endpoint.
-
-4. Start up VS Code, which is the recommended IDE to use in Ballerina Integrator integration scenarios.
-   > **Tip**: Download and install [VS Code](https://code.visualstudio.com/Download) if you do not have it already.
-
-5. Find the extension for Ballerina in the VS Code marketplace. For instructions on installing and using it, see [The Visual Studio Code Extension](https://ballerina.io/learn/tools-ides/vscode-plugin/).
-
-Once you have installed the extension, press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Linux and the following page appears.
+Once you have installed the VS Code extension, you could press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Windows/Linux and search for the command `Ballerina Integrator: Dashboard` to find the Ballerina Integrator dashboard shown below. Please refer the extension's [home page](https://marketplace.visualstudio.com/items?itemName=WSO2.ballerina-integrator) for more details on how to use the provided features.
 
 ![alt text](../../assets/img/vs-code-landing.png)
 
@@ -80,6 +70,8 @@ $ ballerina add -t wso2/healthcare_service healthcare_service
 ```
 
 This automatically creates a healthcare service for you inside an `src` directory. A Ballerina service represents a collection of network accessible entry points in Ballerina. A resource within a service represents one such entry point. The generated sample service exposes a network entry point on port 9090.
+
+> **Note:** Alternatively, you could use the Ballerina Integrator VS Code extension to directly add the `healthcare_service` module to a new or an existing Ballerina project using the `Quick Start Guide` module template available in the `Ballerina Integrator: Dashboard` page.
 
 Build the service using the `ballerina build` command.
 
