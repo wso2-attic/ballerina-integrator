@@ -4,7 +4,7 @@ Tracing provides information regarding the roundtrip of a service invocation bas
 
 To understand how you can do distributed tracing for Ballerina services, let’s consider the service you created in the Quick Start Guide.
 
-![alt text](../../assets/img/jeager.png)
+![alt text](../assets/img/jeager.png)
 
 There are many possible ways to deploy Jaeger and you can find more information on this [link](https://www.jaegertracing.io/docs/deployment/). Here we focus on all in one deployment with Docker.
 
@@ -18,4 +18,4 @@ $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16
 
 The below image is the sample tracing information you can see from Jaeger.
 
-![alt text](../../assets/img/jaeger-tracing.png)
+![alt text](../assets/img/jaeger-tracing.png)

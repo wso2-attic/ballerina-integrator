@@ -4,7 +4,7 @@ There are mainly two systems involved in collecting and visualizing the metrics.
 
 To understand how you can observe Ballerina services, let’s consider a service that converts JSON to XML.
 
-![alt text](../../assets/img/prometheus-grafana.png)
+![alt text](../assets/img/prometheus-grafana.png)
 
 As inferred by the above image, we will be getting metrics using Prometheus and displaying it using Grafana.
 
@@ -15,7 +15,7 @@ As inferred by the above image, we will be getting metrics using Prometheus and 
 
 2. Press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Linux and the following page appears.
 
-![alt text](../../assets/img/vs-code-landing.png)
+![alt text](../assets/img/vs-code-landing.png)
 
 Select the template to transform XML messages to JSON and your project will load.
 
@@ -78,7 +78,7 @@ For more information refer [Grafana in Docker Hub](https://hub.docker.com/r/graf
 
 **Step 4:** Add Prometheus as datasource with `Browser` access configuration as provided below. See [Grafana documentation regarding Prometheus](https://grafana.com/docs/features/datasources/prometheus/) for more information on how to do this.
 
-![alt text](../../assets/img/grafana-prometheus-datasource.png)
+![alt text](../assets/img/grafana-prometheus-datasource.png)
 
 - Use `Prometheus` as the **Name** of the datasource.
 - In the **HTTP** section, enter `http://localhost:19090` as the **URL**.
@@ -92,4 +92,4 @@ This dashboard consists of service and client invocation level metrics in near r
 
 Ballerina HTTP Service Metrics Dashboard Panel will be as below.
 
-![alt text](../../assets/img/prometheus-grafana-metrics.png)
+![alt text](../assets/img/prometheus-grafana-metrics.png)

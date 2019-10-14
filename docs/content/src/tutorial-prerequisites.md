@@ -1,3 +1,4 @@
+<!-- Common Prerequisites to include in markdown files --> 
 ## Before you begin
  
 * Download [Ballerina Integrator](https://wso2.com/integration/ballerina-integrator/) for your operating system

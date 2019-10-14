@@ -6,7 +6,7 @@ The contents on this page will walk you through the topics related to developing
 
 Integration developers will follow the workflow illustrated by the following diagram.
 
-![developer workflow](../../assets/img/ballerina-integrator-developer-workflow.svg)
+![developer workflow](../assets/img/ballerina-integrator-developer-workflow.svg)
 
 <table>
 	<tr>
