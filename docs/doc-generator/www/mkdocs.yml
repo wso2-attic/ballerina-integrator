@@ -57,7 +57,6 @@ nav:
           - 'Notifying fire alarm using SQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/1.md'
           - 'Working with Amazon S3 Bucket Service': 'learn/tutorials/saas-integrations/amazons3/working-with-bucket-service/1.md'
           - 'Working with Amazon S3 Object Service': 'learn/tutorials/saas-integrations/amazons3/working-with-object-service/1.md'
-          - 'Interacting with SAP': 'learn/tutorials/saas-integrations/sap/interacting-with-sap/1.md'
           - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/1.md'
           - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1.md'
           - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1.md'
