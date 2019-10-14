@@ -35,7 +35,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -48,7 +47,6 @@ import static org.wso2.integration.ballerina.Constants.COMMA;
 import static org.wso2.integration.ballerina.Constants.COMMENT_END;
 import static org.wso2.integration.ballerina.Constants.COMMENT_START;
 import static org.wso2.integration.ballerina.Constants.EMPTY_STRING;
-import static org.wso2.integration.ballerina.Constants.GIT_PROPERTIES_FILE;
 import static org.wso2.integration.ballerina.Constants.HASH;
 import static org.wso2.integration.ballerina.Constants.INCLUDE_CODE_SEGMENT_TAG;
 import static org.wso2.integration.ballerina.Constants.INCLUDE_CODE_TAG;
@@ -65,7 +63,6 @@ import static org.wso2.integration.ballerina.utils.Utils.createFile;
 import static org.wso2.integration.ballerina.utils.Utils.deleteDirectory;
 import static org.wso2.integration.ballerina.utils.Utils.deleteFile;
 import static org.wso2.integration.ballerina.utils.Utils.getCodeFile;
-import static org.wso2.integration.ballerina.utils.Utils.getCommitHash;
 import static org.wso2.integration.ballerina.utils.Utils.getLeadingWhitespaces;
 import static org.wso2.integration.ballerina.utils.Utils.getMarkdownCodeBlockWithCodeType;
 import static org.wso2.integration.ballerina.utils.Utils.getPostFrontMatter;
@@ -82,9 +79,6 @@ public class DocsGenerator {
     // Setup logger.
     private static final Logger logger = LoggerFactory.getLogger(DocsGenerator.class);
 
-    // Current commit hash.
-    private static String commitHash = null;
-
     public static void main(String[] args) {
         // Directory paths
         final String DOCS_DIR = Paths.get(args[0], "..", "content", "src").toString();
@@ -95,9 +89,6 @@ public class DocsGenerator {
 
         BasicConfigurator.configure();
         logger.info("Docs generating process started...");
-        DocsGenerator docsGenerator = new DocsGenerator();
-        // Get current commit hash.
-        commitHash = docsGenerator.getCommitHashByReadingGitProperties();
         // First delete already created mkdocs-content directory.
         deleteDirectory(MKDOCS_CONTENT);
         // Create needed directory structure.
@@ -138,8 +129,9 @@ public class DocsGenerator {
             for (File file : listOfFiles) {
                 String fileExtension = FilenameUtils.getExtension(file.getName());
                 if (file.isFile()) {
-                    if ((file.getName().equals(README_MD))) {
-                        processReadmeFile(file, directoryPath);
+                    // All markdown files other than `Module.md` files will be processed.
+                    if (fileExtension.equals(MARKDOWN_FILE_EXT) && !file.getName().equals("Module.md")) {
+                        processReadmeFile(file);
                         renameReadmeFile(file);
                     } else if ((fileExtension.equals("bal") || fileExtension.equals("java"))
                             && !processCodeFile(file, directoryPath)) {
@@ -157,7 +149,7 @@ public class DocsGenerator {
      *
      * @param file README.md file
      */
-    private static void processReadmeFile(File file, String tempDir) {
+    private static void processReadmeFile(File file) {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String readMeFileContent = IOUtils
                     .toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
@@ -169,20 +161,17 @@ public class DocsGenerator {
                 lineNumber++;
                 if (line.contains(INCLUDE_CODE_TAG)) {
                     // Replace INCLUDE_CODE line with include code file.
-                    readMeFileContent = readMeFileContent
-                            .replace(line, getIncludeCodeFile(file.getParent(), line, tempDir));
+                    readMeFileContent = readMeFileContent.replace(line, getIncludeCodeFile(file, line));
                 } else if (line.contains(INCLUDE_CODE_SEGMENT_TAG)) {
                     // Replace INCLUDE_CODE_SEGMENT line with include code segment.
-                    readMeFileContent = readMeFileContent
-                            .replace(line, getIncludeCodeSegment(file.getParent(), line, tempDir));
+                    readMeFileContent = readMeFileContent.replace(line, getIncludeCodeSegment(file, line));
                 } else if (lineNumber == 1 && line.contains(HASH)) {
                     // Adding front matter to posts.
-                    readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line, commitHash));
+                    readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line));
                 } else if (isImageAttachmentLine(line)) {
                     readMeFileContent = readMeFileContent.replace(line, getWebsiteImageAttachment(line));
                 } else if (line.contains(INCLUDE_MD_TAG)) {
-                    readMeFileContent = readMeFileContent
-                            .replace(line, getIncludeMarkdownFile(file.getParent(), line, tempDir));
+                    readMeFileContent = readMeFileContent.replace(line, getIncludeMarkdownFile(file, line));
                 }
             }
             IOUtils.write(readMeFileContent, new FileOutputStream(file), String.valueOf(StandardCharsets.UTF_8));
@@ -207,30 +196,32 @@ public class DocsGenerator {
     }
 
     /**
-     * Get code file content should be included in the README.md file.
+     * Get code file content should be included in the markdown file.
      *
-     * @param readMeParentPath parent path of the README.md file
-     * @param line             line having INCLUDE_CODE_TAG
+     * @param markdownFile markdown file has code inclusions
+     * @param line         line having INCLUDE_CODE_TAG
      * @return code content of the code file should be included
      */
-    private static String getIncludeCodeFile(String readMeParentPath, String line, String tempDir) {
-        String fullPathOfIncludeCodeFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line, INCLUDE_CODE_TAG);
+    private static String getIncludeCodeFile(File markdownFile, String line) {
+        String readMeParentPath = markdownFile.getParent();
+        String fullPathOfIncludeCodeFile =
+                readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line, INCLUDE_CODE_TAG);
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String code = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath, tempDir), readMeParentPath).trim();
+        String code = removeLicenceHeader(getCodeFile(includeCodeFile, markdownFile), readMeParentPath).trim();
         return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
     }
 
     /**
-     * Get code segment should be included in the README.md file.
+     * Get code segment should be included in the markdown file.
      *
-     * @param readMeParentPath parent path of the README.md file
-     * @param line             line having INCLUDE_CODE_SEGMENT_TAG
+     * @param markdownFile markdown file has code inclusions
+     * @param line         line having INCLUDE_CODE_SEGMENT_TAG
      * @return code segment content should be included
      */
-    private static String getIncludeCodeSegment(String readMeParentPath, String line, String tempDir) {
+    private static String getIncludeCodeSegment(File markdownFile, String line) {
+        String readMeParentPath = markdownFile.getParent();
         String includeLineData = line.replace(COMMENT_START, EMPTY_STRING).replace(COMMENT_END, EMPTY_STRING)
-                .replace(INCLUDE_CODE_SEGMENT_TAG, EMPTY_STRING)
-                .trim();
+                .replace(INCLUDE_CODE_SEGMENT_TAG, EMPTY_STRING).trim();
 
         String[] tempDataArr = includeLineData.replace(OPEN_CURLY_BRACKET, EMPTY_STRING)
                 .replace(CLOSE_CURLY_BRACKET, EMPTY_STRING).split(COMMA);
@@ -240,8 +231,7 @@ public class DocsGenerator {
         String segment = tempDataArr[1].replace("segment:", EMPTY_STRING).trim();
 
         File includeCodeFile = new File(fullPathOfIncludeCodeFile);
-        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, readMeParentPath, tempDir),
-                readMeParentPath);
+        String codeFileContent = removeLicenceHeader(getCodeFile(includeCodeFile, markdownFile), readMeParentPath);
 
         String code = getCodeSegment(codeFileContent, segment).trim();
         return handleCodeAlignment(line, getMarkdownCodeBlockWithCodeType(fullPathOfIncludeCodeFile, code));
@@ -362,30 +352,6 @@ public class DocsGenerator {
     }
 
     /**
-     * Get current commit hash by reading `git.properties` file.
-     * `git.properties` file generated by `git-commit-id-plugin` maven plugin.
-     *
-     * @return current git commit hash
-     */
-    private String getCommitHashByReadingGitProperties() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(GIT_PROPERTIES_FILE);
-        if (inputStream != null) {
-            try {
-                String gitCommitHash = getCommitHash(inputStream);
-                if (gitCommitHash == null) {
-                    throw new ServiceException("git commit id is null.");
-                }
-                return gitCommitHash;
-            } catch (ServiceException e) {
-                throw new ServiceException("Version information could not be retrieved", e);
-            }
-        } else {
-            throw new ServiceException("Error when reading " + GIT_PROPERTIES_FILE);
-        }
-    }
-
-    /**
      * Process files inside given directory.
      *
      * @param directoryPath path of the directory
@@ -473,16 +439,17 @@ public class DocsGenerator {
     }
 
     /**
-     * Get markdown file content should be included in the README.md file.
+     * Get markdown file content should be included in the markdown file.
      *
-     * @param readMeParentPath parent path of the README.md file
-     * @param line             line having INCLUDE_MD_TAG
+     * @param markdownFile markdown file has file inclusions
+     * @param line         line having INCLUDE_MD_TAG
      * @return content of the markdown file should be included
      */
-    private static String getIncludeMarkdownFile(String readMeParentPath, String line, String tempDir) {
+    private static String getIncludeMarkdownFile(File markdownFile, String line) {
+        String readMeParentPath = markdownFile.getParent();
         String fullPathOfIncludeMdFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line, INCLUDE_MD_TAG);
         File includeMdFile = new File(fullPathOfIncludeMdFile);
-        String includeMdContent = getCodeFile(includeMdFile, readMeParentPath, tempDir).trim();
+        String includeMdContent = getCodeFile(includeMdFile, markdownFile).trim();
         // Check fullPathOfIncludeMdFile is `get-the-code.md`.
         if (fullPathOfIncludeMdFile.contains("tutorial-get-the-code.md")) {
             String markdownWithZipName = setZipFileName(includeMdContent, readMeParentPath);

@@ -4,7 +4,7 @@ Let's get started with WSO2 Ballerina Integrator by running a simple use case in
 
 Most healthcare centers have a system that is used to make doctor appointments. To check the availability of the doctors for a particular time, users need to visit the hospitals or use each and every online system that is dedicated for a particular healthcare center. Here we are making it easier for patients by orchestrating those isolated systems for each healthcare provider and exposing a single interface to the users.
 
-![alt text](../../assets/img/BI-quick-start-guide.png)
+![alt text](../assets/img/BI-quick-start-guide.png)
 
 In the above scenario, the following takes place:
 
@@ -45,7 +45,7 @@ Let’s implement a simple service that can be used to query for availability of
 
 Once you have installed the VS Code extension, you could press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Windows/Linux and search for the command `Ballerina Integrator: Dashboard` to find the Ballerina Integrator dashboard shown below. Please refer the extension's [home page](https://marketplace.visualstudio.com/items?itemName=WSO2.ballerina-integrator) for more details on how to use the provided features.
 
-![alt text](../../assets/img/vs-code-landing.png)
+![alt text](../assets/img/vs-code-landing.png)
 
 ## Create a Project, Add a Template, and Invoke the Service
 

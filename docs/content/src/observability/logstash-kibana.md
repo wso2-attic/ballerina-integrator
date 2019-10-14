@@ -4,7 +4,7 @@ Ballerina has a log module for logging to the console. You can import the `balle
 
 To understand how you can track logging for Ballerina services, let’s consider a service that converts JSON to XML.
 
-![alt text](../../assets/img/logstash-kibana.png)
+![alt text](../assets/img/logstash-kibana.png)
 
 ## Set up the project 
 
@@ -13,7 +13,7 @@ To understand how you can track logging for Ballerina services, let’s consider
 
 2. Press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Linux and the following page appears.
 
-![alt text](../../assets/img/vs-code-landing.png)
+![alt text](../assets/img/vs-code-landing.png)
 
 3. Select the template to transform XML messages to JSON and your project will load.
 
@@ -181,4 +181,4 @@ Access Kibana to visualize the logs using following URL.
 ```
    http://localhost:5601 
 ```
-![alt text](../../assets/img/logstash-kibana-visual.png)
+![alt text](../assets/img/logstash-kibana-visual.png)

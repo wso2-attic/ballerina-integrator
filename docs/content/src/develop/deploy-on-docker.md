@@ -15,7 +15,7 @@ This topic provides instructions on how to deploy your project on [Docker](https
 
 2. Press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Linux and the following page appears.
 
-![alt text](../../assets/img/vs-code-landing.png)
+![alt text](../assets/img/vs-code-landing.png)
 
 Select the template to transform XML messages to JSON and your project will load.
 

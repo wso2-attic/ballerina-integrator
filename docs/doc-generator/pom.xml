@@ -26,68 +26,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>${git.commit.id.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>get-the-git-infos</id>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                    </execution>
-                    <execution>
-                        <id>validate-the-git-infos</id>
-                        <goals>
-                            <goal>validateRevision</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-                    <prefix>git</prefix>
-                    <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
-                    <dateFormatTimeZone>${user.timezone}</dateFormatTimeZone>
-                    <verbose>false</verbose>
-                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
-                    <format>properties</format>
-                    <skipPoms>true</skipPoms>
-                    <injectAllReactorProjects>false</injectAllReactorProjects>
-                    <failOnNoGitDirectory>true</failOnNoGitDirectory>
-                    <failOnUnableToExtractRepoInfo>true</failOnUnableToExtractRepoInfo>
-                    <skip>false</skip>
-                    <offline>false</offline>
-                    <runOnlyOnce>false</runOnlyOnce>
-                    <useNativeGit>false</useNativeGit>
-                    <nativeGitTimeoutInMs>30000</nativeGitTimeoutInMs>
-                    <abbrevLength>7</abbrevLength>
-                    <commitIdGenerationMode>flat</commitIdGenerationMode>
-                    <gitDescribe>
-                        <skip>false</skip>
-                        <always>true</always>
-                        <abbrev>7</abbrev>
-                        <dirty>-dirty</dirty>
-                        <match>*</match>
-                        <tags>false</tags>
-                        <forceLongFormat>false</forceLongFormat>
-                    </gitDescribe>
-                    <validationProperties>
-                        <validationProperty>
-                            <name>validating project version</name>
-                            <value>${project.version}</value>
-                            <shouldMatchTo><![CDATA[^.*(?<!-SNAPSHOT)$]]></shouldMatchTo>
-                        </validationProperty>
-                    </validationProperties>
-                    <validationShouldFailIfNoMatch>false</validationShouldFailIfNoMatch>
-                    <evaluateOnCommit>HEAD</evaluateOnCommit>
-                    <useBranchNameFromBuildEnvironment>true</useBranchNameFromBuildEnvironment>
-                    <injectIntoSysProperties>true</injectIntoSysProperties>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>

@@ -37,10 +37,8 @@ import java.util.Objects;
 import static org.wso2.integration.ballerina.Constants.BALLERINA_CODE_MD_SYNTAX;
 import static org.wso2.integration.ballerina.Constants.CODE;
 import static org.wso2.integration.ballerina.Constants.CODE_MD_SYNTAX;
-import static org.wso2.integration.ballerina.Constants.COMMIT_HASH;
 import static org.wso2.integration.ballerina.Constants.EMPTY_STRING;
 import static org.wso2.integration.ballerina.Constants.EQUAL;
-import static org.wso2.integration.ballerina.Constants.FORWARD_SLASH;
 import static org.wso2.integration.ballerina.Constants.FRONT_MATTER_SIGN;
 import static org.wso2.integration.ballerina.Constants.GIT_COMMIT_ID;
 import static org.wso2.integration.ballerina.Constants.HASH;
@@ -48,7 +46,6 @@ import static org.wso2.integration.ballerina.Constants.JAVA_CODE_MD_SYNTAX;
 import static org.wso2.integration.ballerina.Constants.LICENCE_LAST_LINE;
 import static org.wso2.integration.ballerina.Constants.NEW_LINE;
 import static org.wso2.integration.ballerina.Constants.NOTE;
-import static org.wso2.integration.ballerina.Constants.README_MD;
 import static org.wso2.integration.ballerina.Constants.TITLE;
 
 /**
@@ -141,17 +138,18 @@ public class Utils {
     /**
      * Get file content as a string.
      *
-     * @param file file which want to content as string
+     * @param file         file which want to content as string
+     * @param markdownFile markdown file has code inclusions
      * @return file content as a string
      */
-    public static String getCodeFile(File file, String readMeParentPath, String tempDir) {
+    public static String getCodeFile(File file, File markdownFile) {
         try {
             if (file.exists()) {
                 return IOUtils.toString(new FileInputStream(file), String.valueOf(StandardCharsets.UTF_8));
             } else {
                 throw new ServiceException("Invalid file path in INCLUDE_CODE tag. Mentioned file does not exists in "
                         + "the project. Please mention the correct file path and try again.\n\tInclude file path\t:"
-                        + file.getPath() + "\n\tREADME file path\t:" + readMeParentPath + FORWARD_SLASH + README_MD);
+                        + file.getPath() + "\n\tREADME file path\t:" + markdownFile.getPath());
             }
         } catch (IOException e) {
             throw new ServiceException("Error occurred when converting file content to string. file: " + file.getPath(),
@@ -202,11 +200,10 @@ public class Utils {
      * @param line heading line of the md file.
      * @return default front matter for posts
      */
-    public static String getPostFrontMatter(String line, String versionID) {
+    public static String getPostFrontMatter(String line) {
         line = line.replace(HASH, EMPTY_STRING).trim();
         return FRONT_MATTER_SIGN + NEW_LINE
                 + TITLE + line + NEW_LINE
-                + COMMIT_HASH + versionID + NEW_LINE
                 + NOTE + NEW_LINE
                 + FRONT_MATTER_SIGN;
     }
