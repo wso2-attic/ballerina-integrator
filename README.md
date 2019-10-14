@@ -64,6 +64,7 @@ Mainly consists of below-stated components.
 
 You can use the following options to try out Ballerina Integrator and get started.
 
+* [Download Ballerina Integrator](https://wso2.com/integration/)
 * [Quick Start Guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/get-started/quick-start-guide/)
 * [Learn Documentation](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/use-cases/)
 * [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=WSO2.ballerina-integrator)
