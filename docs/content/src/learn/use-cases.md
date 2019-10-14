@@ -17,8 +17,8 @@ SaaS offering is a common software distribution model followed by many vendors t
   </tr>
   
   <tr>
-    <td><b><a href="../tutorials/saas-integrations/sap/interacting-with-sap/1/">Interacting with SAP</a></b></br>
-    Interact with a SAP R/3 backend using BAPI requests and IDoc messages</td>
+    <td><b><a href="../tutorials/saas-integrations/amazons3/working-with-object-service/1/">Working with Amazon S3 Object Service</a></b></br>
+    Use Amazon S3 connector to interact with Amazon S3 object service</td>
     <td><b><a href="../tutorials/saas-integrations/sfdc46/working-with-salesforce-client/1/">Working with Salesforce Client</a></b></br>
     Use Salesforce client to performa a variety of CRUD operations</td>
     <td><b><a href="../tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1/">Salesforce to MySQL Database</a></b></br>
@@ -28,8 +28,7 @@ SaaS offering is a common software distribution model followed by many vendors t
   <tr>
     <td><b><a href="../tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1/">Import Contacts into Salesforce Using FTP</a></b></br>
     Import contacts from a CSV file into Salesforce using FTP</td>
-    <td><b><a href="../tutorials/saas-integrations/amazons3/working-with-object-service/1/">Working with Amazon S3 Object Service</a></b></br>
-    Use Amazon S3 connector to interact with Amazon S3 object service</td>
+    <td></td>
     <td></td>
   </tr>
 </table>
