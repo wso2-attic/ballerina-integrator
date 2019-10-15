@@ -24,7 +24,7 @@ Now navigate into the above module directory you created and run the following c
 $ ballerina add -t wso2/working_with_salesforce_client working_with_salesforce_client
 ```
 
-This automatically creates a working_with_salesforce_client for you inside the `src` directory of your project.  
+This automatically creates a working_with_salesforce_client module for you inside the `src` directory of your project.  
 
 ## Testing
 
@@ -45,6 +45,3 @@ You will see the following service log.
 ```log
 [ballerina/http] started HTTP/WS listener 0.0.0.0:9090
 ```
-
-
-
