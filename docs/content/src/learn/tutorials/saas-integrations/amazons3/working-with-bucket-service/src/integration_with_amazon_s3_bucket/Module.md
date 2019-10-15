@@ -8,13 +8,13 @@ Ballerina is an open-source programming language that empowers developers to int
 support of connectors. In this guide, we are mainly focusing on connecting to the Amazon Simple Storage Service API to create, store,download, and use data with other services.  
 
 The `wso2/amazons3` module allows you to perform the following operations.
-* Create Bucket
-* List Buckets
-* Delete Bucket
-* Create Object
-* List Objects
-* Get Object
-* Delete Object
+- Create Bucket
+- List Buckets
+- Delete Bucket
+- Create Object
+- List Objects
+- Get Object
+- Delete Object
 
 This example explains how to use the S3 client to connect with the Amazon S3 instance and to create an Amazon S3 bucket, list buckets and delete buckets.
 
@@ -41,21 +41,7 @@ $ ballerina new working-with-bucket-service
 #### 2. Create a module.
 
 ```bash
-$ ballerina add integration-with-amazon-s3-bucket
-```
-
-The project structure is created as indicated below.
-
-```
-amazon-s3-bucket-service
-    ├── Ballerina.toml
-    └── src
-        └── integration-with-amazon-s3-bucket
-            ├── Module.md
-            ├── main.bal
-            ├── resources
-            └── tests
-                └── resources
+$ ballerina add integration_with_amazon_s3_bucket
 ```
 
 #### 3. Set up credentials for accessing Amazon S3
@@ -84,22 +70,22 @@ TRUST_STORE_PASSWORD="<Truststore password>"<br/>
 ```
 
 #### 6. Write the integration
-Open the project with VS Code. The integration implementation is written in the `src/integration-with-amazon-s3-bucket/main.bal` file.
+Open the project with VS Code. The integration implementation is written in the `src/integration_with_amazon_s3_bucket/main.bal` file.
 
-<!-- INCLUDE_CODE: src/integration-with-amazon-s3-bucket/main.bal -->
+<!-- INCLUDE_CODE: src/integration_with_amazon_s3_bucket/main.bal -->
 
 ## Testing 
 
 First let’s build the module. Navigate to the project root directory and execute the following command.
 
 ```bash
-$ ballerina build integration-with-amazon-s3-bucket
+$ ballerina build integration_with_amazon_s3_bucket
 ```
 
-This creates the executables. Now run the `integration-with-amazon-s3-bucket.jar` file created in the above step.
+This creates the executables. Now run the `integration_with_amazon_s3_bucket.jar` file created in the above step.
 
 ```bash
-$ java -jar target/bin/integration-with-amazon-s3-bucket.jar
+$ java -jar target/bin/integration_with_amazon_s3_bucket.jar
 ```
 
 You will see the following service log after successfully invoking the service.

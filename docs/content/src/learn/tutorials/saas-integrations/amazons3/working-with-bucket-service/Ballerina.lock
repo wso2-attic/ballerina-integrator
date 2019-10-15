@@ -3,7 +3,7 @@ version = "0.1.0"
 lockfile_version = "1.0.0"
 ballerina_version = "1.0.1"
 
-[[imports."wso2/integration-with-amazon-s3-bucket:0.1.0"]]
+[[imports."wso2/integration_with_amazon_s3_bucket:0.1.0"]]
 org_name = "wso2"
 name = "amazons3"
 version = "0.9.52"

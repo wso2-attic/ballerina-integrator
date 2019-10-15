@@ -43,7 +43,7 @@ $ ballerina new working-with-object-service
 #### 2. Create a module.
 
 ```bash
-$ ballerina add integration-with-amazon-s3-object
+$ ballerina add integration_with_amazon_s3_object
 ```
 
 The project structure is created as indicated below.
@@ -52,7 +52,7 @@ The project structure is created as indicated below.
 working-with-object-service
     ├── Ballerina.toml
     └── src
-        └── integration-with-amazon-s3-object
+        └── integration_with_amazon_s3_object
             ├── Module.md
             ├── main.bal
             ├── resources
@@ -86,22 +86,22 @@ TRUST_STORE_PASSWORD="<Truststore password>"
 ```
 
 #### 5. Write the integration
-Open the project with VS Code. The integration implementation is written in the `src/integration-with-amazon-s3-object/main.bal` file.
+Open the project with VS Code. The integration implementation is written in the `src/integration_with_amazon_s3_object/main.bal` file.
 
-<!-- INCLUDE_CODE: src/integration-with-amazon-s3-object/main.bal -->
+<!-- INCLUDE_CODE: src/integration_with_amazon_s3_object/main.bal -->
 
 ## Testing 
 
 First let’s build the module. Navigate to the project root directory and execute the following command.
 
 ```bash
-$ ballerina build integration-with-amazon-s3-object
+$ ballerina build integration_with_amazon_s3_object
 ```
 
-This creates the executables. Now run the `integration-with-amazon-s3-object.jar` file created in the above step.
+This creates the executables. Now run the `ntegration_with_amazon_s3_object.jar` file created in the above step.
 
 ```bash
-$ java -jar target/bin/integration-with-amazon-s3-object.jar
+$ java -jar target/bin/integration_with_amazon_s3_object.jar
 ```
 You will see the following log upon the successful invocation of the service.
 
