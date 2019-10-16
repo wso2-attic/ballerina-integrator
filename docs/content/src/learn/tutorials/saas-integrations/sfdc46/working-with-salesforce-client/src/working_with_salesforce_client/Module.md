@@ -45,6 +45,3 @@ You will see the following service log.
 ```log
 [ballerina/http] started HTTP/WS listener 0.0.0.0:9090
 ```
-
-
-
