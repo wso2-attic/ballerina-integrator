@@ -24,7 +24,7 @@ Change directory to converting-json-to-xml-and-upload-to-ftp.
 
 ####2. Add a module.
 ```bash
-$ ballerina add uploadtoftp
+$ ballerina add upload_to_ftp
 ```
 
 The project structure should look like below.
@@ -32,7 +32,7 @@ The project structure should look like below.
 converting-json-to-xml-and-upload-to-ftp
 ├── Ballerina.toml
 └── src
-    └── uploadtoftp
+    └── upload_to_ftp
         ├── main.bal
         ├── Module.md
         ├── resources
@@ -43,7 +43,7 @@ converting-json-to-xml-and-upload-to-ftp
 ####3. Write the integration.
 You can open the project with VS Code. The integration implementation will be written in the `main.bal` file.  
 
-<!-- INCLUDE_CODE: src/uploadtoftp/main.bal -->
+<!-- INCLUDE_CODE: src/upload_to_ftp/main.bal -->
 
 The `ftpConfig` created provides the file server credentials. Here it reads from the config file. You have to create a file called `ballerina.conf` under the root path of the project structure. The file should have the following configurations.
 
@@ -93,13 +93,13 @@ After that `ftp:Client` is created with `ftpConfig`. The HTTP listener service w
 First, let’s build the module. While being in the converting-json-to-xml-and-upload-to-ftp directory, execute the following command.
 
 ```bash
-$ ballerina build uploadtoftp
+$ ballerina build upload_to_ftp
 ```
 
 The build command would create an executable .jar file. Now run the .jar file created in the above step.
 
 ```bash
-$ java -jar target/bin/uploadtoftp.jar
+$ java -jar target/bin/upload_to_ftp.jar
 ```
 
 Create an employees.json file with the below payload.
