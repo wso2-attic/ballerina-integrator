@@ -3,7 +3,7 @@ org-name= "wso2"
 version= "0.1.0"
 license= ["Apache-2.0"]
 authors= ["WSO2"]
-keywords= ["ballerina", "integrator", "stockquote-service"]
+keywords= ["ballerina", "integrator", "stockquote_service"]
 repository= "https://github.com/wso2/ballerina-integrator"
 templates= ["stockquote_service"]
 
