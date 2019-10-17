@@ -156,9 +156,9 @@
         "tags": ["#service"]
     },
     {
-        "id": "restful_service",
-        "name": "Restful Service",
-        "description": "This template demonstrates on how Restful services could be implemented.",
+        "id": "stockquote_service",
+        "name": "REST to SOAP Service",
+        "description": "This template demonstrates on how to call a SOAP backend with a REST request.",
         "tags": ["#service"]
     }
 ]
