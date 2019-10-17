@@ -11,12 +11,11 @@ We appreciate your help!
 * Get started with the Ballerina Integrator by following the [Quick Start Guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/get-started/quick-start-guide/). Start trying out our guides and tutorials available in the [Learn](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/use-cases/) section.
 * Submit issues and contribute code. Go to the **Issues** tab of the GitHub repo and click the New Issue button to file a bug report.
 * Fix issues:
-   * Browse issues labeled easyfix,
    * Use comments on the issue itself to indicate that you will be working on it and get guidance and help.
 
 ## Filing issues
 
-If you are unsure whether you have found a bug, please consider searching existing issues in GitHub and asking in Ballerina-Dev Google Group.
+If you are unsure whether you have found a bug, please consider searching [existing issues in GitHub](https://github.com/wso2/ballerina-integrator/issues) and asking in Ballerina-Dev Google Group.
 
 > IMPORTANT: Sensitive security-related issues should be reported to [security@wso2.com](security@wso2.com). See the [security policy](https://wso2.com/security) for details.
 
