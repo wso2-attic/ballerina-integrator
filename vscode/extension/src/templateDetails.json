@@ -160,5 +160,17 @@
         "name": "Restful Service",
         "description": "This template demonstrates on how Restful services could be implemented.",
         "tags": ["#service"]
+    },
+    {
+        "id": "message_processor",
+        "name": "Message Processor",
+        "description": "This template demonstrates message processor in reliable delivery.",
+        "tags": ["#messaging"]
+    },
+    {
+        "id": "message_store",
+        "name": "Message Store",
+        "description": "This template demonstrates message store in reliable delivery.",
+        "tags": ["#messaging"]
     }
 ]
