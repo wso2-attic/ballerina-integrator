@@ -132,9 +132,9 @@
         "tags": ["#eip"]
     },
     {
-        "id": "xml_to_json_transformation",
-        "name": "XML to JSON Transformation",
-        "description": "This template demonstrates some of the message transformation capabilities.",
+        "id": "uploadtoftp",
+        "name": "JSON to XML Transformation and upload to FTP",
+        "description": "This template demonstrates connecting to a file server with the FTP connector.",
         "tags": ["#eip"]
     },
     {
