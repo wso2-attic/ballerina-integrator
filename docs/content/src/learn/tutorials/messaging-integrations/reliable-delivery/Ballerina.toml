@@ -1,11 +1,11 @@
 [project]
 org-name= "wso2"
-version= "0.1.0"
+version= "0.1.1"
 license= ["Apache-2.0"]
 authors= ["WSO2"]
 keywords= ["ballerina", "integrator", "store", "forward"]
 repository= "https://github.com/wso2/ballerina-integrator"
-templates= []
+templates= ["message_processor", "message_store"]
 
 [dependencies]
 
