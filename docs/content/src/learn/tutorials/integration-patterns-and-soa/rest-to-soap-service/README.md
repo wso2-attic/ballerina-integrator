@@ -16,12 +16,12 @@ We create a service `stockQuote` that fronts a SOAP backend. The service has two
 
 ## Implementation
 
-* Create a new Ballerina project named `exposing-soap-service`.
+* Create a new Ballerina project named `rest-to-soap-service`.
     ```bash
-    $ ballerina new exposing-soap-service
+    $ ballerina new rest-to-soap-service
     ```
 
-* Navigate to the exposing-soap-service directory.
+* Navigate to the rest-to-soap-service directory.
 
 * Add a new module named `stockquote_service` to the project.
 

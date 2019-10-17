@@ -16,7 +16,7 @@ $ ballerina pull wso2/stockquote_service
 Create a new project.
 
 ```bash
-$ ballerina new exposing-a-soap-service
+$ ballerina new rest-to-soap-service
 ```
 
 Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
