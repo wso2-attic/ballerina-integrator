@@ -3,8 +3,8 @@ org-name= "wso2"
 version= "0.1.1"
 license= ["Apache-2.0"]
 authors= ["WSO2"]
-keywords= ["ballerina", "integrator", "uploadtoftp"]
+keywords= ["ballerina", "integrator", "upload_to_ftp"]
 repository= "https://github.com/wso2/ballerina-integrator"
-templates= ["uploadtoftp"]
+templates= ["upload_to_ftp"]
 
 [dependencies]

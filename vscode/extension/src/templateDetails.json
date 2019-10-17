@@ -132,7 +132,7 @@
         "tags": ["#eip"]
     },
     {
-        "id": "uploadtoftp",
+        "id": "upload_to_ftp",
         "name": "JSON to XML Transformation and upload to FTP",
         "description": "This template demonstrates connecting to a file server with the FTP connector.",
         "tags": ["#eip"]
