@@ -144,9 +144,9 @@
         "tags": ["#eip"]
     },
     {
-        "id": "parallel_service_orchestration",
-        "name": "Parallel Service Orchestration",
-        "description": "This template demonstrates on how parallel service orchestration could be achieved.",
+        "id": "appointment_service",
+        "name": "Service Orchestration",
+        "description": "This template demonstrates on how service orchestration could be achieved.",
         "tags": ["#eip"]
     },
     {
