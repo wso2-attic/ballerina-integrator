@@ -24,7 +24,7 @@
         "tags": ["#saas"]
     },
     {
-        "id": "using_gmail_connector",
+        "id": "gmail_client_application",
         "name": "Working with Gmail Connector",
         "description": "This template demonstrates how emails could be sent, read and deleted using the Ballerina Gmail connector.",
         "tags": ["#saas"]
@@ -99,6 +99,12 @@
         "id": "insert_csv_into_mongodb",
         "name": "Insert CSV into MongoDB",
         "description": "This template demonstrates on listening to a remote FTP location and inserting CSV file content into a MongoDB database.",
+        "tags": ["#database", "#file-based"]
+    },
+     {
+        "id": "managing_database_transactions",
+        "name": "Managing Database Transactions",
+        "description": "This template demonstrates on how to manage database transactions using Ballerina.",
         "tags": ["#database", "#file-based"]
     },
     {
