@@ -2,7 +2,7 @@ import ballerina/kafka;
 import ballerina/io;
 import ballerina/lang.'string as strings;
 
-// Kafka Consumer Configuration
+// CODE-SEGMENT-BEGIN: kafka_consumer_config
 kafka:ConsumerConfig consumer1 = {
     bootstrapServers: "localhost:9092",
     groupId: "consumer",
@@ -11,8 +11,8 @@ kafka:ConsumerConfig consumer1 = {
     partitionAssignmentStrategy: "org.apache.kafka.clients.consumer.RoundRobinAssignor"
 };
 
-// Kafka Listener
 listener kafka:Consumer productConsumer1 = new (consumer1);
+// CODE-SEGMENT-END: kafka_consumer_config
 
 // Service that listens to the particular topic
 service productConsumerService1 on productConsumer1 {

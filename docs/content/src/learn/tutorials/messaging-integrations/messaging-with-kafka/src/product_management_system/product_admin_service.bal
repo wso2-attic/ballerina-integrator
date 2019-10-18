@@ -2,7 +2,7 @@ import ballerina/http;
 import ballerina/kafka;
 import ballerina/io;
 
-// Kafka Producer Configuration
+// CODE-SEGMENT-BEGIN: kafka_producer_config
 kafka:ProducerConfig producerConfigs = {
     bootstrapServers: "localhost:9092",
     clientId: "kafka-producer",
@@ -10,8 +10,8 @@ kafka:ProducerConfig producerConfigs = {
     retryCount: 3
 };
 
-// Kafka Producer
 kafka:Producer kafkaProducer = new(producerConfigs);
+// CODE-SEGMENT-END: kafka_producer_config
 
 // HTTP Service Endpoint
 listener http:Listener httpListener = new(9090);
