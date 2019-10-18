@@ -160,5 +160,17 @@
         "name": "REST to SOAP Service",
         "description": "This template demonstrates on how to call a SOAP backend with a REST request.",
         "tags": ["#service"]
+    },
+    {
+        "id": "message_processor",
+        "name": "Message Processor",
+        "description": "This template demonstrates message processor in reliable delivery.",
+        "tags": ["#messaging"]
+    },
+    {
+        "id": "message_store",
+        "name": "Message Store",
+        "description": "This template demonstrates message store in reliable delivery.",
+        "tags": ["#messaging"]
     }
 ]
