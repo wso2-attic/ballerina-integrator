@@ -8,7 +8,7 @@ This template demonstrates a simple Hello World Service.
 
 2. Execute the following command to run the service.
 ```bash
-ballerina run --config src/hello_world_service/resources/ballerina.conf hello_world_service
+ballerina run hello_world_service --b7a.config.file=src/hello_world_service/resources/ballerina.conf
 ```
 
 3. Invoke the service with the following request. Use an HTTP client like cURL.
