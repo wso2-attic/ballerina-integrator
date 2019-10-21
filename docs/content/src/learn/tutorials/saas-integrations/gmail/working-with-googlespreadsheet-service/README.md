@@ -118,10 +118,12 @@ e.g.
 curl -v -X POST http://localhost:9090/spreadsheets/firstSpreadsheet
 ```
 ### 2. Testing adding a new worksheet
-  ```bash
-        curl -v -X POST http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_NAME>
-
-        e.g: curl -v -X POST http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet
+```bash
+curl -v -X POST http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_NAME>
+```
+e.g.
+```bash
+curl -v -X POST http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet
    ```
         
 ### 3. Testing viewing a spreadsheet
@@ -137,7 +139,7 @@ curl -X GET http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4a
 ```bash
 curl -H "Content-Type: application/json" \ -X PUT \ -d '[["Name", "Score"], ["Keetz", "12"], ["Niro", "78"], ["Nisha", "98"], ["Kana", "86"]]'\http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
 ```
-e.g:
+e.g.
 ```bash
 curl -H "Content-Type: application/json" \-X PUT \ -d '[["Name", "Score"], ["Keetz", "12"], ["Niro", "78"], ["Nisha", "98"], ["Kana", "86"]]' \ http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/A1/B5
 ```       
@@ -146,7 +148,7 @@ curl -H "Content-Type: application/json" \-X PUT \ -d '[["Name", "Score"], ["Kee
 ```bash\
 curl -X GET http://localhost:9090/spreadsheets/worksheet/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
 ```
-e.g: 
+e.g. 
 ```bash
 curl -X GET http://localhost:9090/spreadsheets/column/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/B
 ```
@@ -160,7 +162,7 @@ curl -X GET http://localhost:9090/spreadsheets/column/<SPREADSHEET_ID>/<WORKSHEE
 ```bash
 curl -X GET http://localhost:9090/spreadsheets/row/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<COLUMN_NAME>/<ROW_NAME>
 ```
-e.g: 
+e.g. 
 ```bash        
 curl -X GET http://localhost:9090/spreadsheets/row/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/2
 ```
@@ -169,7 +171,7 @@ curl -X GET http://localhost:9090/spreadsheets/row/1AoOHLyn3Ds6do6UMq8t_pv20RrRw
 ```bash
 curl -H "Content-Type: text/plain" \ -X PUT \ -d 'Test Value' \http://localhost:9090/spreadsheets/cell/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
 ```
-e.g:
+e.g.
 ```bash
 curl -H "Content-Type: text/plain" \ -X PUT \ -d 'Test Value' \
 http://localhost:9090/spreadsheets/cell/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/C/2
@@ -179,7 +181,7 @@ http://localhost:9090/spreadsheets/cell/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z
 ```bash
 curl -X GET http://localhost:9090/spreadsheets/cell/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
 ```
-e.g: 
+e.g. 
 ```bash
 curl -X GET http://localhost:9090/spreadsheets/cell/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/C/2
 ```
@@ -188,7 +190,7 @@ curl -X GET http://localhost:9090/spreadsheets/cell/1AoOHLyn3Ds6do6UMq8t_pv20RrR
 ```bash
 curl -X DELETE http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_ID>
 ```
-e.g:
+e.g.
 ```bash
  curl -X DELETE http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/1636241809
  ```
