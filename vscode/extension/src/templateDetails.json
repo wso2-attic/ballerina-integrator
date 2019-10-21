@@ -101,6 +101,12 @@
         "description": "This template demonstrates on listening to a remote FTP location and inserting CSV file content into a MongoDB database.",
         "tags": ["#database", "#file-based"]
     },
+     {
+        "id": "managing_database_transactions",
+        "name": "Managing Database Transactions",
+        "description": "This template demonstrates on how to manage database transactions using Ballerina.",
+        "tags": ["#database", "#file-based"]
+    },
     {
         "id": "pass_through_messaging",
         "name": "Pass Through Messaging",
