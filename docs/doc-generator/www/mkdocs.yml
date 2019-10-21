@@ -77,7 +77,7 @@ nav:
           - 'Service Orchestration': 'learn/tutorials/integration-patterns-and-soa/service-orchestration/1.md'
           - 'Service Composition': 'learn/tutorials/integration-patterns-and-soa/service-composition/1.md'
           - 'Backend for Frontend' : 'learn/tutorials/integration-patterns-and-soa/backend-for-frontend/1.md'
-          - 'REST to SOAP' : 'learn/tutorials/integration-patterns-and-soa/exposing-soap-service/1.md'
+          - 'REST to SOAP' : 'learn/tutorials/integration-patterns-and-soa/rest-to-soap-service/1.md'
           - 'JSON to XML and Upload to FTP' : 'learn/tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/1.md'
       - 'Examples': 'learn/examples.md'
     - Develop:

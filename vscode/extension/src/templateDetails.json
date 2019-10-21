@@ -24,7 +24,7 @@
         "tags": ["#saas"]
     },
     {
-        "id": "using_gmail_connector",
+        "id": "gmail_client_application",
         "name": "Working with Gmail Connector",
         "description": "This template demonstrates how emails could be sent, read and deleted using the Ballerina Gmail connector.",
         "tags": ["#saas"]
@@ -101,6 +101,12 @@
         "description": "This template demonstrates on listening to a remote FTP location and inserting CSV file content into a MongoDB database.",
         "tags": ["#database", "#file-based"]
     },
+     {
+        "id": "managing_database_transactions",
+        "name": "Managing Database Transactions",
+        "description": "This template demonstrates on how to manage database transactions using Ballerina.",
+        "tags": ["#database", "#file-based"]
+    },
     {
         "id": "pass_through_messaging",
         "name": "Pass Through Messaging",
@@ -132,9 +138,9 @@
         "tags": ["#eip"]
     },
     {
-        "id": "xml_to_json_transformation",
-        "name": "XML to JSON Transformation",
-        "description": "This template demonstrates some of the message transformation capabilities.",
+        "id": "upload_to_ftp",
+        "name": "JSON to XML Transformation and upload to FTP",
+        "description": "This template demonstrates connecting to a file server with the FTP connector.",
         "tags": ["#eip"]
     },
     {
@@ -144,9 +150,9 @@
         "tags": ["#eip"]
     },
     {
-        "id": "parallel_service_orchestration",
-        "name": "Parallel Service Orchestration",
-        "description": "This template demonstrates on how parallel service orchestration could be achieved.",
+        "id": "appointment_service",
+        "name": "Service Orchestration",
+        "description": "This template demonstrates on how service orchestration could be achieved.",
         "tags": ["#eip"]
     },
     {
@@ -156,9 +162,21 @@
         "tags": ["#service"]
     },
     {
-        "id": "restful_service",
-        "name": "Restful Service",
-        "description": "This template demonstrates on how Restful services could be implemented.",
+        "id": "stockquote_service",
+        "name": "REST to SOAP Service",
+        "description": "This template demonstrates on how to call a SOAP backend with a REST request.",
         "tags": ["#service"]
+    },
+    {
+        "id": "message_processor",
+        "name": "Message Processor",
+        "description": "This template demonstrates message processor in reliable delivery.",
+        "tags": ["#messaging"]
+    },
+    {
+        "id": "message_store",
+        "name": "Message Store",
+        "description": "This template demonstrates message store in reliable delivery.",
+        "tags": ["#messaging"]
     }
 ]
