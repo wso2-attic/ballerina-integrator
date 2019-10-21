@@ -1,6 +1,6 @@
 import ballerina/http;
 import ballerina/kafka;
-import ballerina/io;
+import ballerina/log;
 
 // CODE-SEGMENT-BEGIN: kafka_producer_config
 kafka:ProducerConfig producerConfigs = {
@@ -24,7 +24,7 @@ service productAdminService on httpListener {
         http:Response response = new;
 
         json reqPayload = check request.getJsonPayload();
-        io:println("ProductManagementService : Received payload");
+        log:printInfo("ProductManagementService : Received Payload");
 
         var productName = reqPayload.Product;
         var productType = reqPayload.Type;
@@ -37,14 +37,14 @@ service productAdminService on httpListener {
         };
 
         // Serialize the message
-        byte[] serializedMessage = productInfo.toJsonString().toBytes();
+        byte[] kafkaMessage = productInfo.toJsonString().toBytes();
 
         if (productType.toString() == "Fruit") {
-            io:println("ProductManagementService : Sending message to Partition 0");
-            var sendResult = kafkaProducer->send(serializedMessage, "product-price", partition = 0);
+            log:printInfo("ProductManagementService : Sending message to Partition 0");
+            var sendResult = kafkaProducer->send(kafkaMessage, "product-price", partition = 0);
         } else if (productType.toString() == "Vegetable") {
-            io:println("ProductManagementService : Sending message to Partition 1");
-            var sendResult = kafkaProducer->send(serializedMessage, "product-price", partition = 1);
+            log:printInfo("ProductManagementService : Sending message to Partition 1");
+            var sendResult = kafkaProducer->send(kafkaMessage, "product-price", partition = 1);
         }
         
         response.setJsonPayload({ "Status" : "Success" });
