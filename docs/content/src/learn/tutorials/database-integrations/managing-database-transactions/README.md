@@ -37,19 +37,18 @@ The first scenario shows a successful transaction whereas the other two fail due
 
 > If you want to skip the basics, you can download the git repo and directly move to the `Testing` section by skipping `Implementation` section.    
 
-Create a project.
+#### 1. Create a new project.
 ```bash
 $ ballerina new managing-database-transactions
 ```
 
+#### 2. Create a module.
 Navigate into the project directory and add a new module.
 ```bash
 $ ballerina add managing_database_transactions
 ```
 
-Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
-
-Add a `ballerina.conf` file and create .bal files with meaningful names as shown in the project structure given below.
+The project structure is created as indicated below.
 ```shell
 managing-database-transactions
 ├── Ballerina.toml
@@ -66,7 +65,31 @@ managing-database-transactions
             ├── account_manager_test.bal
             └── resources
 ```
-Open the project with VS Code and write the integration implementation and tests in the `account_manager.bal`, `application.bal`, and `account_manager_test.bal` files respectively.
+
+Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
+
+#### 3. Add project configurations file
+Add a `ballerina.conf` file and create .bal files with meaningful names as shown in the project structure given above.
+
+ - `ballerina.conf` file can be used to provide external configurations to Ballerina programs. Since this guide needs MySQL database integration, a Ballerina configuration file is used to provide the database connection properties to our Ballerina program.
+   This configuration file has the following fields. Change these configurations with your connection properties accordingly.
+   
+    ```
+    DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/bankDB"
+    DATABASE_USERNAME = "root"
+    DATABASE_PASSWORD = "root"
+    ```
+
+#### 4. Write the integration
+
+Open the project with VS Code. The integration implementation is written in the `src/managing_database_transaction/account_manager.bal` and `src/managing_database_transaction/application.bal` files.
+
+So, create a new file named `application.bal` under 'managing_database_transaction' with the following content.
+
+<!-- INCLUDE_CODE: src/managing_database_transactions/application.bal -->
+
+Similarly, create a new file named `account_manager.bal` under 'managing_database_transaction' with the following content.
+<!-- INCLUDE_CODE: src/managing_database_transactions/account_manager.bal -->
 
 The `transferMoney` function of `account_manager.bal` demonstrates how we can use transactions in Ballerina. It comprises of two different operations; withdrawal and deposit. To ensure that the transferring operation happens as a whole, it needs to reside in a database transaction block.
 
@@ -79,15 +102,6 @@ The transaction will be successful only when both withdrawal from the transferor
 - Run the SQL script `database_initializer.sql` provided in the resources directory, to initialize the database and to create the required table.
 ```bash
 $ mysql -u username -p <database_initializer.sql 
-```
-
-- Add database configurations to the `ballerina.conf` file.
-   - `ballerina.conf` file can be used to provide external configurations to Ballerina programs. Since this guide needs MySQL database integration, a Ballerina configuration file is used to provide the database connection properties to our Ballerina program.
-   This configuration file has the following fields. Change these configurations with your connection properties accordingly.
-```
-DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/bankDB"
-DATABASE_USERNAME = "root"
-DATABASE_PASSWORD = "root"
 ```
 
 Let’s build the module. Navigate to the project directory and execute the following command.
