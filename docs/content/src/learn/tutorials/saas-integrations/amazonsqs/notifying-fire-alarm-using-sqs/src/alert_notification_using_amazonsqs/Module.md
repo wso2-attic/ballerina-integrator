@@ -1,67 +1,34 @@
-Guide on an Alert System using Ballerina.
+Template for Amazon SQS Connector to notify alerts
 
-# Guide Overview
+# Amazon SQS Connector to notify alerts
 
-## About
+This is a template for [Notifying fire alarm using SQS tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
-This guide demonstrates how to use Amazon SQS Connector to notify alerts.
+## Using the Template
 
-The high level sections of this guide are as follows:
+Run the following command to pull the `alert_notification_using_amazonsqs` template from Ballerina Central.
 
-- [What you'll build](#What-youll-build)
-- [Prerequisites](#Prerequisites)
-- [Implementation](#Implementation)
-  - [Creating the project structure](#Creating-the-project-structure)
-  - [Developing the scenario](#Developing-the-scenario)
-- [Deployment](#Deployment)
-  - [Deploying locally](#Deploying-locally)
+```
+$ ballerina pull wso2/alert_notification_using_amazonsqs
+```
 
-## What you'll build
-
-The following diagram illustrates the scenario:
-
-![Message flow diagram image](resources/sqs-alert.png)
-
-Let's consider a scenario where a fire alarm sends fire alerts to an Amazon SQS queue. As message duplication is not an issue, an Amazon SQS Standard Queue is used as the queue. A fire alarm listener is polling the messages in the SQS queue. When fire alerts are available, it will consume the messages from the queue and remove the messages from the queue. Consumed messages are showed in the console to the User.
-
-Here, the fire alarm is sending fire alerts periodically from a Ballerina worker where listener polls in another worker. Both sent messages and received messages are printed in the console.
-
-As there can be multiple alert messages available in the queue, the listener is configured to consume more than one message at a time.
-
-## Prerequisites
-- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
-- A Text Editor or an IDE
-  > **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
-- [Amazon SQS Account](https://aws.amazon.com/sqs/)
-
-
-## Implementation
-
-Take a look at the code samples below to understand how to implement the scenario.
-
-`create_notification_queue.bal` creates a new queue in Amazon SQS with the configuration provided in a file.
-
-`notify_fire.bal` generates fire alert notifications periodically and these are sent to the above created SQS queue.
-
-`listen_to_fire_alarm.bal` listens to the SQS queue and if there are any notifications, it would receive from the queue and delete the existing messages in the queue.
-
-`main.bal` contains the `main` method which would implement the workers related to creating a queue, sending a message to the queue, and consuming and receiving/deleting messages from the queue.
-
-### Creating the project structure
-
-1. Create a new project.
+Create a new project.
 
 ```bash
 $ ballerina new notifying-fire-alarm-using-sqs
 ```
 
-2. Create a module.
+Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
 
 ```bash
-$ ballerina add alert_notification_using_amazonsqs
+$ ballerina add -t wso2/alert_notification_using_amazonsqs alert_notification_using_amazonsqs
 ```
 
-### Developing the scenario
+This automatically creates alert_notification_using_amazonsqs service for you inside the `src` directory of your project.  
+
+## Testing
+
+### 1. Developing the scenario
 
 1. Configure parameters in `create_notification_queue.bal`, which will create a new queue. In order to create a queue initialize the `amazonsqs:Client` with configuration parameters and invoke the `createQueue` method of it. `ACCESS_KEY_ID` and `SECRET_ACCESS_KEY` can be obtained from the Amazon account you have created. When a queue is created you can find the `ACCOUNT_NUMBER` of the SQS account.
 
@@ -71,13 +38,9 @@ $ ballerina add alert_notification_using_amazonsqs
 
 4. Configure/develop `main.bal`, which will implement the different workers for each of the above cases and run the system. There the workers can be replaced with the relevant code. `queueCreator` code should be called once to setup the queue. Code in the `fireNotifier` can be called from the fire alarm triggering side while `fireListener` should reside in the alarm polling/listening code.
 
-## Deployment
+### 2. Deployment
 
 Once you are done with the development, you can deploy the scenario using any of the methods listed below.
-
-### Deploying locally
-
-To deploy locally, navigate to `notifying-fire-alarm-using-sqs` directory, and execute the following command.
 
 ```bash
 $ ballerina build alert_notification_using_amazonsqs
