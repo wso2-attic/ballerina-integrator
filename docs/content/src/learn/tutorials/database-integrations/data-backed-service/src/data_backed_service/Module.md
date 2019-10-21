@@ -1,87 +1,35 @@
-Guide on Database-Backed Services using Ballerina.
+Template for Database-Backed Services using Ballerina
 
-# Guide Overview
+# Database-Backed Services using BallerinaP 
 
-## About
-Data inside a database can be exposed to the outside world by using a database-backed RESTful web service. RESTful API calls enable you to add, view, update, and remove data stored in a database from the outside world.
+This is a template for the [Data-backed Service tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/database-integrations/data-backed-service/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
-> This guide walks you through building a database-backed RESTful web service with Ballerina.
+## Using the Template
 
-Following are the sections available in this guide.
+Run the following command to pull the `data_backed_service` template from Ballerina Central.
 
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
-
-## What you'll build
-
-You'll build an employee data management REST service that performs CRUD Operations (Create, Read, Update, Delete) on a MySQL database. Also, this guide walks you through the process of accessing relational data via the Ballerina language. The service will have the following functionalities.
-
-* Add new employees to the database via HTTP POST method.
-* Retrieve details of an existing employee from the database via HTTP GET method.
-* Update an existing employee in the database via the HTTP PUT method.
-* Delete an existing employee from the database via the HTTP DELETE method.
-
-This service will deal with a MySQL database and expose the data operations as a web service. Refer to the following diagram to understand the complete end-to-end scenario.
-
-![database-backed RESTful web service](resources/data-backed-service.svg)
-
-## Prerequisites
-
-* Ballerina Integrator
-* A Text Editor or an IDE
-> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VS Code](https://code.visualstudio.com).
-* [MySQL version 5.6 or later](https://www.mysql.com/downloads/)
-* [Official JDBC driver](https://dev.mysql.com/downloads/connector/j/) for MySQL
-
-## Implementation
-
-> If you want to skip the basics, you can download the git repo and directly move to the `Testing` section by skipping the `Implementation` section.
-
-Create a project.
- ```bash
- $ ballerina new data-backed-service
- ```
-
-Navigate into the project directory and add a new module.
- ```bash
- $ ballerina add data_backed_service
- ```
-
-Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
-
-Add a ballerina.conf file and rename the .bal files with meaningful names as required.
-
-Open the project with VS Code and write the integration implementation and tests in the `employee_db_service.bal` and `employee_db_service_test.bal` files respectively.
-
-### Developing the SQL Data-Backed Web Service
-Ballerina language has built-in support for writing web services. The `service` keyword in Ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource function inside the service. You can implement the business logic inside a resource function using Ballerina language syntax.
-We can use the following database schema to store employee data.
 ```
-+------------+-------------+------+-----+---------+-------+
-| Field      | Type        | Null | Key | Default | Extra |
-+------------+-------------+------+-----+---------+-------+
-| EmployeeID | int(11)     | NO   | PRI | NULL    |       |
-| Name       | varchar(50) | YES  |     | NULL    |       |
-| Age        | int(11)     | YES  |     | NULL    |       |
-| SSN        | int(11)     | YES  |     | NULL    |       |
-+------------+-------------+------+-----+---------+-------+
+$ ballerina pull wso2/data_backed_service
 ```
-The Ballerina code for the employee data service with resource functions to add, retrieve, update, and delete employee data can be found in the `employee_db_service.bal` file.
 
-A remote function in Ballerina indicates that it communicates with some remote service through the network. In this case, the remote service is a MySQL database. `employeeDB` is the reference name for the MySQL client object that encapsulates the aforementioned set of remote functions. The rest of the code is for preparing SQL queries and executing them by calling these remote functions of the Ballerina MySQL client.
+Create a new project.
 
-You can implement custom functions in Ballerina that perform specific tasks. For this scenario, we have included the following functions to interact with the MySQL database.
+```bash
+$ ballerina new data-backed-service
+```
 
-- insertData
-- retrieveById
-- updateData
-- deleteData
+Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+
+```bash
+$ ballerina add -t wso2/data_backed_service data_backed_service
+```
+
+This automatically creates data_backed_service service for you inside the `src` directory of your project.  
 
 ## Testing
 
 ### Before you begin
+* Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
 * Download & run the SQL script `initializeDataBase.sql` provided inside the `resources` directory, to initialize the database and to create the required table.
 ```
    $mysql -u username -p <initializeDataBase.sql
@@ -111,36 +59,3 @@ $ java -jar target/bin/data_backed_service.jar --b7a.config.file=path/to/balleri
 ```
 
 - Now you can test the functionality of the employee database management RESTFul service by sending HTTP requests for each database operation. For example, this guide uses the cURL commands to test each operation of the `employeeService` as follows.
-
-**Add new employee**
-```bash
-curl -v -X POST -d '{"name":"Alice", "age":20,"ssn":123456789,"employeeId":1}' \
-"http://localhost:9090/records/employee" -H "Content-Type:application/json"
-
-Output:
-{"Status":"Data Inserted Successfully"}
-```
-
-**Retrieve employee data**
-```bash
-curl -v "http://localhost:9090/records/employee/1"
-
-Output:
-[{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
-```
-**Update an existing employee data**
-```bash
-curl -v -X PUT -d '{"name":"Alice Updated", "age":30,"ssn":123456789,"employeeId":1}' \
-"http://localhost:9090/records/employee" -H "Content-Type:application/json"
-
-Output:
-{"Status":"Data Updated Successfully"}
-```
-
-**Delete employee data**
-```bash
-curl -v -X DELETE "http://localhost:9090/records/employee/1"
-
-Output:
-{"Status":"Data Deleted Successfully"}
-```
