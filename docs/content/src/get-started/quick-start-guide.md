@@ -215,4 +215,4 @@ function handleError(http:Caller caller, string errorMsg) {
 ## What's Next
 
 - Try out the tutorials available in the [Learn section of our documentation](../../learn/use-cases/).
-- You can easily deploy the projects you create by following our documentation on [Docker](../../learn/deploy-on-docker/) and [Kubernetes](../../learn/deploy-on-kubernetes/).
+- You can easily deploy the projects you create by following our documentation on [Docker](../../develop/deploy-on-docker/) and [Kubernetes](../../develop/deploy-on-kubernetes/).
