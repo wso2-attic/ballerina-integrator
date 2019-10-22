@@ -1,4 +1,4 @@
-Template for Querying MySQL Databases using Ballerina
+Template for Querying MySQL Databases
 
 # Querying MySQL Databases using Ballerina
 
