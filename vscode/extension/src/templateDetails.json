@@ -168,6 +168,12 @@
         "tags": ["#eip"]
     },
     {
+        "id": "healthcare_service",
+        "name": "Backend for Frontend",
+        "description": "This template demonstrates how to create separate back-end services for specific front-end applications.",
+        "tags": ["#eip"]
+    },
+    {
         "id": "hello_world_service",
         "name": "Hello World Service",
         "description": "This template demonstrates a simple Hello World Service.",
