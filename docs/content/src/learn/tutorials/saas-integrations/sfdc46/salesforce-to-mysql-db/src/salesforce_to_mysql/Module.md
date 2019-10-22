@@ -1,60 +1,34 @@
-Guide on Salesforce to MySQL using Ballerina.
+Template for Salesforce to MySQL using Ballerina
 
-# Guide Overview
+# Salesforce to MySQL using Ballerina 
 
-## About
+This is a template for [Salesforce to MySQL Database tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
-Ballerina is an open-source programming language that empowers developers to integrate their system easily with the
-support of connectors. In this guide, we are mainly focusing on using batch processing to synchronize Salesforce data
-with a MySQL Database.
+## Using the Template
 
-The Salesforce connector allows you to perform CRUD operations for SObjects, query using SOQL, search using SOSL, and
-describe SObjects and organizational data through the Salesforce REST API. Also it supports insert, upsert, update,
-query, and delete operations for CSV, JSON, and XML data types that are available in Salesforce bulk API. It handles
-OAuth 2.0 authentication.
+Run the following command to pull the `salesforce_to_mysql` template from Ballerina Central.
 
-Ballerina provides standardized interface for accessing any relational database via JDBC. This allows you to run
-diverse SQL operations on a database, including Select, Insert, Update, and Delete.
+```
+$ ballerina pull wso2/salesforce_to_mysql
+```
 
-You can find other integration modules from [wso2-ballerina](https://github.com/wso2-ballerina) GitHub organization.
-
-## What you'll build
-
-This application queries Salesforce for new or updated contacts at a regular interval. Then it processes SOQL records
-one at a time. It queries the database using JDBC client to check whether the Salesforce contact exists in the
-database. If it currently exists in the database, update the existing account in the database. Alternately, insert the
-new contact into the database. After the process is completed for the entire Salesforce accounts batch, a success
-message is logged.
-
-![sfdc to mysql database](resources/salesforce-to-mysql-database.jpg)
-
-## Prerequisites
-
-- [Java](https://www.oracle.com/technetwork/java/index.html)
-- Ballerina Integrator
-- A Text Editor or an IDE
-> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VS Code](https://code.visualstudio.com).
-- Link to download Ballerina Integrator.
-
-## Implementation
-
-A Ballerina project needs to be created for the integration use case explained above. Please follow the steps given below
-to create the project and modules. You can learn about the Ballerina project and modules in this
-[guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
-
-#### 1. Create a new project.
+Create a new project.
 
 ```bash
 $ ballerina new salesforce-to-mysql-db
 ```
 
-#### 2. Create a module.
+Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
 
 ```bash
-$ ballerina add salesforce_to_mysql
+$ ballerina add -t wso2/salesforce_to_mysql salesforce_to_mysql
 ```
 
-#### 3. Set up credentials for accessing Salesforce.
+This automatically creates salesforce_to_mysql service for you inside the `src` directory of your project.  
+
+## Testing
+
+### 1. Set up credentials for accessing Salesforce.
 
 - Visit [Salesforce](https://www.salesforce.com) and create a Salesforce account.
 
@@ -65,17 +39,8 @@ $ ballerina add salesforce_to_mysql
     - Client Secret
     - Refresh Token
     - Refresh Token URL
-
-- **Note**: When you are setting up the connected app, select the following scopes under **Selected OAuth Scopes**:
-    - Access and manage your data (api)
-    - Perform requests on your behalf at any time (refresh_token, offline_access)
-    - Provide access to your data via the Web (web)
-
-- Provide the client ID and client secret to obtain the refresh token and access token. For more information on
-obtaining OAuth2 credentials, see the
-[Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
-
-#### 4. Create a database and set up credentials
+    
+#### 2. Create a database and set up credentials
 
 - If you have not installed MySQL in your computer, Please install MySql on your local computer.
 Visit [here](https://dev.mysql.com/downloads/) to download and install MySQL. After installing configure configure
@@ -95,7 +60,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 INSERT INTO contacts VALUES ("johndoe@wso2.com", "John", "Doe", CURRENT_TIMESTAMP);
 ```
 
-#### 5. Add JDBC client connector
+#### 3. Add JDBC client connector
 
 Since we are using JDBC client for Database operations we need to create new directory called `lib` in the project
 root directory and add `mysql-connector-java.jar` to the newly created `lib` directory. You can install
@@ -117,7 +82,7 @@ target = "java8"
   path = "./lib/mysql-connector-java.jar"
 ```
 
-#### 6. Add project configurations file
+#### 4. Add project configurations file
 
 Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure.
 This file should have following configurations. Add the obtained Salesforce configurations and Database
@@ -136,18 +101,7 @@ DB_PASSWORD="<MySQL database password>"
 SCHEDULER_INTERVAL_IN_MILLIS=<Scheduler interval in milli-seconds (eg: 60000)>
 ```
 
-#### 7. Write the integration
-
-Open the project with VS Code. The integration implementation is written in the `src/sfdc_to_mysql_db/main.bal`
-file.
-
-Here we are running `sfdcToMysqlService` using a task scheduler. You can set the Scheduler interval in the
-`ballerina.conf` file. When the `sfdcToMysqlService` service's `onTrigger` function is triggered, it will retrieve
-newly modified Salesforce contacts and update the database using them.
-
-## Testing
-
-First let’s build the module. Navigate to the project root directory and execute the following command.
+Let’s build the module. Navigate to the project root directory and execute the following command.
 
 ```bash
 $ ballerina build salesforce_to_mysql
