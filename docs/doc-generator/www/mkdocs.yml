@@ -87,7 +87,7 @@ nav:
       - 'Managing Ballerina Code' : 'develop/managing-ballerina-code.md'
       - 'Deploying on Docker': 'develop/deploy-on-docker.md'
       - 'Deploying on Kubernetes': 'develop/deploy-on-kubernetes.md'
-      - 'Running as a Java Program': 'develop/running-as-a-java-program.md'
+      - 'Running on JVM': 'develop/running-on-jvm.md'
     - Observability:
       - 'Observing a Service with Prometheus' : 'observability/observing-a-service.md'
       - 'Logging using Logstash and Kibana' : 'observability/logstash-kibana.md'
