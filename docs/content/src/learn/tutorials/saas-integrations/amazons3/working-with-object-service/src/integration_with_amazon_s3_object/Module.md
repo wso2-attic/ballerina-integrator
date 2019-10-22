@@ -1,50 +1,35 @@
-Guide on Amazon S3 Object Service 
+Template for Amazon S3 Object Service 
 
-# Guide Overview 
+# Working with Amazon S3 Object Service 
 
-## About
+This is a template for [Working with Amazon S3 Object Service tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/saas-integrations/amazons3/working-with-object-service). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
-Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
-support of connectors. In this guide, we are mainly focusing on connecting to the Amazon Simple Storage Service API to create, store, download, and use data with other services.  
 
-The `wso2/amazons3` module allows you to perform the following operations.
-- Create Bucket
-- List Buckets
-- Delete Bucket
-- Create Object
-- List Objects
-- Get Object
-- Delete Object
+## Using the Template
 
-This example explains how to use the S3 client to connect with the Amazon S3 instance and to create a Amazon S3 object, get objects in a bucket, get object data and delete an object.
+Run the following command to pull the `integration_with_amazon_s3_object` template from Ballerina Central.
 
-You can find other integrations modules from [wso2-ballerina](https://github.com/wso2-ballerina) GitHub organization.
+```
+$ ballerina pull wso2/integration_with_amazon_s3_object
+```
 
-## What you'll build
-
-This application connects with the Amazon S3 API and create a new object in an Amazon S3 bucket, list the available objects in the bucket, display the object content and delete a specified object in the bucket.
-
-![working with Amazon S3 Object service](resources/amazon-s3-object-service.png)
-
-## Implementation
-
-A Ballerina project is created for the integration use case explained above. Please follow the steps given 
-below to create the project and modules. You can learn about the Ballerina project and modules in this 
-[guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
-
-#### 1. Create a new project.
+Create a new project.
 
 ```bash
 $ ballerina new working-with-object-service
 ```
 
-#### 2. Create a module.
+Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
 
 ```bash
-$ ballerina add integration-with-amazon-s3-object
+$ ballerina add -t wso2/integration_with_amazon_s3_object integration_with_amazon_s3_object
 ```
 
-#### 3. Set up credentials for accessing Amazon S3
+This automatically creates integration_with_amazon_s3_object service for you inside the `src` directory of your project.  
+
+## Testing
+
+### 1. Set up credentials for accessing Amazon S3
 
 - Visit [Amazon S3](https://aws.amazon.com/s3/) and create an Amazon S3 account.
 
@@ -55,7 +40,7 @@ $ ballerina add integration-with-amazon-s3-object
    
 - Download the newly created credentials, when prompted to do so in the key creation wizard.
 
-#### 4. Add project configurations file
+### 2. Add project configurations file
 
 Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
 This file should have following configurations. Add the obtained SAmazon S3 configurations to the file.
@@ -69,14 +54,9 @@ TRUST_STORE_PATH="<Truststore file location>"
 TRUST_STORE_PASSWORD="<Truststore password>"
 ```
 
-#### 5. Write the integration
-Open the project with VS Code. The integration implementation is written in the `src/integration-with-amazon-s3-object/main.bal` file.
-
-<!-- INCLUDE_CODE: src/integration-with-amazon-s3-object/main.bal -->
-
 ## Testing 
 
-First let’s build the module. Navigate to the project root directory and execute the following command.
+Let’s build the module. Navigate to the project root directory and execute the following command.
 
 ```bash
 $ ballerina build integration-with-amazon-s3-object
@@ -91,94 +71,4 @@ You will see the following log upon the successful invocation of the service.
 
 ```log
 [ballerina/http] started HTTP/WS listener 0.0.0.0:9090
-```
-
-### 1. Testing create Object service 
-
-#### (I) JSON Content
-Create a file called `content.json` with following JSON content:
-```json
-{
-    "name": "John Doe",
-    "dob": "1940-03-19",
-    "ssn": "234-23-525",
-    "address": "California",
-    "phone": "8770586755",
-    "email": "johndoe@gmail.com",
-    "doctor": "thomas collins",
-    "hospital": "grand oak community hospital",
-    "cardNo": "7844481124110331",
-    "appointment_date": "2025-04-02"
-}
-```
-- Invoke the following curl request to create a new object in the newly created bucket.
-```
-curl -v -X POST --data @content.json http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json --header "Content-Type:application/json"
-```
-You see the response as follows:
-```
-firstObject.json created on Amazon S3 bucket : firstbalbucket.
-```
-
-#### (II) Binary Content
-Let's upload an image (sample.jpg) to the s3 bucket we created above. 
-- Invoke the following curl request to create a new object in the newly created bucket.
-```
-curl -v -X POST http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg -H 'Content-Type: image/jpg' -T sample.jpg -H "Expect:"
-```
-You see the response as follows:
-```
-image.jpg created on Amazon S3 bucket : firstbalbucket.
-```
-
-### 2. Testing the list Object service 
-
-- Invoke the following curl request to list objects in a bucket.
-
-```
-curl -X GET http://localhost:9090/amazons3/imageStore/firstbalbucket
-```
-
-### 3. Testing get Object service
-#### (I) JSON Content
-- Set the `responseContentType` as `application/json` to retrieve a JSON object and invoke the following curl request to get the newly created object.
-```
-curl -v -X GET http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json?responseContentType=application/json
-```
-You see the response as follows:
-```json
-{
-    "name": "John Doe",
-    "dob": "1940-03-19",
-    "ssn": "234-23-525",
-    "address": "California",
-    "phone": "8770586755",
-    "email": "johndoe@gmail.com",
-    "doctor": "thomas collins",
-    "hospital": "grand oak community hospital",
-    "cardNo": "7844481124110331",
-    "appointment_date": "2025-04-02"
-}
-```
-
-#### (II) Binary Content
-- Set the `responseContentType` as image/jpg and use following URL to open newly created image on browser.
-```
-http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg?responseContentType=image/jpg
-```
-
-- You can use the following URL to download the newly created image.
-```
-http://localhost:9090/amazons3/firstbalbucket/image.jpg?responseContentType=application/octet-stream
-```
-
-### 4. Testing delete Object service
-
-- Invoke the following curl request to delete the above object.
-```
-curl -v -X DELETE http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json
-```
-You see the response as follows:
-```
-firstObject.json deleted from Amazon S3 bucket : firstbalbucket.
 ```

@@ -28,6 +28,8 @@ function listenToFireAlarm(string queueResourcePath) {
         secretKey: config:getAsString("SECRET_ACCESS_KEY"),
         region: config:getAsString("REGION"),
         accountNumber: config:getAsString("ACCOUNT_NUMBER")
+
+
     };
 
     // Amazon SQS client

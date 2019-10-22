@@ -36,9 +36,15 @@
         "tags": ["#saas"]
     },
     {
-        "id": "amazons3_service",
-        "name": "Working with AmazonS3 Connector",
-        "description": "This template demonstrates on connecting to AmazonS3.",
+        "id": "integration_with_amazon_s3_bucket",
+        "name": "Working with AmazonS3 Bucket",
+        "description": "This template demonstrates on connecting to AmazonS3 Client to perform operatipns on buckets.",
+        "tags": ["#saas"]
+    },
+       {
+        "id": "integration_with_amazon_s3_object",
+        "name": "Working with AmazonS3 Object",
+        "description": "This template demonstrates on connecting to AmazonS3 Client to perform operatipns on objects.",
         "tags": ["#saas"]
     },
     {
