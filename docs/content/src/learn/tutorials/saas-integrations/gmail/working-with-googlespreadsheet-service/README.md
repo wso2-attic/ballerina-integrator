@@ -23,7 +23,7 @@ You can find other integrations modules from [wso2-ballerina](https://github.com
 ## What you'll build
 
 This example explains how to use the Google Spreadsheet client to connect with the Google Spreadsheet Connector instance and perform the 
-following operations:
+above mentioned operations.
 
 ![working with Google Spreadsheet Connector](../../../../../assets/img/)
 
@@ -33,9 +33,7 @@ following operations:
 
 ## Implementation
 
-A Ballerina project is created for the integration use case explained above. Please follow the steps given 
-below to create the project and modules. You can learn about the Ballerina project and modules in this 
-[guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
+A Ballerina project is created for the integration use case explained above. Please follow the steps given below to create the project and modules. You can learn about the Ballerina project and modules in the [Managing Ballerina Code topic](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
 
 #### 1. Create a new project.
 
