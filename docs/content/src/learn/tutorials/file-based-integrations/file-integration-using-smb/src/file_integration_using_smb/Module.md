@@ -1,4 +1,4 @@
-Template for File Integration using the SMB Connector
+Template for File Integration using SMB Connector
 
 # File Integration using the SMB Connector
 

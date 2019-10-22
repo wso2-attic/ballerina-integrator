@@ -1,5 +1,4 @@
-Template for File Integration using the FTP Connector
-
+Template for File Integration using FTP Connector
 # File Integration using the FTP Connector
 
 This is a template for the [File Integration Using FTP tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/file-based-integrations/file-integration-using-ftp/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
