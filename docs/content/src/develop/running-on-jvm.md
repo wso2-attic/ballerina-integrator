@@ -1,4 +1,4 @@
-# Running as a Java Program
+# Running on JVM
 
 Running a Ballerina program or service can be done using a Java command. This is useful since a .jar file is created as part of building the project and the program can be run using a `java -jar` command.
 
