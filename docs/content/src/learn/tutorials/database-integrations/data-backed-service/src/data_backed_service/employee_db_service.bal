@@ -20,41 +20,6 @@ import ballerina/jsonutils;
 import ballerina/lang.'int as ints;
 import ballerina/log;
 import ballerinax/java.jdbc;
-//import ballerinax/docker;
-//import ballerinax/kubernetes;
-
-//@docker:Config {
-//    registry: "ballerina.guides.io",
-//    name: "employee_database_service",
-//    tag: "v1.0",
-//    baseImage: "ballerina/ballerina:<BALLERINA_VERSION>"
-//}
-//
-//@docker:CopyFiles{
-//    files: [{ source: <path_to_JDBC_jar>,
-//            target: "/ballerina/runtime/bre/lib" }]
-//}
-//
-//@docker:Expose{}
-
-//@kubernetes:Ingress {
-//    hostname: "ballerina.guides.io",
-//    name: "ballerina-guides-employee-database-service",
-//    path: "/"
-//}
-//
-//@kubernetes:Service {
-//    serviceType: "NodePort",
-//    name: "ballerina-guides-employee-database-service"
-//}
-//
-//@kubernetes:Deployment {
-//    image: "ballerina.guides.io/employee_database_service:v1.0",
-//    baseImage: "ballerina/ballerina:<BALLERINA_VERSION>",
-//    name: "ballerina-guides-employee-database-service",
-//    copyFiles: [{ target: "/ballerina/runtime/bre/lib",
-//                source: <path_to_JDBC_jar> }]
-//}
 
 listener http:Listener httpListener = new(9090);
 
