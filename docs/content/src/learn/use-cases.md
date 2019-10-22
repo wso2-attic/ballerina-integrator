@@ -28,8 +28,6 @@ SaaS offering is a common software distribution model followed by many vendors t
   <tr>
     <td><b><a href="../tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1/">Import Contacts into Salesforce Using FTP</a></b></br>
     Import contacts from a CSV file into Salesforce using FTP</td>
-     <td><b><a href="../tutorials/saas-integrations/gmail/working-with-googlespreadsheet-service/1/">Working with Google Spreadsheet Service</a></b></br>
-    Working with Google Spreadsheet Service</td>
     <td></td>
     <td></td>
   </tr>
