@@ -18,6 +18,12 @@
         "tags": ["#saas", "#database"]
     },
     {
+        "id": "working_with_salesforce_client",
+        "name": "Working with Salesforce Client",
+        "description": "This template focuses on using Salesforce client to connect with the Salesforce instance.",
+        "tags": ["#saas", "#database"]
+    },
+    {
         "id": "alert_notification_using_amazonsqs",
         "name": "Alert Notification Using AmazonSQS",
         "description": "This template demonstrates a scenario where a listener is polling for messages in the AmazonSQS queue.",
