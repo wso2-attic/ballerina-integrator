@@ -33,7 +33,7 @@ This automatically creates file_integration_using_smb service for you inside the
 ### 1. Add project configurations file
 
 Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
-This file should have following configurations. Add the FTP server configurations to the file.
+This file should have following configurations. Add the SMB server configurations to the file.
 
 ```
 SMB_HOST="<IP address of the Samba server>"
@@ -53,7 +53,7 @@ Let’s build the module. Navigate to the project root directory and execute the
 $ ballerina build file_integration_using_smb
 ```
 
-This creates the executables. Now run the `file_integration_using_smb.jar` file created in the above step.Path to the ballerina.conf file can be provided using the --b7a.config.file option.
+This creates the executables. Now run the `file_integration_using_smb.jar` file created in the above step. Path to the ballerina.conf file can be provided using the --b7a.config.file option.
 
 ```bash
 $ java -jar target/bin/file_integration_using_smb.jar --b7a.config.file=path/to/ballerina.conf/file
