@@ -53,7 +53,7 @@ Let’s build the module. Navigate to the project root directory and execute the
 $ ballerina build file_integration_using_ftp
 ```
 
-This creates the executables. Now run the `file_integration_using_ftp.jar` file created in the above step.Path to the ballerina.conf file can be provided using the --b7a.config.file option.
+This creates the executables. Now run the `file_integration_using_ftp.jar` file created in the above step. Path to the ballerina.conf file can be provided using the --b7a.config.file option.
 
 ```bash
 $ java -jar target/bin/file_integration_using_ftp.jar --b7a.config.file=path/to/ballerina.conf/file
