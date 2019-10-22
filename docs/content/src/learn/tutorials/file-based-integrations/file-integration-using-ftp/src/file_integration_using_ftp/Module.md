@@ -1,109 +1,60 @@
-Guide on File Integration using the FTP Connector.
+Template for File Integration using the FTP Connector
 
-# Guide Overview
+# File Integration using the FTP Connector
 
-The WSO2 FTP Connector enables you to connect to an FTP server and perform operations on files and folders stored on the
-server. These operations include basic file operations such as reading, updating, and deleting files, and listening to
-the server to invoke operations when a file is created or deleted.
+This is a template for the [File Integration Using FTP tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/file-based-integrations/file-integration-using-ftp/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
-> In this guide you will learn how to use the WSO2 FTP Connector to create an FTP listener service using Ballerina.
+## Using the Template
 
-The following are the sections available in this guide.
+Run the following command to pull the `file_integration_using_ftp` template from Ballerina Central.
 
-- [What you'll build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Implementation](#implementation)
-- [Testing](#testing)
+```
+$ ballerina pull wso2/file_integration_using_ftp
+```
 
-## What you'll Build
-
-To understand how to build a service to listen to an FTP server, let's consider the use case of a data center that uses
-an FTP server to store data files. When a new file is added to the server, the FTP listener will read the file and add
-the file name and size to a map, and when the file is deleted from the server, it will remove the entry from the map.
-
-![File integration using FTP](resources/file-integration-using-ftp.png)
-
-## Prerequisites
-
-- Java
-- Ballerina Integrator
-> **Tip**: For a better development experience, install the Ballerina Integrator extension in [VS Code](https://code.visualstudio.com).
-- An FTP Server (See [here](https://www.digitalocean.com/community/tutorials/how-to-set-up-vsftpd-for-a-user-s-directory-on-ubuntu-16-04) on how to setup an FTP server)
-
-## Implementation
-> If you want to skip the basics, you can download the GitHub repo and directly move to the "Testing" section by skipping the "Implementation" section.
-
-Create the Ballerina project `file-integration-using-ftp` and add the `file_integration_using_ftp` module using the below commands.
+Create a new project.
 
 ```bash
 $ ballerina new file-integration-using-ftp
-$ cd file-integration-using-ftp
-$ ballerina add file_integration_using_ftp
 ```
 
-The above package structure will be created for you. Create the `ftp_listener.bal` file inside the Ballerina module.
+Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
 
-### Developing the FTP listener service
-
-Let's start implementation by importing the WSO2 FTP Connector in the `ftp_listener.bal` file which you just created.
-This will pull the FTP Connector from Ballerina Central.
-
-```ballerina
-import wso2/ftp;
+```bash
+$ ballerina add -t wso2/file_integration_using_ftp file_integration_using_ftp
 ```
 
-Next, let's create an FTP Listener instance by defining the configuration in the `Ballerina.conf` file. The `FTP_HOST`
-is the IP address of the FTP server, while the `FTP_USERNAME` and `FTP_PASSWORD` are credentials of a user that has permission
-to access the FTP server. The `FTP_HOST` is the port used to connect with the server, of which the default value is `21`.
-
-Then you can add the configurations for the type of files the listener should listen for. For instance, if listener
-should be invoked for text files, the config for `FTP_FILE_NAME_PATTERN` should be set as `(.*).txt`. Next, add
-the location to poll for files and how frequently the listener should poll for files, using the values
-`FTP_LISTENER_PATH` and `FTP_POLLING_INTERVAL`respectively.
-
-Create the service to listen to the FTP server using the above listener. When files are added or deleted on the server,
-this service will be invoked, and the files will be processed.
-
-Then implement the FTP Client, which will connect to the FTP server and get the details of new files to process.
-
-Declare a map to store the details of processed files.
-
-```ballerina
-map<int> fileMap = {};
-```
-
-Now, implement the processing of added and deleted files. When files are added to the server, the FTP client will
-retrieve the file size from the server, and the file name and its size will be added to the `fileMap`. When a file is
-removed from the server, the file will be removed from the map.
+This automatically creates file_integration_using_ftp service for you inside the `src` directory of your project.  
 
 ## Testing
 
-### Invoking the service
+### Before you begin
 
-To begin with invoking the service, start the FTP server.
+### 1. Add project configurations file
 
-Navigate to `file-integration-using-ftp` directory and run the following command to build the listener service in `ftp_listener.bal`.
+Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
+This file should have following configurations. Add the FTP server configurations to the file.
+
+```
+FTP_HOST="<IP address of the FTP server>"
+FTP_USERNAME="<Username of the FTP server >"
+FTP_PASSWORD="<Password of the FTP server>"
+FTP_LISTENER_PORT="<port used to connect with the server (default value 21)>"
+FTP_FILE_NAME_PATTERN="<type of files the listener should listen for e.g.(.*).txt >"
+FTP_LISTENER_PATH="<location to poll>"
+FTP_POLLING_INTERVAL="<polling interval>"
+```
+
+### 2. Invoking the service
+
+Let’s build the module. Navigate to the project root directory and execute the following command.
 
 ```bash
 $ ballerina build file_integration_using_ftp
 ```
 
-The successful build of a service will show us something similar to the following output.
-
-```
-Compiling source
-        wso2/file_integration_using_ftp:0.1.0
-
-Creating balos
-        target/balo/file_integration_using_ftp-2019r3-java8-0.1.0.balo
-```
-
-This will create the Ballerina executables inside the `/target` directory.
-
-Then run the jar file created in the above step.
+This creates the executables. Now run the `file_integration_using_ftp.jar` file created in the above step. Path to the ballerina.conf file can be provided using the --b7a.config.file option.
 
 ```bash
-$ java -jar target/bin/file_integration_using_ftp.jar --b7a.config.file=src/file_integration_using_ftp/resources/ballerina.conf
+$ java -jar target/bin/file_integration_using_ftp.jar --b7a.config.file=path/to/ballerina.conf/file
 ```
-
-Add and delete files in the FTP server, and check the logs to verify whether the service is working as expected.
