@@ -68,6 +68,7 @@ nav:
         - Messaging Integration:
           - 'Sending JSON Data to an ActiveMQ Queue' : 'learn/tutorials/messaging-integrations/json-data-to-activemq-queue/1.md'
           - 'Reliable Delivery' : 'learn/tutorials/messaging-integrations/reliable-delivery/1.md'
+          - 'Messaging with Kafka' : 'learn/tutorials/messaging-integrations/messaging-with-kafka/1.md'
         - File-based Integration:
           - 'File Integration Using FTP' : 'learn/tutorials/file-based-integrations/file-integration-using-ftp/1.md'
           - 'File Integration Using Samba' : 'learn/tutorials/file-based-integrations/file-integration-using-smb/1.md'

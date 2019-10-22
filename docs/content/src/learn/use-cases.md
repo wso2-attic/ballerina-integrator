@@ -41,13 +41,14 @@ The messaging system supports loosely coupled asynchronous data to move from one
 
 <table>
 <tr>
-    <td><b><a href="../tutorials/messaging-integrations/sending-json-data-to-a-jms-queue/1/">Sending JSON to an ActiveMQ Queue</a></b></br>
+    <td><b><a href="../tutorials/messaging-integrations/sending-json-data-to-activemq-queue/1/">Sending JSON to an ActiveMQ Queue</a></b></br>
     Tranform JSON message to a text message and send to an ActiveMQ queue</td>
-    <td ><b><a href="../tutorials/messaging-integrations/reliable-delivery/1/">Reliable Delivery</a></b></br>
+    <td><b><a href="../tutorials/messaging-integrations/reliable-delivery/1/">Reliable Delivery</a></b></br>
     Use store forward connector to achieve reliable message delivery</td>
+    <td><b><a href="../tutorials/messaging-integrations/messaging-with-kafka/1/">Messaging with Kafka</a></b></br>
+    Use Kafka connector to publish and consume messages to a Kafka Topic
     <td></td>
 </tr>
-
 </table>
 
 ### Database Integration
