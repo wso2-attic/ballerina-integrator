@@ -1,4 +1,4 @@
-Template for Pass-Through Messaging using Ballerina
+Template for Pass-Through Messaging
 
 # Pass-Through Messaging using Ballerina
 
