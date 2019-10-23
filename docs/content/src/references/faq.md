@@ -37,7 +37,7 @@ No, you only need to have a JVM on the production server to run Ballerina progra
 
 ##### What are the resources available for me to learn Ballerina and Ballerina Integrator?
 
-In addition to this documentation, you can use the following resources.
+In addition to this documentation, you can use the following resources to learn Ballerina.
 
 * [Ballerina language documentation](https://v1-0.ballerina.io/learn/)
 * [Ballerina by example](https://v1-0.ballerina.io/learn/by-example/)
