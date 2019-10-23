@@ -60,6 +60,12 @@
         "tags": ["#messaging"]
     },
     {
+        "id": "product_management_system",
+        "name": "Messaging with Kafka",
+        "description": "This template demonstrates how to perform messaging using the Ballerina Kafka connector.",
+        "tags": ["#messaging"]
+    },
+    {
         "id": "data_backed_service",
         "name": "Data-Backed Service",
         "description": "This template demonstrates on building a database-backed RESTful web service using Ballerina.",
