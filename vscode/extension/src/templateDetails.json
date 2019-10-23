@@ -78,12 +78,6 @@
         "tags": ["#database"]
     },
     {
-        "id": "sending_a_message_to_datasource",
-        "name": "Sending a Message to a Datasource",
-        "description": "This template demonstrates on exposing information in the database through a RESTful service.",
-        "tags": ["#database"]
-    },
-    {
         "id": "managing_database_transactions",
         "name": "Managing Database Transactions",
         "description": "This template demonstrates on how to manage database transactions using Ballerina.",
