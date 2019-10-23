@@ -1,11 +1,5 @@
 [
     {
-        "id": "healthcare_service",
-        "name": "Quick Start Guide",
-        "description": "This template provides a Quick Start Guide based on a healthcare service for the Ballerina Integrator.",
-        "tags": ["#quick-start"]
-    },
-    {
         "id": "salesforce_ftp_integration",
         "name": "Salesforce & FTP Integration",
         "description": "This template demonstrates on listening to a remote FTP location and inserting data into Salesforce.",
@@ -36,27 +30,15 @@
         "tags": ["#saas"]
     },
     {
-        "id": "googlespreadsheet_service",
-        "name": "Working with SpreadSheet Connector",
-        "description": "This template demonstrates on handling spreadsheets using the Ballerina Google SpreadSheet connector.",
-        "tags": ["#saas"]
-    },
-    {
         "id": "integration_with_amazon_s3_bucket",
         "name": "Working with AmazonS3 Bucket",
-        "description": "This template demonstrates on connecting to AmazonS3 Client to perform operatipns on buckets.",
+        "description": "This template demonstrates on connecting to AmazonS3 Client to perform operations on buckets.",
         "tags": ["#saas"]
     },
        {
         "id": "integration_with_amazon_s3_object",
         "name": "Working with AmazonS3 Object",
-        "description": "This template demonstrates on connecting to AmazonS3 Client to perform operatipns on objects.",
-        "tags": ["#saas"]
-    },
-    {
-        "id": "gsheets_salesforce_integration",
-        "name": "GSheets & Salesforce Integration",
-        "description": "This template demonstrates some of the capabilities of Google SpreadSheet and Salesforce modules.",
+        "description": "This template demonstrates on connecting to AmazonS3 Client to perform operations on objects.",
         "tags": ["#saas"]
     },
     {
@@ -75,18 +57,6 @@
         "id": "json_data_to_activemq",
         "name": "Sending JSON data into ActiveMQ Queues",
         "description": "This template demonstrates on sending JSON data into an ActiveMQ queue using the JMS connector.",
-        "tags": ["#messaging"]
-    },
-    {
-        "id": "kafka_service",
-        "name": "Asynchronous Messaging with Kafka",
-        "description": "This template demonstrates how to perform asynchronous messaging using the Ballerina Kafka connector.",
-        "tags": ["#messaging"]
-    },
-    {
-        "id": "asynchronous_invocation",
-        "name": "Asynchronous Invocations",
-        "description": "This template demonstrates how asynchronous invocations could be done using Ballerina.",
         "tags": ["#messaging"]
     },
     {
@@ -114,12 +84,6 @@
         "tags": ["#database"]
     },
     {
-        "id": "insert_csv_into_mongodb",
-        "name": "Insert CSV into MongoDB",
-        "description": "This template demonstrates on listening to a remote FTP location and inserting CSV file content into a MongoDB database.",
-        "tags": ["#database", "#file-based"]
-    },
-     {
         "id": "managing_database_transactions",
         "name": "Managing Database Transactions",
         "description": "This template demonstrates on how to manage database transactions using Ballerina.",
@@ -150,21 +114,9 @@
         "tags": ["#eip"]
     },
     {
-        "id": "header_based_routing",
-        "name": "Header Based Routing",
-        "description": "This template demonstrates an instance where a header based router is used to route requests to different endpoints based on the header content of each request.",
-        "tags": ["#eip"]
-    },
-    {
         "id": "upload_to_ftp",
         "name": "JSON to XML Transformation and upload to FTP",
         "description": "This template demonstrates connecting to a file server with the FTP connector.",
-        "tags": ["#eip"]
-    },
-    {
-        "id": "message_filter_service",
-        "name": "Message Filtering Transformation",
-        "description": "This template demonstrates an instance where message filtering is used to filter incoming requests based on their content.",
         "tags": ["#eip"]
     },
     {
@@ -178,12 +130,6 @@
         "name": "Backend for Frontend",
         "description": "This template demonstrates how to create separate back-end services for specific front-end applications.",
         "tags": ["#eip"]
-    },
-    {
-        "id": "hello_world_service",
-        "name": "Hello World Service",
-        "description": "This template demonstrates a simple Hello World Service.",
-        "tags": ["#service"]
     },
     {
         "id": "stockquote_service",
