@@ -28,6 +28,8 @@ SaaS offering is a common software distribution model followed by many vendors t
   <tr>
     <td><b><a href="../tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1/">Import Contacts into Salesforce Using FTP</a></b></br>
     Import contacts from a CSV file into Salesforce using FTP</td>
+    <!--<td><b><a href="../tutorials/saas-integrations/gmail/working-with-googlespreadsheet-service/1/">Working with Google Spreadsheet Service</a></b></br>
+    Working with Google Spreadsheet Service</td> -->
     <td></td>
     <td></td>
   </tr>
@@ -39,7 +41,7 @@ The messaging system supports loosely coupled asynchronous data to move from one
 
 <table>
 <tr>
-    <td><b><a href="../tutorials/messaging-integrations/sending-json-data-to-activemq-queue/1/">Sending JSON to an ActiveMQ Queue</a></b></br>
+    <td><b><a href="../tutorials/messaging-integrations/json-data-to-activemq-queue/1/">Sending JSON data to an ActiveMQ Queue</a></b></br>
     Tranform JSON message to a text message and send to an ActiveMQ queue</td>
     <td><b><a href="../tutorials/messaging-integrations/reliable-delivery/1/">Reliable Delivery</a></b></br>
     Use store forward connector to achieve reliable message delivery</td>
@@ -94,7 +96,7 @@ Service-oriented architecture (SOA) patterns provide structure and clarity, enab
     Implement content-based routing</td>
     <td><b><a href="../tutorials/integration-patterns-and-soa/pass-through-messaging/1/">Pass-through Messaging</a></b></br>
     Implement pass-through messaging</td>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/integration-patterns-and-soa/scatter-gather-flow/1/">Scatter-Gather Flow Control</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/scatter-gather-flow/1/">Scatter-Gather Flow Control</a></b></br>
     Implement scatter-gather flow where two files are read simultaneously and aggregated</td>
   </tr>
   
