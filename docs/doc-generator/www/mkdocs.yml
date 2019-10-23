@@ -95,6 +95,7 @@ nav:
     - References:
       - 'References' : 'references/references.md'
       - 'EI Connectors' : 'references/ei-connectors.md'
+      - 'FAQ' : 'references/faq.md'
     - '': page-not-found.md
      
 # Extensions
