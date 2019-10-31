@@ -1,5 +1,14 @@
 # Logging using Logstash and Kibana
 
+Ballerina distributed logging and analysis is supported by Elastic Stack.
+
+The elastic stack comprises of the following components.
+
+- Beats - Multiple agents that ship data to Logstash or Elasticsearch. In our context, Filebeat will ship the Ballerina logs to Logstash. Filebeat should be a container running on the same host as the Ballerina service. This is so that the log file (ballerina.log) can be mounted to the Filebeat container.
+- Logstash - Used to process and structure the log files received from Filebeat and send to Elasticsearch.
+- Elasticsearch - Storage and indexing of the logs received by Logstash.
+- Kibana - Visualizes the data stored in Elasticsearch
+
 Ballerina has a log module for logging to the console. You can import the `ballerina/log` module and start logging. The following section will describe how to search, analyze, and visualize logs in real time using [Elastic Stack](https://www.elastic.co/).
 
 To understand how you can track logging for Ballerina services, let’s consider a service that converts JSON to XML.
