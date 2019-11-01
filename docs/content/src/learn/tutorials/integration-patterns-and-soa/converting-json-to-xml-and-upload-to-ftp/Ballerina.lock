@@ -1,5 +1,5 @@
 org_name = "wso2"
-version = "0.1.1"
+version = "0.1.2"
 lockfile_version = "1.0.0"
 ballerina_version = "1.0.1"
 
@@ -8,7 +8,7 @@ org_name = "ballerinax"
 name = "java"
 version = "0.0.0"
 
-[[imports."wso2/upload_to_ftp:0.1.1"]]
+[[imports."wso2/upload_to_ftp:0.1.2"]]
 org_name = "wso2"
 name = "ftp"
 version = "0.3.1"
