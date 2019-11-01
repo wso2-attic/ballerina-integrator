@@ -137,7 +137,6 @@ export let begin: string = `<!DOCTYPE html>
                         <option value="#database">Database</option>
                         <option value="#eip">EI Patterns & SOA</option>
                         <option value="#messaging">Messaging</option>
-                        <option value="#service">Services</option>
                     </select>
                 </div>
             </div>

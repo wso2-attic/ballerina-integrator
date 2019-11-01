@@ -10,7 +10,7 @@
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/backend-for-frontend",
       "modules": [
-        "healthcare_service"
+        "healthcare_management_service"
       ],
       "skipTests": false
     },
