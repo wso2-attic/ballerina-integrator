@@ -1,10 +1,19 @@
 # Logging using Logstash and Kibana
 
-Ballerina has a log module for logging to the console. You can import the `ballerina/log` module and start logging. The following section will describe how to search, analyze, and visualize logs in real time using [Elastic Stack](https://www.elastic.co/).
+Ballerina distributed logging and analysis is supported by [Elastic Stack](https://www.elastic.co/).
 
-To understand how you can track logging for Ballerina services, let’s consider a service that converts JSON to XML.
+The Elastic Stack comprises of the following components.
 
-![alt text](../assets/img/logstash-kibana.png)
+- Beats - Multiple agents that ship data to Logstash or Elasticsearch. In our context, Filebeat will ship the Ballerina logs to Logstash. Filebeat should be a container running on the same host as the Ballerina service. This is so that the log file (ballerina.log) can be mounted to the Filebeat container.
+- Logstash - Used to process and structure the log files received from Filebeat and send to Elasticsearch.
+- Elasticsearch - Storage and indexing of the logs received by Logstash.
+- Kibana - Visualizes the data stored in Elasticsearch
+
+Ballerina has a log module for logging to the console. You can import the `ballerina/log` module and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+
+To understand how you can track logging for Ballerina services, let’s consider the healthcare_service described in the Quick Start Guide.
+
+ ![alt text](../assets/img/logstash-kibana.png)
 
 ## Set up the project 
 
@@ -13,9 +22,9 @@ To understand how you can track logging for Ballerina services, let’s consider
 
 2. Press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Linux and the following page appears.
 
-![alt text](../assets/img/vs-code-landing.png)
+   ![alt text](../assets/img/vs-code-landing.png)
 
-3. Select the template to transform XML messages to JSON and your project will load.
+3. Select the template "Quick Start Guide".
 
 ## Set up your environment
 

@@ -62,9 +62,9 @@ Add project configuration file by creating `ballerina.conf` file under the root 
 
 This file should have the following MySQL database configurations.
 ```
-MYSQL_URL = <jdbc_url><br/>
-MYSQL_USERNAME = <mysql_username> <br/>
-MYSQL_PASSWORD = <mysql_password> <br/>
+MYSQL_URL = <jdbc_url>
+MYSQL_USERNAME = <mysql_username> 
+MYSQL_PASSWORD = <mysql_password> 
 ```
 
 Write your integration.
@@ -89,17 +89,10 @@ $ java -jar target/bin/querying_mysql_database.jar
 
 Send the following request where the last name is set as a path param.
 ```
-$ curl -X GET http://localhost/staff/employee/collins
+curl -X GET http://localhost:9095/staff/employee/collins -H 'Content-Type: application/json'
 ```
 
 This will return the following response to the client if the request is successful.
 ```json
-[
-    {
-        "firstName": "thomas"
-    },
-    {
-        "firstName": "linda"
-    }
-]
+[{"firstName":"thomas"}, {"firstName":"abner"}]
 ```
