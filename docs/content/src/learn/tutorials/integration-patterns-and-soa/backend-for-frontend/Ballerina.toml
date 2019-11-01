@@ -5,6 +5,6 @@ license= ["Apache-2.0"]
 authors= ["WSO2"]
 keywords= ["ballerina", "integrator", "backend-for-frontend"]
 repository= "https://github.com/wso2/ballerina-integrator"
-templates= ["healthcare_service"]
+templates= ["healthcare_management_service"]
 
 [dependencies]

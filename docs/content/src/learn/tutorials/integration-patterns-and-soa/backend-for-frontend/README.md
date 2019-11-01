@@ -28,10 +28,10 @@ For this scenario, lets assume we have two applications called desktop applicati
 
 * Navigate to the `backend-for-frontend` directory.
 
-* Add a new module named `healthcare_service` to the project.
+* Add a new module named `healthcare_management_service` to the project.
 
    ```bash
-   $ ballerina add healthcare_service
+   $ ballerina add healthcare_management_service
    ```
 
 * Open the project with VS Code. The project structure will be similar to the following.
@@ -40,7 +40,7 @@ For this scenario, lets assume we have two applications called desktop applicati
    .
    ├── Ballerina.toml
    └── src
-      └── healthcare_service
+      └── healthcare_management_service
          ├── main.bal
          ├── Module.md
          ├── resources
@@ -48,7 +48,7 @@ For this scenario, lets assume we have two applications called desktop applicati
                ├── main_test.bal
                └── resources
    ```
-   We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service. Also let's remove the `main.bal` file and add two directories under `healthcare_service` named `downstream_services` and `backends_for_frontends`.
+   We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service. Also let's remove the `main.bal` file and add two directories under `healthcare_management_service` named `downstream_services` and `backends_for_frontends`.
 
    The final directory structure should be similar to the following.
 
@@ -56,7 +56,7 @@ For this scenario, lets assume we have two applications called desktop applicati
    .
    ├── Ballerina.toml
    └── src
-      └── healthcare_service
+      └── healthcare_management_service
          ├── backends_for_frontends
          ├── downstream_services
          ├── Module.md
@@ -71,18 +71,18 @@ For this scenario, lets assume we have two applications called desktop applicati
 
 **appointment_mgt_service.bal**
 
-<!-- INCLUDE_CODE: src/healthcare_service/downstream_services/appointment_mgt_service.bal -->
+<!-- INCLUDE_CODE: src/healthcare_management_service/downstream_services/appointment_mgt_service.bal -->
 
 **medical_record_mgt_service.bal**
 
-<!-- INCLUDE_CODE: src/healthcare_service/downstream_services/medical_record_mgt_service.bal -->
+<!-- INCLUDE_CODE: src/healthcare_management_service/downstream_services/medical_record_mgt_service.bal -->
 
 **message_mgt_service.bal**
 
-<!-- INCLUDE_CODE: src/healthcare_service/downstream_services/message_mgt_service.bal -->
+<!-- INCLUDE_CODE: src/healthcare_management_service/downstream_services/message_mgt_service.bal -->
 
 **notification_mgt_service.bal**
-<!-- INCLUDE_CODE: src/healthcare_service/downstream_services/notification_mgt_service.bal -->
+<!-- INCLUDE_CODE: src/healthcare_management_service/downstream_services/notification_mgt_service.bal -->
 
 * Now let’s move to the key implementation of BFF services under `backends_for_frontends` directory. 
 
@@ -90,20 +90,20 @@ The first BFF is the `mobile_bff_service`, which is a shim used to support Mobil
 
 **mobile_bff_service.bal**
 
-<!-- INCLUDE_CODE: src/healthcare_service/backends_for_frontends/mobile_bff_service.bal -->
+<!-- INCLUDE_CODE: src/healthcare_management_service/backends_for_frontends/mobile_bff_service.bal -->
 
 The second BFF is the `desktop_bff_service`, which is a shim used to support desktop application user experience. When a user loads the desktop application home page, there can be multiple calls to the `desktop_bff_service` to retrieve comparatively large amounts of data based on the desktop application requirement. The desktop application can call the desktop BFF separately to retrieve appointments and medical records. The desktop application can also call desktop BFF to retrieve messages and notifications in a single call. 
 
    **desktop_bff_service.bal**
 
-   <!-- INCLUDE_CODE: src/healthcare_service/backends_for_frontends/desktop_bff_service.bal -->
+   <!-- INCLUDE_CODE: src/healthcare_management_service/backends_for_frontends/desktop_bff_service.bal -->
 
 ## Run the Integration
 
 * First let’s build the module. While being in the `backend-for-frontend` directory, execute the following command.
 
     ```bash
-    $ ballerina build healthcare_service
+    $ ballerina build healthcare_management_service
     ```
 
    This creates the executables.
@@ -111,7 +111,7 @@ The second BFF is the `desktop_bff_service`, which is a shim used to support des
 * Now run the .jar file created in the above step.
 
     ```bash
-    $ java -jar target/bin/healthcare_service.jar
+    $ java -jar target/bin/healthcare_management_service.jar
     ```
 
    Now we can see that six services have started on ports 9090, 9091, 9092, 9093, 9094, and 9095. 
