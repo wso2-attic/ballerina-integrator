@@ -2,7 +2,7 @@
 
 There are mainly two systems involved in collecting and visualizing the metrics. [Prometheus](https://prometheus.io/) is used to collect the metrics from the Ballerina service and [Grafana](https://grafana.com/) can connect to Prometheus and visualize the metrics in the dashboard.
 
-To understand how you can observe Ballerina services, let’s consider a service that converts JSON to XML.
+To understand how you can observe Ballerina services, let’s consider the Healthcare Service used in the Quick Start Guide.
 
 ![alt text](../assets/img/prometheus-grafana.png)
 
@@ -17,7 +17,7 @@ As inferred by the above image, we will be getting metrics using Prometheus and 
 
 ![alt text](../assets/img/vs-code-landing.png)
 
-Select the template to transform XML messages to JSON and your project will load.
+Select the template "Quick Start Guide", and your project will load.
 
 Add the following configurations for metrics in the `ballerina.conf` file.
 
