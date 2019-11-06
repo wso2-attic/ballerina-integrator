@@ -37,7 +37,7 @@ SaaS offering is a common software distribution model followed by many vendors t
 
 ### Messaging Integration
 
-The messaging system supports loosely coupled asynchronous data to move from one application to another. There are popular messaging standard protocols and vendors. The JMS connector can be used to connect to any JMS-based message broker. Ballerina language has standard libraries for connecting with RabbitMQ, Kafka, and NATS. You can write the integration for guaranteed delivery with popular store forward enterprise integration pattern using the store forward connector.
+The messaging system supports loosely coupled asynchronous data to move from one application to another. There are popular messaging standard protocols and vendors. The JMS connector can be used to connect to any JMS-based message broker such as ActiveMQ, Artemis, RabbitMQ and NATS. Ballerina Integrator also offers support to connect to various messaging systems such as Kafka using connectors. You can write the integration for guaranteed delivery with popular store forward enterprise integration pattern using the store forward connector.
 
 <table>
 <tr>

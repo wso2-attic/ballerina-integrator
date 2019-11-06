@@ -52,12 +52,12 @@ service company on new http:Listener(8080) {
             var ftpResult = ftp->put(remoteLocation, employee);
             if (ftpResult is error) {
                 log:printError("Error", ftpResult);
-                response.setJsonPayload({Message: "Error occurred uploading file to FTP.", Resason: ftpResult.reason()});
+                response.setJsonPayload({Message: "Error occurred uploading file to FTP.", Reason: ftpResult.reason()});
             } else {
                 response.setJsonPayload({Message: "Employee records uploaded successfully."});
             }
         } else {
-            response.setJsonPayload({Message: "Error occurred tranforming json to xml.", Resason: employee.reason()});
+            response.setJsonPayload({Message: "Error occurred tranforming json to xml.", Reason: employee.reason()});
         }
         var httpResult = caller->respond(response); 
     }
