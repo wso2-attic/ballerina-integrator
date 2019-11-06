@@ -10,6 +10,9 @@ The following image is an illustration of what Ballerina Integrator consists of 
 
 <table>
   <tr>
+    <th>Component</th>
+    <th>Description</th>
+  <tr>
     <td><b>Ballerina Core</b></td>
     <td>The underlying core of the Ballerina Integrator is the <a href="http://ballerina.io/">Ballerina language</a>, which allows you to build projects and modules with smaller functionality and natively deploy these as microservices in Docker and Kubernetes.</td>
   </tr>
@@ -34,3 +37,9 @@ The following image is an illustration of what Ballerina Integrator consists of 
     <td>Tooling is done via VS Code and the developer's experience is further enhanced by a custom built plug-in for Ballerina, which enables you to easily bring up and use templates to do integration.</td>
   </tr>
 </table>
+
+---
+
+## What's Next
+
+Try out Ballerina Integrator by following the [Quick Start Guide](../get-started/quick-start-guide/).
