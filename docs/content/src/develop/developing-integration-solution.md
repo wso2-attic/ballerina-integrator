@@ -41,7 +41,7 @@ Integration developers will follow the workflow illustrated by the following dia
 			<ul>
 				<li><a href="../../develop/deploy-on-docker">Deploy your services on Docker</a></li>
 				<li><a href="../../develop/deploy-on-kubernetes">Deploy your services on Kubernetes</a></li>
-				<li><a href="../../develop/running-as-a-java-program">Running your service as a Java program</a></li>
+				<li><a href="../../develop/running-on-jvm">Running your service on a JVM</a></li>
 			</ul>
 		</td>
 	</tr>
