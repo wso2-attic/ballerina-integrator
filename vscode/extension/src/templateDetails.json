@@ -66,6 +66,18 @@
         "tags": ["#messaging"]
     },
     {
+        "id": "message_processor",
+        "name": "Message Processor",
+        "description": "This template demonstrates message processor in reliable delivery.",
+        "tags": ["#messaging"]
+    },
+    {
+        "id": "message_store",
+        "name": "Message Store",
+        "description": "This template demonstrates message store in reliable delivery.",
+        "tags": ["#messaging"]
+    },
+    {
         "id": "product_management_system",
         "name": "Messaging with Kafka",
         "description": "This template demonstrates how to perform messaging using the Ballerina Kafka connector.",
@@ -81,12 +93,6 @@
         "id": "querying_mysql_database",
         "name": "Querying a MySQL Database",
         "description": "This template focuses on exposing a MySQL database as a service using Ballerina.",
-        "tags": ["#database"]
-    },
-    {
-        "id": "sending_a_message_to_datasource",
-        "name": "Sending a Message to a Datasource",
-        "description": "This template demonstrates on exposing information in the database through a RESTful service.",
         "tags": ["#database"]
     },
     {
@@ -142,17 +148,5 @@
         "name": "REST to SOAP Service",
         "description": "This template demonstrates on how to call a SOAP backend with a REST request.",
         "tags": ["#service"]
-    },
-    {
-        "id": "message_processor",
-        "name": "Message Processor",
-        "description": "This template demonstrates message processor in reliable delivery.",
-        "tags": ["#messaging"]
-    },
-    {
-        "id": "message_store",
-        "name": "Message Store",
-        "description": "This template demonstrates message store in reliable delivery.",
-        "tags": ["#messaging"]
     }
 ]
