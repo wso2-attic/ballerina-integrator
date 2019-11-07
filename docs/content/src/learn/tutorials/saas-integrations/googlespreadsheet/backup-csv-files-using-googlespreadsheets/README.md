@@ -4,50 +4,35 @@ Ballerina is an open-source programming language that empowers developers to int
 support of connectors. In this guide, we are mainly focusing on how to use Google Spreadsheets Connector to backup CSV (Comma Separated Value) files in Google Spreadsheets. 
 You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
 
-
-
-
-
-
-
-
-
-
-
-
 ## What you'll build
-
 The following diagram illustrates the scenario:
 
-![Message flow diagram image](../../../../../assets/img/sqs-alert.png)
+![Message flow diagram image](../../../../../assets/img/googlespreadsheet.png)
 
-Let's consider a scenario where a CSV file is uploaded to a newly created Google Spreadsheet. A new sheet is created in the spreadsheet with the current date as the sheet name. CSV content is added to the new sheet.
-
-Then the new sheet is read and the content is displayed in the console to the user.
+Let's consider a scenario where a CSV file is uploaded to a newly created Google Spreadsheet. A new sheet is created in the spreadsheet with the current date as the sheet name. CSV content is added to the new sheet. The sheet is then read and the content is displayed on the console to the user.
 
 <!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
-- [Google Spreadsheet Account](https://docs.wso2.com/display/IntegrationCloud/Get+Credentials+for+Google+Spreadsheet)
+- You need to obtain credentials to access Google Spreadsheet in order to configure a Google Spreadsheet client. Instructions on how to obtain the credentials for the Google Spreadsheet can be found [here](https://docs.wso2.com/display/IntegrationCloud/Get+Credentials+for+Google+Spreadsheet).
 
 <!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
+The Ballerina project is created for the integration use case as explained above. Please follow the steps given below. You can learn about the Ballerina project and module in this [link](https://github.com/wso2-ballerina/module-googlespreadsheet). 
 
-1. Create a new project.
+#### 1. Create a new project.
+```bash
+  $ ballerina new backup-csv-files-using-googlespreadsheets
+```
 
-    ```bash
-    $ ballerina new backup-csv-files-using-googlespreadsheets
-    ```
-
-2. Create a module.
-
-    ```bash
-    $ ballerina add backup_csv_files
-    ```
+#### 2. Create a module.
+```bash
+  $ ballerina add backup_csv_files
+```
 
 To implement the scenario in this guide, you can use the following package structure:
 
-```
+```shell
   backup-csv-files-using-googlespreadsheets
   ├── Ballerina.toml
   └── src
@@ -56,54 +41,39 @@ To implement the scenario in this guide, you can use the following package struc
           └── uploader.bal
 ```
 
-Now that you have created the project structure, the next step is to develop the integration scenario.
+#### 3. Add the project configuration file
+Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
+The configuration file must have the following configurations
 
-#### Write the integration.
+```
+ACCESS_TOKEN="<Google Spreadsheet Access Token>"
+CLIENT_ID="<Google Spreadsheet Client Id>"
+CLIENT_SECRET="<Google Spreadsheet Client Secret>"
+REFRESH_URL="<Refresh URL>"
+REFRESH_TOKEN="<Refresh Token>"
+``` 
 
+#### 4. Write the integration.
 Take a look at the code samples below to understand how to implement the integration scenario.
 
-The following code creates a new queue in Amazon SQS with the configuration provided in a file.
+#### uploader.bal
+The following code reads the contents of a CSV file and saves the data in a new Google Spreadsheet. The data is then read from the spreadsheet and displayed on the console.
 
-**create_notification_queue.bal**
-<!-- INCLUDE_CODE: src/alert_notification_using_amazonsqs/create_notification_queue.bal -->
-
-The following code generates fire alert notifications periodically and these are sent to the above created SQS queue.
-
-**notify_fire.bal**
-<!-- INCLUDE_CODE: src/alert_notification_using_amazonsqs/notify_fire.bal -->
-
-The following code listens to the SQS queue and if there are any notifications, it would receive from the queue and delete the existing messages in the queue.
-
-**listen_to_fire_alarm.bal**
-<!-- INCLUDE_CODE: src/alert_notification_using_amazonsqs/listen_to_fire_alarm.bal -->
-
-In the following code, the `main` method would implement the workers related to creating a queue, sending a message to the queue, and consuming and receiving/deleting messages from the queue.
-
-**main.bal**
-<!-- INCLUDE_CODE: src/alert_notification_using_amazonsqs/main.bal -->
-
-#### Developing the scenario
-
-1. Configure parameters in `create_notification_queue.bal`, which will create a new queue. In order to create a queue initialize the `amazonsqs:Client` with configuration parameters and invoke the `createQueue` method of it. `ACCESS_KEY_ID` and `SECRET_ACCESS_KEY` can be obtained from the Amazon account you have created. When a queue is created you can find the `ACCOUNT_NUMBER` of the SQS account.
-
-2. Configure/develop `notify_fire.bal`, which will send periodic fire alerts to the created SQS queue. Instead of the `while` loop added, you can add some custom logic to trigger fire alarm. Create a client as described in step 1 and invoke `sendMessage` method to send alert message to the SQS queue.
-
-3. Configure/develop `listen_to_fire_alarm.bal`, which will listen to the above created queue with polling. `sleep` method in the `while` loop can be called according to the polling interval. Then create the client as described in step 1 and invoke `receiveMessage` method. Depending on the `MaxNumberOfMessages` parameter set in the `attributes` array, maximum number of messages received per API invocation will be restricted. Each message can be accessed with `receiptHandle` value in the response. Once the message is read it can be deleted by invoking the `deleteMessage` method.
-
-4. Configure/develop `main.bal`, which will implement the different workers for each of the above cases and run the system. There the workers can be replaced with the relevant code. `queueCreator` code should be called once to setup the queue. Code in the `fireNotifier` can be called from the fire alarm triggering side while `fireListener` should reside in the alarm polling/listening code.
+<!-- INCLUDE_CODE: src/backup_csv_files/uploader.bal -->
 
 ## Testing
-
-First let’s build the module. Navigate to the project root directory and execute the following command.
-
-```bash
-  $ ballerina build alert_notification_using_amazonsqs
-```
-
-This creates the executables. Now run the `guide.jar` file created in the above step.
+To build the module, navigate to the project root directory and execute the following command.
 
 ```bash
-  $ java -jar target/bin/alert_notification_using_amazonsqs.jar
+  ballerina build backup-csv-files-using-googlespreadsheets
 ```
 
-You see the SQS queue creation, sending fire alerts to the queue, consuming process of queues and subsequent deletion process on console.
+This command creates the executable jar file.
+
+Now run the `backup_csv_files.jar` file created in the above step.
+
+```bash
+  java -jar target/bin/backup-csv-files.jar
+```
+
+This starts the service that reads the data from the `people.csv` files stored in the resources folder. You will notice that the contents of the file have been set in the Google Spreadsheet and the data will also display on the console.

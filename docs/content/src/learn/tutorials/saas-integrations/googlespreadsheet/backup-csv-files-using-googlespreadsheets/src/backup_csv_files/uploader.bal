@@ -18,15 +18,17 @@ import ballerina/io;
 import wso2/gsheets4;
 import ballerina/time;
 import ballerina/log;
+import ballerina/config;
 
+// Define a Spreadsheet client
 gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     oAuthClientConfig: {
-        accessToken: "ya29.Il-iB7D7dpG7DOQZr8XDwtBF0sfh4fGR4sNOr9h1oNUg5AaWxmVcyorlSoSP1cWegen3jSL_ncLbDW8Jt3kZD08KHKBqUmWfHcnJRC5u9AMZCi9EvtUO2fJyT9-1pGIGxw",
+        accessToken: config:getAsString("ACCESS_TOKEN"),
         refreshConfig: {
-            clientId: "268927563255-1p0hub0eme9onjrsnsgqu62rs2q1g7hj.apps.googleusercontent.com",
-            clientSecret: "4TD6dnEioECgWHIGlZq3vPfP",
-            refreshUrl: "",
-            refreshToken: "1/b3g9rf87g6QnorOQsV-12gak_vn_WzzTEFFQfYFO6hE"
+            clientId: config:getAsString("CLIENT_ID"),
+            clientSecret: config:getAsString("CLIENT_SECRET"),
+            refreshUrl: config:getAsString("REFRESH_URL"),
+            refreshToken: config:getAsString("REFRESH_TOKEN")
         }
     }
 };
@@ -39,6 +41,7 @@ public function main() {
     string sheetName = getCurrentDateName();
     string topLeftCell = "A1";
 
+    // Create a Readable CSV Channel
     io:ReadableCSVChannel|error readableCsvChannelOrError = io:openReadableCsvFile(csvFilePath);
     if (readableCsvChannelOrError is error) {
         log:printError("An error occurred opening the Readable CSV Channel: ", err = readableCsvChannelOrError);
@@ -46,42 +49,47 @@ public function main() {
     }
     io:ReadableCSVChannel readableCsvChannel = <io:ReadableCSVChannel>readableCsvChannelOrError;
 
-
+    // Store CSV data from file to a String array
     string[][] csvData = getCsvFromFile(readableCsvChannel);
 
+    //Create a GoogleSheet using the Spreadsheet client
     gsheets4:Spreadsheet spreadsheet = checkpanic spreadsheetClient->createSpreadsheet(spreadSheetName);
-
     string spreadsheetId = checkpanic <@untainted>spreadsheet.getSpreadsheetId();
 
+    //Add a new sheet
     _ = checkpanic spreadsheetClient->addNewSheet(spreadsheetId, sheetName);
 
-    // Backup CSV Data
+    // Backup CSV Data to the new sheet
     boolean successful = checkpanic spreadsheetClient->setSheetValues(spreadsheetId,
         sheetName, csvData, topLeftCell, findBottomRightCell(csvData));
 
     if (successful) {
-        io:println("Successfully backedup the CSV file.");
+        log:printInfo("Successfully backedup the CSV file.");
     }
 
+    // Close the Readable CSV Channel
     closeReadableCSVChannel(readableCsvChannel);
 
+    // Get the values from the spreadsheet
     string[][] spreadsheetData = checkpanic spreadsheetClient->getSheetValues(spreadsheetId, sheetName, topLeftCell,
                                                 findBottomRightCell(csvData));
 
     displaySpreadsheetData(spreadsheetData);
 }
 
+// Function that iterates through the obtained data from the spreadsheet
 function displaySpreadsheetData(string[][] spreadsheetData) {
-    io:println("**************** CSV Entries ****************");
+    log:printInfo("**************** CSV Entries ****************");
     foreach var row in spreadsheetData {
         foreach var entry in row {
-            io:print(entry, "\t");
+            log:printInfo(entry + "\t");
         }
-        io:print("\n");
+        log:printInfo("\n");
     }
-    io:println("*********************************************");
+    log:printInfo("*********************************************");
 }
 
+// Returns the current date to be used as the spreadsheet name
 function getCurrentDateName() returns string {
     time:Time time = time:currentTime();
     int year = time:getYear(time);
@@ -90,6 +98,7 @@ function getCurrentDateName() returns string {
     return year.toString() + "_" + month.toString() + "_" + day.toString();
 }
 
+// Read CSV data from the file
 function getCsvFromFile(io:ReadableCSVChannel csvChannel) returns string[][] {
     string[][] csvData = [];
     while (csvChannel.hasNext()) {

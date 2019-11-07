@@ -2,3 +2,8 @@ org_name = "wso2"
 version = "0.1.0"
 lockfile_version = "1.0.0"
 ballerina_version = "1.0.1"
+
+[[imports."wso2/backup_csv_files:0.1.0"]]
+org_name = "wso2"
+name = "gsheets4"
+version = "0.9.1"
