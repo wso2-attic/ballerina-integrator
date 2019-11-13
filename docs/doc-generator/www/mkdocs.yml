@@ -60,6 +60,7 @@ nav:
           - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/1.md'
           - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1.md'
           - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1.md'
+          - 'Backup CSV files using Google Spreadsheets': 'learn/tutorials/saas-integrations/googlespreadsheet/backup-csv-files-using-googlespreadsheets/1.md'
         - Database Integration:
           - 'Data-backed Service' : 'learn/tutorials/database-integrations/data-backed-service/1.md'
           - 'Managing Database Transactions' : 'learn/tutorials/database-integrations/managing-database-transactions/1.md'

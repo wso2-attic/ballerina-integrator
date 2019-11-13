@@ -30,7 +30,8 @@ SaaS offering is a common software distribution model followed by many vendors t
     Import contacts from a CSV file into Salesforce using FTP</td>
     <!--<td><b><a href="../tutorials/saas-integrations/gmail/working-with-googlespreadsheet-service/1/">Working with Google Spreadsheet Service</a></b></br>
     Working with Google Spreadsheet Service</td> -->
-    <td></td>
+    <td><b><a href="../tutorials/saas-integrations/googlespreadsheet/backup-csv-files-using-googlespreadsheets/1/"> Backup CSV Files using GoogleSpreadsheets</a></b></br>
+    Backup contents from a CSV file into GoogleSheets and read the backed-up data</td>
     <td></td>
   </tr>
 </table>
