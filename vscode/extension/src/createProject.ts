@@ -70,7 +70,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                         const addCommandWithoutTemplate = 'cd ' + projectFolder.fsPath + ' && ballerina add ' + moduleName;
                         // Execute the Ballerina add command to create a module inside the project created.
                         await new Promise((resolve, reject) => {
-                            childProcess.exec(addCommandWithoutTemplate, (err, stderr, stdout) => {
+                            childProcess.exec(addCommandWithoutTemplate, async (err, stderr, stdout) => {
                                 if (err) {
                                     window.showErrorMessage(err);
                                     reject();
@@ -78,7 +78,17 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                     const successMessage = "Added new ballerina module";
                                     if (stdout.search(successMessage) !== -1) {
                                         window.showInformationMessage(stdout);
-                                        vscode.commands.executeCommand('vscode.openFolder', projectFolder);
+                                        // Open in New Window or Existing Window
+                                        const newWindowOption = await vscode.window.showQuickPick(
+                                            ['New Window', 'Existing Window'], 
+                                            { placeHolder: "Open project in a new window or in existing window"});
+                                        if (newWindowOption != undefined) {
+                                            if (newWindowOption == "New Window") {
+                                                vscode.commands.executeCommand('vscode.openFolder', projectFolder, true);
+                                            } else if (newWindowOption == "Existing Window"){
+                                                vscode.commands.executeCommand('vscode.openFolder', projectFolder);
+                                            }
+                                        }
                                     } else {
                                         window.showErrorMessage(stdout + " " + stderr);
                                         reject();
@@ -158,7 +168,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                             }
                             // Adds the new module to the project selected or created.
                             await new Promise((resolve, reject) => {
-                                childProcess.exec(addCommand, (err, stderr, stdout) => {
+                                childProcess.exec(addCommand, async (err, stderr, stdout) => {
                                     if (err) {
                                         window.showErrorMessage(err);
                                         reject();
@@ -166,9 +176,22 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                         const message = "not a ballerina project";
                                         const successMessage = "Added new ballerina module";
                                         if (stdout.search(successMessage) !== -1) {
+                                            if (projectOption == "New Project") {
+                                                // Open in New Window or Existing Window
+                                                const newWindowOption = await vscode.window.showQuickPick(
+                                                    ['New Window', 'Existing Window'], 
+                                                    { placeHolder: "Open project in a new window or in existing window"});
+                                                if (newWindowOption != undefined) {
+                                                    if (newWindowOption == "New Window") {
+                                                        vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.parse("file://" + uri), true);
+                                                    } else if (newWindowOption == "Existing Window"){
+                                                        vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.parse("file://" + uri));
+                                                    }
+                                                }
+                                            } else {
+                                                vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.parse("file://" + uri), true);
+                                            }
                                             window.showInformationMessage(stdout);
-                                            vscode.commands.executeCommand('vscode.openFolder',
-                                                vscode.Uri.parse("file://" + uri));
                                         } else if (stdout.search(message) !== -1) {
                                             window.showErrorMessage("Please select a Ballerina project!");
                                         } else {
