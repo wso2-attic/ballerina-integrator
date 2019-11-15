@@ -99,10 +99,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                 // else pull variable is set to true.
                 await new Promise((resolve, reject) => {
                     childProcess.exec(addListCommand, async (err, stderr, stdout) => {
-                        if (err) {
-                            reject();
-                        } 
-                        if (stdout.search(templateSelected) == -1) {
+                        if (stdout.search(templateSelected) == -1 || err) {
                             pull = true;
                         }
                         resolve();
