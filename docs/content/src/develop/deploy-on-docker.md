@@ -35,11 +35,11 @@ http:Client pineValleyHospital = new("http://localhost:9092/pineValley");
 
 @docker:Config {
     push: true,
-    registry: "index.docker.io/${DOCKER_USERNAME}",
+    registry: "index.docker.io/$env{DOCKER_USERNAME}",
     name: "healthcare",
     tag: "v2.0.0",
-    username: "${DOCKER_USERNAME}",
-    password: "${DOCKER_PASSWORD}"
+    username: "$env{DOCKER_USERNAME}",
+    password: "$env{DOCKER_PASSWORD}"
 }
 @http:ServiceConfig {
     basePath: "/healthcare"
