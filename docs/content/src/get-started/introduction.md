@@ -42,4 +42,4 @@ The following image is an illustration of what Ballerina Integrator consists of 
 
 ## What's Next
 
-Try out Ballerina Integrator by following the [Quick Start Guide](../get-started/quick-start-guide/).
+Try out Ballerina Integrator by following the [Quick Start Guide](../../get-started/quick-start-guide/).
