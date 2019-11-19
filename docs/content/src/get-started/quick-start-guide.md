@@ -71,9 +71,7 @@ Once this is done, specify the name of your project in the window that appears a
     <summary>Click here to create a project and add a pre-defined template using the command line instead.</summary>
 Create a new project by navigating to a directory of your choice and running the following command. 
 
-```bash
-ballerina new quick-start-guide
-```
+<code>ballerina new quick-start-guide</code>
 
 You see a response confirming that your project is created.
 
@@ -81,25 +79,19 @@ Let's use a predefined module from Ballerina Central, which is a public director
 
 A template is a predefined code that solves a particular integration scenario. 
 
-In this case, we use the `healthcare_service` module. Run the following command to pull this module from Ballerina Central.
+In this case, we use the <code>healthcare_service</code> module. Run the following command to pull this module from Ballerina Central.
 
-```
-ballerina pull wso2/healthcare_service
-```
+<code>ballerina pull wso2/healthcare_service</code>
 
 Now navigate into the project directory you created.
 
-```bash
-cd quick-start-guide
-```
+<code>cd quick-start-guide</code>
 
 The following command enables you to apply a predefined template you pulled.
 
-```bash
-ballerina add -t wso2/healthcare_service healthcare_service
-```
+<code>ballerina add -t wso2/healthcare_service healthcare_service</code>
 
-This automatically creates a healthcare service for you inside an `src` directory. 
+This automatically creates a healthcare service for you inside an <code>src</code> directory. 
 
 </details>
 
