@@ -69,37 +69,40 @@ Once this is done, specify the name of your project in the window that appears a
 
 <details>
     <summary>Click here to create a project and add a pre-defined template using the command line instead.</summary>
-Create a new project by navigating to a directory of your choice and running the following command. 
+Create a new project by navigating to a directory of your choice and running the following command. </br>
+</p>
 
-```bash
-ballerina new quick-start-guide
-```
+<code>ballerina new quick-start-guide</code></br>
+</p>
 
-You see a response confirming that your project is created.
+You see a response confirming that your project is created.</br>
+</p>
 
-Let's use a predefined module from Ballerina Central, which is a public directory that allows you to host templates and modules. 
+Let's use a predefined module from Ballerina Central, which is a public directory that allows you to host templates and modules. </br>
+</p>
 
-A template is a predefined code that solves a particular integration scenario. 
+A template is a predefined code that solves a particular integration scenario. </br>
+</p>
 
-In this case, we use the `healthcare_service` module. Run the following command to pull this module from Ballerina Central.
+In this case, we use the <code>healthcare_service</code> module. Run the following command to pull this module from Ballerina Central.</br>
+</p>
 
-```
-ballerina pull wso2/healthcare_service
-```
+<code>ballerina pull wso2/healthcare_service</code></br>
+</p>
 
-Now navigate into the project directory you created.
+Now navigate into the project directory you created.</br>
+</p>
 
-```bash
-cd quick-start-guide
-```
+<code>cd quick-start-guide</code></br>
+</p>
 
-The following command enables you to apply a predefined template you pulled.
+The following command enables you to apply a predefined template you pulled.</br>
+</p>
 
-```bash
-ballerina add -t wso2/healthcare_service healthcare_service
-```
+<code>ballerina add -t wso2/healthcare_service healthcare_service</code></br>
+</p>
 
-This automatically creates a healthcare service for you inside an `src` directory. 
+This automatically creates a healthcare service for you inside an <code>src</code> directory. 
 
 </details>
 
