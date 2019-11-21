@@ -62,7 +62,6 @@ smb:Client smbClient = new(smbConfig);
 // CODE-SEGMENT-BEGIN: segment_2
 service dataFileService on dataFileListener {
     resource function processDataFile(smb:WatchEvent fileEvent) {
-
         foreach smb:FileInfo file in fileEvent.addedFiles {
             log:printInfo("Added file path: " + file.path);
             processNewFile(file.path);

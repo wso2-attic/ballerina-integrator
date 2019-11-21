@@ -62,7 +62,6 @@ ftp:Client ftpClient = new(ftpConfig);
 // CODE-SEGMENT-BEGIN: segment_2
 service dataFileService on dataFileListener {
     resource function processDataFile(ftp:WatchEvent fileEvent) {
-
         foreach ftp:FileInfo file in fileEvent.addedFiles {
             log:printInfo("Added file path: " + file.path);
             processNewFile(file.path);
