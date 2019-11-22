@@ -16,6 +16,7 @@
 
 import vscode, { OpenDialogOptions, Uri, window } from 'vscode';
 import { getHomeView } from './homeView';
+import { extractErrorMessage } from './utils';
 
 /**
  * Displays the set of templates available and once a template is selected, 
@@ -172,7 +173,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                         } else if (stdout.search(message) !== -1) {
                                             window.showErrorMessage("Please select a Ballerina project!");
                                         } else {
-                                            window.showErrorMessage(stdout + " " + stderr);
+                                            window.showErrorMessage(extractErrorMessage(stdout));
                                         }
                                         resolve();
                                     }
@@ -210,7 +211,7 @@ function newProjectCommand(reject: (reason?: any) => void, projectUri: vscode.Ur
             resolve();
         }
         else {
-            window.showErrorMessage(stdout + " " + stderr);
+            window.showErrorMessage(extractErrorMessage(stdout));
             currentPanel.dispose();
             vscode.commands.executeCommand("ballerina.integrator.activate");
             reject();
