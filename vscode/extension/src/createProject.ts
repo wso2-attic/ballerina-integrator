@@ -64,7 +64,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                         const newCommand = 'cd ' + projectUri.fsPath + ' && ballerina new ' + projectName;
                         // Execute the Ballerina new command to create a project.
                         await new Promise((resolve, reject) => {
-                            childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve));
+                            childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve, currentPanel));
                         });
                         let projectFolder = appendPath(projectUri.fsPath, projectName);
                         const addCommandWithoutTemplate = 'cd ' + projectFolder.fsPath + ' && ballerina add ' + moduleName;
@@ -129,7 +129,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                 if (folderPath != undefined) {
                                     const newCommand = 'cd ' + projectUri.fsPath + ' && ballerina new ' + projectName;
                                     await new Promise((resolve, reject) => {
-                                        childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve));
+                                        childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve, currentPanel));
                                     });
                                     uri = appendPath(projectUri.fsPath, projectName).fsPath;
                                 }
@@ -197,7 +197,7 @@ function appendPath (path: string, appendString: string): Uri {
 }
 
 // Handles the new project creation command result.
-function newProjectCommand(reject: (reason?: any) => void, projectUri: vscode.Uri, resolve: (value?: unknown) => void): any {
+function newProjectCommand(reject: (reason?: any) => void, projectUri: vscode.Uri, resolve: (value?: unknown) => void, currentPanel:vscode.WebviewPanel): any {
     return (err, stderr, stdout) => {
         const message = "Created new Ballerina project";
         if (err) {
@@ -211,6 +211,8 @@ function newProjectCommand(reject: (reason?: any) => void, projectUri: vscode.Ur
         }
         else {
             window.showErrorMessage(stdout + " " + stderr);
+            currentPanel.dispose();
+            vscode.commands.executeCommand("ballerina.integrator.activate");
             reject();
         }
     };
