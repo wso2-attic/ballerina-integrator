@@ -20,7 +20,7 @@ import ballerina/test;
 import wso2/gmail;
 
 //Create an endpoint to use Gmail Connector
-gmail:GmailConfiguration gmailConfig = {
+gmail:GmailConfiguration gmailTestConfig = {
     oauthClientConfig: {
         accessToken: config:getAsString("ACCESS_TOKEN"),
         refreshConfig: {
@@ -32,7 +32,7 @@ gmail:GmailConfiguration gmailConfig = {
     }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+gmail:Client gmailTestClient = new (gmailTestConfig);
 
 // Provide the following in the ballerina.conf file before running the tests.
 string testRecipient = config:getAsString("RECIPIENT");//Example: "recipient@gmail.com"
@@ -67,7 +67,7 @@ function testSendTextMessage() {
     messageRequest.attachmentPaths = attachments;
     log:printInfo("testSendTextMessage");
     //----Send the Email----
-    var sendMessageResponse = gmailClient->sendMessage(testUserId, messageRequest);
+    var sendMessageResponse = gmailTestClient->sendMessage(testUserId, messageRequest);
     if (sendMessageResponse is [string, string]) {
         [string, string][messageId, threadId] = sendMessageResponse;
         sentTextMessageId = <@untainted>messageId;
@@ -84,7 +84,7 @@ function testSendTextMessage() {
 function testReadTextMessage() {
     //Read email with message id which was sent in testSendTextMessage
     log:printInfo("testReadTextMessage");
-    var response = gmailClient->readMessage(testUserId, sentTextMessageId);
+    var response = gmailTestClient->readMessage(testUserId, sentTextMessageId);
     if (response is gmail:Message) {
         testHistoryId = <@untainted>response.historyId;
         test:assertEquals(response.id, sentTextMessageId, msg = "Read text mail failed");
@@ -98,7 +98,7 @@ function testListMessages() {
     //List All Messages with Label INBOX without including Spam and Trash.
     log:printInfo("testListMessages");
     gmail:MsgSearchFilter searchFilter = {includeSpamTrash: false, labelIds: ["INBOX"]};
-    var msgList = gmailClient->listMessages("me", searchFilter);
+    var msgList = gmailTestClient->listMessages("me", searchFilter);
     if msgList is error {
         test:assertFail(msg = <string>msgList.detail()["message"]);
     }
@@ -110,13 +110,13 @@ function testListMessages() {
 function testModifyHTMLMessage() {
     //Modify labels of the message with message id which was sent in testSendTextMessage.
     log:printInfo("testModifyHTMLMessage");
-    var response = gmailClient->modifyMessage(testUserId, sentHtmlMessageId, ["INBOX"], []);
+    var response = gmailTestClient->modifyMessage(testUserId, sentHtmlMessageId, ["INBOX"], []);
     if (response is gmail:Message) {
         test:assertTrue(response.id == sentHtmlMessageId, msg = "Modify HTML message by adding new label failed");
     } else {
         test:assertFail(msg = <string>response.detail()["message"]);
     }
-    response = gmailClient->modifyMessage(testUserId, sentHtmlMessageId, [], ["INBOX"]);
+    response = gmailTestClient->modifyMessage(testUserId, sentHtmlMessageId, [], ["INBOX"]);
     if (response is gmail:Message) {
         test:assertTrue(response.id == sentHtmlMessageId,
         msg = "Modify HTML message by removing existing label failed");
