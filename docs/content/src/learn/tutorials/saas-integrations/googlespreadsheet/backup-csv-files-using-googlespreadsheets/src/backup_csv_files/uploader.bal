@@ -27,7 +27,7 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
         refreshConfig: {
             clientId: config:getAsString("CLIENT_ID"),
             clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
+            refreshUrl: gsheets4:REFRESH_URL,
             refreshToken: config:getAsString("REFRESH_TOKEN")
         }
     }
