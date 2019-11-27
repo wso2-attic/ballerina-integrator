@@ -31,7 +31,7 @@ service stockQuote on new http:Listener(9090) {
     resource function getQuote(http:Caller caller, http:Request request, string symbol) {
         xmlns "http://services.samples" as m0; 
         xml payload = xml `<m0:symbol>${symbol}</m0:symbol>`; 
-        soap:SoapResponse soapResponse = checkpanic soapEP->sendReceive("urn:getQuote", payload); 
+        soap:SoapResponse soapResponse = checkpanic soapEP->sendReceive(payload, "urn:getQuote"); 
         xml responsePayload = checkpanic soapResponse.httpResponse.getXmlPayload(); 
         http:Response response = new;
         response.setJsonPayload(<@untainted>checkpanic jsonutils:fromXML(responsePayload.Body.getQuoteResponse,
@@ -56,7 +56,7 @@ service stockQuote on new http:Listener(9090) {
                                     <m:symbol>${symbol}</m:symbol>
                                 </m:order>
                             </m:placeOrder>`;
-        soap:SoapResponse soapResponse = checkpanic soapEP->sendReceive("urn:placeOrder", <@untainted> payload); 
+        soap:SoapResponse soapResponse = checkpanic soapEP->sendReceive(<@untainted> payload, "urn:placeOrder"); 
         xml responsePayload = checkpanic soapResponse.httpResponse.getXmlPayload(); 
         http:Response response = new;
         response.setJsonPayload(<@untainted>checkpanic jsonutils:fromXML(responsePayload.Body.placeOrderResponse,
