@@ -364,6 +364,11 @@ public class DocsGenerator {
             for (File file : listOfFiles) {
                 if (file.isFile() && (file.getName().equals(BALLERINA_TOML))) {
                     // Zip parent folder since this is a Ballerina project.
+
+                    // Removing unnecessary md files
+                    File mdFile = new File(directoryPath + "/1.md");
+                    mdFile.delete();
+
                     try {
                         new ZipFile(getZipFileName(tempDir, file))
                                 .addFolder(new File(file.getParentFile().getPath()));
