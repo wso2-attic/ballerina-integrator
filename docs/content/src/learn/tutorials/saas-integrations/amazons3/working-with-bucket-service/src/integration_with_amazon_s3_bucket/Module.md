@@ -45,13 +45,12 @@ This automatically creates integration_with_amazon_s3_bucket service for you ins
 Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
 This file should have following configurations. Add the obtained Amazon S3 configurations to the file.
 
+`REGION` is where you require the bucket to be created. (e.g.: `eu-west-1`)
+
 ```
 ACCESS_KEY_ID="<Amazon S3 key ID>"<br/>
 SECRET_ACCESS_KEY="<Amazon S3 secret key>"<br/>
 REGION="<Amazon S3 region>"<br/>
-BUCKET_NAME="<Amazon S3 bucket name>"<br/>
-TRUST_STORE_PATH="<Truststore file location>"<br/>
-TRUST_STORE_PASSWORD="<Truststore password>"<br/>
 ```
 
 #### 3. Deploying
