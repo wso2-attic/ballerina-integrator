@@ -12,7 +12,6 @@ Here the caller will send the last name of the employee for whom he wants to fet
 
 <!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
 * Download MySQL JDBC driver
-* Create a folder called lib as shown in the folder structure and copy the downloaded jdbc_driver.jar into it.
 
 <!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
@@ -31,6 +30,8 @@ Add a module.
 $ ballerina add querying_mysql_database
 ```
 
+Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
+
 The project structure should look like below.
 ```shell
 ├── querying-mysql-database
@@ -47,7 +48,7 @@ The project structure should look like below.
                 └── resources
 ```
 
-Add this code segment to ballerina.toml file in the root directory
+Add the following under the `[dependencies]` section in Ballerina.toml file in the root directory of the project.
 
   ```ballerina
   [platform]

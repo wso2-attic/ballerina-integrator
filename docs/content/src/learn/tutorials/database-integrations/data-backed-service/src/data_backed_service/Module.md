@@ -30,6 +30,17 @@ This automatically creates data_backed_service service for you inside the `src` 
 
 ### Before you begin
 * Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
+
+* Add the following under the `[dependencies]` section in Ballerina.toml file in the root directory of the project.
+
+```ballerina
+[platform]
+target = "java8"
+[[platform.libraries]]
+module = "querying_mysql_database"
+path = "./lib/mysql-connector-java-8.0.17.jar"
+```
+
 * Download & run the SQL script `initializeDataBase.sql` provided inside the `resources` directory, to initialize the database and to create the required table.
 ```
    $mysql -u username -p <initializeDataBase.sql

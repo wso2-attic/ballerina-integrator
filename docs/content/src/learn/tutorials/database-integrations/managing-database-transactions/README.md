@@ -37,16 +37,20 @@ The first scenario shows a successful transaction whereas the other two fail due
 
 > If you want to skip the basics, you can download the git repo and directly move to the `Testing` section by skipping `Implementation` section.    
 
-#### 1. Create a new project.
+#### 1. Create a new project
 ```bash
 $ ballerina new managing-database-transactions
 ```
 
-#### 2. Create a module.
+#### 2. Create a module
 Navigate into the project directory and add a new module.
 ```bash
 $ ballerina add managing_database_transactions
 ```
+
+#### 3. Add JDBC driver for MySQL to the project
+
+Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
 
 The project structure is created as indicated below.
 ```shell
@@ -66,9 +70,18 @@ managing-database-transactions
             └── resources
 ```
 
-Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
+Add the following under the `[dependencies]` section in Ballerina.toml file in the root directory of the project.
 
-#### 3. Add project configurations file
+```ballerina
+[platform]
+target = "java8"
+
+[[platform.libraries]]
+module = "managing_database_transactions"
+path = "./lib/mysql-connector-java-x.x.x.jar"
+```
+
+#### 4. Add project configurations file
 Add a `ballerina.conf` file and create .bal files with meaningful names as shown in the project structure given above.
 
  - `ballerina.conf` file can be used to provide external configurations to Ballerina programs. Since this guide needs MySQL database integration, a Ballerina configuration file is used to provide the database connection properties to our Ballerina program.
@@ -80,7 +93,7 @@ Add a `ballerina.conf` file and create .bal files with meaningful names as shown
     DATABASE_PASSWORD = "root"
     ```
 
-#### 4. Write the integration
+#### 5. Write the integration
 
 Open the project with VS Code. The integration implementation is written in the `src/managing_database_transaction/account_manager.bal` and `src/managing_database_transaction/application.bal` files.
 

@@ -39,6 +39,16 @@ Navigate into the project directory and add a new module.
 
 Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
 
+Add the following under the `[dependencies]` section in the `ballerina.toml` file in the root directory of the project.
+
+```ballerina
+[platform]
+target = "java8"
+[[platform.libraries]]
+module = "querying_mysql_database"
+path = "./lib/mysql-connector-java-8.0.17.jar"
+```
+
 Add a ballerina.conf file and rename the .bal files with meaningful names as shown in the project structure given below.
 
 ```bash

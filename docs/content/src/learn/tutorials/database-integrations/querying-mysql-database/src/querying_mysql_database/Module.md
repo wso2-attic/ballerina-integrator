@@ -30,7 +30,7 @@ This automatically creates querying_mysql_database service for you inside the `s
 
 ### Before you begin
 * Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
-- Add these code segment to ballerina.toml file in the root directory
+* Add the following under the `[dependencies]` section in Ballerina.toml file in the root directory of the project.
 
 ```ballerina
 [platform]
