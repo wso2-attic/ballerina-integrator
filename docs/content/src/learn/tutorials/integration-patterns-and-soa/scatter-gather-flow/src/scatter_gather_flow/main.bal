@@ -66,7 +66,7 @@ function populateEmp(io:ReadableByteChannel ch) {
     string[][] employeeRows = convertToStringArray(ch);
     foreach var i in 1 ... employeeRows.length() - 1 {
         json m = convertToJson(employeeRows[i]);
-        employees[employees.length()] = m;
+        employees[employees.length()] = <@untainted>m;
     }
 }
 
