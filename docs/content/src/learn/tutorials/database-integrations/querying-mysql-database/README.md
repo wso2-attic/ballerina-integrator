@@ -52,20 +52,24 @@ Add this code segment to ballerina.toml file in the root directory
   ```ballerina
   [platform]
   target = "java8"
+  
   [[platform.libraries]]
-  module = "querying_mysql"
+  module = "querying_mysql_database"
   path = "./lib/mysql-connector-java-8.0.17.jar"
   ```
-Run the employees.sql script inside resources folder to create the table and insert data required for the guide.
+Run the sampleScript.sql script inside resources folder to create the table and insert data required for the guide.
 
-Add project configuration file by creating `ballerina.conf` file under the root path of the project structure. <br/>
+ - `ballerina.conf` file can be used to provide external configurations to Ballerina programs. Since this guide needs 
+    MySQL database integration, a Ballerina configuration file is used to provide the database connection properties to 
+    our Ballerina program. This configuration file has the following fields. Change these configurations with your 
+    connection properties accordingly.
+   
+    ```
+    DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/bankDB"
+    DATABASE_USERNAME = "root"
+    DATABASE_PASSWORD = "root"
+    ```
 
-This file should have the following MySQL database configurations.
-```
-MYSQL_URL = <jdbc_url>
-MYSQL_USERNAME = <mysql_username> 
-MYSQL_PASSWORD = <mysql_password> 
-```
 
 Write your integration.
 
