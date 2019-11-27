@@ -65,7 +65,7 @@ The following code reads the contents of a CSV file and saves the data in a new 
 To build the module, navigate to the project root directory and execute the following command.
 
 ```bash
-  ballerina build backup-csv-files-using-googlespreadsheets
+  ballerina build backup_csv_files
 ```
 
 This command creates the executable jar file.
@@ -73,7 +73,7 @@ This command creates the executable jar file.
 Now run the `backup_csv_files.jar` file created in the above step.
 
 ```bash
-  java -jar target/bin/backup-csv-files.jar
+  java -jar target/bin/backup_csv_files.jar
 ```
 
 This starts the service that reads the data from the `people.csv` files stored in the resources folder. You will notice that the contents of the file have been set in the Google Spreadsheet and the data will also display on the console.

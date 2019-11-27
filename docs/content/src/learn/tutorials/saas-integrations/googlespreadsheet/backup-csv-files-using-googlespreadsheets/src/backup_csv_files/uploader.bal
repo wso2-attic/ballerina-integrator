@@ -34,7 +34,6 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
 };
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 
-
 public function main() {
     string csvFilePath = "src/backup_csv_files/resources/people.csv";
     string spreadSheetName = "People_Info";
