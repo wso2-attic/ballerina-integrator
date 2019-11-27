@@ -39,7 +39,7 @@ Navigate into the project directory and add a new module.
 
 Create a folder called `lib` under the project root path. Copy the [JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) into the `lib` folder.
 
-Add the following under the `[dependencies]` section in Ballerina.toml file in the root directory of the project.
+Add the following under the `[dependencies]` section in the `ballerina.toml` file in the root directory of the project.
 
 ```ballerina
 [platform]
