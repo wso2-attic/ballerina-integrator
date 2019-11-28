@@ -72,15 +72,14 @@ working-with-bucket-service
 #### 4. Add project configurations file
 
 Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
-This file should have following configurations. Add the obtained Amazon S3 configurations to the file.
+This file should have following configurations. Add the obtained Amazon S3 configurations to the file. 
+
+`REGION` is where you require the bucket to be created. (e.g.: `eu-west-1`)
 
 ```
 ACCESS_KEY_ID="<Amazon S3 key ID>"
 SECRET_ACCESS_KEY="<Amazon S3 secret key>"
 REGION="<Amazon S3 region>"
-BUCKET_NAME="<Amazon S3 bucket name>"
-TRUST_STORE_PATH="<Truststore file location>"
-TRUST_STORE_PASSWORD="<Truststore password>"
 ```
 
 #### 5. Write the integration
@@ -112,8 +111,13 @@ You will see the following service log after successfully invoking the service.
 
 - Invoke the following curl request to create a new bucket.
 ```bash
-curl -v -X POST http://localhost:9091/amazons3/imageStore/firstbalbucket
+curl -v -X POST http://localhost:9091/amazons3/imageStore/<BUCKET_NAME>
 ```
+
+#### Note: The [Amazon S3 bucket names must be unique globally](https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html#bucketnamingrules). Therefore, if the following error is observed, please select a different name for the bucket.
+
+>The requested bucket name is not available. The bucket namespace is shared by all users of the system. Please select a different name and try again.
+
 You see the response as follows after successfully creating the Amazon S3 bucket.
 ```
 firstbalbucket created on Amazon S3.
@@ -135,7 +139,7 @@ curl -X GET http://localhost:9091/amazons3/imageStore
 
 - Invoke the following curl request to delete the above bucket.
 ```
-curl -v -X DELETE http://localhost:9091/amazons3/imageStore/firstbalbucket
+curl -v -X DELETE http://localhost:9091/amazons3/imageStore/<BUCKET_NAME>
 ```
 You see the response as follows:
 ```

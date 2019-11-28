@@ -74,15 +74,14 @@ working-with-object-service
 #### 4. Add project configurations file
 
 Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
-This file should have following configurations. Add the obtained SAmazon S3 configurations to the file.
+This file should have following configurations. Add the obtained Amazon S3 configurations to the file.
+
+`REGION` is where you require the bucket to be created. (e.g.: `eu-west-1`)
 
 ```
 ACCESS_KEY_ID="<Amazon S3 key ID>"
 SECRET_ACCESS_KEY="<Amazon S3 secret key>"
 REGION="<Amazon S3 region>"
-BUCKET_NAME="<Amazon S3 bucket name>"
-TRUST_STORE_PATH="<Truststore file location>"
-TRUST_STORE_PASSWORD="<Truststore password>"
 ```
 
 #### 5. Write the integration
@@ -109,6 +108,12 @@ You will see the following log upon the successful invocation of the service.
 [ballerina/http] started HTTP/WS listener 0.0.0.0:9090
 ```
 
+### Setting up
+
+- Visit [Amazon S3](https://aws.amazon.com/s3/) and create an Amazon S3 account.
+
+- [Create a new bucket in Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html).
+
 ### 1. Testing the create Object service 
 
 #### (I) JSON Content
@@ -129,22 +134,22 @@ Create a file called `content.json` with following JSON content:
 ```
 - Invoke the following curl request to create a new object in the newly created bucket.
 ```
-curl -v -X POST --data @content.json http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json --header "Content-Type:application/json"
+curl -v -X POST --data @content.json http://localhost:9090/amazons3/imageStore/<BUCKET_NAME>/firstObject.json --header "Content-Type:application/json"
 ```
 You see the response as follows:
 ```
-firstObject.json created on Amazon S3 bucket : firstbalbucket.
+firstObject.json created on Amazon S3 bucket : <BUCKET_NAME>.
 ```
 
 #### (II) Binary Content
 Let's upload an image (sample.jpg) to the s3 bucket we created above. 
 - Invoke the following curl request to create a new object in the newly created bucket.
 ```
-curl -v -X POST http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg -H 'Content-Type: image/jpg' -T sample.jpg -H "Expect:"
+curl -v -X POST http://localhost:9090/amazons3/imageStore/<BUCKET_NAME>/image.jpg -H 'Content-Type: image/jpg' -T sample.jpg -H "Expect:"
 ```
 You see the response as follows:
 ```
-image.jpg created on Amazon S3 bucket : firstbalbucket.
+image.jpg created on Amazon S3 bucket : <BUCKET_NAME>.
 ```
 
 ### 2. Testing the list Object service 
@@ -152,14 +157,14 @@ image.jpg created on Amazon S3 bucket : firstbalbucket.
 - Invoke the following curl request to list objects in a bucket.
 
 ```
-curl -X GET http://localhost:9090/amazons3/imageStore/firstbalbucket
+curl -X GET http://localhost:9090/amazons3/imageStore/<BUCKET_NAME>
 ```
 
 ### 3. Testing get Object service
 #### (I) JSON Content
 - Set the `responseContentType` as `application/json` to retrieve a JSON object and invoke the following curl request to get the newly created object.
 ```
-curl -v -X GET http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json?responseContentType=application/json
+curl -v -X GET http://localhost:9090/amazons3/imageStore/<BUCKET_NAME>/firstObject.json?responseContentType=application/json
 ```
 You see the response as follows:
 ```json
@@ -180,21 +185,21 @@ You see the response as follows:
 #### (II) Binary Content
 - Set the `responseContentType` as image/jpg and use following URL to open newly created image on browser.
 ```
-http://localhost:9090/amazons3/imageStore/firstbalbucket/image.jpg?responseContentType=image/jpg
+http://localhost:9090/amazons3/imageStore/<BUCKET_NAME>/image.jpg?responseContentType=image/jpg
 ```
 
 - You can use the following URL to download the newly created image.
 ```
-http://localhost:9090/amazons3/firstbalbucket/image.jpg?responseContentType=application/octet-stream
+http://localhost:9090/amazons3/<BUCKET_NAME>/image.jpg?responseContentType=application/octet-stream
 ```
 
 ### 4. Testing delete Object service
 
 - Invoke the following curl request to delete the above object.
 ```
-curl -v -X DELETE http://localhost:9090/amazons3/imageStore/firstbalbucket/firstObject.json
+curl -v -X DELETE http://localhost:9090/amazons3/imageStore/<BUCKET_NAME>/firstObject.json
 ```
 You see the response as follows:
 ```
-firstObject.json deleted from Amazon S3 bucket : firstbalbucket.
+firstObject.json deleted from Amazon S3 bucket : <BUCKET_NAME>.
 ```
