@@ -86,6 +86,8 @@ public class DocsGenerator {
 
         final String TEMP_DIR = Paths.get(TARGET_DIR, "tempDirectory").toString();
         final String MKDOCS_CONTENT = Paths.get(TARGET_DIR, "mkdocs-content").toString();
+        // This directory is used to keep the files that are being copied to the zip file
+        final String TEMP_ZIP_DIR = Paths.get(TARGET_DIR, "tempZipDirectory").toString();
 
         BasicConfigurator.configure();
         logger.info("Docs generating process started...");
@@ -99,8 +101,10 @@ public class DocsGenerator {
         copyDirectoryContent(DOCS_DIR, TEMP_DIR);
         // Process repository to generate guide templates.
         processDirectory(TEMP_DIR);
+        // Copy content in tempDirectory to tempZipDirectory.
+        copyDirectoryContent(TEMP_DIR, TEMP_ZIP_DIR);
         // Zip Ballerina projects.
-        zipBallerinaProjects(TEMP_DIR, TEMP_DIR);
+        zipBallerinaProjects(TEMP_ZIP_DIR, TEMP_DIR);
         // Delete non markdown files.
         deleteUnwantedFiles(TEMP_DIR, DOCS_DIR);
         // Delete empty directories.
@@ -110,6 +114,8 @@ public class DocsGenerator {
         // Create `target/www` website directory.
         createWebsiteDirectory(Paths.get(TARGET_DIR, "..", "www").toString(), Paths.get(TARGET_DIR, "www").toString(),
                 MKDOCS_CONTENT);
+        // Delete tempZipDirectory which contained the files to be zipped
+        deleteDirectory(TEMP_ZIP_DIR);
         logger.info("Docs generating process finished...");
     }
 
@@ -366,8 +372,8 @@ public class DocsGenerator {
                     // Zip parent folder since this is a Ballerina project.
 
                     // Removing unnecessary md files
-                    File mdFile = new File(directoryPath + "/1.md");
-                    mdFile.delete();
+                     File mdFile = new File(directoryPath + "/1.md");
+                     mdFile.delete();
 
                     try {
                         new ZipFile(getZipFileName(tempDir, file))
