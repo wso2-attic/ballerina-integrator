@@ -24,13 +24,13 @@ As there can be multiple alert messages available in the queue, the listener is 
 
 ## Implementation
 
-1. Create a new project.
+#### 1. Create a new project.
 
     ```bash
     $ ballerina new notifying-fire-alarm-using-sqs
     ```
 
-2. Create a module.
+#### 2. Create a module.
 
     ```bash
     $ ballerina add alert_notification_using_amazonsqs
@@ -52,7 +52,7 @@ To implement the scenario in this guide, you can use the following package struc
 
 Now that you have created the project structure, the next step is to develop the integration scenario.
 
-3. Set up credentials for Amazon SQS
+#### 3. Set up credentials for Amazon SQS
 
 Create a new access key, which includes a new secret access key. - To create a new secret access key for your root account, use the [security credentials](https://console.aws.amazon.com/iam/home?#security_credential) page. Expand the Access Keys section, and then click Create New Root Key.
 
@@ -60,7 +60,7 @@ To create a new secret access key for an IAM user, open the [IAM console](https:
 
 Download the newly created credentials, when prompted to do so in the key creation wizard.
 
-4. Add project configurations file
+#### 4. Add project configurations file
 
 Add the project configuration file by creating a ballerina.conf file under the root path of the project structure. This file should have following configurations. Add the obtained Amazon SQS configurations to the file.
 
@@ -75,7 +75,7 @@ When a queue is created you can find the `ACCOUNT_NUMBER` under **Details** tab 
 
 ![SQS Console](../../../../../assets/img/sqs-console.png)
 
-5. Write the integration.
+#### 5. Write the integration.
 
 Take a look at the code samples below to understand how to implement the integration scenario.
 
