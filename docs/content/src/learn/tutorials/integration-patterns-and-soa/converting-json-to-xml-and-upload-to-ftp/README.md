@@ -4,28 +4,33 @@ Ballerina is an open-source programming language that empowers developers to int
 
 The FTP connector offers support as a listener, where it listens to the given remote location and is triggered when a file is added or deleted. Also, it supports connecting to a file server as the client and performing various operations such as get, put, delete, etc. The FTP connector can be used to connect to your remote file server with FTP, SFTP, FTPS protocols.
 
+<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+
 ## What you'll build
 Ballerina has first-class support for HTTP and implementing an HTTP service is straightforward. The caller will send a JSON payload that consists of employees data. The HTTP service reads the JSON payload and transforms it to XML. Then with the support of FTP connector, the employee's data in XML format gets uploaded to the FTP server.
 
 ![Transform JSON to XML and upload to FTP](../../../../assets/img/Transform-JSON-to-XML-and-upload-to-FTP.jpg)
 
-<!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
-
-<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
-
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module in this link.
 
-####1. Create a project.
-```bash
-$ ballerina new converting-json-to-xml-and-upload-to-ftp
-```
-Change directory to converting-json-to-xml-and-upload-to-ftp.
+### Create a project
 
-####2. Add a module.
-```bash
-$ ballerina add upload_to_ftp
-```
+Once you have installed the VS Code extension, press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Windows/Linux and search for the command `Ballerina Integrator: Dashboard` to find the Ballerina Integrator dashboard shown below. Please refer the extension's [home page](https://marketplace.visualstudio.com/items?itemName=WSO2.ballerina-integrator) for more details on how to use the provided features.
+
+![alt text](../../../../assets/img/vs-code-landing.png)
+
+Let's create a project using the Ballerina Integrator dashboard. To do this, click **Create** under the `JSON to XML Transformation and upload to FTP` template. 
+
+A new window will appear at the top of your screen where you can specify the name of your module.
+
+Once you specify the name of the module, you need to choose if your project is a new project or an existing project. In this case you would choose **New Project**.
+
+![alt text](../../../../assets/img/new-existing-project.png)
+
+Once this is done, specify the name of your project in the window that appears and choose the location of your project in your local machine.
+
+![alt text](../../../../assets/img/project-name-new.png)
 
 The project structure should look like below.
 ```shell
@@ -40,7 +45,7 @@ converting-json-to-xml-and-upload-to-ftp
             └── resources
 ```
 
-####3. Write the integration.
+### Write the integration
 You can open the project with VS Code. The integration implementation will be written in the `main.bal` file.  
 
 <!-- INCLUDE_CODE: src/upload_to_ftp/main.bal -->
@@ -90,7 +95,7 @@ Use the encrypted value in the `ballerina.conf` file.
 After that `ftp:Client` is created with `ftpConfig`. The HTTP listener service will run on 8080 port when you start running the program. When the request is received by the HTTP service, it gets the JSON payload and transforms it to XML. Since Ballerina language is a type-safe language, we have to check if the transformed result returns XML or error. If XML is returned, then we write the XML to the remote FTP location specified in the top with the FTP client. If the return result of the `ftp:put` operation was successful, respond to the call by building JSON payload using `http:Response`. If any error is returned from the above actions, the relevant error message builds with the error reason and responds to the caller. 
 
 ## Testing
-First, let’s build the module. While being in the converting-json-to-xml-and-upload-to-ftp directory, execute the following command.
+First, let’s build the module. While being in the `converting-json-to-xml-and-upload-to-ftp` directory, execute the following command.
 
 ```bash
 $ ballerina build upload_to_ftp
@@ -157,3 +162,10 @@ You will see the following response in a successful invocation. Also, the remote
 ```json
 {"Message":"Employee records uploaded successfully."}
 ```
+
+<!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
+
+## What's Next
+
+Now that you have tried out this tutorial, you can customize the project for your scenario and deploy this on [Docker](../../../../develop/deploy-on-docker.md) or [Kubernetes]((../../../../develop/deploy-on-kubernetes.md)).
+
