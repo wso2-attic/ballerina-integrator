@@ -22,21 +22,21 @@ The Ballerina project is created for the integration use case as explained above
 
 #### 1. Create a new project.
 ```bash
-  $ ballerina new backup-csv-files-using-googlespreadsheets
+  $ ballerina new using-google-spreadsheets-connector
 ```
 
 #### 2. Create a module.
 ```bash
-  $ ballerina add backup_csv_files
+  $ ballerina add backup_csv_files_using_gsheets4
 ```
 
 To implement the scenario in this guide, you can use the following package structure:
 
 ```shell
-  backup-csv-files-using-googlespreadsheets
+  using-google-spreadsheets-connector
   ├── Ballerina.toml
   └── src
-      └── backup_csv_files
+      └── backup_csv_files_using_gsheets4
           ├── Module.md
           └── uploader.bal
 ```
@@ -59,21 +59,21 @@ Take a look at the code samples below to understand how to implement the integra
 #### uploader.bal
 The following code reads the contents of a CSV file and saves the data in a new Google Spreadsheet. The data is then read from the spreadsheet and displayed on the console.
 
-<!-- INCLUDE_CODE: src/backup_csv_files/uploader.bal -->
+<!-- INCLUDE_CODE: src/backup_csv_files_using_gsheets4/uploader.bal -->
 
 ## Testing
 To build the module, navigate to the project root directory and execute the following command.
 
 ```bash
-  ballerina build backup_csv_files
+  ballerina build backup_csv_files_using_gsheets4
 ```
 
 This command creates the executable jar file.
 
-Now run the `backup_csv_files.jar` file created in the above step.
+Now run the `backup_csv_files_using_gsheets4.jar` file created in the above step.
 
 ```bash
-  java -jar target/bin/backup_csv_files.jar
+  java -jar target/bin/backup_csv_files_using_gsheets4.jar
 ```
 
 This starts the service that reads the data from the `people.csv` files stored in the resources folder. You will notice that the contents of the file have been set in the Google Spreadsheet and the data will also display on the console.
