@@ -1,4 +1,4 @@
-#### Deploying on Kubernetes
+# Deploying on Kubernetes
 
 The Kubernetes builder extension offers native support for running Ballerina programs on Kubernetes with the use of annotations that you can include as part of your service code. Also, it will take care of the creation of the Docker images, so you don't need to explicitly create Docker images prior to deployment on Kubernetes.
 
