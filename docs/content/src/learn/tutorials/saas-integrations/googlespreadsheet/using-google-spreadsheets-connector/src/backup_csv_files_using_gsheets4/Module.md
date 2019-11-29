@@ -10,23 +10,22 @@ Please refer to it for more details on what you are going to build here. This te
 Run the following command to pull the 'googlespreadsheet' template from Ballerina Central.
 
 ```bash
-$ ballerina pull wso2/backup-csv-files-using-googlespreadsheets
+$ ballerina pull wso2/backup_csv_files_using_gsheets4
 ```
 
 Create a new project
 
 ```bash
-$ ballerina new googlespreadsheet
+$ ballerina new using-google-spreadsheets-connector
 ```
 
 Now navigate into the above module directory you create and run the following command to apply the predefined template you pulled earlier
 
 ```bash
-$ ballerina add -t wso2/backup-csv-files-using-googlespreadsheets
-backup-csv-files-using-googlespreadsheets
+$ ballerina add -t wso2/backup_csv_files_using_gsheets4
 ```
 
-This automatically creates backup-csv-files-using-googlespreadsheets service for you inside the 'src' directory of your projects
+This automatically creates backup_csv_files_using_gsheets4 service for you inside the 'src' directory of your projects
 
 ## Testing
 
@@ -56,13 +55,13 @@ REFRESH_TOKEN="<Refresh Token>"
 Once you are done with the development, you can deploy the scenario using any of the methods listed below.
 
 ```bash
-ballerina build backup-csv-files-using-googlespreadsheets
+ballerina build backup_csv_files_using_gsheets4
 ```
 
 This builds a JAR file (.jar) in the target folder. You can run this by using the `java -jar` command.
 
 ```bash
-java -jar target/bin/backup-csv-files-using-googlespreadsheets.jar
+java -jar target/bin/backup_csv_files_using_gsheets4.jar
 ```
 
 You will see that the data stored in the CSV file is sent to the spreadsheet and subsequently read and displayed on the console. 
