@@ -1,3 +1,5 @@
+### Create a project
+
 Once you have installed the VS Code extension, press `Command + Shift + P` in Mac or `Ctrl + Shift + P` in Windows/Linux and search for the command `Ballerina Integrator: Dashboard` to find the Ballerina Integrator dashboard shown below. Please refer the extension's [home page](https://marketplace.visualstudio.com/items?itemName=WSO2.ballerina-integrator) for more details on how to use the provided features.
 
 ![alt text](../../../../assets/img/vs-code-landing.png)

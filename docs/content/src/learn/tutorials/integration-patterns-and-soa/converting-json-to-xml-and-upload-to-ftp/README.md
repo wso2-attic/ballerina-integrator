@@ -14,8 +14,6 @@ Ballerina has first-class support for HTTP and implementing an HTTP service is s
 ## Implementation
 The Ballerina project is created for the integration use case explained above. Please follow the steps given below. You can learn about the Ballerina project and module in this link.
 
-### Create a project
-
 <!-- INCLUDE_MD: ../../../../create-project.md -->
 
 The project structure should look like below.
