@@ -13,18 +13,19 @@ The following figure illustrates the publish-subscribe messaging use-case.
 ![messaging_with_kafka](../../../../assets/img/messaging_with_kafka.png "Messaging with Kafka")
 
 <!-- INCLUDE_MD: ../../../../tutorial-prerequisites.md -->
+* [Install Kafka server](https://kafka.apache.org/quickstart)
 
 <!-- INCLUDE_MD: ../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
-####1. Create a new Ballerina project
+#### 1. Create a new Ballerina project
 
 ```bash
 $ ballerina new messaging-with-kafka
 ```
 
-####2. Navigate to the messaging-with-kafka directory 
+#### 2. Navigate to the messaging-with-kafka directory 
 Add a new module named `product_management_system` to the project.
 
 ```bash
@@ -109,7 +110,7 @@ Here we created a new topic that consists of two partitions with a single replic
 * Now we shall build the module. Navigate to the messaging-with-kafka directory and execute the following command.
 
 ```bash
-$ ballerina build messaging-with-kafka
+$ ballerina build product_management_system
 ```
 
 This would create the executables.
