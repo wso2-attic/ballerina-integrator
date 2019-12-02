@@ -40,7 +40,21 @@ $ cd file-integration-using-ftp
 $ ballerina add file_integration_using_ftp
 ```
 
-The above package structure will be created for you. Create the `ftp_listener.bal` file inside the Ballerina module.
+The above package structure will be created for you. 
+
+Add project configuration file by creating `ballerina.conf` file under the root path of the project structure. <br/>
+This file should have the following configurations.
+```
+FTP_HOST=""
+FTP_LISTENER_PORT=21
+FTP_USERNAME=""
+FTP_PASSWORD=""
+FTP_FILE_NAME_PATTERN="(.*).txt"
+FTP_LISTENER_PATH=""
+FTP_POLLING_INTERVAL=
+```
+
+Create the `ftp_listener.bal` file inside the Ballerina module.
 
 ### Developing the FTP listener service
 
@@ -53,7 +67,7 @@ import wso2/ftp;
 
 Next, let's create an FTP Listener instance by defining the configuration in the `Ballerina.conf` file. The `FTP_HOST` 
 is the IP address of the FTP server, while the `FTP_USERNAME` and `FTP_PASSWORD` are credentials of a user that has permission 
-to access the FTP server. The `FTP_HOST` is the port used to connect with the server, of which the default value is `21`.
+to access the FTP server. The `FTP_LISTENER_PORT` is the port used to connect with the server, of which the default value is `21`.
 
 Then you can add the configurations for the type of files the listener should listen for. For instance, if listener 
 should be invoked for text files, the config for `FTP_FILE_NAME_PATTERN` should be set as `(.*).txt`. Next, add 
