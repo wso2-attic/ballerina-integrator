@@ -32,13 +32,11 @@ The following diagram illustrates all the required functionality of the Salesfor
    
 - Visit [Salesforce](https://www.salesforce.com) and create a Salesforce account.
 
-- Create a connected app and obtain the following credentials: 
-    - Base URL (Endpoint)
+- Create a connected app and obtain the following credentials by following [these steps](https://medium.com/@bpmmendis94/obtain-access-refresh-tokens-from-salesforce-rest-api-a324fe4ccd9b): 
     - Access Token
     - Client ID
     - Client Secret
     - Refresh Token
-    - Refresh Token URL
 
 - **Note**: When you are setting up the connected app, select the following scopes under **Selected OAuth Scopes**:
     - Access and manage your data (api)
@@ -78,14 +76,17 @@ working-with-salesforce-client
 
 - Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
 This file should have following configurations. Add the obtained Salesforce configurations to the file.
+
 ```
-EP_URL=""
+EP_URL="https://<INSTANCE>.salesforce.com"
 ACCESS_TOKEN=""
 CLIENT_ID=""
 CLIENT_SECRET=""
 REFRESH_TOKEN=""
-REFRESH_URL=""
+REFRESH_URL="https://login.salesforce.com/services/oauth2/token"
 ```
+
+Replace `<INSTANCE>`in `EP_URL` with the Salesforce instance name. 
 
 #### Developing the service
 
