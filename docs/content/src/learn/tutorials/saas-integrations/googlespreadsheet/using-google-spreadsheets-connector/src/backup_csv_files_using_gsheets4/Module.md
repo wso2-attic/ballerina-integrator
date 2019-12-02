@@ -1,4 +1,4 @@
-Template for Backup CSV Files using GoogleSpreadsheet
+Template for Backup CSV using GoogleSpreadsheet
 
 # Google Spreadsheet
 
