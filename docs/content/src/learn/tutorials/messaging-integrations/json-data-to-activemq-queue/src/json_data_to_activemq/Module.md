@@ -2,7 +2,7 @@ Template for Sending JSON data to ActiveMQ queue
 
 # Sending JSON data to ActiveMQ queue
 
-This is a template for the [Sending JSON Data to an ActiveMQ Queue tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/messaging-integrations/json-data-to-activemq-queue/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
+This is a template for the [Sending JSON Data to an ActiveMQ Queue tutorial](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/tutorials/messaging-integrations/json-data-to-activemq-queue/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
 ## Using the Template
 

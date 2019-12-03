@@ -2,7 +2,7 @@ Template for Messaging with Kafka
 
 # Messaging with Kakfa
 
-This is a template for the [Messaging with Kafka Tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/messaging-integrations/messaging-with-kafka/1/).
+This is a template for the [Messaging with Kafka Tutorial](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/tutorials/messaging-integrations/messaging-with-kafka/1/).
 Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
 ## Using the Template

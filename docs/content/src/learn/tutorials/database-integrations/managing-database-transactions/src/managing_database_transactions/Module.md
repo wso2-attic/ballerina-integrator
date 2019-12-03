@@ -2,7 +2,7 @@ Template for Database Transactions using Ballerina
 
 # Database Transactions using Ballerina 
 
-This is a template for [Managing Database Transactions tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/database-integrations/managing-database-transactions/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
+This is a template for [Managing Database Transactions tutorial](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/tutorials/database-integrations/managing-database-transactions/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
 
 ## Using the Template

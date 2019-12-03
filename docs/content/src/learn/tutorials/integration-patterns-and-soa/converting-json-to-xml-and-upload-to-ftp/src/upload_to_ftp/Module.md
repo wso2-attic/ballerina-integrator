@@ -2,7 +2,7 @@ Template to convert JSON to XML and upload to FTP
 
 # REST to SOAP 
 
-This is a template for the [JSON to XML and upload to FTP tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
+This is a template for the [JSON to XML and upload to FTP tutorial](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
 
 ## Using the Template

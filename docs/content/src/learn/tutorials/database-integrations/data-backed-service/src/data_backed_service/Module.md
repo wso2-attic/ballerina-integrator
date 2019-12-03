@@ -2,7 +2,7 @@ Template for Database-backed Service
 
 # Database-backed Service 
 
-This is a template for the [Data-backed Service tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/database-integrations/data-backed-service/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
+This is a template for the [Data-backed Service tutorial](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/tutorials/database-integrations/data-backed-service/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
 ## Using the Template
 
