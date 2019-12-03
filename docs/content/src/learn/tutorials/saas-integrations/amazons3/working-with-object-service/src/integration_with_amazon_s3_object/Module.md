@@ -2,7 +2,7 @@ Template for Amazon S3 Object Service
 
 # Working with Amazon S3 Object Service 
 
-This is a template for [Working with Amazon S3 Object Service tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/saas-integrations/amazons3/working-with-object-service). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
+This is a template for [Working with Amazon S3 Object Service tutorial](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/tutorials/saas-integrations/amazons3/working-with-object-service/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
 
 ## Using the Template

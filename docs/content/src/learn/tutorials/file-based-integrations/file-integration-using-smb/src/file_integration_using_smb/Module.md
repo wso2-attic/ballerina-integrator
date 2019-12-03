@@ -2,7 +2,7 @@ Template for File Integration using SMB Connector
 
 # File Integration using the SMB Connector
 
-This is a template for the [File Integration Using Samba tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/file-based-integrations/file-integration-using-smb/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
+This is a template for the [File Integration Using Samba tutorial](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/tutorials/file-based-integrations/file-integration-using-smb/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
 ## Using the Template
 

@@ -2,7 +2,7 @@ Template for Integrating Salesforce with FTP
 
 # Integrating Salesforce with FTP 
 
-This is a template for the [Import Contacts into Salesforce Using FTP tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
+This is a template for the [Import Contacts into Salesforce Using FTP tutorial](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1/). Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario. 
 
 ## Using the Template
 
