@@ -4,6 +4,8 @@ Ballerina is an open-source programming language that empowers developers to int
 support of connectors. In this guide, we are mainly focusing on how to use Google Spreadsheets Connector to backup CSV (Comma Separated Value) files in Google Spreadsheets. 
 You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
 
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
+
 ## What you'll build
 The following diagram illustrates the scenario:
 
@@ -11,26 +13,14 @@ The following diagram illustrates the scenario:
 
 Let's consider a scenario where a CSV file is uploaded to a newly created Google Spreadsheet. A new sheet is created in the spreadsheet with the current date as the sheet name. CSV content is added to the new sheet. The sheet is then read and the content is displayed on the console to the user.
 
-<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
-
 - You need to obtain credentials to access Google Spreadsheet in order to configure a Google Spreadsheet client. Instructions on how to obtain the credentials for the Google Spreadsheet can be found [here](https://docs.wso2.com/display/IntegrationCloud/Get+Credentials+for+Google+Spreadsheet).
-
-<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 The Ballerina project is created for the integration use case as explained above. Please follow the steps given below. You can learn about the Ballerina project and module in this [link](https://github.com/wso2-ballerina/module-googlespreadsheet). 
 
-#### 1. Create a new project.
-```bash
-  $ ballerina new using-google-spreadsheets-connector
-```
+<!-- INCLUDE_MD: ../../../../../create-project.md -->
 
-#### 2. Create a module.
-```bash
-  $ ballerina add backup_csv_files_using_gsheets4
-```
-
-To implement the scenario in this guide, you can use the following package structure:
+The project structure should look like below.
 
 ```shell
   using-google-spreadsheets-connector
@@ -41,7 +31,7 @@ To implement the scenario in this guide, you can use the following package struc
           └── uploader.bal
 ```
 
-#### 3. Add the project configuration file
+#### Add the project configuration file
 Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
 The configuration file must have the following configurations
 
@@ -53,7 +43,7 @@ REFRESH_URL="<Refresh URL>"
 REFRESH_TOKEN="<Refresh Token>"
 ``` 
 
-#### 4. Write the integration.
+#### Write the integration.
 Take a look at the code samples below to understand how to implement the integration scenario.
 
 #### uploader.bal
@@ -77,3 +67,7 @@ Now run the `backup_csv_files_using_gsheets4.jar` file created in the above step
 ```
 
 This starts the service that reads the data from the `people.csv` files stored in the resources folder. You will notice that the contents of the file have been set in the Google Spreadsheet and the data will also display on the console.
+
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
+
+<!-- INCLUDE_MD: ../../../../../next-steps.md -->

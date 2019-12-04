@@ -1,4 +1,4 @@
-# Working with Salesforce client
+# Working with Salesforce Client
 
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
 support of connectors. In this guide, we are mainly focusing on using Ballerina Salesforce client.
@@ -10,6 +10,8 @@ OAuth 2.0 authentication.
 
 You can find other integration modules from [wso2-ballerina](https://github.com/wso2-ballerina) GitHub organization.
 
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
+
 ## What you'll build
 
 This example explains how to use the Salesforce client to connect with the Salesforce instance and perform the 
@@ -17,10 +19,6 @@ following operations:
 
 * Create Account with Contacts & Opportunities
 * Execute a SOQL query
-
-<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
-
-<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ### Implementation
 
@@ -47,20 +45,9 @@ The following diagram illustrates all the required functionality of the Salesfor
 obtaining OAuth2 credentials, see the 
 [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
 
-#### Creating the module structure
-- Create a new project.
+<!-- INCLUDE_MD: ../../../../../create-project.md -->
 
-```bash
-$ ballerina new working-with-salesforce-client
-```
-
-- Create a module.
-
-```bash
-$ ballerina add working_with_salesforce_client
-```
-
-- The project structure is created as indicated below.
+The project structure should look like below.
 
 ```
 working-with-salesforce-client
@@ -219,3 +206,7 @@ You will see the following response.
     ]
 }
 ```
+
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
+
+<!-- INCLUDE_MD: ../../../../../next-steps.md -->

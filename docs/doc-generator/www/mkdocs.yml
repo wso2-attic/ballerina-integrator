@@ -53,13 +53,13 @@ nav:
       - 'Integration Use Cases': 'learn/use-cases.md'
       - Tutorials:
         - Saas Integration:
-          - 'Using the Gmail Connector': 'learn/tutorials/saas-integrations/gmail/using-the-gmail-connector/1.md'
-          - 'Notifying fire alarm using SQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/1.md'
-          - 'Working with Amazon S3 Bucket Service': 'learn/tutorials/saas-integrations/amazons3/working-with-bucket-service/1.md'
-          - 'Working with Amazon S3 Object Service': 'learn/tutorials/saas-integrations/amazons3/working-with-object-service/1.md'
-          - 'Working With Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/1.md'
-          - 'Import Contacts into Salesforce Using FTP': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1.md'
-          - 'Salesforce to MySQL Database': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1.md'
+          - 'Working with Gmail Connector': 'learn/tutorials/saas-integrations/gmail/using-the-gmail-connector/1.md'
+          - 'Alert Notification Using AmazonSQS': 'learn/tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/1.md'
+          - 'Working with Amazon S3 Bucket': 'learn/tutorials/saas-integrations/amazons3/working-with-bucket-service/1.md'
+          - 'Working with Amazon S3 Object': 'learn/tutorials/saas-integrations/amazons3/working-with-object-service/1.md'
+          - 'Working with Salesforce Client': 'learn/tutorials/saas-integrations/sfdc46/working-with-salesforce-client/1.md'
+          - 'Salesforce & FTP Integration': 'learn/tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1.md'
+          - 'Salesforce to MySQL Integration': 'learn/tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1.md'
           - 'Backup CSV files using Google Spreadsheets': 'learn/tutorials/saas-integrations/googlespreadsheet/using-google-spreadsheets-connector/1.md'
         - Database Integration:
           - 'Data-backed Service' : 'learn/tutorials/database-integrations/data-backed-service/1.md'
@@ -80,7 +80,7 @@ nav:
           - 'Service Composition': 'learn/tutorials/integration-patterns-and-soa/service-composition/1.md'
           - 'Backend for Frontend' : 'learn/tutorials/integration-patterns-and-soa/backend-for-frontend/1.md'
           - 'REST to SOAP' : 'learn/tutorials/integration-patterns-and-soa/rest-to-soap-service/1.md'
-          - 'JSON to XML and Upload to FTP' : 'learn/tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/1.md'
+          - 'JSON to XML Transformation and Upload to FTP' : 'learn/tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/1.md'
       - 'Examples': 'learn/examples.md'
     - Develop:
       - 'Developing Integration Solutions' : 'develop/developing-integration-solution.md'

@@ -1,8 +1,10 @@
-# Notifying a Fire Alarm using Amazon SQS
+# Alert Notification Using AmazonSQS
 
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
 support of connectors. In this guide, we are mainly focusing on how to use Amazon SQS Connector to notify alerts. 
 You can find other integration modules from the [wso2-ballerina](https://github.com/wso2-ballerina) GitHub repository.
+
+<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
 ## What you'll build
 
@@ -16,27 +18,13 @@ Here, the fire alarm is sending fire alerts periodically from a Ballerina worker
 
 As there can be multiple alert messages available in the queue, the listener is configured to consume more than one message at a time.
 
-<!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
-
 - [Amazon SQS Account](https://aws.amazon.com/sqs/)
-
-<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
 
 ## Implementation
 
-#### 1. Create a new project.
+<!-- INCLUDE_MD: ../../../../../create-project.md -->
 
-    ```bash
-    $ ballerina new notifying-fire-alarm-using-sqs
-    ```
-
-#### 2. Create a module.
-
-    ```bash
-    $ ballerina add alert_notification_using_amazonsqs
-    ```
-
-To implement the scenario in this guide, you can use the following package structure:
+The project structure should look like below.
 
 ```
   notifying-fire-alarm-using-sqs
@@ -52,7 +40,7 @@ To implement the scenario in this guide, you can use the following package struc
 
 Now that you have created the project structure, the next step is to develop the integration scenario.
 
-#### 3. Set up credentials for Amazon SQS
+#### Set up credentials for Amazon SQS
 
 Create a new access key, which includes a new secret access key. - To create a new secret access key for your root account, use the [security credentials](https://console.aws.amazon.com/iam/home?#security_credential) page. Expand the Access Keys section, and then click Create New Root Key.
 
@@ -60,7 +48,7 @@ To create a new secret access key for an IAM user, open the [IAM console](https:
 
 Download the newly created credentials, when prompted to do so in the key creation wizard.
 
-#### 4. Add project configurations file
+#### Add project configurations file
 
 Add the project configuration file by creating a ballerina.conf file under the root path of the project structure. This file should have following configurations. Add the obtained Amazon SQS configurations to the file.
 
@@ -75,7 +63,7 @@ When a queue is created you can find the `ACCOUNT_NUMBER` under **Details** tab 
 
 ![SQS Console](../../../../../assets/img/sqs-console.png)
 
-#### 5. Write the integration.
+#### Write the integration.
 
 Take a look at the code samples below to understand how to implement the integration scenario.
 
@@ -114,3 +102,7 @@ This creates the executables. Now run the `guide.jar` file created in the above 
 ```
 
 You see the SQS queue creation, sending fire alerts to the queue, consuming process of queues and subsequent deletion process on console.
+
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
+
+<!-- INCLUDE_MD: ../../../../../next-steps.md -->
