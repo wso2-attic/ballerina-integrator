@@ -4,7 +4,7 @@ Once you have installed the VS Code extension, press `Command + Shift + P` in Ma
 
 ![alt text](../../../../assets/img/vs-code-landing.png)
 
-Let's create a project using the Ballerina Integrator dashboard. To do this, click **Create** under the `JSON to XML Transformation and upload to FTP` template. 
+Let's create a project using the Ballerina Integrator dashboard. To do this, click **Create** under the `<<<TITLE>>>` template. 
 
 A new window will appear at the top of your screen where you can specify the name of your module.
 

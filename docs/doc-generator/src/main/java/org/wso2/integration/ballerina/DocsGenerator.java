@@ -25,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wso2.integration.ballerina.constants.DynamicTagConstants;
 import org.wso2.integration.ballerina.utils.ServiceException;
 
 import java.io.BufferedReader;
@@ -162,6 +163,7 @@ public class DocsGenerator {
 
             String line;
             int lineNumber = 0;
+            String title = "";
 
             while ((line = reader.readLine()) != null) {
                 lineNumber++;
@@ -174,10 +176,11 @@ public class DocsGenerator {
                 } else if (lineNumber == 1 && line.contains(HASH)) {
                     // Adding front matter to posts.
                     readMeFileContent = readMeFileContent.replace(line, getPostFrontMatter(line));
+                    title = line.replace(HASH, EMPTY_STRING).trim();
                 } else if (isImageAttachmentLine(line)) {
                     readMeFileContent = readMeFileContent.replace(line, getWebsiteImageAttachment(line));
                 } else if (line.contains(INCLUDE_MD_TAG)) {
-                    readMeFileContent = readMeFileContent.replace(line, getIncludeMarkdownFile(file, line));
+                    readMeFileContent = readMeFileContent.replace(line, getIncludeMarkdownFile(file, line, title));
                 }
             }
             IOUtils.write(readMeFileContent, new FileOutputStream(file), String.valueOf(StandardCharsets.UTF_8));
@@ -456,7 +459,7 @@ public class DocsGenerator {
      * @param line         line having INCLUDE_MD_TAG
      * @return content of the markdown file should be included
      */
-    private static String getIncludeMarkdownFile(File markdownFile, String line) {
+    private static String getIncludeMarkdownFile(File markdownFile, String line, String title) {
         String readMeParentPath = markdownFile.getParent();
         String fullPathOfIncludeMdFile = readMeParentPath + getIncludeFilePathFromIncludeCodeLine(line, INCLUDE_MD_TAG);
         File includeMdFile = new File(fullPathOfIncludeMdFile);
@@ -465,6 +468,8 @@ public class DocsGenerator {
         if (fullPathOfIncludeMdFile.contains("tutorial-get-the-code.md")) {
             String markdownWithZipName = setZipFileName(includeMdContent, readMeParentPath);
             return setModuleName(setGetTheCodeMdPaths(fullPathOfIncludeMdFile, markdownWithZipName), readMeParentPath);
+        } else if (fullPathOfIncludeMdFile.contains("create-project.md")){
+            return setTitle(includeMdContent, title);
         } else {
             return includeMdContent;
         }
@@ -479,7 +484,7 @@ public class DocsGenerator {
      */
     private static String setZipFileName(String includeMdContent, String readMeParentPath) {
         String zipName = readMeParentPath.substring(readMeParentPath.lastIndexOf('/') + 1).trim();
-        return includeMdContent.replace("<<<MD_FILE_NAME>>>", zipName);
+        return includeMdContent.replace(DynamicTagConstants.TAG_MD_FILE, zipName);
     }
 
     /**
@@ -520,8 +525,19 @@ public class DocsGenerator {
         if (moduleName.isEmpty()) {
             throw new ServiceException("Module name not found. projectPath: " + readMeParentPath);
         } else {
-            return includeMdContent.replace("<<<MODULE_NAME>>>", moduleName);
+            return includeMdContent.replace(DynamicTagConstants.TAG_MODULE, moduleName);
         }
+    }
+
+    /**
+     * Set Title by replacing `<<<TITLE>>>` with the title of the document
+     *
+     * @param includeMdContent include markdown file content
+     * @param title title of the document
+     * @return include markdown file content after replacing `<<<TITLE>>>`
+     */
+    private static String setTitle(String includeMdContent, String title) {
+        return includeMdContent.replace(DynamicTagConstants.TAG_TITLE, title);
     }
 
     /**
