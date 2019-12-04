@@ -42,6 +42,9 @@ The following diagram illustrates all the required functionality of the Salesfor
     - Access and manage your data (api)
     - Perform requests on your behalf at any time (refresh_token, offline_access)
     - Provide access to your data via the Web (web)
+    
+- **Note**: REST API must be enabled for the user. Instructions on enabling REST API for the user are provided in 
+[this blog post](https://medium.com/@bpmmendis94/obtain-access-refresh-tokens-from-salesforce-rest-api-a324fe4ccd9b)
 
 - Provide the client ID and client secret to obtain the refresh token and access token. For more information on 
 obtaining OAuth2 credentials, see the 
