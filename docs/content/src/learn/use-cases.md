@@ -8,25 +8,25 @@ SaaS offering is a common software distribution model followed by many vendors t
 
 <table>
   <tr>
-    <td><b><a href="../tutorials/saas-integrations/gmail/using-the-gmail-connector/1/">Using the Gmail connector</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/gmail/using-the-gmail-connector/1/">Working with Gmail Connector</a></b></br>
     Use the Gmail connector to interact with the Gmail REST API</td>
-    <td><b><a href="../tutorials/saas-integrations/amazons3/working-with-bucket-service/1/">Working with Amazon S3 Bucket Service</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/amazons3/working-with-bucket-service/1/">Working with Amazon S3 Bucket</a></b></br>
     Use Amazon S3 connector to interact with Amazon S3 bucket service</td>
-    <td><b><a href="../tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/1/">Notifying Fire Alarm Using SQS</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/amazonsqs/notifying-fire-alarm-using-sqs/1/">Alert Notification Using AmazonSQS</a></b></br>
     Use Amazon SQS Connector to notify alerts</td>
   </tr>
   
   <tr>
-    <td><b><a href="../tutorials/saas-integrations/amazons3/working-with-object-service/1/">Working with Amazon S3 Object Service</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/amazons3/working-with-object-service/1/">Working with Amazon S3 Object</a></b></br>
     Use Amazon S3 connector to interact with Amazon S3 object service</td>
     <td><b><a href="../tutorials/saas-integrations/sfdc46/working-with-salesforce-client/1/">Working with Salesforce Client</a></b></br>
     Use Salesforce client to performa a variety of CRUD operations</td>
-    <td><b><a href="../tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1/">Salesforce to MySQL Database</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/sfdc46/salesforce-to-mysql-db/1/">Salesforce to MySQL Integration</a></b></br>
     Use batch processing to synchronize Salesforce data with a MySQL database</td>
   </tr>
   
   <tr>
-    <td><b><a href="../tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1/">Import Contacts into Salesforce Using FTP</a></b></br>
+    <td><b><a href="../tutorials/saas-integrations/sfdc46/import-contacts-into-salesforce-using-ftp/1/">Salesforce & FTP Integration</a></b></br>
     Import contacts from a CSV file into Salesforce using FTP</td>
     <!--<td><b><a href="../tutorials/saas-integrations/gmail/working-with-googlespreadsheet-service/1/">Working with Google Spreadsheet Service</a></b></br>
     Working with Google Spreadsheet Service</td> -->
@@ -106,7 +106,7 @@ Service-oriented architecture (SOA) patterns provide structure and clarity, enab
     Implement a service composition</td>
     <td><b><a href="../tutorials/integration-patterns-and-soa/service-orchestration/1/">Service Orchestration</a></b></br>
     A service invokes two other services to do some functions</td>
-    <td><b><a href="../tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/1/">Converting JSON to XML and Upload to FTP</a></b></br>
+    <td><b><a href="../tutorials/integration-patterns-and-soa/converting-json-to-xml-and-upload-to-ftp/1/">JSON to XML Transformation and Upload to FTP</a></b></br>
     Convert a JSON message to XML and upload it to FTP</td>
   </tr>
 

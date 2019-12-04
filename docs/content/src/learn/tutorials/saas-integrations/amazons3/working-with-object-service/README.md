@@ -1,4 +1,4 @@
-# Amazon S3 Object Service
+# Working with Amazon S3 Object 
 
 Ballerina is an open-source programming language that empowers developers to integrate their system easily with the 
 support of connectors. In this guide, we are mainly focusing on connecting to the Amazon Simple Storage Service API to create, store, download, and use data with other services.  
@@ -26,27 +26,15 @@ This application connects with the Amazon S3 API and creates a new object in an 
 
 <!-- INCLUDE_MD: ../../../../../tutorial-prerequisites.md -->
 
-<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
-
 ## Implementation
 
 A Ballerina project is created for the integration use case explained above. Please follow the steps given 
 below to create the project and modules. You can learn about the Ballerina project and modules in this 
 [guide](https://ei.docs.wso2.com/en/latest/ballerina-integrator/develop/using-modules/#creating-a-project).
 
-#### 1. Create a new project.
+<!-- INCLUDE_MD: ../../../../../create-project.md -->
 
-```bash
-$ ballerina new working-with-object-service
-```
-
-#### 2. Create a module.
-
-```bash
-$ ballerina add integration_with_amazon_s3_object
-```
-
-The project structure is created as indicated below.
+The project structure should look like below.
 
 ```
 working-with-object-service
@@ -60,7 +48,7 @@ working-with-object-service
                 └── resources
 ```
 
-#### 3. Set up credentials for accessing Amazon S3
+#### Set up credentials for accessing Amazon S3
 
 - Visit [Amazon S3](https://aws.amazon.com/s3/) and create an Amazon S3 account.
 
@@ -71,7 +59,7 @@ working-with-object-service
    
 - Download the newly created credentials, when prompted to do so in the key creation wizard.
 
-#### 4. Add project configurations file
+#### Add project configurations file
 
 Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
 This file should have following configurations. Add the obtained Amazon S3 configurations to the file.
@@ -84,7 +72,7 @@ SECRET_ACCESS_KEY="<Amazon S3 secret key>"
 REGION="<Amazon S3 region>"
 ```
 
-#### 5. Write the integration
+#### Write the integration
 Open the project with VS Code. The integration implementation is written in the `src/integration_with_amazon_s3_object/main.bal` file.
 
 <!-- INCLUDE_CODE: src/integration_with_amazon_s3_object/main.bal -->
@@ -203,3 +191,7 @@ You see the response as follows:
 ```
 firstObject.json deleted from Amazon S3 bucket : <BUCKET_NAME>.
 ```
+
+<!-- INCLUDE_MD: ../../../../../tutorial-get-the-code.md -->
+
+<!-- INCLUDE_MD: ../../../../../next-steps.md -->
