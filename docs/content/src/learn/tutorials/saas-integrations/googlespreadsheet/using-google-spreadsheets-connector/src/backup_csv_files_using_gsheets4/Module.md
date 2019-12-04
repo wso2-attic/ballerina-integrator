@@ -2,7 +2,7 @@ Template for Backup CSV using GoogleSpreadsheet
 
 # Google Spreadsheet
 
-This is a template for the [Google Spreadsheet Tutorial](https://ei.docs.wso2.com/en/7.0.0/ballerina-integrator/learn/tutorials/saas-integrations/googlespreadsheet/1/).
+This is a template for the [Google Spreadsheet Tutorial](https://ei.docs.wso2.com/en/latest/ballerina-integrator/learn/tutorials/saas-integrations/googlespreadsheet/using-google-spreadsheets-connector/1/).
 Please refer to it for more details on what you are going to build here. This template provides a starting point for your scenario.
 
 ## Using the template
