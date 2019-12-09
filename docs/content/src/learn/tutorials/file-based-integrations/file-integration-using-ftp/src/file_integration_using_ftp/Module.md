@@ -17,10 +17,11 @@ Create a new project.
 $ ballerina new file-integration-using-ftp
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/file_integration_using_ftp file_integration_using_ftp
+$ ballerina add file_integration_using_ftp -t wso2/file_integration_using_ftp
 ```
 
 This automatically creates file_integration_using_ftp service for you inside the `src` directory of your project.  
@@ -52,7 +53,8 @@ Let’s build the module. Navigate to the project root directory and execute the
 $ ballerina build file_integration_using_ftp
 ```
 
-This creates the executables. Now run the `file_integration_using_ftp.jar` file created in the above step. Path to the ballerina.conf file can be provided using the --b7a.config.file option.
+This creates the executables. Now run the `file_integration_using_ftp.jar` file created in the above step. Path to the 
+ballerina.conf file can be provided using the --b7a.config.file option.
 
 ```bash
 $ java -jar target/bin/file_integration_using_ftp.jar --b7a.config.file=path/to/ballerina.conf/file

@@ -18,10 +18,11 @@ Create a new project.
 $ ballerina new service-composition
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/service_composition service_composition
+$ ballerina add service_composition -t wso2/service_composition
 ```
 
 This automatically creates service_composition service for you inside the `src` directory of your project.  

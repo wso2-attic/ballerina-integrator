@@ -18,10 +18,11 @@ Create a new project.
 $ ballerina new json-data-to-activemq-queue
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/json_data_to_activemq json_data_to_activemq
+$ ballerina add json_data_to_activemq -t wso2/json_data_to_activemq
 ```
 
 This automatically creates json_data_to_activemq service for you inside the `src` directory of your project.  
@@ -30,7 +31,8 @@ This automatically creates json_data_to_activemq service for you inside the `src
 
 ### Before you begin
 
-Before building the module, we have to copy the necessary ActiveMQ dependencies into the project. There are three jar files listed down below. These .jar files can be found in the `lib` folder of the ActiveMQ distribution.
+Before building the module, we have to copy the necessary ActiveMQ dependencies into the project. There are three jar 
+files listed down below. These .jar files can be found in the `lib` folder of the ActiveMQ distribution.
 
 * activemq-client-5.15.5.jar
 * geronimo-j2ee-management_1.1_spec-1.0.1.jar
@@ -40,7 +42,8 @@ This example uses ActiveMQ version 5.15.5. You can select the relevant jar files
 
 Let's create a folder called `lib` under project root path. Then copy above three jar files into the lib folder.
 
-Next, open the Ballerina.toml file and add the following below `[dependencies]` section. At the build time, ActiveMQ jar files will add to the executable jar.
+Next, open the Ballerina.toml file and add the following below `[dependencies]` section. At the build time, ActiveMQ jar 
+files will add to the executable jar.
 
 ```
 [platform]

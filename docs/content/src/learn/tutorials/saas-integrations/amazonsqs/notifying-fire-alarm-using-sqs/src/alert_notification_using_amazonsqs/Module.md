@@ -18,7 +18,8 @@ Create a new project.
 $ ballerina new notifying-fire-alarm-using-sqs
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
 $ ballerina add -t wso2/alert_notification_using_amazonsqs alert_notification_using_amazonsqs
@@ -51,4 +52,5 @@ This builds a JAR file (.jar) in the target folder. You can run this by using th
 $ java -jar target/bin/alert_notification_using_amazonsqs.jar
 ```
 
-You see the SQS queue creation, sending fire alerts to the queue, consuming process of queues and subsequent deletion process on console.
+You see the SQS queue creation, sending fire alerts to the queue, consuming process of queues and subsequent deletion 
+process on console.

@@ -18,10 +18,11 @@ Create a new project.
 $ ballerina new import-contacts-into-salesforce-using-ftp
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/salesforce_ftp_integration salesforce_ftp_integration
+$ ballerina add salesforce_ftp_integration -t wso2/salesforce_ftp_integration
 ```
 
 This automatically creates salesforce_ftp_integration for you inside the `src` directory of your project.  

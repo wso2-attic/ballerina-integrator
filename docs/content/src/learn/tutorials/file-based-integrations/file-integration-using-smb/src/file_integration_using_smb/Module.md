@@ -18,10 +18,11 @@ Create a new project.
 $ ballerina new file-integration-using-smb
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/file_integration_using_smb file_integration_using_smb
+$ ballerina add file_integration_using_smb -t wso2/file_integration_using_smb
 ```
 
 This automatically creates file_integration_using_smb service for you inside the `src` directory of your project.  

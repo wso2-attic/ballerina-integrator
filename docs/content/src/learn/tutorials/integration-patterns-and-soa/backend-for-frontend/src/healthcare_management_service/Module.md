@@ -18,10 +18,11 @@ Create a new project.
 $ ballerina new backend-for-frontend
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/healthcare_management_service healthcare_management_service
+$ ballerina add healthcare_management_service -t wso2/healthcare_management_service
 ```
 
 This automatically creates healthcare_management_service for you inside the `src` directory of your project.  
