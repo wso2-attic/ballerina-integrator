@@ -106,6 +106,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                 const addListCommand = 'ballerina add --list';
                 const pullCommand = 'ballerina pull wso2/' + templateSelected;
                 let pull = false;
+                let projectFolder = null;
                 // Performs a Ballerina add list command to check if the required module template is available,
                 // else pull variable is set to true.
                 await new Promise((resolve, reject) => {
@@ -143,6 +144,7 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                         childProcess.exec(newCommand, newProjectCommand(reject, projectUri, resolve, currentPanel));
                                     });
                                     uri = appendPath(projectUri.fsPath, projectName).fsPath;
+                                    projectFolder = appendPath(projectUri.fsPath, projectName);
                                 }
                             }
                         // If the module is to be created inside an existing project.
@@ -184,13 +186,13 @@ export async function createTemplateProject(currentPanel: vscode.WebviewPanel, c
                                                     { placeHolder: "Open project in a new window or in existing window"});
                                                 if (newWindowOption != undefined) {
                                                     if (newWindowOption == "New Window") {
-                                                        vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.parse("file://" + uri), true);
+                                                        vscode.commands.executeCommand('vscode.openFolder', projectFolder, true);
                                                     } else if (newWindowOption == "Existing Window"){
-                                                        vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.parse("file://" + uri));
+                                                        vscode.commands.executeCommand('vscode.openFolder', projectFolder);
                                                     }
                                                 }
                                             } else {
-                                                vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.parse("file://" + uri), true);
+                                                vscode.commands.executeCommand('vscode.openFolder', projectFolder, true);
                                             }
                                             window.showInformationMessage(stdout);
                                         } else if (stdout.search(message) !== -1) {
