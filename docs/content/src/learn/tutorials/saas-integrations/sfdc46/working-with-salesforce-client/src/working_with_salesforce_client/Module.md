@@ -18,10 +18,11 @@ Create a new project.
 $ ballerina new working-with-salesforce-client
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/working_with_salesforce_client working_with_salesforce_client
+$ ballerina add working_with_salesforce_client -t wso2/working_with_salesforce_client
 ```
 
 This automatically creates a working_with_salesforce_client for you inside the `src` directory of your project.  

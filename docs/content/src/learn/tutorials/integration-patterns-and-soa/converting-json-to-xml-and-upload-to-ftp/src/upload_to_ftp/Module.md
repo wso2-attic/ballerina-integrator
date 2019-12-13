@@ -19,10 +19,11 @@ Create a new project.
 $ ballerina new converting-json-to-xml-and-upload-to-ftp
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/upload_to_ftp upload_to_ftp
+$ ballerina add upload_to_ftp -t wso2/upload_to_ftp
 ```
 
 This automatically creates upload_to_ftp service for you inside the `src` directory of your project.  

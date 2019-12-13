@@ -20,11 +20,12 @@ Create a new project.
 $ ballerina new reliable-delivery
 ```
 
-Now navigate into the above module directory you created and run the following commands to apply the predefined templates you pulled earlier.
+Now navigate into the above project directory you created and run the following commands to apply the predefined templates 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/message_store message_store
-$ ballerina add -t wso2/message_processor message_processor
+$ ballerina add message_store -t wso2/message_store
+$ ballerina add message_processor -t wso2/message_processor
 ```
 
 This automatically creates reliable delivery service for you inside the `src` directory of your project.  

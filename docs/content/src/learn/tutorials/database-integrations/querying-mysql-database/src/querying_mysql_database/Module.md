@@ -18,10 +18,11 @@ Create a new project.
 $ ballerina new querying-mysql-database
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/querying_mysql_database querying_mysql_database
+$ ballerina add querying_mysql_database -t wso2/querying_mysql_database
 ```
 
 This automatically creates querying_mysql_database service for you inside the `src` directory of your project.  

@@ -19,10 +19,11 @@ Create a new project
 $ ballerina new using-google-spreadsheets-connector
 ```
 
-Now navigate into the above module directory you create and run the following command to apply the predefined template you pulled earlier
+Now navigate into the above project directory you create and run the following command to apply the predefined template 
+you pulled earlier
 
 ```bash
-$ ballerina add -t wso2/backup_csv_files_using_gsheets4
+$ ballerina add backup_csv_files_using_gsheets4 -t wso2/backup_csv_files_using_gsheets4
 ```
 
 This automatically creates backup_csv_files_using_gsheets4 service for you inside the 'src' directory of your projects

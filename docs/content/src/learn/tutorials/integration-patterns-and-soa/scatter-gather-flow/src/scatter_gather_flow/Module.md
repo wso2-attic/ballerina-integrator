@@ -18,10 +18,11 @@ Create a new project.
 $ ballerina new scatter-gather-flow
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/scatter_gather_flow scatter_gather_flow
+$ ballerina add scatter_gather_flow -t wso2/scatter_gather_flow
 ```
 
 This automatically creates scatter_gather_flow service for you inside the `src` directory of your project.  
@@ -30,7 +31,8 @@ This automatically creates scatter_gather_flow service for you inside the `src` 
 
 ### Before you begin
 
-Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. This file should have following configurations. Add the FTP server configurations to the file.
+Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure. 
+This file should have following configurations. Add the FTP server configurations to the file.
 
 ```
 FTP_HOST = "<IP address of the FTP server>"
@@ -39,7 +41,8 @@ FTP_USER = "<Username of the FTP server >"
 FTP_PASSWORD = "<Password of the FTP server>"
 ```
 
-Before writing the service, let's create two CSV files `employees1.csv` and `employees2.csv` with the following content and upload to an FTP server.
+Before writing the service, let's create two CSV files `employees1.csv` and `employees2.csv` with the following content 
+and upload to an FTP server.
 
 ```csv
 empId,firstName,lastName,joinedDate
@@ -66,7 +69,8 @@ Let’s build the module. Navigate to the project root directory and execute the
 $ ballerina build scatter_gather_flow
 ```
 
-The build command would create an executable .jar file. Now run the .jar file created in the above step using the following command. Path to the ballerina.conf file can be provided using the --b7a.config.file option.
+The build command would create an executable .jar file. Now run the .jar file created in the above step using the 
+following command. Path to the ballerina.conf file can be provided using the --b7a.config.file option.
 ```
 $ java -jar target/bin/scatter_gather_flow.jar --b7a.config.file=path/to/ballerina.conf/file
 ```

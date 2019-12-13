@@ -19,10 +19,11 @@ Create a new project
 $ ballerina new messaging_with_kafka
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier
 
 ```bash
-$ ballerina add -t wso2/product_management_system product_management_system
+$ ballerina add product_management_system -t wso2/product_management_system
 ```
 
 This automatically creates messaging_with_kafka service for you inside the 'src' directory of you project.

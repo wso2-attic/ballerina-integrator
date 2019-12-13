@@ -19,10 +19,11 @@ Create a new project.
 $ ballerina new managing_database_transactions
 ```
 
-Now navigate into the above module directory you created and run the following command to apply the predefined template you pulled earlier.
+Now navigate into the above project directory you created and run the following command to apply the predefined template 
+you pulled earlier.
 
 ```bash
-$ ballerina add -t wso2/managing_database_transactions managing_database_transactions
+$ ballerina add managing_database_transactions -t wso2/managing_database_transactions
 ```
 
 This automatically creates managing_database_transactions service for you inside the `src` directory of your project.  
