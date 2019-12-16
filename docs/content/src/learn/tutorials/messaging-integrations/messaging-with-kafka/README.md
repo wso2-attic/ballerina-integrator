@@ -81,7 +81,13 @@ The `fruit_consumer` and `vegetable_consumer` are Kafka topic subscribers which 
 * First, start the `ZooKeeper` instance with the default configurations by entering the following command in a terminal from `<KAFKA_HOME_DIRECTORY>`.
 
  ```bash
-$ bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+   $ bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+ ```
+ 
+ For Windows
+
+ ```
+   .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
  ```
 
 **Tip**: `-daemon` flag is optional, use this if you want to run kafka server as a daemon) 
@@ -92,6 +98,12 @@ $ bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
 
 ```bash
    $ bin/kafka-server-start.sh -daemon config/server.properties
+```
+
+For Windows
+
+```
+   .\bin\windows\kafka-server-start.bat .\config\server.properties
 ```
 
 **Tip**: `-daemon` flag is optional, use this if you want to run Kafka server as a daemon) 
@@ -105,31 +117,40 @@ $ bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
    localhost:2181 --replication-factor 1 --partitions 2
 ```
 
+For Windows
+
+```
+   .\bin\windows\kafka-topics.bat --create --topic product-price --zookeeper \
+   localhost:2181 --replication-factor 1 --partitions 2
+```
+
 Here we created a new topic that consists of two partitions with a single replication factor.
 
 * Now we shall build the module. Navigate to the messaging-with-kafka directory and execute the following command.
 
 ```bash
-$ ballerina build product_management_system
+   $ ballerina build product_management_system
 ```
 
 This would create the executables.
 
 * Run the `product_management_system.jar` created in the above step.
 
+```bash
+   $ java -jar target/bin/product_management_system.jar
+```
+
 * Invoke the `product_admin_service` by sending a valid POST request
 
 ```bash
-curl -v POST -d \
-   '{ "Product": "Apple","Type": "Fruit","Price": "100.00"}' \
-   "http://localhost:9090/product/updatePrice" -H "Content-Type:application/json"
+   $ curl -XPOST -H "Content-type: application/json" -d "{\"Product\":\"Apple\",\"Type\":\"Fruit\",\"Price\":\"100.00\"}" "http://localhost:9090/product/updatePrice"
 ```
 
 Based on the 'Type' specified in the request, the message is filtered into two partitions. One consumer is subscribed to one partition, which receives products of Type 'Vegetable' while the other receives products of Type 'Fruit'.
 
 The following message will be displayed on the terminal.
 
-```bash
+```
 ProductManagementService : Received payload
 ProductManagementService : Sending message to Partition 0
 ProductConsumerService1 : Product Received

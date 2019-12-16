@@ -26,40 +26,45 @@ kafka:ProducerConfig producerConfigs = {
     retryCount: 3
 };
 
-kafka:Producer kafkaProducer = new(producerConfigs);
+kafka:Producer kafkaProducer = new (producerConfigs);
 // CODE-SEGMENT-END: kafka_producer_config
 
 // HTTP Service Endpoint
-listener http:Listener httpListener = new(9090);
+listener http:Listener httpListener = new (9090);
 
-@http:ServiceConfig { basePath: "/product" }
+@http:ServiceConfig {basePath: "/product"}
 service productAdminService on httpListener {
 
-    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"], produces: ["application/json"] }
+    @http:ResourceConfig {methods: ["POST"], consumes: ["application/json"], produces: ["application/json"]}
     resource function updatePrice(http:Caller caller, http:Request request) returns error? {
         http:Response response = new;
 
-        json reqPayload = check request.getJsonPayload();
-        log:printInfo("ProductManagementService : Received Payload");
+        json | error reqPayload = request.getJsonPayload();
 
-        // Construct message to be published to the Kafka Topic
-        json productInfo = {
-            "Name" : reqPayload.Product.toString(),
-            "Price" : reqPayload.Price.toString()
-        };
+        if (reqPayload is json) {
+            log:printInfo("ProductManagementService : Received Payload");
 
-        // Serialize the message
-        byte[] kafkaMessage = productInfo.toJsonString().toBytes();
+            // Construct message to be published to the Kafka Topic
+            json productInfo = {
+                "Name": reqPayload.Product.toString(),
+                "Price": reqPayload.Price.toString()
+            };
 
-        if (reqPayload.Type.toString() == "Fruit") {
-            log:printInfo("ProductManagementService : Sending message to Partition 0");
-            var sendResult = kafkaProducer->send(kafkaMessage, "product-price", partition = 0);
-        } else if (reqPayload.Type.toString() == "Vegetable") {
-            log:printInfo("ProductManagementService : Sending message to Partition 1");
-            var sendResult = kafkaProducer->send(kafkaMessage, "product-price", partition = 1);
+            // Serialize the message
+            byte[] kafkaMessage = productInfo.toJsonString().toBytes();
+
+            if (reqPayload.Type.toString() == "Fruit") {
+                log:printInfo("ProductManagementService : Sending message to Partition 0");
+                var sendResult = kafkaProducer->send(kafkaMessage, "product-price", partition = 0);
+            } else if (reqPayload.Type.toString() == "Vegetable") {
+                log:printInfo("ProductManagementService : Sending message to Partition 1");
+                var sendResult = kafkaProducer->send(kafkaMessage, "product-price", partition = 1);
+            } else {
+                log:printInfo("ProductManagementService : Product type not recognized");
+            }
+
+            response.setJsonPayload({"Status": "Success"});
+            var responseResult = caller->respond(response);
         }
-        
-        response.setJsonPayload({ "Status" : "Success" });
-        var responseResult = caller->respond(response);
     }
 }
