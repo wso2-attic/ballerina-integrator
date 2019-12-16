@@ -36,7 +36,7 @@ The project structure should look like below.
 ```shell
 ├── querying-mysql-database
     ├── lib
-        └── mysql-connector-java-8.0.17.jar
+        └── mysql-connector-java-x.x.x.jar
     ├── ballerina.conf    
     ├── Ballerina.toml
     └── src
@@ -56,7 +56,7 @@ Add the following under the `[dependencies]` section in Ballerina.toml file in t
   
   [[platform.libraries]]
   module = "querying_mysql_database"
-  path = "./lib/mysql-connector-java-8.0.17.jar"
+  path = "./lib/mysql-connector-java-x.x.x.jar"
   ```
 Run the sampleScript.sql script inside resources folder to create the table and insert data required for the guide.
 
