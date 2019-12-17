@@ -24,36 +24,35 @@ We will build a service called `doctorAppointment` that accepts a client's reque
 
 * Navigate to the service-orchestration directory.
 
-* Add a new module named `appointment_service` to the project.
+* Add a new module named `service_orchestration` to the project.
 
     ```bash
-    $ ballerina add appointment_service
+    $ ballerina add service_orchestration
     ```
 
-* Open the project with VS Code. The project structure will be similar to the following.
+Use the following project structure for this guide
 
-    ```shell
-    .
+```
+service-orchestration
     ├── Ballerina.toml
     └── src
-        └── appointment_service
-            ├── main.bal
+        └── service_orchestration
+            ├── doctor_appointment_service.bal
+            ├── payment.bal
+            ├── reservation.bal
             ├── Module.md
             ├── resources
             └── tests
-                ├── main_test.bal
                 └── resources
-    ```
-
-    We can remove the file `main_test.bal` for the moment, since we are not writing any tests for our service.
+```
 
 First let's create the services that we will use as backend endpoints.
 
-* Create a new file named `reservation.bal` under 'appointment_service' with the following content.
+* Create a new file named `reservation.bal` under 'service_orchestration' with the following content.
 
 **reservation.bal**
 
-<!-- INCLUDE_CODE: src/appointment_service/reservation.bal -->
+<!-- INCLUDE_CODE: src/service_orchestration/reservation.bal -->
 
 This is a simple service that would run on port 8081 and respond a JSON payload.
 
@@ -61,13 +60,14 @@ This is a simple service that would run on port 8081 and respond a JSON payload.
 
 **payment.bal**
 
-<!-- INCLUDE_CODE: src/appointment_service/payment.bal -->
+<!-- INCLUDE_CODE: src/service_orchestration/payment.bal -->
 
-* Now let's open the `main.bal` file and add the following content. This is going to be our integration logic.
+* Now create let's create another file named `doctor_appointment_service.bal` and add the following content. 
+This is going to be our integration logic.
 
-**main.bal**
+**doctor_appointment_service.bal**
 
-<!-- INCLUDE_CODE: src/appointment_service/main.bal -->
+<!-- INCLUDE_CODE: src/service_orchestration/doctor_appointment_service.bal -->
 
 Here we are calling the two services we created earlier, using the endpoints ‘reservationEP’ and ‘paymentEP’.
 
@@ -76,7 +76,7 @@ Here we are calling the two services we created earlier, using the endpoints ‘
 * First let’s build the module. While being in the service-orchestration directory, execute the following command.
 
     ```bash
-    $ ballerina build appointment_service
+    $ ballerina build service_orchestration
     ```
 
 This would create the executables. 
@@ -84,7 +84,7 @@ This would create the executables.
 * Now run the .jar file created in the above step.
 
     ```bash
-    $ java -jar target/bin/appointment_service.jar
+    $ java -jar target/bin/service_orchestration.jar
     ```
 
 Now we can see three service have started on ports 8081, 8082, and 9090. 
@@ -102,7 +102,7 @@ Now we can see three service have started on ports 8081, 8082, and 9090.
 * Let’s access the `doctorAppoinmment` service by executing the following curl command.
 
     ```bash
-    $ curl -H 'Content-Type:application/json' http://localhost:9090/doctorAppoinment/reservation --data @patient.json
+    $ curl -H 'Content-Type:application/json' http://localhost:9090/doctorAppointment/reservation --data @patient.json
     ```
 
     We receive a JSON response similar to the following.
