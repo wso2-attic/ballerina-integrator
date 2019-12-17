@@ -39,7 +39,7 @@ jms:Connection conn = new({
 | initialContextFactory |[string](https://ballerina.io/learn/api-docs/ballerina/primitive-types.html#string)| wso2mbInitialContextFactory| JMS provider specific inital context factory|
 | providerUrl |[string](https://ballerina.io/learn/api-docs/ballerina/primitive-types.html#string)| JMS provider specific provider URL used to configure a connection. (.Bindings File : If you have this bindings file, you can access MQ queues from any machine in the network.)|JMS provider specific provider URL used to configure a connection|
 | connectionFactoryName |[string](https://ballerina.io/learn/api-docs/ballerina/primitive-types.html#string)| ConnectionFactory | JMS provider specific provider URL used to configure a connection. (.Bindings File : If you have this bindings file, you can access MQ queues from any machine in the network.)|
-| username |[string?](https://ballerina.io/learn/api-docs/ballerina/primitive-types.html#string)| () | JUsername for the JMS connection.)|
+| username |[string?](https://ballerina.io/learn/api-docs/ballerina/primitive-types.html#string)| () | Username for the JMS connection.)|
 | password |[string?](https://ballerina.io/learn/api-docs/ballerina/primitive-types.html#string)| () | Password for the JMS connection.)|
 | properties |[map](https://ballerina.io/learn/api-docs/ballerina/builtin.html#map)| () | Additional properties use in initializing the initial context.)|
 
