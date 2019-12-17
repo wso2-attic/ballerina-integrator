@@ -1,10 +1,10 @@
 [project]
 org-name= "wso2"
-version= "0.1.2"
+version= "0.1.0"
 license= ["Apache-2.0"]
 authors= ["WSO2"]
-keywords= ["ballerina", "integrator", "appointment_service"]
+keywords= ["ballerina", "integrator", "service_orchestration"]
 repository= "https://github.com/wso2/ballerina-integrator"
-templates= ["appointment_service"]
+templates= ["service_orchestration"]
 
 [dependencies]

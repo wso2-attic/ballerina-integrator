@@ -104,7 +104,7 @@
     {
       "path": "src/learn/tutorials/integration-patterns-and-soa/service-orchestration",
       "modules": [
-        "appointment_service"
+        "service_orchestration"
       ],
       "skipTests": false
     },

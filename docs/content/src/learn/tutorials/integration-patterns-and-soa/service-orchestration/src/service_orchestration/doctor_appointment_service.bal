@@ -20,33 +20,33 @@ http:Client reservationEP = new ("http://localhost:8081/reservation");
 http:Client paymentEP = new("http://localhost:8082/payment");
 
 @http:ServiceConfig {
-    basePath: "/doctorAppoinment"
+    basePath: "/doctorAppointment"
 }
-service doctorAppoinment on new http:Listener(9090) {
+service doctorAppointment on new http:Listener(9090) {
     @http:ResourceConfig {
         methods: ["POST"],
         path: "/reservation"
     }
     resource function makeReservation(http:Caller caller, http:Request request) {
-        json requestPaylod = checkpanic request.getJsonPayload();
+        json requestPayload = checkpanic request.getJsonPayload();
         json finalResponsePayload = {
             "appointment_status": "failure",
-            "name":checkpanic requestPaylod.name,
-            "doctor":checkpanic requestPaylod.doctor,
-            "date":checkpanic requestPaylod.date
+            "name":checkpanic requestPayload.name,
+            "doctor":checkpanic requestPayload.doctor,
+            "date":checkpanic requestPayload.date
         };
         http:Response response = checkpanic reservationEP->post("/createAppointment", request);
-        json appointmentResPayload = checkpanic response.getJsonPayload();
-        if (appointmentResPayload.appointmentId is json) {
+        json responsePayload = checkpanic response.getJsonPayload();
+        if (responsePayload.appointmentId is json) {
             json paymentReqPayload = {
-                "name":checkpanic requestPaylod.name,
-                "cardNum":checkpanic requestPaylod.cardNum,
-                "amount":checkpanic appointmentResPayload.fee
+                "name":checkpanic requestPayload.name,
+                "cardNum":checkpanic requestPayload.cardNum,
+                "amount":checkpanic responsePayload.fee
             };
             request.setJsonPayload(<@untainted>paymentReqPayload);
             response = checkpanic paymentEP->post("/makePayment", request);
-            json paymentResPayload = checkpanic response.getJsonPayload();
-            finalResponsePayload = checkpanic paymentResPayload.mergeJson(appointmentResPayload);
+            json paymentResponsePayload = checkpanic response.getJsonPayload();
+            finalResponsePayload = checkpanic paymentResponsePayload.mergeJson(responsePayload);
         }
         response.setJsonPayload(<@untainted>finalResponsePayload);
         error? respond = caller->respond(response);
