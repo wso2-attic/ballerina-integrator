@@ -89,10 +89,20 @@ This would create the executables.
 
 Now we can see three service have started on ports 8081, 8082, and 9090. 
 
-* Let’s access the `doctorAppoinment` service by executing the following curl command.
+* Create an patient.json file with the below payload.
+```json
+{
+  "name":"Thomas Colins", 
+  "doctor":"John Doe", 
+  "date":"30-09-2019", 
+  "cardNum":"1234567"
+}
+```
+
+* Let’s access the `doctorAppoinmment` service by executing the following curl command.
 
     ```bash
-    $ curl -H 'Content-Type:application/json' http://localhost:9090/doctorAppoinment/reservation --data '{"name":"Thomas Colins", "doctor":"John Doe", "date":"30-09-2019", "cardNum":"1234567"}'
+    $ curl -H 'Content-Type:application/json' http://localhost:9090/doctorAppoinment/reservation --data @patient.json
     ```
 
     We receive a JSON response similar to the following.
