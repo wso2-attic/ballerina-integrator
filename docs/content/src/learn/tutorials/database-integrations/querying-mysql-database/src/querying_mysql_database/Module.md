@@ -38,7 +38,7 @@ This automatically creates querying_mysql_database service for you inside the `s
 target = "java8"
 [[platform.libraries]]
 module = "querying_mysql_database"
-path = "./lib/mysql-connector-java-8.0.17.jar"
+path = "./lib/mysql-connector-java-x.x.x.jar"
 ```
 
 * Download & run the employees.sql script inside resources folder to create the table and insert data required for the guide.
