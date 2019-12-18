@@ -211,7 +211,7 @@ export let homeStyles: string = `<style>
             }
 
             body.vscode-dark {
-                background: #2C2C2C;
+                background: var(--vscode-editor-background);
                 color: #FFFFFF;
             }
 
@@ -224,7 +224,7 @@ export let homeStyles: string = `<style>
             }
 
             body.vscode-dark .box {
-                background-color:#4B4B4B;
+                background-color:var(--vscode-input-background);
             }
 
             body.vscode-dark h4 {
@@ -288,7 +288,7 @@ export let homeStyles: string = `<style>
                 line-height: 30px;
                 padding: 5px 13px;
                 font-size: 20px;
-                background: #4B4B4B;
+                background: var(--vscode-settings-textinputbackground);
                 border: 1px solid #BDC3C7;
                 width: 100%;
             }
@@ -299,8 +299,8 @@ export let homeStyles: string = `<style>
                 border:1px solid #ccc;
                 border-radius:3px;
                 padding:10px 30px;
-                background: #4B4B4B;
-                color: #FFFFFF;
+                background: var(--vscode-settings-dropdownbackground);
+                color: var(--vscode-settings-dropdownforeground);
                 height: 42px;
             }
 
@@ -310,6 +310,8 @@ export let homeStyles: string = `<style>
                 padding: 0.2em 0.3em;
                 margin: 2px;
                 font-weight: bolder;
+                border:1px solid #ccc;
+                border-radius:3px;
             }
         </style>`;
 
