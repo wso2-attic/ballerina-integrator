@@ -124,18 +124,30 @@ This starts the `Airline Reservation`, `Hotel Reservation`, and `Travel Agency` 
 
 ### Invoking the service
 
+Create a file named `request.json` with following JSON content.
+
+```json
+{
+    "Name":"Bob", 
+    "ArrivalDate":"12-03-2020",
+    "DepartureDate":"13-04-2022", 
+    "Preference":
+        {
+            "Airline":"Business",
+            "Accommodation":"Air Conditioned"
+        }
+}
+```
+
 Invoke the travel agency service by sending a POST request to arrange a tour.
 
 ```bash
-   curl -v -X POST -d '{"Name":"Bob", "ArrivalDate":"12-03-2020",
-   "DepartureDate":"13-04-2022", "Preference":{"Airline":"Business",
-   "Accommodation":"Air Conditioned"}}' \
-   "http://localhost:9090/travel/arrangeTour" -H "Content-Type:application/json"
+   curl -v -X POST -d @request.json "http://localhost:9090/travel/arrangeTour" \
+   -H "Content-Type:application/json"
 ```
 
 Travel agency service sends a response similar to the following:
 
 ```bash
-   < HTTP/1.1 200 OK
    {"Message":"Congratulations! Your journey is ready!!"}
 ```

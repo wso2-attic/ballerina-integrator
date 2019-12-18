@@ -89,7 +89,7 @@ This would create the executables.
 
 Now we can see three service have started on ports 8081, 8082, and 9090. 
 
-* Create an patient.json file with the below payload.
+* Create a filed named `patient.json` with following JSON content
 ```json
 {
   "name":"Thomas Colins", 
