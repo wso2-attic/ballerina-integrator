@@ -21,9 +21,9 @@ import ballerina/log;
 import ballerinax/java.jdbc;
 
 jdbc:Client employeeDB = new ({
-    url: config:getAsString("MYSQL_URL"),
-    username: config:getAsString("MYSQL_USERNAME"),
-    password: config:getAsString("MYSQL_PASSWORD"),
+    url: config:getAsString("DATABASE_URL", "jdbc:mysql://127.0.0.1:3306/Employee"),
+    username: config:getAsString("DATABASE_USERNAME", "root"),
+    password: config:getAsString("DATABASE_PASSWORD", "root"),
     dbOptions: {useSSL: false}
 });
 

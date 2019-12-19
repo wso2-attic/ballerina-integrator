@@ -46,9 +46,9 @@ path = "./lib/mysql-connector-java-x.x.x.jar"
 * Add project configuration file by creating `ballerina.conf` file under the root path of the project structure. <br/>
 This file should have the following MySQL database configurations.
 ```
-MYSQL_URL = <jdbc_url><br/>
-MYSQL_USERNAME = <mysql_username> <br/>
-MYSQL_PASSWORD = <mysql_password> <br/>
+DATABASE_URL = <jdbc_url><br/>
+DATABASE_USERNAME = <mysql_username> <br/>
+DATABASE_PASSWORD = <mysql_password> <br/>
 ```
 ### Invoking the service
 
