@@ -66,7 +66,7 @@ Run the sampleScript.sql script inside resources folder to create the table and 
     connection properties accordingly.
    
     ```
-    DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/bankDB"
+    DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/Employee"
     DATABASE_USERNAME = "root"
     DATABASE_PASSWORD = "root"
     ```
