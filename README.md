@@ -1,4 +1,4 @@
-# Ballerina Integrator
+# [ARCHIVED] Ballerina Integrator
 
 [![Build Status](https://wso2.org/jenkins/buildStatus/icon?job=products/ballerina-integrator)](https://wso2.org/jenkins/view/products/job/products/job/ballerina-integrator/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
